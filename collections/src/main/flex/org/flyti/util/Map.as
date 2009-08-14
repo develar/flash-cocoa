@@ -110,6 +110,15 @@ public class Map implements IEventDispatcher, IExternalizable
 		return result;
 	}
 
+	public function clear():void
+	{
+		_size = 0;
+		for (var key:Object in storage)
+		{
+			delete storage[key];
+		}
+	}
+
 	public function dispatchEvent(event:Event):Boolean
 	{
 		if (dispatcher == null)
