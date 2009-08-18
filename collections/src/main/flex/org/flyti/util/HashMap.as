@@ -6,11 +6,11 @@ import flash.utils.IDataOutput;
 import flash.utils.IExternalizable;
 
 [RemoteClass]
-public class Map implements IExternalizable
+public class HashMap implements IExternalizable
 {
 	private var storage:Dictionary;
 
-	public function Map(weakKeys:Boolean = false)
+	public function HashMap(weakKeys:Boolean = false)
 	{
 		storage = new Dictionary(weakKeys);
 	}
@@ -65,7 +65,7 @@ public class Map implements IExternalizable
 		return value;
 	}
 
-	public function putAll(map:Map):void
+	public function putAll(map:HashMap):void
 	{
 		for each (var key:Object in map.keySet)
 		{
@@ -73,7 +73,7 @@ public class Map implements IExternalizable
 		}
 	}
 
-	public function removeAll(map:Map):void
+	public function removeAll(map:HashMap):void
 	{
 		for each (var key:Object in map.keySet)
 		{
