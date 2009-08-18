@@ -1,25 +1,17 @@
 package org.flyti.util
 {
-import flash.events.Event;
-import flash.events.EventDispatcher;
-import flash.events.IEventDispatcher;
 import flash.utils.Dictionary;
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
 import flash.utils.IExternalizable;
 
 [RemoteClass]
-public class Map implements IEventDispatcher, IExternalizable
+public class Map implements IExternalizable
 {
 	private var storage:Dictionary;
 
-	private var keyListenable:Boolean;
-	private var dispatcher:EventDispatcher;
-
-	public function Map(weakKeys:Boolean = false, keyListenable:Boolean = false)
+	public function Map(weakKeys:Boolean = false)
 	{
-		this.keyListenable = keyListenable;
-
 		storage = new Dictionary(weakKeys);
 	}
 
@@ -44,7 +36,7 @@ public class Map implements IEventDispatcher, IExternalizable
 		const value:* = storage[key];
 		if (value === undefined)
 		{
-			throw new Error("key is not present");
+			throw new KeyNotPresentError(key);
 		}
 		return value;
 	}
@@ -61,31 +53,14 @@ public class Map implements IEventDispatcher, IExternalizable
 		if (!presentKey)
 		{
 			_size++;
-			if (keyListenable)
-			{
-				//IEventDispatcher(key).dispatchEvent(new MapKeyEvent(MapKeyEvent.PUT, this, value));
-			}
-			else if (dispatcher != null)
-			{
-				//dispatchEvent(new MapEntryEvent(MapEntryEvent.PUT, new MapEntry(key, value)));
-			}
 		}
 	}
 
 	public function remove(key:Object):*
 	{
-		const value:* = storage[key];
+		const value:Object = get(key);
 		delete storage[key];
 		_size--;
-
-		if (keyListenable)
-		{
-			//IEventDispatcher(key).dispatchEvent(new MapKeyEvent(MapKeyEvent.REMOVE, this, value));
-		}
-		else if (dispatcher != null)
-		{
-			//dispatchEvent(new MapEntryEvent(MapEntryEvent.REMOVE, new MapEntry(key, value)));
-		}
 
 		return value;
 	}
@@ -96,6 +71,15 @@ public class Map implements IEventDispatcher, IExternalizable
 		{
 			put(key, map.get(key));
 		}
+	}
+
+	public function removeAll(map:Map):void
+	{
+		for each (var key:Object in map.keySet)
+		{
+			delete storage[key];
+		}
+		_size -= map.size;
 	}
 
 	public function get keySet():Vector.<Object>
@@ -116,59 +100,6 @@ public class Map implements IEventDispatcher, IExternalizable
 		for (var key:Object in storage)
 		{
 			delete storage[key];
-		}
-	}
-
-	public function dispatchEvent(event:Event):Boolean
-	{
-		if (dispatcher == null)
-		{
-			return true;
-		}
-		else
-		{
-			return dispatcher.dispatchEvent(event);
-		}
-	}
-
-	public function hasEventListener(type:String):Boolean
-	{
-		if (dispatcher == null)
-		{
-			return false;
-		}
-		else
-		{
-			return dispatcher.hasEventListener(type);
-		}
-	}
-
-	public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
-	{
-		if (dispatcher == null)
-		{
-			dispatcher = new EventDispatcher(this);
-		}
-		dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
-	}
-
-	public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void
-	{
-		if (dispatcher != null)
-		{
-			dispatcher.removeEventListener(type, listener, useCapture);
-		}
-	}
-
-	public function willTrigger(type:String):Boolean
-	{
-		if (dispatcher == null)
-		{
-			return false;
-		}
-		else
-		{
-			return dispatcher.willTrigger(type);
 		}
 	}
 
