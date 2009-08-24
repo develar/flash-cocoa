@@ -28,5 +28,14 @@ public class ArrayCollection extends mx.collections.ArrayCollection implements I
 	{
 		return length;
 	}
+
+	/**
+	 * Со стандартной реализацией были проблемы, оно не могло найти в localIndex элемент при удалении.
+	 * К тому же, нам совершенно не нужно все то, что в стандартной реализации — у нас элемент в коллекции всегда один.
+	 */
+	override public function getItemIndex(item:Object):int
+	{
+		return (localIndex == null ? source : localIndex).indexOf(item);
+	}
 }
 }
