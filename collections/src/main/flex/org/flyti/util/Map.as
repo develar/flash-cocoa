@@ -1,5 +1,6 @@
 package org.flyti.util
 {
+[DefaultProperty("entrySet")]
 public interface Map
 {
 	function get empty():Boolean;
@@ -18,5 +19,7 @@ public interface Map
 	function get keySet():Vector.<Object>;
 
 	function clear():void;
+
+	function set entrySet(value:Vector.<MapEntry>):void;
 }
 }

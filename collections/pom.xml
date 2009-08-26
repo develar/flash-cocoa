@@ -19,6 +19,14 @@
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
+					<manifests>
+						<manifest>
+							<uri>http://flyti.org/collections</uri>
+							<includes>
+								<class>org.flyti.util.MapEntry</class>
+							</includes>
+						</manifest>
+					</manifests>
 				</configuration>
 			</plugin>
 		</plugins>

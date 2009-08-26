@@ -6,6 +6,8 @@ import flash.utils.IDataOutput;
 import flash.utils.IExternalizable;
 
 [RemoteClass]
+
+[DefaultProperty("entrySet")]
 public class HashMap implements IExternalizable, Map
 {
 	private var storage:Dictionary;
@@ -111,6 +113,19 @@ public class HashMap implements IExternalizable, Map
 	public function writeExternal(output:IDataOutput):void
 	{
 		output.writeObject(storage);
+	}
+
+	/**
+	 * need for DefaultProperty and must use only for it — MXML compiler
+	 */
+	public function set entrySet(value:Vector.<MapEntry>):void
+	{
+		for each (var entry:MapEntry in value)
+		{
+			storage[entry.key] = entry.value;
+		}
+
+		_size = value.length;
 	}
 }
 }

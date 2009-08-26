@@ -2,7 +2,7 @@ package org.flyti.util
 {
 public class MapEntry
 {
-	public function MapEntry(key:Object, value:Object)
+	public function MapEntry(key:Object = null, value:Object = null)
 	{
 		_key = key;
 		_value = value;
