@@ -4,20 +4,11 @@ public class MapEntry
 {
 	public function MapEntry(key:Object = null, value:Object = null)
 	{
-		_key = key;
-		_value = value;
+		this.key = key;
+		this.value = value;
 	}
 
-	private var _key:Object;
-	public function get key():Object
-	{
-		return _key;
-	}
-
-	private var _value:Object;
-	public function get value():Object
-	{
-		return _value;
-	}
+	public var key:Object;
+	public var value:Object;
 }
 }

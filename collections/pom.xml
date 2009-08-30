@@ -24,6 +24,7 @@
 							<uri>http://flyti.org/collections</uri>
 							<includes>
 								<class>org.flyti.util.MapEntry</class>
+								<class>org.flyti.util.HashMap</class>
 							</includes>
 						</manifest>
 					</manifests>
