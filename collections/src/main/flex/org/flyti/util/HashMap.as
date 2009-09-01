@@ -67,9 +67,13 @@ public class HashMap implements IExternalizable, Map
 		return value;
 	}
 
+	/**
+	 * У нас сейчас всего одна реализация интерфейса Map, поэтому putAll оптимизирован для HashMap
+	 * @param map
+	 */
 	public function putAll(map:Map):void
 	{
-		for each (var key:Object in map.keySet)
+		for (var key:Object in HashMap(map).storage)
 		{
 			put(key, map.get(key));
 		}
@@ -77,7 +81,7 @@ public class HashMap implements IExternalizable, Map
 
 	public function removeAll(map:Map):void
 	{
-		for each (var key:Object in map.keySet)
+		for (var key:Object in HashMap(map).storage)
 		{
 			delete storage[key];
 		}
