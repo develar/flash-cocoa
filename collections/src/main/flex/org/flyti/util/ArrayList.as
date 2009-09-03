@@ -97,5 +97,10 @@ public class ArrayList extends OnDemandEventDispatcher implements List
 	{
 		return removeItemAt(getItemIndex(item));
 	}
+
+	public function contains(item:Object):Boolean
+	{
+		return getItemIndex(item) != -1;
+	}
 }
 }
