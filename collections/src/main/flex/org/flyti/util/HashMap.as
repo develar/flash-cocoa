@@ -6,15 +6,25 @@ import flash.utils.IDataOutput;
 import flash.utils.IExternalizable;
 
 [RemoteClass]
-
 [DefaultProperty("entrySet")]
 public class HashMap implements IExternalizable, Map
 {
-	private var storage:Dictionary;
+	protected var storage:Object;
 
-	public function HashMap(weakKeys:Boolean = false)
+	public function HashMap(weakKeys:Boolean = false, data:Object = null)
 	{
-		storage = new Dictionary(weakKeys);
+		if (data == null)
+		{
+			storage = new Dictionary(weakKeys);
+		}
+		else
+		{
+			storage = data;
+			for (var key:String in data)
+			{
+				_size++;
+			}
+		}
 	}
 
 	public function get empty():Boolean
@@ -90,8 +100,8 @@ public class HashMap implements IExternalizable, Map
 
 	public function get keySet():Vector.<Object>
 	{
-		var i:int = _size;
-		var result:Vector.<Object> = new Vector.<Object>(_size, true);
+		var i:int = size;
+		var result:Vector.<Object> = new Vector.<Object>(i, true);
 		for (var key:Object in storage)
 		{
 			result[--i] = key;

@@ -7,7 +7,19 @@ import mx.utils.OnDemandEventDispatcher;
 
 public class ArrayList extends OnDemandEventDispatcher implements List
 {
-	private var source:Vector.<Object> = new Vector.<Object>();
+	private var source:Vector.<Object>;
+
+	public function ArrayList(source:Vector.<Object> = null)
+	{
+		if (source == null)
+		{
+			this.source = new Vector.<Object>();
+		}
+		else
+		{
+			this.source = source;
+		}
+	}
 
 	public function get length():int
     {
