@@ -11,7 +11,7 @@ public interface Map
 	function get(key:Object):*;
 
 	function put(key:Object, value:Object):void;
-	function remove(key:Object):*;
+	function remove(key:Object):Object;
 
 	function putAll(map:Map):void;
 	function removeAll(map:Map):void;

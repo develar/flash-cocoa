@@ -68,7 +68,7 @@ public class HashMap implements IExternalizable, Map
 		}
 	}
 
-	public function remove(key:Object):*
+	public function remove(key:Object):Object
 	{
 		const value:Object = get(key);
 		delete storage[key];
