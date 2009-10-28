@@ -43,14 +43,16 @@ public class HashMap implements IExternalizable, Map
 		return key in storage;
 	}
 
-	public function get(key:Object):*
+	public function get(key:Object):Object
 	{
-		const value:* = storage[key];
-		if (value === undefined)
+		if (key in storage)
+		{
+			return storage[key];
+		}
+		else
 		{
 			throw new KeyNotPresentError(key);
 		}
-		return value;
 	}
 
 	public function put(key:Object, value:Object):void

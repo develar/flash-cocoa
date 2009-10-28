@@ -8,7 +8,7 @@ public interface Map
 	function get size():int;
 
 	function containsKey(key:Object):Boolean;
-	function get(key:Object):*;
+	function get(key:Object):Object;
 
 	function put(key:Object, value:Object):void;
 	function remove(key:Object):Object;
