@@ -32,6 +32,7 @@
 							<includes>
 								<class>org.flyti.util.MapEntry</class>
 								<class>org.flyti.util.HashMap</class>
+								<class>org.flyti.util.ArrayList</class>
 							</includes>
 						</manifest>
 					</manifests>
