@@ -21,5 +21,7 @@ public interface Map
 	function clear():void;
 
 	function set entrySet(value:Vector.<MapEntry>):void;
+
+	function get iterator():Object;
 }
 }

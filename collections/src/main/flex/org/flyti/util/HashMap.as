@@ -22,7 +22,6 @@ public class HashMap implements Map, IExternalizable
 			storage = data;
 			if (size == 0)
 			{
-				storage = data;
 				for (var key:String in data)
 				{
 					_size++;
@@ -33,6 +32,11 @@ public class HashMap implements Map, IExternalizable
 				_size = size;
 			}
 		}
+	}
+
+	public function get iterator():Object
+	{
+		return storage;
 	}
 	
 	public function get empty():Boolean
@@ -78,8 +82,11 @@ public class HashMap implements Map, IExternalizable
 	public function remove(key:Object):Object
 	{
 		const value:Object = get(key);
-		delete storage[key];
-		_size--;
+		if (value !== undefined)
+		{
+			delete storage[key];
+			_size--;
+		}
 
 		return value;
 	}
