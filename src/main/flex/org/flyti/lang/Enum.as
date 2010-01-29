@@ -19,5 +19,10 @@ public class Enum
 	{
 		return _ordinal;
 	}
+
+	public function toString():String
+	{
+		return _name;
+	}
 }
 }
