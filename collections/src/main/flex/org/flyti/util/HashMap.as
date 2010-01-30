@@ -81,7 +81,12 @@ public class HashMap implements Map, IExternalizable
 
 	public function remove(key:Object):Object
 	{
-		const value:Object = get(key);
+		if (key == null)
+		{
+			throw new ArgumentError("key must be not null");
+		}
+
+		var value:* = storage[key];
 		if (value !== undefined)
 		{
 			delete storage[key];

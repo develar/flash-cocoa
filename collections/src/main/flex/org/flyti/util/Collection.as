@@ -11,5 +11,7 @@ public interface Collection extends IList
 	function contains(item:Object):Boolean
 	
 	function removeItem(item:Object):Object;
+
+	function addAll(collection:IList):void;
 }
 }

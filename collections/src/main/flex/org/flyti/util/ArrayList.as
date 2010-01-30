@@ -1,5 +1,6 @@
 package org.flyti.util
 {
+import mx.collections.IList;
 import mx.events.CollectionEvent;
 import mx.events.CollectionEventKind;
 import mx.events.PropertyChangeEvent;
@@ -19,6 +20,11 @@ public class ArrayList extends OnDemandEventDispatcher implements List
 		{
 			this.source = source;
 		}
+	}
+
+	public function get iterator():Vector.<Object>
+	{
+		return source;
 	}
 
 	public function get length():int
@@ -97,22 +103,51 @@ public class ArrayList extends OnDemandEventDispatcher implements List
 
 	public function get size():int
 	{
-		return length;
+		return source.length;
 	}
 
 	public function get empty():Boolean
 	{
-		return length == 0;
+		return source.length == 0;
 	}
 
 	public function removeItem(item:Object):Object
 	{
-		return removeItemAt(getItemIndex(item));
+		return removeItemAt(source.indexOf(item));
 	}
 
 	public function contains(item:Object):Boolean
 	{
-		return getItemIndex(item) != -1;
+		return source.indexOf(item) != -1;
+	}
+
+	public function addVector(vector:Object):void
+	{
+		var start:int = source.length;
+		var i:int = start;
+		var n:int = vector.length;
+		source.length = start + n;
+		for each (var item:Object in vector)
+		{
+			source[i++] = item;
+		}
+		dispatchChangeEventForVector(vector, start);
+	}
+
+	public function addAll(collection:IList):void
+	{
+		addVector(List(collection).iterator);
+	}
+
+	private function dispatchChangeEventForVector(vector:Object, start:int):void
+	{
+		if (hasEventListener(CollectionEvent.COLLECTION_CHANGE))
+		{
+			for each (var item:Object in vector)
+			{
+				dispatchEvent(new CollectionEvent(CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.ADD, start++, -1, [item]));
+			}
+		}
 	}
 }
 }

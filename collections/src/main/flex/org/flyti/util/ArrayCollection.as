@@ -1,8 +1,10 @@
 package org.flyti.util
 {
+import flash.errors.IllegalOperationError;
+
 import mx.collections.ArrayCollection;
 
-public class ArrayCollection extends mx.collections.ArrayCollection implements IListView
+public class ArrayCollection extends mx.collections.ArrayCollection implements CollectionView
 {
 	public function ArrayCollection(source:Array = null)
 	{
@@ -36,6 +38,11 @@ public class ArrayCollection extends mx.collections.ArrayCollection implements I
 	override public function getItemIndex(item:Object):int
 	{
 		return (localIndex == null ? source : localIndex).indexOf(item);
+	}
+
+	public function get iterator():Vector.<Object>
+	{
+		throw new IllegalOperationError("unsupported");
 	}
 }
 }
