@@ -12,6 +12,12 @@
 	<version>1.2-SNAPSHOT</version>
 	<packaging>swc</packaging>
 
+	<properties>
+		<fdk.version>4.0.0.13730</fdk.version>
+		<flex.sdk.version>4.0.0.13730</flex.sdk.version>
+		<flexMojos.version>3.5-de2</flexMojos.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
