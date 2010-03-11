@@ -8,7 +8,7 @@ import mx.core.BitmapAsset;
 
 import org.flyti.view.Border;
 import org.flyti.view.Insets;
-import org.flyti.view.TextInsets;
+import cocoa.TextInsets;
 
 internal final class CompoundImageReader
 {

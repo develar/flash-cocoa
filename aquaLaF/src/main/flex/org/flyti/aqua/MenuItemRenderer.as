@@ -3,7 +3,7 @@ package org.flyti.aqua
 import flash.display.Graphics;
 
 import org.flyti.view.AbstractItemRenderer;
-import org.flyti.view.LabelHelper;
+import cocoa.LabelHelper;
 import org.flyti.view.ListItemRendererBorder;
 
 public class MenuItemRenderer extends AbstractItemRenderer

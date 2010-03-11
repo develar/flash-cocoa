@@ -1,4 +1,4 @@
-package org.flyti.aqua.plaf
+package cocoa.plaf
 {
 import flash.display.Graphics;
 

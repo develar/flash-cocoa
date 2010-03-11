@@ -9,7 +9,7 @@ import mx.managers.PopUpManager;
 
 import org.flyti.view.BorderedDataGroup;
 import org.flyti.view.Insets;
-import org.flyti.view.PopUpButton;
+import cocoa.PopUpButton;
 
 public class PopUpAnchor
 {

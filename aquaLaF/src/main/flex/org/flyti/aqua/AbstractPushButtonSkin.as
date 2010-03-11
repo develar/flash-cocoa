@@ -1,7 +1,7 @@
 package org.flyti.aqua
 {
 import org.flyti.view.ButtonBorder;
-import org.flyti.view.LabelHelper;
+import cocoa.LabelHelper;
 import org.flyti.view.LightUIComponent;
 import org.flyti.view.PushButtonSkin;
 

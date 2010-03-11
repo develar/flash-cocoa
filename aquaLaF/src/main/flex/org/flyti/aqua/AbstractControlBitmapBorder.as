@@ -3,7 +3,7 @@ package org.flyti.aqua
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
-import org.flyti.view.TextInsets;
+import cocoa.TextInsets;
 
 internal class AbstractControlBitmapBorder extends AbstractBorder
 {

@@ -10,8 +10,8 @@ import mx.core.UIComponent;
 import org.flyti.view.ButtonBorder;
 import org.flyti.view.ButtonState;
 import org.flyti.view.Insets;
-import org.flyti.view.LayoutInsets;
-import org.flyti.view.TextInsets;
+import cocoa.LayoutInsets;
+import cocoa.TextInsets;
 
 /**
  * Фиксированная высота, произвольная ширина — масштабируется только по горизонтали.

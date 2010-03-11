@@ -8,7 +8,7 @@ import mx.core.UIComponent;
 
 import org.flyti.view.AbstractItemRenderer;
 import org.flyti.view.ListItemRendererBorder;
-import org.flyti.view.TextInsets;
+import cocoa.TextInsets;
 
 public final class Scale1HBitmapBorder extends AbstractControlBitmapBorder implements ListItemRendererBorder
 {

@@ -5,8 +5,8 @@ import mx.core.IFactory;
 
 import org.flyti.view.BorderedDataGroup;
 import org.flyti.view.LightUIComponent;
-import org.flyti.view.PopUpButton;
-import org.flyti.view.PushButton;
+import cocoa.PopUpButton;
+import cocoa.PushButton;
 
 import spark.layouts.HorizontalAlign;
 import spark.layouts.VerticalLayout;

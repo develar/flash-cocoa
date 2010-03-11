@@ -9,7 +9,7 @@ import mx.core.UIComponent;
 
 import org.flyti.view.GroupBorder;
 import org.flyti.view.Insets;
-import org.flyti.view.LayoutInsets;
+import cocoa.LayoutInsets;
 
 /**
  * Тот же трюк, что и в Scale3HBitmapBorder — отрисовка scale9Grid требует всего 4, а не 9 кусочков

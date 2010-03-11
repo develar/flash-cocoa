@@ -1,6 +1,6 @@
 package org.flyti.aqua
 {
-import org.flyti.view.PopUpButton;
+import cocoa.PopUpButton;
 
 public class PopUpOpenButtonSkin extends PushButtonSkin
 {

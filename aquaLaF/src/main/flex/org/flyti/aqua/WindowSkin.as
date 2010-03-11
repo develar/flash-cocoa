@@ -9,7 +9,7 @@ import org.flyti.layout.AdvancedLayout;
 import org.flyti.view.AbstractSkin;
 import org.flyti.view.Container;
 import org.flyti.view.Insets;
-import org.flyti.view.LabelHelper;
+import cocoa.LabelHelper;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.View;
 import org.flyti.view.WindowSkin;

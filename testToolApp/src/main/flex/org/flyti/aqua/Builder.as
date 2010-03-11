@@ -9,8 +9,8 @@ import flash.utils.ByteArray;
 import org.flyti.util.FileUtil;
 import org.flyti.view.Border;
 import org.flyti.view.Insets;
-import org.flyti.view.LayoutInsets;
-import org.flyti.view.TextInsets;
+import cocoa.LayoutInsets;
+import cocoa.TextInsets;
 
 public class Builder
 {
