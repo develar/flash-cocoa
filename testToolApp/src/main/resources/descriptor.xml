@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/2.0beta2">
+	<id>org.flyti.aqua.testToolApp</id>
+	<filename>testToolApp</filename>
+	<name>Aqua Test Tool</name>
+	<version>1.1-SNAPSHOT</version>
+	<initialWindow>
+		<systemChrome>none</systemChrome>
+		<transparent>true</transparent>
+		<content>testToolApp-1.1-SNAPSHOT.swf</content>
+	</initialWindow>
+</application>

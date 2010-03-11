@@ -1,0 +1,22 @@
+@namespace f "http://thewebproduction.com/flexLibrary";
+
+f|Dialog
+{
+	skinClass: ClassReference("org.flyti.aqua.WindowSkin");
+	insets: "dialog";
+}
+
+f|PushButton
+{
+	skinClass: ClassReference("org.flyti.aqua.PushButtonSkin");
+}
+
+f|PopUpButton
+{
+	skinClass: ClassReference("org.flyti.aqua.PopUpButtonSkin");
+}
+
+f|SourceListView
+{
+	skinClass: ClassReference("org.flyti.aqua.SourceListSkin");
+}

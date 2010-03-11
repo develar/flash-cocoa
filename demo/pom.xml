@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.flyti.aqua</groupId>
+		<artifactId>aquaUIAggregator</artifactId>
+		<version>1.1-SNAPSHOT</version>
+	</parent>
+
+	<name>Aqua Demo App</name>
+	<artifactId>demo</artifactId>
+	<packaging>swf</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flyti.aqua</groupId>
+			<artifactId>aquaSkin</artifactId>
+			<type>swc</type>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flyti.aqua</groupId>
+			<artifactId>aquaSkin</artifactId>
+			<type>css</type>
+			<classifier>theme</classifier>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.thewebproduction.library.flex</groupId>
+			<artifactId>flexLibrary</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<type>rb.swc</type>
+			<classifier>en_US</classifier>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<configuration>
+					<debug>true</debug>
+					<accessible>false</accessible>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

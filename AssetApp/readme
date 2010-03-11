@@ -1,0 +1,7 @@
+screencapture -i ~/workspace/XpressPages/common/aqua/testToolApp/src/main/resources/buttons.png
+
+screencapture -i ~/workspace/XpressPages/common/aqua/testToolApp/src/main/resources/popUpMenu.png
+
+or
+
+screencapture -ic
