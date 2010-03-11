@@ -1,93 +1,48 @@
 package org.flyti.aqua
 {
-import flash.display.Graphics;
-
-import org.flyti.view.AbstractItemRenderer;
+import cocoa.Icon;
 import cocoa.LabelHelper;
-import org.flyti.view.ListItemRendererBorder;
+import cocoa.plaf.AbstractItemRenderer;
+import cocoa.plaf.MenuItemRenderer;
+import cocoa.plaf.Scale1HBitmapBorder;
 
-public class MenuItemRenderer extends AbstractItemRenderer
-{	
-	private var labelHelper:LabelHelper;
-	private var border:ListItemRendererBorder;
+public class MenuItemRenderer extends cocoa.plaf.MenuItemRenderer
+{
+	private var stateIcon:Icon;
 
 	public function MenuItemRenderer()
 	{
 		labelHelper = new LabelHelper(this, AquaFonts.SYSTEM_FONT);
 
 		addRollHandlers();
-		border = AquaBorderFactory.getMenuItemBorder();
 	}
 
-	public function get labelLeftMargin():Number
-	{
-		return border.textInsets.left;
-	}
-
-	override public function get baselinePosition():Number
-	{
-		return border.layoutHeight - border.textInsets.bottom;
-	}
-
-	override public function get label():String
-	{
-		return null;
-	}
-
-	override public function set label(value:String):void
-	{
-		if (value == labelHelper.text)
-		{
-			return;
-		}
-
-		labelHelper.text = value;
-
-		invalidateSize();
-		invalidateDisplayList();
-	}
-
-	private var _data:Object;
-	override public function get data():Object
-	{
-		return _data;
-	}
 	override public function set data(value:Object):void
 	{
-		_data = value;
-	}
+		super.data = value;
 
-	override protected function measure():void
-	{
-		if (!labelHelper.hasText)
+		if (menuItem.isSeparatorItem)
 		{
-			return;
+			border = AquaBorderFactory.separatorMenuItemBorder;
 		}
-
-		labelHelper.validate();
-
-		measuredMinWidth = measuredWidth =  Math.round(labelHelper.textWidth) + border.textInsets.width;
-		measuredMinHeight = measuredHeight = border.layoutHeight;
+		else
+		{
+			border = AquaBorderFactory.menuItemBorder;
+		}
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
+		Scale1HBitmapBorder(border) = ((state & AbstractItemRenderer.HOVERED) == 0) ? 0 : 1;
 		labelHelper.font = ((state & HOVERED) == 0) ? AquaFonts.SYSTEM_FONT : AquaFonts.SYSTEM_FONT_WHITE;
-		labelHelper.validate();
-		labelHelper.moveByInset(h, border.textInsets);
-		
-		var g:Graphics = graphics;
-		g.clear();
 
-		border.draw(this, g, w, h, state);
-	}
+		super.updateDisplayList(w, h);
 
-	protected function drawBackground(w:Number, h:Number):void
-	{
-		var g:Graphics = graphics;
-		g.beginFill(0xffffff, 0.94);
-		g.drawRect(0, 0, w, h);
-		g.endFill();
+		// checkmarks, пока что значения забиты сюда.
+		// В mac os x исходный image как-то вроде антиалиасится и инвертируется для голубого выделения (черный в белый), и, хотя мы можем получить исходный image,
+		// нам пока что слишком неоправданно ислледовать данный вопрос глубоко и поэтому мы просто вырезали битмапу из уже computed image.
+		stateIcon = AquaBorderFactory.getMenuItemStateIcon((state & AbstractItemRenderer.HOVERED) != 0);
+		stateIcon.draw(this, graphics, 5, 3);
 	}
 }
 }

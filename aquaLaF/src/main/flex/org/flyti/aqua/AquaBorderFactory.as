@@ -1,17 +1,24 @@
 package org.flyti.aqua
 {
+import cocoa.Border;
+import cocoa.Icon;
+import cocoa.plaf.AbstractBitmapBorder;
+import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.Scale1HBitmapBorder;
+import cocoa.plaf.Scale3HBitmapBorder;
+import cocoa.plaf.Scale9BitmapBorder;
+import cocoa.plaf.aqua.SeparatorMenuItemBorder;
+
 import flash.utils.ByteArray;
 
-import org.flyti.view.Border;
-import org.flyti.view.ButtonBorder;
 import org.flyti.view.GroupBorder;
-import org.flyti.view.ListItemRendererBorder;
 
 public final class AquaBorderFactory
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
 	private static var buttonsImageData:Class;
 	private static var borders:Vector.<Border>;
+	private static var icons:Vector.<Icon>;
 
 	initAssets();
 	private static function initAssets():void
@@ -21,7 +28,7 @@ public final class AquaBorderFactory
 
 		var n:int = data.readUnsignedByte();
 		borders = new Vector.<Border>(n, true);
-		var border:AbstractBorder;
+		var border:AbstractBitmapBorder;
 		for (var i:int = 0; i < n; i++)
 		{
 			switch (data.readUnsignedByte())
@@ -33,6 +40,16 @@ public final class AquaBorderFactory
 			border.readExternal(data);
 			borders[i] = border;
 		}
+
+		n = data.readUnsignedByte();
+		var icon:BitmapIcon;
+		icons = new Vector.<Icon>(n, true);
+		for (i = 0; i < n; i++)
+		{
+			icon = new BitmapIcon();
+			icon.readExternal(data);
+			icons[i] = icon;
+		}
 	}
 
 	internal static function setBorders(value:Vector.<Border>):void
@@ -40,14 +57,14 @@ public final class AquaBorderFactory
 		borders = value;
 	}
 
-	public static function getPushButtonBorder(bezelStyle:BezelStyle):ButtonBorder
+	public static function getPushButtonBorder(bezelStyle:BezelStyle):Border
 	{
-		return ButtonBorder(borders[bezelStyle.ordinal]);
+		return borders[bezelStyle.ordinal];
 	}
 
-	public static function getPopUpOpenButtonBorder(bezelStyle:BezelStyle):ButtonBorder
+	public static function getPopUpOpenButtonBorder(bezelStyle:BezelStyle):Border
 	{
-		return ButtonBorder(borders[2 + bezelStyle.ordinal]);
+		return Border(borders[2 + bezelStyle.ordinal]);
 	}
 
 	public static function getPopUpMenuBorder():GroupBorder
@@ -55,9 +72,25 @@ public final class AquaBorderFactory
 		return GroupBorder(borders[3]);
 	}
 
-	public static function getMenuItemBorder():ListItemRendererBorder
+	public static function get menuItemBorder():Border
 	{
-		return ListItemRendererBorder(borders[4]);
+		return borders[4];
+	}
+
+	private static var _separatorMenuItemBorder:Border = SeparatorMenuItemBorder;
+	public static function get separatorMenuItemBorder():Border
+	{
+		if (_separatorMenuItemBorder == null)
+		{
+			_separatorMenuItemBorder = new SeparatorMenuItemBorder();
+		}
+
+		return _separatorMenuItemBorder;
+	}
+
+	public static function getMenuItemStateIcon(highlighted:Boolean):Icon
+	{
+		return icons[highlighted ? 1 : 0];
 	}
 }
 }

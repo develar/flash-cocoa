@@ -1,17 +1,16 @@
-package org.flyti.aqua
+package cocoa.plaf
 {
+import cocoa.Border;
+import cocoa.Insets;
+import cocoa.LayoutInsets;
+
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
-import flash.utils.IDataOutput;
 
 import mx.core.UIComponent;
 
-import org.flyti.view.ButtonBorder;
 import org.flyti.view.ButtonState;
-import org.flyti.view.Insets;
-import cocoa.LayoutInsets;
-import cocoa.TextInsets;
 
 /**
  * Фиксированная высота, произвольная ширина — масштабируется только по горизонтали.
@@ -19,17 +18,17 @@ import cocoa.TextInsets;
  * Реализовано как две bitmap, где 1 это склееный left и center — ширина center равна 1px — мы используем "the bitmap image does not repeat, and the edges of the bitmap are used for any fill area that extends beyond the bitmap"
  * (это позволяет нам сократить количество bitmapData, количество вызовов на отрисовку и в целом немного упростить код (в частности, для тех случаев, когда left width == 0)).
  */
-public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder implements ButtonBorder
+public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder implements Border
 {
 	private var sliceHeight:Number;
 	private var sliceSizes:Insets;
 
-	internal static function create(layoutHeight:Number, layoutInsets:LayoutInsets, textInsets:TextInsets):Scale3HBitmapBorder
+	public static function create(layoutHeight:Number, layoutInsets:LayoutInsets, contentInsets:Insets):Scale3HBitmapBorder
 	{
 		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
 		border._layoutHeight = layoutHeight;
 		border._layoutInsets = layoutInsets;
-		border._textInsets = textInsets;
+		border._contentInsets = contentInsets;
 		return border;
 	}
 
@@ -74,7 +73,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		sliceHeight = bitmaps[0].height;
 	}
 
-	override public function writeExternal(output:IDataOutput):void
+	override public function writeExternal(output:ByteArray):void
 	{
 		output.writeByte(0);
 		super.writeExternal(output);

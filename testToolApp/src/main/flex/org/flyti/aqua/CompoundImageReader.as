@@ -1,14 +1,22 @@
 package org.flyti.aqua
 {
+import cocoa.Icon;
+
+import cocoa.plaf.BitmapIcon;
+
+import cocoa.plaf.Scale1HBitmapBorder;
+import cocoa.plaf.Scale3HBitmapBorder;
+
+import cocoa.plaf.Scale9BitmapBorder;
+
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import mx.core.BitmapAsset;
 
-import org.flyti.view.Border;
-import org.flyti.view.Insets;
-import cocoa.TextInsets;
+import cocoa.Border;
+import cocoa.Insets;
 
 internal final class CompoundImageReader
 {
@@ -42,7 +50,7 @@ internal final class CompoundImageReader
 		position += rowsInfo.length;
 	}
 
-	public function readMenu(borders:Vector.<Border>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
+	public function readMenu(borders:Vector.<Border>, icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -50,28 +58,27 @@ internal final class CompoundImageReader
 		const firstItemY:Number = -listBorder.layoutInsets.top + listBorder.contentInsets.top + frameRectangle.top;
 		const itemX:Number = -listBorder.layoutInsets.left + listBorder.contentInsets.left + frameRectangle.x;
 		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
-		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
+		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(2, true);
 		// 1 сначала, так как у нас в картинке первым идет highlighted
 		itemBitmaps[1] = createBitmapData(itemRectangle);
 		itemRectangle.y += itemHeight;
 		itemBitmaps[0] = createBitmapData(itemRectangle);
-		borders[position + 1] = Scale1HBitmapBorder.create(itemBitmaps, itemHeight, new TextInsets(21, 21, 5));
+		borders[position + 1] = Scale1HBitmapBorder.create(itemBitmaps, itemHeight, new Insets(21, NaN, 21, 5));
 
 		// checkmarks
 		itemRectangle.x += 5;
 		itemRectangle.y += 3;
 		itemRectangle.width = 10;
 		itemRectangle.height = 10;
-		itemBitmaps[2] = createBitmapData(itemRectangle);
-
+		icons[1] = BitmapIcon.create(createBitmapData(itemRectangle));
 		itemRectangle.y -= itemHeight;
-		itemBitmaps[3] = createBitmapData(itemRectangle);
+		icons[0] = BitmapIcon.create(createBitmapData(itemRectangle));
 
 		// clear item background
 		itemRectangle.x = itemX;
 		itemRectangle.y = firstItemY;
 		itemRectangle.width = frameRectangle.right - (-listBorder.layoutInsets.right + listBorder.contentInsets.right) - itemX;
-		itemRectangle.height = itemHeight * 2;
+		itemRectangle.height = (itemHeight * 2) + 12 /* separator item */;
 		compoundBitmapData.fillRect(itemRectangle, 0);
 
 		var sliceSize:Insets = calculateSliceSize(frameRectangle, 0, true, true);

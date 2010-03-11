@@ -8,7 +8,7 @@ import mx.core.IFlexDisplayObject;
 import mx.managers.PopUpManager;
 
 import org.flyti.view.BorderedDataGroup;
-import org.flyti.view.Insets;
+import cocoa.Insets;
 import cocoa.PopUpButton;
 
 public class PopUpAnchor

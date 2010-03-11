@@ -2,7 +2,7 @@ package org.flyti.aqua
 {
 import flash.events.MouseEvent;
 
-import org.flyti.view.Insets;
+import cocoa.Insets;
 import org.flyti.view.ToggleButtonState;
 
 /**

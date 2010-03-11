@@ -100,7 +100,7 @@ public class LabelHelper
 		textLine.y = y;
 	}
 
-	public function moveByInset(h:Number, textInsets:TextInsets):void
+	public function moveByInset(h:Number, textInsets:Insets):void
 	{
 		if (textLine == null)
 		{
@@ -111,7 +111,7 @@ public class LabelHelper
 		textLine.y = h - textInsets.bottom;
 	}
 	
-	public function moveByInsets(h:Number, textInsets:TextInsets, layoutInsets:LayoutInsets):void
+	public function moveByInsets(h:Number, textInsets:Insets, layoutInsets:LayoutInsets):void
 	{
 		if (textLine == null)
 		{

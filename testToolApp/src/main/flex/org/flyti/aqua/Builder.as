@@ -1,5 +1,15 @@
 package org.flyti.aqua
 {
+import cocoa.Border;
+import cocoa.Icon;
+import cocoa.Insets;
+import cocoa.LayoutInsets;
+import cocoa.plaf.AbstractBitmapBorder;
+import cocoa.plaf.ExternalizableResource;
+import cocoa.plaf.Scale1HBitmapBorder;
+import cocoa.plaf.Scale3HBitmapBorder;
+import cocoa.plaf.Scale9BitmapBorder;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObjectContainer;
@@ -7,10 +17,6 @@ import flash.filesystem.File;
 import flash.utils.ByteArray;
 
 import org.flyti.util.FileUtil;
-import org.flyti.view.Border;
-import org.flyti.view.Insets;
-import cocoa.LayoutInsets;
-import cocoa.TextInsets;
 
 public class Builder
 {
@@ -21,9 +27,9 @@ public class Builder
 	private static var popUpMenuClass:Class;
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
-	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new LayoutInsets(-2, 0, -2), new TextInsets(10, 10, 5)));
-	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new LayoutInsets(0, -1, 0), new TextInsets(10, 10, 6)));
-	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new LayoutInsets(-2, 0, -2), new TextInsets(9, 9 + 21/* width of double-arrow area */, 5)));
+	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new LayoutInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
+	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new LayoutInsets(0, -1, 0), new Insets(10, NaN, 10, 6)));
+	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new LayoutInsets(-2, 0, -2), new Insets(9, NaN, 9 + 21/* width of double-arrow area */, 5)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
 	{
@@ -39,20 +45,27 @@ public class Builder
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader();
 
 		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 2, true);
+		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
 		compoundImageReader.read(borders, buttonsClass, buttonRowsInfo);
 
-		compoundImageReader.readMenu(borders, popUpMenuClass, Scale9BitmapBorder.create(new LayoutInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+		compoundImageReader.readMenu(borders, icons, popUpMenuClass, Scale9BitmapBorder.create(new LayoutInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);
-		for each (var border:AbstractBorder in borders)
+		for each (var border:ExternalizableResource in borders)
 		{
 			border.writeExternal(data);
 		}
 
-		FileUtil.writeBytes(File.applicationDirectory.nativePath + "/../../aquaSkin/src/main/resources/borders", data);
+		data.writeByte(icons.length);
+		for each (var icon:ExternalizableResource in borders)
+		{
+			icon.writeExternal(data);
+		}
+
+		FileUtil.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/borders", data);
 		data.position = 0;
 		
 		show(testContainer, data);
@@ -68,7 +81,7 @@ public class Builder
 		var n:int = data.readUnsignedByte();
 		while (--n > -1)
 		{
-			var border:AbstractBorder;
+			var border:AbstractBitmapBorder;
 			switch (data.readUnsignedByte())
 			{
 				case 0: border = new Scale3HBitmapBorder(); break;

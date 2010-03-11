@@ -1,6 +1,6 @@
-screencapture -i ~/workspace/XpressPages/common/aqua/testToolApp/src/main/resources/buttons.png
+screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/buttons.png
 
-screencapture -i ~/workspace/XpressPages/common/aqua/testToolApp/src/main/resources/popUpMenu.png
+screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/popUpMenu.png
 
 or
 

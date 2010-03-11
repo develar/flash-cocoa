@@ -1,15 +1,19 @@
-package org.flyti.aqua
+package cocoa.plaf
 {
+import cocoa.AbstractBorder;
+import cocoa.Border;
+import cocoa.Insets;
+
 import flash.display.BitmapData;
+import flash.display.Graphics;
 import flash.geom.Matrix;
 import flash.utils.ByteArray;
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
 
-import org.flyti.view.Border;
-import org.flyti.view.Insets;
+import mx.core.UIComponent;
 
-internal class AbstractBorder implements Border
+public class AbstractBitmapBorder extends AbstractBorder implements Border, ExternalizableResource
 {
 	protected static const sharedMatrix:Matrix = new Matrix();
 
@@ -27,7 +31,7 @@ internal class AbstractBorder implements Border
 		}
 	}
 
-	public function writeExternal(output:IDataOutput):void
+	public function writeExternal(output:ByteArray):void
 	{
 		output.writeByte(bitmaps.length);
 		for each (var bitmap:BitmapData in bitmaps)
@@ -52,9 +56,19 @@ internal class AbstractBorder implements Border
 	}
 
 	// for debug purposes only
-	internal final function getBitmaps():Vector.<BitmapData>
+	public final function getBitmaps():Vector.<BitmapData>
 	{
 		return bitmaps;
+	}
+
+	public function get layoutHeight():Number
+	{
+		return NaN;
+	}
+
+	public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	{
+		throw new Error("abstract");
 	}
 }
 }

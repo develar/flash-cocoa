@@ -8,7 +8,7 @@ import flash.geom.Rectangle;
 
 import mx.core.BitmapAsset;
 
-import org.flyti.view.Insets;
+import cocoa.Insets;
 
 public class SlicedImage
 {

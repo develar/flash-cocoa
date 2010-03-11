@@ -5,7 +5,7 @@ import flash.text.engine.TextLine;
 
 import mx.core.UIComponent;
 
-import org.flyti.view.Insets;
+import cocoa.Insets;
 
 /**
  * В отличие от flash native startDrag/stopDrag вешает mouse move на stage — в результате при выходе мыши за границы окна все продолжает работать.

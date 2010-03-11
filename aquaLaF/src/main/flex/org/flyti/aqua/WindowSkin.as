@@ -8,7 +8,7 @@ import mx.core.mx_internal;
 import org.flyti.layout.AdvancedLayout;
 import org.flyti.view.AbstractSkin;
 import org.flyti.view.Container;
-import org.flyti.view.Insets;
+import cocoa.Insets;
 import cocoa.LabelHelper;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.View;

@@ -8,7 +8,7 @@ import mx.core.mx_internal;
 import org.flyti.layout.AdvancedLayout;
 import org.flyti.layout.BarHorizontalLayout;
 import org.flyti.view.AbstractSkin;
-import org.flyti.view.Insets;
+import cocoa.Insets;
 import org.flyti.view.SingleSelectionDataGroup;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.ViewStack;

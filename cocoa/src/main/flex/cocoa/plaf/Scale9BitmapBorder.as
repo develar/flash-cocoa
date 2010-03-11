@@ -1,25 +1,25 @@
-package org.flyti.aqua
+package cocoa.plaf
 {
+import cocoa.Insets;
+import cocoa.LayoutInsets;
+
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
-import flash.utils.IDataOutput;
 
 import mx.core.UIComponent;
 
 import org.flyti.view.GroupBorder;
-import org.flyti.view.Insets;
-import cocoa.LayoutInsets;
 
 /**
  * Тот же трюк, что и в Scale3HBitmapBorder — отрисовка scale9Grid требует всего 4, а не 9 кусочков
  */
-public final class Scale9BitmapBorder extends AbstractBorder implements GroupBorder
+public final class Scale9BitmapBorder extends AbstractBitmapBorder implements GroupBorder
 {
 	private var rightSliceInnerWidth:int;
 	private var bottomSliceInnerHeight:int;
 
-	internal static function create(layoutInsets:LayoutInsets, contentInsets:Insets):Scale9BitmapBorder
+	public static function create(layoutInsets:LayoutInsets, contentInsets:Insets):Scale9BitmapBorder
 	{
 		var border:Scale9BitmapBorder = new Scale9BitmapBorder();
 		border._layoutInsets = layoutInsets;
@@ -33,12 +33,6 @@ public final class Scale9BitmapBorder extends AbstractBorder implements GroupBor
 		return _layoutInsets;
 	}
 
-	private var _contentInsets:Insets;
-	public function get contentInsets():Insets
-	{
-		return _contentInsets;
-	}
-
 	public function configure(bitmaps:Vector.<BitmapData>):void
 	{
 		this.bitmaps = bitmaps;
@@ -47,7 +41,7 @@ public final class Scale9BitmapBorder extends AbstractBorder implements GroupBor
 		bottomSliceInnerHeight = bitmaps[2].height + _layoutInsets.bottom;
 	}
 
-	public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = _layoutInsets.left;
 		sharedMatrix.ty = _layoutInsets.top;
@@ -93,7 +87,7 @@ public final class Scale9BitmapBorder extends AbstractBorder implements GroupBor
 		bottomSliceInnerHeight = bitmaps[2].height + _layoutInsets.bottom;
 	}
 
-	override public function writeExternal(output:IDataOutput):void
+	override public function writeExternal(output:ByteArray):void
 	{
 		output.writeByte(2);
 

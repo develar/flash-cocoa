@@ -1,14 +1,16 @@
 package org.flyti.aqua
 {
+import cocoa.plaf.AbstractBitmapBorder;
+
 internal class RowInfo
 {
 	public var top:Number;
 	public var width:Number;
 	public var height:Number;
 
-	public var border:AbstractBorder;
+	public var border:AbstractBitmapBorder;
 
-	public function RowInfo(border:AbstractBorder, width:Number = 50, height:Number = 30)
+	public function RowInfo(border:AbstractBitmapBorder, width:Number = 50, height:Number = 30)
 	{
 		this.width = width;
 		this.height = height;

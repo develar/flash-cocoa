@@ -1,14 +1,15 @@
 package org.flyti.aqua
 {
-import org.flyti.view.ButtonBorder;
+import cocoa.Border;
 import cocoa.LabelHelper;
+
 import org.flyti.view.LightUIComponent;
 import org.flyti.view.PushButtonSkin;
 
 public class AbstractPushButtonSkin extends LightUIComponent implements PushButtonSkin
 {
 	protected var labelHelper:LabelHelper;
-	protected var border:ButtonBorder;
+	protected var border:Border;
 
 	public function AbstractPushButtonSkin()
 	{
@@ -20,7 +21,7 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 
 	override public function get baselinePosition():Number
 	{
-		return border.layoutHeight - border.textInsets.bottom;
+		return border.layoutHeight - border.contentInsets.bottom;
 	}
 
 	public function set label(value:String):void
@@ -45,7 +46,7 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 
 		labelHelper.validate();
 
-		measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.textInsets.width;
+		measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
 		measuredMinHeight = measuredHeight = border.layoutHeight;
 	}
 }
