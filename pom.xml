@@ -8,14 +8,15 @@
 		<version>1.0.5</version>
 	</parent>
 
-	<name>Aqua UI</name>
-	<groupId>org.flyti.aqua</groupId>
-	<artifactId>aquaUIAggregator</artifactId>
+	<name>Cocoa Aggregator</name>
+	<groupId>org.flyti.cocoa</groupId>
+	<artifactId>cocoaAggregator</artifactId>
 	<version>1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>aquaSkin</module>
+		<module>cocoa</module>
+		<module>aquaLaF</module>
 		<module>testToolApp</module>
 		<module>demo</module>
 	</modules>

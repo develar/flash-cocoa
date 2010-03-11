@@ -81,5 +81,13 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 		border.draw(this, g, w, h, state);
 	}
+
+	protected function drawBackground(w:Number, h:Number):void
+	{
+		var g:Graphics = graphics;
+		g.beginFill(0xffffff, 0.94);
+		g.drawRect(0, 0, w, h);
+		g.endFill();
+	}
 }
 }
