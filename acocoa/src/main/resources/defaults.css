@@ -1,6 +1,0 @@
-@namespace "http://flyti.org/aflyf";
-
-WindowedApplication
-{
-	skinClass: ClassReference("org.flyti.skins.WindowedApplicationSkin");
-}
