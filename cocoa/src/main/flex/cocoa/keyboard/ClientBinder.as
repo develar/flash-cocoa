@@ -1,6 +1,6 @@
 package cocoa.keyboard
 {
-import com.thewebproduction.util.ShortcutUtil;
+import cocoa.util.ShortcutUtil;
 
 import flash.utils.Dictionary;
 

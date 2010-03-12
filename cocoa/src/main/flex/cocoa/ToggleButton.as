@@ -1,7 +1,7 @@
 package cocoa
 {
-import com.thewebproduction.view.*;
-import com.thewebproduction.keyboard.KeyboardManagerClient;
+import cocoa.keyboard.KeyboardManagerClient;
+import cocoa.keyboard.KeyboardManagerClientHelper;
 
 import spark.components.ToggleButton;
 

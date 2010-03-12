@@ -3,12 +3,19 @@ package cocoa
 import cocoa.plaf.LookAndFeel;
 
 import flash.text.engine.ElementFormat;
+import flash.utils.getDefinitionByName;
 
 import mx.core.IFactory;
 
 public class UIManager
 {
 	protected static var laf:LookAndFeel;
+
+	public static function setLookAndFeelByClassName(className:String):void
+	{
+		var clazz:Class = Class(getDefinitionByName(className));
+		lookAndFeel = new clazz();
+	}
 
 	public static function set lookAndFeel(value:LookAndFeel):void
 	{

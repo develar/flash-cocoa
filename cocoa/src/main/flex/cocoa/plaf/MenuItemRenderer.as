@@ -7,7 +7,6 @@ import cocoa.MenuItem;
 import cocoa.UIManager;
 
 import flash.display.Graphics;
-import flash.text.engine.ElementFormat;
 
 public class MenuItemRenderer extends AbstractItemRenderer
 {	
@@ -47,11 +46,6 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 		invalidateSize();
 		invalidateDisplayList();
-	}
-
-	protected function getFont(key:String):ElementFormat
-	{
-		return UIManager.getFont(key);
 	}
 
 	protected function getBorder(key:String):Border

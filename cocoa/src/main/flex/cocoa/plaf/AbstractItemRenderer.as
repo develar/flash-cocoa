@@ -1,8 +1,10 @@
 package cocoa.plaf
 {
 import cocoa.LightUIComponent;
+import cocoa.UIManager;
 
 import flash.events.MouseEvent;
+import flash.text.engine.ElementFormat;
 
 import spark.components.IItemRenderer;
 
@@ -95,6 +97,11 @@ public class AbstractItemRenderer extends LightUIComponent implements IItemRende
 	{
 		state ^= HOVERED;
 		invalidateDisplayList();
+	}
+
+	protected function getFont(key:String):ElementFormat
+	{
+		return UIManager.getFont(key);
 	}
 }
 }

@@ -49,6 +49,7 @@
 								<class>**.Application</class>
 							</excludes>
 							<includes>
+								<class>**.*EventMap</class>
 								<class>**.maps.*</class>
 								<!--<class>**.ApplicationImpl</class>-->
 								<class>**.Dialog</class>
@@ -66,6 +67,16 @@
 
 								<class>org.flyti.primitives.*</class>
 								<class>**.layout.*Layout</class>
+
+								<class>cocoa.keyboard.KeymapItem</class>
+								<class>cocoa.keyboard.Keymap</class>
+								<class>cocoa.keyboard.Shortcut</class>
+								<class>cocoa.keyboard.EventMetadata</class>
+
+								<class>cocoa.tree.TreeWith*</class>
+								<class>cocoa.tree.Tree</class>
+
+								<class>cocoa.graphics.*</class>
 							</includes>
 							<names>
 								<class>
