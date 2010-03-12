@@ -13,6 +13,9 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
+import org.flyti.aqua.SourceListSkin;
+import org.flyti.aqua.TabSkin;
+
 public final class AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
@@ -29,6 +32,8 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
 		data["Dialog"] = WindowSkin;
+		data["SourceListView"] = SourceListSkin;
+		data["TabView"] = TabSkin;
 
 		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border.rounded"] = borders[BezelStyle.rounded.ordinal];
