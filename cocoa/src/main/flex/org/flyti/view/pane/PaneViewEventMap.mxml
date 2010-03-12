@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<EventMap xmlns="http://mate.asfusion.com" xmlns:fx="http://ns.adobe.com/mxml/2009">
+	<fx:Declarations>
+		<EventHandlers type="{RegisterPaneCollectionEvent.REGISTER_PANE_COLLECTION}">
+			<MethodInvoker role="{PaneManager}" method="registerPaneCollection" arguments="{[event.id, event.list]}"/>
+		</EventHandlers>
+		<EventHandlers type="{PaneEvent.ADD_PANE}">
+			<MethodInvoker role="{PaneManager}" method="addPane" arguments="{[event.id, event.item]}"/>
+		</EventHandlers>
+	</fx:Declarations>
+</EventMap>

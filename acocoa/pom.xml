@@ -4,20 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.flyti</groupId>
-		<artifactId>flyti-forge</artifactId>
-		<version>1.0.5</version>
+		<groupId>org.flyti.cocoa</groupId>
+		<artifactId>cocoaAggregator</artifactId>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
-	<!--<properties>-->
-		<!--<fdk.version>4.0.0.14025</fdk.version>-->
-		<!--<flex.sdk.version>4.0.0.14025</flex.sdk.version>-->
-	<!--</properties>-->
-
-	<name>FlyF AIR Library</name>
-	<groupId>org.flyti</groupId>
-	<artifactId>aflyf</artifactId>
-	<version>2.2-SNAPSHOT</version>
+	<name>Cocoa AIR</name>
+	<artifactId>acocoa</artifactId>
 	<packaging>swc</packaging>
 
 	<dependencies>
@@ -34,9 +27,9 @@
 			<type>swc</type>
 		</dependency>
 		<dependency>
-			<groupId>com.thewebproduction.library.flex</groupId>
-			<artifactId>flexLibrary</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<groupId>org.flyti.cocoa</groupId>
+			<artifactId>cocoa</artifactId>
+			<version>1.1-SNAPSHOT</version>
 			<type>swc</type>
 		</dependency>
 	</dependencies>
@@ -49,7 +42,7 @@
 				<configuration>
 					<manifests>
 						<manifest>
-							<uri>http://flyti.org/aflyf</uri>
+							<uri>acocoa</uri>
 							<includes>
 								<class>**.view.*</class>
 							</includes>
