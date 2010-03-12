@@ -32,6 +32,10 @@
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
+					<useResourceBundleMetadata>false</useResourceBundleMetadata>
+					<runtimeLocales>
+						<locale>en_US</locale>
+					</runtimeLocales>
 					<manifests>
 						<manifest>
 							<uri>cocoa</uri>
