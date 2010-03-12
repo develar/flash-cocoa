@@ -44,13 +44,10 @@
 						<manifest>
 							<uri>acocoa</uri>
 							<includes>
-								<class>**.view.*</class>
+								<class>**.WindowedApplication</class>
 							</includes>
 						</manifest>
 					</manifests>
-					<includeFiles>
-						<file>defaults.css</file>
-					</includeFiles>
 				</configuration>
 			</plugin>
 		</plugins>

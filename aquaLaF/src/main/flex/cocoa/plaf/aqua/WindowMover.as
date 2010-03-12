@@ -1,11 +1,11 @@
 package cocoa.plaf.aqua
 {
+import cocoa.Insets;
+
 import flash.events.MouseEvent;
 import flash.text.engine.TextLine;
 
 import mx.core.UIComponent;
-
-import cocoa.Insets;
 
 /**
  * В отличие от flash native startDrag/stopDrag вешает mouse move на stage — в результате при выходе мыши за границы окна все продолжает работать.

@@ -1,19 +1,18 @@
 package org.flyti.aqua
 {
 import flash.display.Graphics;
-
 import flash.display.GraphicsSolidFill;
 import flash.display.GraphicsStroke;
 import flash.display.IGraphicsData;
 
 import mx.core.ILayoutElement;
 
+import org.flyti.layout.AdvancedLayout;
+import org.flyti.layout.LayoutMetrics;
 import org.flyti.view.AbstractSkin;
 import org.flyti.view.Container;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.sidebar.SourceListView;
-import org.flyti.layout.AdvancedLayout;
-import org.flyti.layout.LayoutMetrics;
 
 public class SourceListSkin extends AbstractSkin implements AdvancedLayout, SkinPartProvider
 {

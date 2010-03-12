@@ -2,7 +2,7 @@ package cocoa.plaf
 {
 import flash.events.MouseEvent;
 
-import org.flyti.view.LightUIComponent;
+import cocoa.LightUIComponent;
 
 import spark.components.IItemRenderer;
 

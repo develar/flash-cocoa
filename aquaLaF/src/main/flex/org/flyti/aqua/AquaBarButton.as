@@ -1,9 +1,9 @@
 package org.flyti.aqua
 {
-import mx.core.mx_internal;
-
-import org.flyti.view.LightUIComponent;
+import cocoa.LightUIComponent;
 import cocoa.plaf.PushButtonSkin;
+
+import mx.core.mx_internal;
 
 import spark.components.ButtonBarButton;
 
@@ -37,7 +37,7 @@ public class AquaBarButton extends ButtonBarButton
 
 	override public function set label(value:String):void
 	{
-		org.flyti.view.PushButtonSkin(skin).label = value;
+		PushButtonSkin(skin).label = value;
 	}
 
 	override public function regenerateStyleCache(recursive:Boolean):void

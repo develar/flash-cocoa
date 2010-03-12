@@ -8,7 +8,7 @@ import cocoa.UIManager;
 import flash.display.Graphics;
 import flash.text.engine.ElementFormat;
 
-import org.flyti.view.LightUIComponent;
+import cocoa.LightUIComponent;
 
 public class AbstractPushButtonSkin extends LightUIComponent implements PushButtonSkin
 {

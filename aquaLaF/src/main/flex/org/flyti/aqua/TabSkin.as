@@ -1,5 +1,7 @@
 package org.flyti.aqua
 {
+import cocoa.Insets;
+
 import mx.core.ClassFactory;
 import mx.core.ILayoutElement;
 import mx.core.SpriteAsset;
@@ -8,7 +10,6 @@ import mx.core.mx_internal;
 import org.flyti.layout.AdvancedLayout;
 import org.flyti.layout.BarHorizontalLayout;
 import org.flyti.view.AbstractSkin;
-import cocoa.Insets;
 import org.flyti.view.SingleSelectionDataGroup;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.ViewStack;

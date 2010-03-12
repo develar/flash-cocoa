@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import mx.core.UIComponent;
 import mx.core.mx_internal;

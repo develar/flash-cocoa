@@ -9,8 +9,6 @@ public class WindowedApplication extends ApplicationImpl
 	{
 		super();
 
-		super();
-
 //        addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 //        addEventListener(FlexEvent.PREINITIALIZE, preinitializeHandler);
 //        addEventListener(FlexEvent.UPDATE_COMPLETE, updateComplete_handler);

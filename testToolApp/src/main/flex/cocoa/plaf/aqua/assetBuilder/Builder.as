@@ -1,5 +1,7 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua.assetBuilder
 {
+import org.flyti.aqua.*;
+
 import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;

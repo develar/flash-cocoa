@@ -1,4 +1,4 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua.assetBuilder
 {
 import cocoa.plaf.AbstractBitmapBorder;
 

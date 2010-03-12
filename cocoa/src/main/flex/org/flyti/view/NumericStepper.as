@@ -1,8 +1,5 @@
 package org.flyti.view
 {
-import com.thewebproduction.view.OverStateHelper;
-import com.thewebproduction.view.OverStateHelperClient;
-
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontLookup;
@@ -22,28 +19,14 @@ use namespace mx_internal;
 [Style(name="focusVisible", format="Boolean")]
 
 [SkinState("over")]
-public class NumericStepper extends spark.components.NumericStepper implements OverStateHelperClient
+public class NumericStepper extends spark.components.NumericStepper
 {
-	private var overStateHelper:OverStateHelper;
-
 	private var focusVisible:Boolean = true;
 	private var focusVisibleChanged:Boolean;
-
-	public function NumericStepper()
-	{
-		super();
-
-		overStateHelper = new OverStateHelper(this);
-	}
 
 	public function $getCurrentSkinState():String
     {
 		return super.getCurrentSkinState();
-	}
-
-	override protected function getCurrentSkinState():String
-	{
-		return overStateHelper.getCurrentSkinState();
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.PushButtonSkin;
+
 import spark.components.Button;
 
 [Style(name="bezel", type="String", enumeration="rounded,texturedRounded")]

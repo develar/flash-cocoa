@@ -4,6 +4,7 @@ import cocoa.Border;
 import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.UIManager;
+import cocoa.dialog.Dialog;
 import cocoa.plaf.WindowSkin;
 
 import flash.display.Graphics;
@@ -16,7 +17,6 @@ import org.flyti.view.AbstractSkin;
 import org.flyti.view.Container;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.View;
-import cocoa.dialog.Dialog;
 
 import spark.layouts.HorizontalLayout;
 import spark.layouts.VerticalAlign;

@@ -1,5 +1,7 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua.assetBuilder
 {
+import org.flyti.aqua.*;
+
 import cocoa.Icon;
 
 import cocoa.plaf.BitmapIcon;

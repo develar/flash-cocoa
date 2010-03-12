@@ -1,12 +1,11 @@
 package org.flyti.aqua
 {
+import cocoa.Insets;
 import cocoa.plaf.AbstractPushButtonSkin;
-
 import cocoa.plaf.aqua.SlicedImage;
 
 import flash.events.MouseEvent;
 
-import cocoa.Insets;
 import org.flyti.view.ToggleButtonState;
 
 /**

@@ -9,7 +9,7 @@ import cocoa.UIManager;
 
 import flash.text.engine.ElementFormat;
 
-import org.flyti.view.LightUIComponent;
+import cocoa.LightUIComponent;
 
 import spark.layouts.HorizontalAlign;
 import spark.layouts.VerticalLayout;
