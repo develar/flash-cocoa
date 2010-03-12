@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
+	  xmlns:f="http://thewebproduction.com/flexLibrary"
+	  alpha.disabledGroup="0.5">
+	<fx:Metadata>
+		[HostComponent("org.flyti.view.WindowedApplication")]
+	</fx:Metadata>
+
+	<states>
+		<State name="normal"/>
+		<State name="disabled" stateGroups="disabledGroup"/>
+		<State name="normalAndInactive" stateGroups="inactiveGroup"/>
+		<State name="disabledAndInactive" stateGroups="disabledGroup, inactiveGroup"/>
+	</states>
+
+	<f:Container id="contentGroup" width="100%" height="100%"/>
+</Skin>

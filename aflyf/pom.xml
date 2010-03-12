@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.flyti</groupId>
+		<artifactId>flyti-forge</artifactId>
+		<version>1.0.5</version>
+	</parent>
+
+	<!--<properties>-->
+		<!--<fdk.version>4.0.0.14025</fdk.version>-->
+		<!--<flex.sdk.version>4.0.0.14025</flex.sdk.version>-->
+	<!--</properties>-->
+
+	<name>FlyF AIR Library</name>
+	<groupId>org.flyti</groupId>
+	<artifactId>aflyf</artifactId>
+	<version>2.2-SNAPSHOT</version>
+	<packaging>swc</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>air-framework</artifactId>
+			<type>pom</type>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.flyti</groupId>
+			<artifactId>lang</artifactId>
+			<version>1.1.3</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>com.thewebproduction.library.flex</groupId>
+			<artifactId>flexLibrary</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<type>swc</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<configuration>
+					<manifests>
+						<manifest>
+							<uri>http://flyti.org/aflyf</uri>
+							<includes>
+								<class>**.view.*</class>
+							</includes>
+						</manifest>
+					</manifests>
+					<includeFiles>
+						<file>defaults.css</file>
+					</includeFiles>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

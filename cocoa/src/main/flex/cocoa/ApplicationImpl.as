@@ -13,7 +13,6 @@ import flash.utils.setInterval;
 
 import mx.core.ContainerCreationPolicy;
 import mx.core.FlexGlobals;
-import mx.core.IDeferredContentOwner;
 import mx.core.IFlexDisplayObject;
 import mx.core.IInvalidating;
 import mx.core.IVisualElement;
@@ -23,20 +22,19 @@ import mx.core.mx_internal;
 import mx.events.FlexEvent;
 import mx.managers.FocusManager;
 import mx.managers.IActiveWindowManager;
+import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
 import mx.utils.LoaderUtil;
 
-import org.flyti.view.Container;
-import org.flyti.view.LightUIComponent;
-import org.flyti.view.ViewContainer;
+import org.flyti.view.LightContainer;
 
 use namespace mx_internal;
 
 [Frame(factoryClass='org.flyti.managers.SystemManager')]
 
 [DefaultProperty("mxmlContent")]
-public class ApplicationImpl extends LightUIComponent implements ViewContainer, IDeferredContentOwner
+public class ApplicationImpl extends LightContainer implements Application
 {
 	public var frameRate:Number;
 	public var pageTitle:String;
@@ -74,17 +72,27 @@ public class ApplicationImpl extends LightUIComponent implements ViewContainer, 
 		}
 	}
 
+	private var _creationPolicy:String;
+	public function get creationPolicy():String
+	{
+		return _creationPolicy;
+	}
+	public function set creationPolicy(value:String):void
+	{
+		_creationPolicy = value;
+	}
+
 	private var _deferredContentCreated:Boolean;
 	public function get deferredContentCreated():Boolean
 	{
 		return _deferredContentCreated;
 	}
 
-	private var _elements:Vector.<IVisualElement>;
-	public function set mxmlContent(value:Array):void
+	private var subviews:Vector.<IVisualElement>;
+	public function set mxmlContent(value:Vector.<IVisualElement>):void
 	{
-		_elements = value;
-		if (contentGroup != null && creationPolicy != ContainerCreationPolicy.NONE)
+		subviews = value;
+		if (creationPolicy == ContainerCreationPolicy.ALL)
 		{
 			createDeferredContent();
 		}
@@ -97,16 +105,6 @@ public class ApplicationImpl extends LightUIComponent implements ViewContainer, 
 		synchronousResize = (parseFloat(version[0]) > 10 ||
 							 (parseFloat(version[0]) == 10 && parseFloat(version[1]) >= 1))
 				&& (Capabilities.playerType != "Desktop");
-	}
-
-	override protected function partAdded(partName:String, instance:Object):void
-	{
-		super.partAdded(partName, instance);
-
-		if (instance == contentGroup && creationPolicy != ContainerCreationPolicy.NONE)
-		{
-			createDeferredContent();
-		}
 	}
 
 	override protected function createChildren():void
@@ -126,17 +124,20 @@ public class ApplicationImpl extends LightUIComponent implements ViewContainer, 
 		return super.prepareToPrint(target);
 	}
 
-	override public function createDeferredContent():void
+	public function createDeferredContent():void
 	{
 		if (mxmlContentCreated)
 		{
 			return;
 		}
 
-		if (_elements != null)
+		if (subviews != null)
 		{
-			Container(contentGroup).elements = _elements;
-			_elements = null;
+			for each (var subview:IVisualElement in subviews)
+			{
+				addElement(subview);
+			}
+			subviews = null;
 		}
 
 		mxmlContentCreated = true;
@@ -260,8 +261,6 @@ public class ApplicationImpl extends LightUIComponent implements ViewContainer, 
 		_url = LoaderUtil.normalizeURL(sm.loaderInfo);
 		_parameters = sm.loaderInfo.parameters;
 
-		initManagers(sm);
-
 		// Setup the default context menu here. This allows the application
 		// developer to override it in the initialize event, if desired.
 		initContextMenu();
@@ -346,16 +345,6 @@ public class ApplicationImpl extends LightUIComponent implements ViewContainer, 
 		// We need some bytes of code in order to have a place to break.
 		//noinspection JSUnusedLocalSymbols
 		var i:int = 0;
-	}
-
-	private function initManagers(sm:ISystemManager):void
-	{
-		if (sm.isTopLevel())
-		{
-			focusManager = new FocusManager(this);
-			var awm:IActiveWindowManager = IActiveWindowManager(sm.getImplementation("mx.managers::IActiveWindowManager"));
-			awm == null ? focusManager.activate() : awm.activate(this);
-		}
 	}
 
 	/**
@@ -480,14 +469,16 @@ public class ApplicationImpl extends LightUIComponent implements ViewContainer, 
 		invalidateDisplayList();
 	}
 
-	public function addElement(element:IVisualElement):IVisualElement
+	/**
+	 * Каждый ребенок App обладает своим FocusManager
+	 */
+	override public function addElement(element:IVisualElement):IVisualElement
 	{
-		return null;
-	}
-
-	public function removeElement(element:IVisualElement):IVisualElement
-	{
-		return null;
+		super.addElement(element);
+		var focusManager:FocusManager = new FocusManager(IFocusManagerContainer(element));
+		var awm:IActiveWindowManager = IActiveWindowManager(systemManager.getImplementation("mx.managers::IActiveWindowManager"));
+		awm == null ? focusManager.activate() : awm.activate(element);
+		return element;
 	}
 }
 }
