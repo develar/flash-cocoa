@@ -2,9 +2,6 @@ package cocoa
 {
 import flash.events.Event;
 
-import org.flyti.view;
-import cocoa.Container;
-
 import spark.layouts.supportClasses.LayoutBase;
 
 use namespace ui;

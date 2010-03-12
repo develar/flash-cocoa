@@ -1,8 +1,7 @@
 package cocoa.sidebar
 {
 import cocoa.Box;
-
-import org.flyti.view;
+import cocoa.ui;
 
 use namespace ui;
 

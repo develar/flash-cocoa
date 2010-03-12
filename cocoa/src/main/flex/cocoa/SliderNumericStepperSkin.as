@@ -1,7 +1,5 @@
 package cocoa
 {
-import org.flyti.view.*;
-
 public class SliderNumericStepperSkin extends AbstractSkin implements SkinPartProvider
 {
 	private var slider:HSlider;

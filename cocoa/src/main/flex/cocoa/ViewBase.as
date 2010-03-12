@@ -6,8 +6,6 @@ import mx.core.IVisualElement;
 import mx.events.PropertyChangeEvent;
 import mx.utils.OnDemandEventDispatcher;
 
-import org.flyti.view;
-
 use namespace ui;
 
 public class ViewBase extends OnDemandEventDispatcher

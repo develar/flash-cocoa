@@ -1,8 +1,8 @@
 package cocoa.tabView
 {
-import flash.events.Event;
+import cocoa.pane.PaneItem;
 
-import org.flyti.view.pane.PaneItem;
+import flash.events.Event;
 
 public class CurrentPaneChangeEvent extends Event
 {

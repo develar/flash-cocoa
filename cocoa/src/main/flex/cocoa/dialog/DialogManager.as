@@ -1,5 +1,7 @@
 package cocoa.dialog
 {
+import cocoa.Skin;
+import cocoa.View;
 import cocoa.dialog.events.DialogEvent;
 
 import com.asfusion.mate.events.InjectorEvent;
@@ -9,9 +11,6 @@ import flash.display.DisplayObject;
 import mx.core.FlexGlobals;
 import mx.events.ResizeEvent;
 import mx.managers.PopUpManager;
-
-import cocoa.Skin;
-import cocoa.View;
 
 public class DialogManager
 {

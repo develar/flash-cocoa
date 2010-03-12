@@ -1,17 +1,17 @@
 package cocoa.bar
 {
 import cocoa.AbstractView;
+import cocoa.SelectableDataGroup;
+import cocoa.pane.LabeledItem;
+import cocoa.pane.PaneItem;
+import cocoa.pane.TitledPane;
+import cocoa.ui;
 
 import mx.core.IVisualElement;
 import mx.events.CollectionEvent;
 import mx.events.CollectionEventKind;
 
 import org.flyti.util.List;
-import org.flyti.view;
-import cocoa.SelectableDataGroup;
-import org.flyti.view.pane.LabeledItem;
-import org.flyti.view.pane.PaneItem;
-import org.flyti.view.pane.TitledPane;
 
 import spark.components.IItemRenderer;
 

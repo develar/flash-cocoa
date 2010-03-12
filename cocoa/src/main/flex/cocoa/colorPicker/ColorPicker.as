@@ -1,4 +1,4 @@
-package org.flyti.view.colorPicker
+package cocoa.colorPicker
 {
 import mx.controls.ColorPicker;
 

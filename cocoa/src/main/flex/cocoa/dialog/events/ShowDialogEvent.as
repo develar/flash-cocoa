@@ -1,8 +1,8 @@
 package cocoa.dialog.events
 {
-import flash.events.Event;
-
 import cocoa.View;
+
+import flash.events.Event;
 
 public class ShowDialogEvent extends Event
 {

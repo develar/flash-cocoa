@@ -1,8 +1,8 @@
 package cocoa.bar
 {
-import mx.core.IFlexDisplayObject;
-
 import cocoa.IconedItemRenderer;
+
+import mx.core.IFlexDisplayObject;
 
 import spark.primitives.BitmapImage;
 

@@ -20,8 +20,6 @@ import mx.styles.StyleProtoChain;
 
 import org.flyti.layout.LayoutMetrics;
 import org.flyti.resources.ResourceManager;
-import org.flyti.view;
-import org.flyti.view.*;
 
 use namespace ui;
 

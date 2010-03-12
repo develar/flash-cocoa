@@ -1,10 +1,11 @@
 package cocoa.sidebar
 {
-import org.flyti.util.Assert;
 import cocoa.Panel;
 import cocoa.SelectableDataGroup;
-import org.flyti.view.pane.PaneItem;
+import cocoa.pane.PaneItem;
 import cocoa.sidebar.events.MultipleSelectionChangeEvent;
+
+import org.flyti.util.Assert;
 
 public class SidebarPaneLabelBar extends SelectableDataGroup
 {

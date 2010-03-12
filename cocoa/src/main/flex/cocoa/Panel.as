@@ -1,15 +1,10 @@
 package cocoa
 {
-import org.flyti.view.*;
-
-import cocoa.Window;
+import cocoa.sidebar.events.SidebarEvent;
 
 import flash.events.MouseEvent;
 
 import mx.core.IVisualElement;
-
-import org.flyti.view;
-import cocoa.sidebar.events.SidebarEvent;
 
 import spark.components.supportClasses.TextBase;
 

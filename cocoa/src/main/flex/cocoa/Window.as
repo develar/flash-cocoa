@@ -1,8 +1,7 @@
 package cocoa
 {
+import cocoa.pane.TitledPane;
 import cocoa.plaf.WindowSkin;
-
-import org.flyti.view.pane.TitledPane;
 
 public class Window extends Box implements TitledPane
 {

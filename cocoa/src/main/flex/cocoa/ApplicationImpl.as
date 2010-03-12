@@ -27,8 +27,6 @@ import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
 import mx.utils.LoaderUtil;
 
-import cocoa.LightContainer;
-
 use namespace mx_internal;
 
 [Frame(factoryClass='org.flyti.managers.SystemManager')]

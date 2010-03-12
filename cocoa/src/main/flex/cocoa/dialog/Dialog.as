@@ -1,18 +1,18 @@
 package cocoa.dialog
 {
+import cocoa.KeyCode;
 import cocoa.PushButton;
+import cocoa.ViewContainer;
 import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
+import cocoa.ui;
 
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 
 import org.flyti.resources.ResourceManager;
-import cocoa.KeyCode;
 import org.flyti.util.Assert;
-import org.flyti.view;
-import cocoa.ViewContainer;
 
 use namespace ui;
 

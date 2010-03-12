@@ -1,12 +1,6 @@
 package cocoa
 {
-import org.flyti.view.*;
-
-import cocoa.AbstractView;
-
 import flash.events.Event;
-
-import org.flyti.view;
 
 use namespace ui;
 

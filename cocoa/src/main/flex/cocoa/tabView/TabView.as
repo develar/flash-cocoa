@@ -1,14 +1,15 @@
 package cocoa.tabView
 {
+import cocoa.SingleSelectionBar;
+import cocoa.ViewStack;
+import cocoa.pane.PaneItem;
+import cocoa.pane.TitledPane;
+import cocoa.ui;
+
 import mx.core.IVisualElement;
 import mx.core.UIComponent;
 
 import org.flyti.util.Assert;
-import org.flyti.view;
-import cocoa.SingleSelectionBar;
-import cocoa.ViewStack;
-import org.flyti.view.pane.PaneItem;
-import org.flyti.view.pane.TitledPane;
 
 import spark.components.supportClasses.ListBase;
 import spark.events.IndexChangeEvent;

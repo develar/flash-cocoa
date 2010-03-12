@@ -1,4 +1,4 @@
-package org.flyti.view.pane
+package cocoa.pane
 {
 import flash.events.Event;
 

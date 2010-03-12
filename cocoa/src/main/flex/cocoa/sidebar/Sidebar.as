@@ -1,11 +1,13 @@
 package cocoa.sidebar
 {
-import org.flyti.util.Assert;
-import org.flyti.view;
 import cocoa.Panel;
-import org.flyti.view.pane.PaneItem;
+import cocoa.bar.Bar;
+import cocoa.pane.PaneItem;
 import cocoa.sidebar.events.MultipleSelectionChangeEvent;
 import cocoa.sidebar.events.SidebarEvent;
+import cocoa.ui;
+
+import org.flyti.util.Assert;
 
 import spark.components.Group;
 

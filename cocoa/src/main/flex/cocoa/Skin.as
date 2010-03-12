@@ -1,7 +1,5 @@
 package cocoa
 {
-import org.flyti.view.*;
-
 import mx.core.IStateClient;
 import mx.managers.IToolTipManagerClient;
 import mx.styles.ISimpleStyleClient;
