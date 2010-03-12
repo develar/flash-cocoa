@@ -1,14 +1,15 @@
 package org.flyti.aqua
 {
 import cocoa.Border;
+import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
-import cocoa.LayoutInsets;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
+import cocoa.plaf.aqua.AquaLookAndFeel;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -27,9 +28,9 @@ public class Builder
 	private static var popUpMenuClass:Class;
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
-	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new LayoutInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
-	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new LayoutInsets(0, -1, 0), new Insets(10, NaN, 10, 6)));
-	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new LayoutInsets(-2, 0, -2), new Insets(9, NaN, 9 + 21/* width of double-arrow area */, 5)));
+	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
+	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new FrameInsets(0, -1, 0), new Insets(10, NaN, 10, 6)));
+	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(9, NaN, 9 + 21/* width of double-arrow area */, 5)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
 	{
@@ -50,7 +51,7 @@ public class Builder
 		finalizeRowsInfo(buttonRowsInfo, 22);
 		compoundImageReader.read(borders, buttonsClass, buttonRowsInfo);
 
-		compoundImageReader.readMenu(borders, icons, popUpMenuClass, Scale9BitmapBorder.create(new LayoutInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+		compoundImageReader.readMenu(borders, icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);
@@ -70,7 +71,7 @@ public class Builder
 		
 		show(testContainer, data);
 
-		AquaBorderFactory.setBorders(borders);
+		AquaLookAndFeel.setBorders(borders);
 	}
 
 	private function show(displayObject:DisplayObjectContainer, data:ByteArray):void

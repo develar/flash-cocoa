@@ -2,18 +2,18 @@
 
 f|Dialog
 {
-	skinClass: ClassReference("org.flyti.aqua.WindowSkin");
+	skinClass: ClassReference("cocoa.plaf.aqua.WindowSkin");
 	insets: "dialog";
 }
 
 f|PushButton
 {
-	skinClass: ClassReference("org.flyti.aqua.PushButtonSkin");
+	skinClass: ClassReference("cocoa.plaf.aqua.PushButtonSkin");
 }
 
 f|PopUpButton
 {
-	skinClass: ClassReference("org.flyti.aqua.PopUpButtonSkin");
+	skinClass: ClassReference("cocoa.plaf.PopUpButtonSkin");
 }
 
 f|SourceListView

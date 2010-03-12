@@ -2,11 +2,11 @@ package cocoa.plaf
 {
 import flash.events.MouseEvent;
 
-import mx.core.UIComponent;
+import org.flyti.view.LightUIComponent;
 
 import spark.components.IItemRenderer;
 
-public class AbstractItemRenderer extends UIComponent implements IItemRenderer
+public class AbstractItemRenderer extends LightUIComponent implements IItemRenderer
 {
 	protected var state:uint = 0;
 

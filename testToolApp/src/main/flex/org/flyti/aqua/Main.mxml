@@ -5,6 +5,11 @@
 					 creationComplete="creationCompleteHandler()">
 
 	<fx:Script><![CDATA[
+		import cocoa.plaf.PopUpButtonSkin;
+		import cocoa.plaf.PopUpButtonSkin;
+		import cocoa.plaf.aqua.PushButtonSkin;
+		import cocoa.plaf.aqua.PushButtonSkin;
+
 		import org.flyti.util.ArrayList;
 
 		use namespace mx_internal;

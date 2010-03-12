@@ -1,10 +1,13 @@
 package cocoa.plaf
 {
 import cocoa.Border;
+import cocoa.Icon;
 import cocoa.LabelHelper;
 import cocoa.MenuItem;
+import cocoa.UIManager;
 
 import flash.display.Graphics;
+import flash.text.engine.ElementFormat;
 
 public class MenuItemRenderer extends AbstractItemRenderer
 {	
@@ -13,6 +16,8 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	public function MenuItemRenderer()
 	{
+		labelHelper = new LabelHelper(this);
+		
 		addRollHandlers();
 	}
 
@@ -44,6 +49,21 @@ public class MenuItemRenderer extends AbstractItemRenderer
 		invalidateDisplayList();
 	}
 
+	protected function getFont(key:String):ElementFormat
+	{
+		return UIManager.getFont(key);
+	}
+
+	protected function getBorder(key:String):Border
+	{
+		return UIManager.getBorder("MenuItem." + key);
+	}
+
+	protected function getIcon(key:String):Icon
+	{
+		return UIManager.getIcon("MenuItem." + key);
+	}
+
 	protected var menuItem:MenuItem;
 	override public function get data():Object
 	{
@@ -69,6 +89,17 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
+		var hovered:Boolean = (state & HOVERED) != 0;
+		if (menuItem.isSeparatorItem)
+		{
+			border = getBorder("separatorBorder");
+		}
+		else
+		{
+			border = getBorder(hovered ? "border.highlighted" : "border");
+		}
+
+		labelHelper.font = getFont(hovered ? "SystemFont.highlighted" : "SystemFont");
 		labelHelper.validate();
 		labelHelper.moveByInset(h, border.contentInsets);
 		

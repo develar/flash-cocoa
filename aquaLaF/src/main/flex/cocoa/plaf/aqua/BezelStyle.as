@@ -1,4 +1,4 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
 import org.flyti.lang.Enum;
 

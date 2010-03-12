@@ -15,7 +15,7 @@ public interface Border
 	/**
 	 * frameInsets — border может отрисовывать себя вне layout rect, к примеру тень будет вне layout rect
 	 */
-	function get frameInsets():Insets;
+	function get frameInsets():FrameInsets;
 
 	/**
 	 * Отступ контента объекта от layout rect edge. К примеру, Button использует bottom как y для textLine, а ListView как именно отступы.

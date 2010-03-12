@@ -1,49 +1,19 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
-import flash.display.DisplayObject;
+import cocoa.BorderedDataGroup;
+import cocoa.Insets;
+import cocoa.PopUpButton;
+import cocoa.plaf.PopUpAnchor;
+
 import flash.display.Stage;
 import flash.geom.Point;
 
-import mx.core.IFlexDisplayObject;
-import mx.managers.PopUpManager;
-
-import org.flyti.view.BorderedDataGroup;
-import cocoa.Insets;
-import cocoa.PopUpButton;
-
-public class PopUpAnchor
+public class PopUpAnchor extends cocoa.plaf.PopUpAnchor
 {
-	private static const sharedPoint:Point = new Point();
-
 	private static const STAGE_MARGIN:Number = 6;
 	private static const BOTTOM_STAGE_MARGIN:Number = 10;
 
-	private var _popUp:IFlexDisplayObject;
-	public function set popUp(value:IFlexDisplayObject):void
-    {
-        _popUp = value;
-    }
-
-	private var _popUpParent:DisplayObject;
-	public function set popUpParent(value:DisplayObject):void
-    {
-        _popUpParent = value;
-    }
-
-	public function set displayPopUp(value:Boolean):void
-	{
-		if (value)
-		{
-			PopUpManager.addPopUp(_popUp, _popUpParent, false);
-			setPopUpPosition();
-		}
-		else
-		{
-			PopUpManager.removePopUp(_popUp);
-		}
-	}
-
-	private function setPopUpPosition():void
+	override protected function setPopUpPosition():void
     {
 		var popUpButton:PopUpButton = PopUpButton(_popUpParent.parent);
 		var borderedDataGroup:BorderedDataGroup = BorderedDataGroup(_popUp);

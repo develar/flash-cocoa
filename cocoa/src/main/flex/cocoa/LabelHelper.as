@@ -1,6 +1,5 @@
 package cocoa
 {
-
 import flash.text.engine.ElementFormat;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
@@ -33,7 +32,7 @@ public class LabelHelper
 	private var textLine:TextLine;
 	private var container:UIComponent;
 
-	public function LabelHelper(container:UIComponent, font:ElementFormat)
+	public function LabelHelper(container:UIComponent, font:ElementFormat = null)
 	{
 		this.container = container;
 		_font = font;
@@ -111,16 +110,16 @@ public class LabelHelper
 		textLine.y = h - textInsets.bottom;
 	}
 	
-	public function moveByInsets(h:Number, textInsets:Insets, layoutInsets:LayoutInsets):void
+	public function moveByInsets(h:Number, contentInsets:Insets, frameInsets:FrameInsets):void
 	{
 		if (textLine == null)
 		{
 			return;
 		}
 
-		// прибавление layoutInsets.top нужно, так как если real bounds y полученный в результате отрисовки не будет 0, но и текст будет отпозиционирован согласно такому parent y
-		textLine.x = textInsets.left + layoutInsets.left;
-		textLine.y = h - textInsets.bottom + layoutInsets.top;
+		// прибавление frameInsets.top нужно, так как если real bounds y полученный в результате отрисовки не будет 0, но и текст будет отпозиционирован согласно такому parent y
+		textLine.x = contentInsets.left + frameInsets.left;
+		textLine.y = h - contentInsets.bottom + frameInsets.top;
 	}
 
 	public function adjustWidth(newWidth:Number):void

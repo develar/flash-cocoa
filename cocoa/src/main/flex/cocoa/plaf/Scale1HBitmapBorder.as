@@ -20,18 +20,12 @@ public final class Scale1HBitmapBorder extends AbstractControlBitmapBorder imple
 		return border;
 	}
 
-	private var _bitmapIndex:int;
-	public function set bitmapIndex(value:int):void
-	{
-		_bitmapIndex = value;
-	}
-
 	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = 0;
 		sharedMatrix.ty = 0;
 
-		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, true);
+		g.beginBitmapFill(bitmaps[0], sharedMatrix, true);
 		g.drawRect(0, 0, w, _layoutHeight);
 		g.endFill();
 	}

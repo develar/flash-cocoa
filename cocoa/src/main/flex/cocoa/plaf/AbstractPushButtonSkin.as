@@ -1,10 +1,14 @@
-package org.flyti.aqua
+package cocoa.plaf
 {
 import cocoa.Border;
+import cocoa.Icon;
 import cocoa.LabelHelper;
+import cocoa.UIManager;
+
+import flash.display.Graphics;
+import flash.text.engine.ElementFormat;
 
 import org.flyti.view.LightUIComponent;
-import org.flyti.view.PushButtonSkin;
 
 public class AbstractPushButtonSkin extends LightUIComponent implements PushButtonSkin
 {
@@ -16,7 +20,7 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 		super();
 
 		mouseChildren = false;
-		labelHelper = new LabelHelper(this, AquaFonts.SYSTEM_FONT);
+		labelHelper = new LabelHelper(this);
 	}
 
 	override public function get baselinePosition():Number
@@ -37,6 +41,21 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 		invalidateDisplayList();
 	}
 
+	protected function getFont(key:String):ElementFormat
+	{
+		return UIManager.getFont(key);
+	}
+
+	protected function getBorder(key:String):Border
+	{
+		return UIManager.getBorder("PushButton." + key);
+	}
+
+	protected function getIcon(key:String):Icon
+	{
+		return UIManager.getIcon("PushButton." + key);
+	}
+
 	override protected function measure():void
 	{
 		if (!labelHelper.hasText)
@@ -48,6 +67,16 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 
 		measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
 		measuredMinHeight = measuredHeight = border.layoutHeight;
+	}
+
+	override protected function updateDisplayList(w:Number, h:Number):void
+	{
+		labelHelper.validate();
+		labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
+
+		var g:Graphics = graphics;
+		g.clear();
+		border.draw(this, g, w, h);
 	}
 }
 }

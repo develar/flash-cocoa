@@ -1,7 +1,7 @@
 package cocoa.plaf
 {
 import cocoa.Insets;
-import cocoa.LayoutInsets;
+import cocoa.FrameInsets;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
@@ -9,17 +9,15 @@ import flash.utils.ByteArray;
 
 import mx.core.UIComponent;
 
-import org.flyti.view.GroupBorder;
-
 /**
  * Тот же трюк, что и в Scale3HBitmapBorder — отрисовка scale9Grid требует всего 4, а не 9 кусочков
  */
-public final class Scale9BitmapBorder extends AbstractBitmapBorder implements GroupBorder
+public final class Scale9BitmapBorder extends AbstractBitmapBorder
 {
 	private var rightSliceInnerWidth:int;
 	private var bottomSliceInnerHeight:int;
 
-	public static function create(layoutInsets:LayoutInsets, contentInsets:Insets):Scale9BitmapBorder
+	public static function create(layoutInsets:FrameInsets, contentInsets:Insets):Scale9BitmapBorder
 	{
 		var border:Scale9BitmapBorder = new Scale9BitmapBorder();
 		border._layoutInsets = layoutInsets;
@@ -27,8 +25,8 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder implements Gr
 		return border;
 	}
 
-	private var _layoutInsets:LayoutInsets;
-	public function get layoutInsets():LayoutInsets
+	private var _layoutInsets:FrameInsets;
+	public function get layoutInsets():FrameInsets
 	{
 		return _layoutInsets;
 	}
@@ -81,7 +79,7 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder implements Gr
 		super.readExternal(input);
 
 		_contentInsets = readInsets(input);
-		_layoutInsets = new LayoutInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
+		_layoutInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
 
 		rightSliceInnerWidth = bitmaps[1].width + _layoutInsets.right;
 		bottomSliceInnerHeight = bitmaps[2].height + _layoutInsets.bottom;

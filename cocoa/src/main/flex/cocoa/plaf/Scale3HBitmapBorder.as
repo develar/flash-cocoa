@@ -1,16 +1,14 @@
 package cocoa.plaf
 {
 import cocoa.Border;
+import cocoa.FrameInsets;
 import cocoa.Insets;
-import cocoa.LayoutInsets;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
 
 import mx.core.UIComponent;
-
-import org.flyti.view.ButtonState;
 
 /**
  * Фиксированная высота, произвольная ширина — масштабируется только по горизонтали.
@@ -23,7 +21,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 	private var sliceHeight:Number;
 	private var sliceSizes:Insets;
 
-	public static function create(layoutHeight:Number, layoutInsets:LayoutInsets, contentInsets:Insets):Scale3HBitmapBorder
+	public static function create(layoutHeight:Number, layoutInsets:FrameInsets, contentInsets:Insets):Scale3HBitmapBorder
 	{
 		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
 		border._layoutHeight = layoutHeight;
@@ -32,8 +30,8 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		return border;
 	}
 
-	private var _layoutInsets:LayoutInsets;
-	public function get layoutInsets():LayoutInsets
+	private var _layoutInsets:FrameInsets;
+	public function get layoutInsets():FrameInsets
 	{
 		return _layoutInsets;
 	}
@@ -47,18 +45,18 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		sliceHeight = bitmaps[0].height;
 	}
 
-	public function draw(object:UIComponent, g:Graphics, w:Number, h:Number, state:ButtonState):void
+	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = _layoutInsets.left;
 		sharedMatrix.ty = _layoutInsets.top;
 
 		var rightSliceX:Number = w - sliceSizes.right - _layoutInsets.right;
-		g.beginBitmapFill(bitmaps[state.ordinal << 1], sharedMatrix, false);
+		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
 		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _layoutInsets.left, sliceHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
-		g.beginBitmapFill(bitmaps[(state.ordinal << 1) + 1], sharedMatrix, false);
+		g.beginBitmapFill(bitmaps[_bitmapIndex + 1], sharedMatrix, false);
 		g.drawRect(rightSliceX, sharedMatrix.ty, sliceSizes.right, sliceHeight);
 		g.endFill();
 	}
@@ -68,7 +66,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		super.readExternal(input);
 		
 		sliceSizes = readInsets(input);
-		_layoutInsets = new LayoutInsets(input.readByte(), input.readByte(), input.readByte());
+		_layoutInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte());
 
 		sliceHeight = bitmaps[0].height;
 	}

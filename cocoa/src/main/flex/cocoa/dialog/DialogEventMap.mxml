@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<EventMap xmlns="http://mate.asfusion.com" xmlns:fx="http://ns.adobe.com/mxml/2009">
+	<fx:Script><![CDATA[
+		import cocoa.dialog.events.ShowDialogEvent;
+		]]></fx:Script>
+
+	<fx:Declarations>
+		<EventHandlers type="{ShowDialogEvent.SHOW_DIALOG}">
+			<MethodInvoker role="{DialogManager}" method="open" arguments="{[event.box, event.modal]}"/>
+		</EventHandlers>
+	</fx:Declarations>
+</EventMap>

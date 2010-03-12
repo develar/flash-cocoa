@@ -1,23 +1,25 @@
 package cocoa.plaf
 {
 import cocoa.AbstractBorder;
-import cocoa.Border;
 import cocoa.Insets;
 
 import flash.display.BitmapData;
-import flash.display.Graphics;
 import flash.geom.Matrix;
 import flash.utils.ByteArray;
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
 
-import mx.core.UIComponent;
-
-public class AbstractBitmapBorder extends AbstractBorder implements Border, ExternalizableResource
+public class AbstractBitmapBorder extends AbstractBorder implements ExternalizableResource
 {
 	protected static const sharedMatrix:Matrix = new Matrix();
 
 	protected var bitmaps:Vector.<BitmapData>;
+
+	protected var _bitmapIndex:int;
+	public function set bitmapIndex(value:int):void
+	{
+		_bitmapIndex = value;
+	}
 
 	public function readExternal(input:ByteArray):void
 	{
@@ -59,16 +61,6 @@ public class AbstractBitmapBorder extends AbstractBorder implements Border, Exte
 	public final function getBitmaps():Vector.<BitmapData>
 	{
 		return bitmaps;
-	}
-
-	public function get layoutHeight():Number
-	{
-		return NaN;
-	}
-
-	public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
-	{
-		throw new Error("abstract");
 	}
 }
 }

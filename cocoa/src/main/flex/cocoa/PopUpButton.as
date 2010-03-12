@@ -46,5 +46,15 @@ public class PopUpButton extends DropDownListBase
 	{
 		return skin.baselinePosition;
 	}
+
+	override public function getStyle(styleProp:String):*
+    {
+		return styleProp == "skinClass" ? UIManager.getUI("PopUpButton") : super.getStyle("styleProp");
+	}
+
+	override public function regenerateStyleCache(recursive:Boolean):void
+    {
+		
+	}
 }
 }

@@ -1,8 +1,8 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
-import flash.display.Graphics;
-
-import org.flyti.view.ButtonState;
+import cocoa.plaf.AbstractPushButtonSkin;
+import cocoa.plaf.ButtonState;
+import cocoa.plaf.Scale3HBitmapBorder;
 
 import spark.components.Button;
 
@@ -45,19 +45,15 @@ public class PushButtonSkin extends AbstractPushButtonSkin
 	override public function regenerateStyleCache(recursive:Boolean):void
     {
 		var bezel:String = Button(parent).getStyle("bezel");
-		border = AquaBorderFactory.getPushButtonBorder(bezel == null ? BezelStyle.rounded : BezelStyle.valueOf(bezel));
+		border = getBorder("border." + (bezel == null ? BezelStyle.rounded.name : bezel));
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		labelHelper.font = _currentState == ButtonState.disabled ? AquaFonts.SYSTEM_FONT_DISABLED : AquaFonts.SYSTEM_FONT;
-		labelHelper.validate();
+		Scale3HBitmapBorder(border).bitmapIndex = _currentState.ordinal << 1;
+		labelHelper.font = getFont(_currentState == ButtonState.disabled ? "SystemFont.disabled" : "SystemFont");
 
-		labelHelper.moveByInsets(h, border.textInsets, border.layoutInsets);
-
-		var g:Graphics = graphics;
-		g.clear();
-		border.draw(this, g, w, h, _currentState);
+		super.updateDisplayList(w, h);
 	}
 }
 }

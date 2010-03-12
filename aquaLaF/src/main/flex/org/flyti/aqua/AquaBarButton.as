@@ -3,7 +3,7 @@ package org.flyti.aqua
 import mx.core.mx_internal;
 
 import org.flyti.view.LightUIComponent;
-import org.flyti.view.PushButtonSkin;
+import cocoa.plaf.PushButtonSkin;
 
 import spark.components.ButtonBarButton;
 

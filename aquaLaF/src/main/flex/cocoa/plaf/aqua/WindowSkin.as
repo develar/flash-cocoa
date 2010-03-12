@@ -1,5 +1,11 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
+import cocoa.Border;
+import cocoa.Insets;
+import cocoa.LabelHelper;
+import cocoa.UIManager;
+import cocoa.plaf.WindowSkin;
+
 import flash.display.Graphics;
 
 import mx.core.ILayoutElement;
@@ -8,12 +14,9 @@ import mx.core.mx_internal;
 import org.flyti.layout.AdvancedLayout;
 import org.flyti.view.AbstractSkin;
 import org.flyti.view.Container;
-import cocoa.Insets;
-import cocoa.LabelHelper;
 import org.flyti.view.SkinPartProvider;
 import org.flyti.view.View;
-import org.flyti.view.WindowSkin;
-import org.flyti.view.dialog.Dialog;
+import cocoa.dialog.Dialog;
 
 import spark.layouts.HorizontalLayout;
 import spark.layouts.VerticalAlign;
@@ -24,25 +27,9 @@ use namespace mx_internal;
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
  * На данный момент нет поддержки bottom bar как по спецификации Apple. Но есть нечто типа control bar как Open/Choose — явно там это так никак не названо.
  */
-public class WindowSkin extends AbstractSkin implements org.flyti.view.WindowSkin, AdvancedLayout, SkinPartProvider
+public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, SkinPartProvider
 {
-	[Embed(source="/titleBar-shadow.png")]
-	private static var titleBarClass:Class;
-	private static const titleSlicedImage:SlicedImage = new SlicedImage();
-	titleSlicedImage.slice2(titleBarClass, null, NaN, new Insets(58, 0, 58, 0));
-	titleBarClass = null;
-
-	[Embed(source="/body-shadow.png")]
-	private static var bodyClass:Class;
-	private static const bodySlicedImage:SlicedImage = new SlicedImage();
-	bodySlicedImage.slice2(bodyClass, null, NaN, new Insets(58, 0, 58, 0));
-	bodyClass = null;
-
-	[Embed(source="/bottomBar-shadow.png")]
-	private static var bottomBarClass:Class;
-	private static const bottomBarSlicedImage:SlicedImage = new SlicedImage();
-	bottomBarSlicedImage.slice2(bottomBarClass, null, NaN, new Insets(58, 0, 58, 0));
-	bottomBarClass = null;
+	private var border:Border;
 
 	private static const TITLE_BAR_HEIGHT:Number = 23; // вместе с 1px полосой внизу, которая визуально разделяет label bar от content pane
 	private static const BOTTOM_BAR_HEIGHT:Number = 47; // без нижней 1px полосы означающей drop shadow
@@ -65,7 +52,7 @@ public class WindowSkin extends AbstractSkin implements org.flyti.view.WindowSki
 
 	public function WindowSkin()
 	{
-		labelHelper = new LabelHelper(this, AquaFonts.SYSTEM_FONT);
+		labelHelper = new LabelHelper(this, UIManager.getFont("SystemFont"));
 
 		super();
 	}
@@ -75,7 +62,7 @@ public class WindowSkin extends AbstractSkin implements org.flyti.view.WindowSki
 		super.untypedHostComponent = value;
 
 		var insetsStyle:String = value.getStyle("insets");
-		contentInsets = insetsStyle == null || insetsStyle == "none" ? WINDOW_CONTENT_INSETS : org.flyti.aqua.WindowSkin[insetsStyle.toUpperCase() + "_CONTENT_INSETS"];
+		contentInsets = insetsStyle == null || insetsStyle == "none" ? WINDOW_CONTENT_INSETS : cocoa.plaf.aqua.WindowSkin[insetsStyle.toUpperCase() + "_CONTENT_INSETS"];
 		mover = new WindowMover(this, TITLE_BAR_HEIGHT, contentInsets);
 	}
 
@@ -149,9 +136,7 @@ public class WindowSkin extends AbstractSkin implements org.flyti.view.WindowSki
 			labelHelper.moveToCenter(w, 16);
 		}
 
-		titleSlicedImage.draw(g, w, 0, -33, -33, -18);
-		bodySlicedImage.draw(g, w, 0, -33, -33, 41, h - 41 - BOTTOM_BAR_HEIGHT);
-		bottomBarSlicedImage.draw(g, w, 0, -33, -33, h - BOTTOM_BAR_HEIGHT);
+		border.draw(this, g, w, h);
 
 		contentGroup.move(contentInsets.left, contentInsets.top);
 		contentGroup.setActualSize(w - contentInsets.width, h - contentInsets.height);

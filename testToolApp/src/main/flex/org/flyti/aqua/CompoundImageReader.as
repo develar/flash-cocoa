@@ -57,11 +57,8 @@ internal final class CompoundImageReader
 
 		const firstItemY:Number = -listBorder.layoutInsets.top + listBorder.contentInsets.top + frameRectangle.top;
 		const itemX:Number = -listBorder.layoutInsets.left + listBorder.contentInsets.left + frameRectangle.x;
-		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
-		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(2, true);
-		// 1 сначала, так как у нас в картинке первым идет highlighted
-		itemBitmaps[1] = createBitmapData(itemRectangle);
-		itemRectangle.y += itemHeight;
+		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY + itemHeight, 1, itemHeight);
+		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(1, true);
 		itemBitmaps[0] = createBitmapData(itemRectangle);
 		borders[position + 1] = Scale1HBitmapBorder.create(itemBitmaps, itemHeight, new Insets(21, NaN, 21, 5));
 

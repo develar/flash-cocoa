@@ -36,6 +36,7 @@
 						<manifest>
 							<uri>cocoa</uri>
 							<includes>
+								<class>**.Application</class>
 								<class>**.PopUpButton</class>
 							</includes>
 						</manifest>

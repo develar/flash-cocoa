@@ -1,4 +1,4 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
 import flash.events.MouseEvent;
 import flash.text.engine.TextLine;
