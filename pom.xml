@@ -16,6 +16,7 @@
 
 	<modules>
 		<module>cocoa</module>
+		<module>acocoa</module>
 		<module>aquaLaF</module>
 		<module>testToolApp</module>
 		<module>demo</module>
