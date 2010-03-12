@@ -1,5 +1,7 @@
 package cocoa.dialog
 {
+import cocoa.dialog.events.DialogEvent;
+
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
@@ -10,7 +12,6 @@ import mx.managers.PopUpManager;
 
 import org.flyti.view.Skin;
 import org.flyti.view.View;
-import cocoa.dialog.events.DialogEvent;
 
 public class DialogManager
 {

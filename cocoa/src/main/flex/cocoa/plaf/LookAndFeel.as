@@ -4,7 +4,6 @@ import cocoa.Border;
 import cocoa.Icon;
 
 import flash.text.engine.ElementFormat;
-import flash.utils.Dictionary;
 
 import mx.core.IFactory;
 

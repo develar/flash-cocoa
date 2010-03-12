@@ -1,8 +1,8 @@
 package org.flyti.view.sidebar
 {
-import org.flyti.layout.AdvancedLayout;
-
 import mx.core.ILayoutElement;
+
+import org.flyti.layout.AdvancedLayout;
 
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;

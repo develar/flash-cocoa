@@ -30,6 +30,7 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["Dialog"] = WindowSkin;
 
+		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border.rounded"] = borders[BezelStyle.rounded.ordinal];
 		data["PushButton.border.texturedRounded"] = borders[BezelStyle.texturedRounded.ordinal];
 

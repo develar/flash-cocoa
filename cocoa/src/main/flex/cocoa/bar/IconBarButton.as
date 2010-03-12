@@ -1,4 +1,4 @@
-package org.flyti.view.bar
+package cocoa.bar
 {
 import mx.core.IFlexDisplayObject;
 

@@ -4,7 +4,6 @@
 			 creationComplete="creationCompleteHandler()" width="1000">
 
 	<fx:Script><![CDATA[
-		import org.flyti.aqua.demo.*;
 		import org.flyti.util.ArrayList;
 
 		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);

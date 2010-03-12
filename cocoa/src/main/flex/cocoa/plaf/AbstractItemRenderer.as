@@ -1,8 +1,8 @@
 package cocoa.plaf
 {
-import flash.events.MouseEvent;
-
 import cocoa.LightUIComponent;
+
+import flash.events.MouseEvent;
 
 import spark.components.IItemRenderer;
 

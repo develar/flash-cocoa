@@ -1,8 +1,9 @@
-package org.flyti.view
+package cocoa
 {
-import org.flyti.view;
-
 import flash.events.Event;
+
+import org.flyti.view;
+import org.flyti.view.Container;
 
 import spark.layouts.supportClasses.LayoutBase;
 

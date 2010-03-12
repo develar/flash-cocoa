@@ -1,6 +1,7 @@
 package cocoa.dialog
 {
 import cocoa.PushButton;
+import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
 
 import flash.events.KeyboardEvent;
@@ -12,7 +13,6 @@ import org.flyti.ui.KeyCode;
 import org.flyti.util.Assert;
 import org.flyti.view;
 import org.flyti.view.ViewContainer;
-import org.flyti.view.Window;
 
 use namespace view;
 

@@ -1,18 +1,17 @@
-package org.flyti.view.bar
+package cocoa.bar
 {
+import cocoa.AbstractView;
+
+import mx.core.IVisualElement;
 import mx.events.CollectionEvent;
 import mx.events.CollectionEventKind;
 
+import org.flyti.util.List;
 import org.flyti.view;
-
-import mx.core.IVisualElement;
-
-import org.flyti.view.AbstractView;
-import org.flyti.view.pane.LabeledItem;
 import org.flyti.view.SelectableDataGroup;
+import org.flyti.view.pane.LabeledItem;
 import org.flyti.view.pane.PaneItem;
 import org.flyti.view.pane.TitledPane;
-import org.flyti.util.List;
 
 import spark.components.IItemRenderer;
 

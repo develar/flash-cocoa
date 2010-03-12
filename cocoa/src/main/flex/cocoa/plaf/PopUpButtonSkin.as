@@ -3,13 +3,12 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.BorderedDataGroup;
 import cocoa.Icon;
+import cocoa.LightUIComponent;
 import cocoa.PopUpButton;
 import cocoa.PushButton;
 import cocoa.UIManager;
 
 import flash.text.engine.ElementFormat;
-
-import cocoa.LightUIComponent;
 
 import spark.layouts.HorizontalAlign;
 import spark.layouts.VerticalLayout;

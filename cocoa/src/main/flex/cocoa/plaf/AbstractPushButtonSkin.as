@@ -3,12 +3,11 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.Icon;
 import cocoa.LabelHelper;
+import cocoa.LightUIComponent;
 import cocoa.UIManager;
 
 import flash.display.Graphics;
 import flash.text.engine.ElementFormat;
-
-import cocoa.LightUIComponent;
 
 public class AbstractPushButtonSkin extends LightUIComponent implements PushButtonSkin
 {

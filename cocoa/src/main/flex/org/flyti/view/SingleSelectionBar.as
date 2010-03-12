@@ -1,7 +1,7 @@
 package org.flyti.view
 {
 import org.flyti.view;
-import org.flyti.view.bar.Bar;
+import cocoa.bar.Bar;
 import org.flyti.view.pane.PaneItem;
 
 import spark.events.IndexChangeEvent;

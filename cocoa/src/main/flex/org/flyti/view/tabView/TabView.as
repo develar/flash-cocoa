@@ -1,15 +1,14 @@
 package org.flyti.view.tabView
 {
+import mx.core.IVisualElement;
 import mx.core.UIComponent;
 
+import org.flyti.util.Assert;
+import org.flyti.view;
+import org.flyti.view.SingleSelectionBar;
 import org.flyti.view.ViewStack;
 import org.flyti.view.pane.PaneItem;
 import org.flyti.view.pane.TitledPane;
-import org.flyti.view.SingleSelectionBar;
-import org.flyti.util.Assert;
-import org.flyti.view;
-
-import mx.core.IVisualElement;
 
 import spark.components.supportClasses.ListBase;
 import spark.events.IndexChangeEvent;

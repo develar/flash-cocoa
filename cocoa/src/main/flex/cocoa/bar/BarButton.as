@@ -1,8 +1,8 @@
-package org.flyti.view.bar
+package cocoa.bar
 {
-import flash.events.MouseEvent;
-
 import cocoa.plaf.PushButtonSkin;
+
+import flash.events.MouseEvent;
 
 import spark.components.ButtonBarButton;
 

@@ -1,10 +1,10 @@
 package org.flyti.view.sidebar
 {
+import org.flyti.util.Assert;
 import org.flyti.view.Panel;
 import org.flyti.view.SelectableDataGroup;
 import org.flyti.view.pane.PaneItem;
 import org.flyti.view.sidebar.events.MultipleSelectionChangeEvent;
-import org.flyti.util.Assert;
 
 public class SidebarPaneLabelBar extends SelectableDataGroup
 {

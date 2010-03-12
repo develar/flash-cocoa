@@ -1,6 +1,7 @@
 package org.flyti.view.sidebar
 {
-import org.flyti.view.Box;
+import cocoa.Box;
+
 import org.flyti.view;
 
 use namespace view;

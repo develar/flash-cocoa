@@ -25,18 +25,4 @@
 			<type>swc</type>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sonatype.flexmojos</groupId>
-				<artifactId>flexmojos-maven-plugin</artifactId>
-				<configuration>
-					<attachedThemes>
-						<attachedTheme>aqua</attachedTheme>
-					</attachedThemes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

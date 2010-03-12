@@ -1,14 +1,11 @@
 package org.flyti.view.sidebar
 {
+import org.flyti.util.Assert;
+import org.flyti.view;
+import org.flyti.view.Panel;
+import org.flyti.view.pane.PaneItem;
 import org.flyti.view.sidebar.events.MultipleSelectionChangeEvent;
 import org.flyti.view.sidebar.events.SidebarEvent;
-import org.flyti.view.bar.Bar;
-import org.flyti.view.pane.PaneItem;
-import org.flyti.util.Assert;
-import org.flyti.view.Panel;
-import org.flyti.view;
-
-import mx.core.IVisualElement;
 
 import spark.components.Group;
 

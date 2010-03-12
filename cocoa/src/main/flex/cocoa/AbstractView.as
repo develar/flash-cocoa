@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
@@ -21,6 +21,7 @@ import mx.styles.StyleProtoChain;
 import org.flyti.layout.LayoutMetrics;
 import org.flyti.resources.ResourceManager;
 import org.flyti.view;
+import org.flyti.view.*;
 
 use namespace view;
 

@@ -2,8 +2,8 @@ package cocoa.dialog
 {
 import mx.core.IFactory;
 
-import org.flyti.view.View;
 import org.flyti.view;
+import org.flyti.view.View;
 
 use namespace view;
 

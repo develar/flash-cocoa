@@ -47,7 +47,18 @@
 							<uri>cocoa</uri>
 							<includes>
 								<class>**.ApplicationImpl</class>
+								<class>**.Dialog</class>
 								<class>**.*Button</class>
+
+								<class>org.flyti.view.colorPicker.ColorPicker</class>
+
+								<class>org.flyti.view.tabView.*</class>
+								<class>org.flyti.view.sidebar.*</class>
+
+								<class>org.flyti.ui.MouseCursor</class>
+								<class>org.flyti.resources.ResourceMetadata</class>
+
+								<class>org.flyti.primitives.*</class>
 							</includes>
 						</manifest>
 					</manifests>
