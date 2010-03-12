@@ -12,6 +12,7 @@ public class UIManager
 
 	public static function set lookAndFeel(value:LookAndFeel):void
 	{
+		laf.initialize();
 		laf = value;
 	}
 

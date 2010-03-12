@@ -35,9 +35,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.thewebproduction.library.flex</groupId>
-			<artifactId>flexLibrary</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<groupId>org.flyti.cocoa</groupId>
+			<artifactId>acocoa</artifactId>
+			<type>swc</type>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flyti.cocoa</groupId>
+			<artifactId>cocoa</artifactId>
+			<version>1.1-SNAPSHOT</version>
 			<type>rb.swc</type>
 			<classifier>en_US</classifier>
 		</dependency>
@@ -51,6 +57,7 @@
 				<configuration>
 					<debug>true</debug>
 					<accessible>false</accessible>
+					<sourceFile>cocoa/plaf/aqua/demo/Main.mxml</sourceFile>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
-<WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
-					 xmlns:f="http://thewebproduction.com/flexLibrary"
-					 backgroundAlpha="0" showStatusBar="false" creationPolicy="none" width="600" height="600"
+<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
+					 xmlns:c="cocoa"
+					 xmlns:ac="acocoa"
+					 creationPolicy="none" width="600" height="600"
 					 creationComplete="creationCompleteHandler()">
 
 	<fx:Script><![CDATA[
 		import cocoa.plaf.PopUpButtonSkin;
-		import cocoa.plaf.PopUpButtonSkin;
-		import cocoa.plaf.aqua.PushButtonSkin;
 		import cocoa.plaf.aqua.PushButtonSkin;
 
-		import org.flyti.aqua.*;
 		import org.flyti.util.ArrayList;
 
 		use namespace mx_internal;
@@ -40,12 +38,12 @@
 		</fill>
 	</Rect>
 	<VGroup left="100" top="100" right="100" bottom="100">
-		<f:PushButton label="Help H" skinClass="{PushButtonSkin}"/>
-		<f:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}" bezel="texturedRounded"/>
+		<c:PushButton label="Help H" skinClass="{PushButtonSkin}"/>
+		<c:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}" bezel="texturedRounded"/>
 		
-		<f:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>
-		<f:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testDataWithLongLabels}"/>
+		<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>
+		<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testDataWithLongLabels}"/>
 
 		<DropDownList dataProvider="{testData}"/>
 	</VGroup>
-</WindowedApplication>
+</ac:WindowedApplication>

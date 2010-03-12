@@ -19,6 +19,12 @@
 			<type>pom</type>
 		</dependency>
 		<dependency>
+			<groupId>org.flyti</groupId>
+			<artifactId>collections</artifactId>
+			<version>1.2</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
 			<groupId>org.flyti.plexus</groupId>
 			<artifactId>mate</artifactId>
 			<type>swc</type>
@@ -40,8 +46,8 @@
 						<manifest>
 							<uri>cocoa</uri>
 							<includes>
-								<class>**.Application</class>
-								<class>**.PopUpButton</class>
+								<class>**.ApplicationImpl</class>
+								<class>**.*Button</class>
 							</includes>
 						</manifest>
 					</manifests>

@@ -78,7 +78,7 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		}
 	}
 
-	internal static function setBorders(value:Vector.<Border>):void
+	public static function setBorders(value:Vector.<Border>):void
 	{
 		borders = value;
 	}

@@ -1,4 +1,4 @@
-package org.flyti.util
+package cocoa.util
 {
 import flash.data.SQLConnection;
 import flash.data.SQLStatement;

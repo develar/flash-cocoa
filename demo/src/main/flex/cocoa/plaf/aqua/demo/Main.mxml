@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<f:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
-			 xmlns:f="http://thewebproduction.com/flexLibrary"
+<c:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
+			 xmlns:c="cocoa"
 			 creationComplete="creationCompleteHandler()" width="1000">
 
 	<fx:Script><![CDATA[
+		import org.flyti.aqua.demo.*;
 		import org.flyti.util.ArrayList;
 
 		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
@@ -15,7 +16,7 @@
 		}
 		]]></fx:Script>
 
-	<f:Dialog>
-		<f:PopUpButton dataProvider="{testData}"/>
-	</f:Dialog>
-</f:Application>
+	<c:Dialog>
+		<c:PopUpButton dataProvider="{testData}"/>
+	</c:Dialog>
+</c:Application>

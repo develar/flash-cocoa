@@ -1,9 +1,11 @@
-package org.flyti.util
+package cocoa.util
 {
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
+
+import org.flyti.util.StringUtil;
 
 public final class FileUtil
 {
