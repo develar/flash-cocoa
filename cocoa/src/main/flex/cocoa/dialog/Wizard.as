@@ -3,7 +3,7 @@ package cocoa.dialog
 import mx.core.IFactory;
 
 import org.flyti.view;
-import org.flyti.view.View;
+import cocoa.View;
 
 use namespace view;
 

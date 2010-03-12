@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import spark.components.HSlider;
 

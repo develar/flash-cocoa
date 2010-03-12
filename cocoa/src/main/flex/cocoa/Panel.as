@@ -1,5 +1,7 @@
-package org.flyti.view
+package cocoa
 {
+import org.flyti.view.*;
+
 import cocoa.Window;
 
 import flash.events.MouseEvent;

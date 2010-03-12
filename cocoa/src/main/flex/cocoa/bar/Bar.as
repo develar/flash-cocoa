@@ -8,7 +8,7 @@ import mx.events.CollectionEventKind;
 
 import org.flyti.util.List;
 import org.flyti.view;
-import org.flyti.view.SelectableDataGroup;
+import cocoa.SelectableDataGroup;
 import org.flyti.view.pane.LabeledItem;
 import org.flyti.view.pane.PaneItem;
 import org.flyti.view.pane.TitledPane;

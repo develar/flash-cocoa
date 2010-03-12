@@ -12,7 +12,7 @@ import org.flyti.resources.ResourceManager;
 import org.flyti.ui.KeyCode;
 import org.flyti.util.Assert;
 import org.flyti.view;
-import org.flyti.view.ViewContainer;
+import cocoa.ViewContainer;
 
 use namespace view;
 

@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import org.flyti.lang.Enum;
 

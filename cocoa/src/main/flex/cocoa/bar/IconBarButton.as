@@ -2,7 +2,7 @@ package cocoa.bar
 {
 import mx.core.IFlexDisplayObject;
 
-import org.flyti.view.IconedItemRenderer;
+import cocoa.IconedItemRenderer;
 
 import spark.primitives.BitmapImage;
 

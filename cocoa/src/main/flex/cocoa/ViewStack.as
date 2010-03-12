@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import mx.core.ILayoutElement;
 import mx.core.UIComponent;

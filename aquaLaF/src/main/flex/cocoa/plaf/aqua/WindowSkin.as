@@ -13,10 +13,10 @@ import mx.core.ILayoutElement;
 import mx.core.mx_internal;
 
 import org.flyti.layout.AdvancedLayout;
-import org.flyti.view.AbstractSkin;
-import org.flyti.view.Container;
-import org.flyti.view.SkinPartProvider;
-import org.flyti.view.View;
+import cocoa.AbstractSkin;
+import cocoa.Container;
+import cocoa.SkinPartProvider;
+import cocoa.View;
 
 import spark.layouts.HorizontalLayout;
 import spark.layouts.VerticalAlign;

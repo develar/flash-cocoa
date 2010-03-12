@@ -2,7 +2,7 @@ package cocoa.dialog.events
 {
 import flash.events.Event;
 
-import org.flyti.view.View;
+import cocoa.View;
 
 public class ShowDialogEvent extends Event
 {

@@ -1,5 +1,6 @@
-package org.flyti.view
+package cocoa
 {
+import org.flyti.view.*;
 import org.flyti.view;
 import cocoa.bar.Bar;
 import org.flyti.view.pane.PaneItem;

@@ -10,8 +10,8 @@ import mx.core.FlexGlobals;
 import mx.events.ResizeEvent;
 import mx.managers.PopUpManager;
 
-import org.flyti.view.Skin;
-import org.flyti.view.View;
+import cocoa.Skin;
+import cocoa.View;
 
 public class DialogManager
 {

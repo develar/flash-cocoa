@@ -1,8 +1,8 @@
 package org.flyti.view.sidebar
 {
 import org.flyti.util.Assert;
-import org.flyti.view.Panel;
-import org.flyti.view.SelectableDataGroup;
+import cocoa.Panel;
+import cocoa.SelectableDataGroup;
 import org.flyti.view.pane.PaneItem;
 import org.flyti.view.sidebar.events.MultipleSelectionChangeEvent;
 

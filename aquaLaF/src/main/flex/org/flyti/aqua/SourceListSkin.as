@@ -9,9 +9,9 @@ import mx.core.ILayoutElement;
 
 import org.flyti.layout.AdvancedLayout;
 import org.flyti.layout.LayoutMetrics;
-import org.flyti.view.AbstractSkin;
-import org.flyti.view.Container;
-import org.flyti.view.SkinPartProvider;
+import cocoa.AbstractSkin;
+import cocoa.Container;
+import cocoa.SkinPartProvider;
 import org.flyti.view.sidebar.SourceListView;
 
 public class SourceListSkin extends AbstractSkin implements AdvancedLayout, SkinPartProvider

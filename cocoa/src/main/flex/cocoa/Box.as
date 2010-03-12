@@ -3,7 +3,7 @@ package cocoa
 import flash.events.Event;
 
 import org.flyti.view;
-import org.flyti.view.Container;
+import cocoa.Container;
 
 import spark.layouts.supportClasses.LayoutBase;
 

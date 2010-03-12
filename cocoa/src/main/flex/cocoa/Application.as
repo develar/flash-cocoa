@@ -2,7 +2,7 @@ package cocoa
 {
 import mx.core.IDeferredContentOwner;
 
-import org.flyti.view.ViewContainer;
+import cocoa.ViewContainer;
 
 public interface Application extends ViewContainer, IDeferredContentOwner
 {

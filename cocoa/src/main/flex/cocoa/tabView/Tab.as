@@ -1,6 +1,6 @@
 package org.flyti.view.tabView
 {
-import org.flyti.view.Container;
+import cocoa.Container;
 
 import spark.layouts.HorizontalLayout;
 

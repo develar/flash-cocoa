@@ -1,5 +1,7 @@
-package org.flyti.view
+package cocoa
 {
+import org.flyti.view.*;
+
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;

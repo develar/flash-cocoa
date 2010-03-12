@@ -6,7 +6,7 @@ import cocoa.plaf.aqua.SlicedImage;
 
 import flash.events.MouseEvent;
 
-import org.flyti.view.ToggleButtonState;
+import cocoa.ToggleButtonState;
 
 /**
  * artwork для down state нету, мы используем похожий.

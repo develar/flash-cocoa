@@ -1,5 +1,7 @@
-package org.flyti.view
+package cocoa
 {
+import org.flyti.view.*;
+
 import mx.core.UIComponent;
 import mx.core.mx_internal;
 import mx.styles.IAdvancedStyleClient;

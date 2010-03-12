@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import mx.core.IVisualElement;
 import mx.styles.IAdvancedStyleClient;

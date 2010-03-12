@@ -9,10 +9,10 @@ import mx.core.mx_internal;
 
 import org.flyti.layout.AdvancedLayout;
 import org.flyti.layout.BarHorizontalLayout;
-import org.flyti.view.AbstractSkin;
-import org.flyti.view.SingleSelectionDataGroup;
-import org.flyti.view.SkinPartProvider;
-import org.flyti.view.ViewStack;
+import cocoa.AbstractSkin;
+import cocoa.SingleSelectionDataGroup;
+import cocoa.SkinPartProvider;
+import cocoa.ViewStack;
 import org.flyti.view.tabView.TabView;
 
 use namespace mx_internal;

@@ -2,7 +2,7 @@ package org.flyti.view.sidebar
 {
 import org.flyti.util.Assert;
 import org.flyti.view;
-import org.flyti.view.Panel;
+import cocoa.Panel;
 import org.flyti.view.pane.PaneItem;
 import org.flyti.view.sidebar.events.MultipleSelectionChangeEvent;
 import org.flyti.view.sidebar.events.SidebarEvent;

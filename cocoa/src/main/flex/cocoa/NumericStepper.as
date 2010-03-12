@@ -1,4 +1,4 @@
-package org.flyti.view
+package cocoa
 {
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
