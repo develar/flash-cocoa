@@ -9,12 +9,12 @@ import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 
 import org.flyti.resources.ResourceManager;
-import org.flyti.ui.KeyCode;
+import cocoa.KeyCode;
 import org.flyti.util.Assert;
 import org.flyti.view;
 import cocoa.ViewContainer;
 
-use namespace view;
+use namespace ui;
 
 [Event(name="ok", type="cocoa.dialog.events.DialogEvent")]
 [Event(name="cancel", type="cocoa.dialog.events.DialogEvent")]
@@ -29,7 +29,7 @@ public class Dialog extends Window
 
 	private var controlBarInitialized:Boolean;
 
-	view var controlBar:ViewContainer;
+	ui var controlBar:ViewContainer;
 
 	private var okButton:PushButton;
 	private var cancelButton:PushButton;

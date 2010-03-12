@@ -49,14 +49,14 @@
 								<class>**.ApplicationImpl</class>
 								<class>**.Dialog</class>
 								<class>**.*Button</class>
+								<class>**.Tab*</class>
 
-								<class>org.flyti.view.colorPicker.ColorPicker</class>
+								<class>**.colorPicker.ColorPicker</class>
 
-								<class>org.flyti.view.tabView.*</class>
-								<class>org.flyti.view.sidebar.*</class>
+								<class>**.sidebar.*</class>
 
-								<class>org.flyti.ui.MouseCursor</class>
-								<class>org.flyti.resources.ResourceMetadata</class>
+								<class>**.MouseCursor</class>
+								<class>**.ResourceMetadata</class>
 
 								<class>org.flyti.primitives.*</class>
 							</includes>

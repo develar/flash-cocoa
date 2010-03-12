@@ -1,4 +1,4 @@
-package org.flyti.view.sidebar.events
+package cocoa.sidebar.events
 {
 import flash.events.Event;
 

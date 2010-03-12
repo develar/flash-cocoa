@@ -1,10 +1,10 @@
-package org.flyti.view.sidebar
+package cocoa.sidebar
 {
 import cocoa.Box;
 
 import org.flyti.view;
 
-use namespace view;
+use namespace ui;
 
 public class SourceListView extends Box
 {

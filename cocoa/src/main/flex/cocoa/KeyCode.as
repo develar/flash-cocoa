@@ -1,4 +1,4 @@
-package org.flyti.ui
+package cocoa
 {
 public final class KeyCode
 {

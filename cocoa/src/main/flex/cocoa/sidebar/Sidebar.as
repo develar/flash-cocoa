@@ -1,19 +1,19 @@
-package org.flyti.view.sidebar
+package cocoa.sidebar
 {
 import org.flyti.util.Assert;
 import org.flyti.view;
 import cocoa.Panel;
 import org.flyti.view.pane.PaneItem;
-import org.flyti.view.sidebar.events.MultipleSelectionChangeEvent;
-import org.flyti.view.sidebar.events.SidebarEvent;
+import cocoa.sidebar.events.MultipleSelectionChangeEvent;
+import cocoa.sidebar.events.SidebarEvent;
 
 import spark.components.Group;
 
-use namespace view;
+use namespace ui;
 
 public class Sidebar extends Bar
 {
-	view var paneGroup:Group;
+	ui var paneGroup:Group;
 
 	private var collapsed:Boolean = true;
 
@@ -44,7 +44,7 @@ public class Sidebar extends Bar
 		}
 	}
 
-	override view function itemGroupAdded():void
+	override ui function itemGroupAdded():void
 	{
 		super.itemGroupAdded();
 
@@ -55,7 +55,7 @@ public class Sidebar extends Bar
 		itemGroup.addEventListener(MultipleSelectionChangeEvent.CHANGED, paneLabelBarSelectionChangeHandler);
 	}
 
-	view function paneGroupAdded():void
+	ui function paneGroupAdded():void
 	{
 		paneGroup.includeInLayout = !collapsed;
 	}

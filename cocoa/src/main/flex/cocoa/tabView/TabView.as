@@ -1,4 +1,4 @@
-package org.flyti.view.tabView
+package cocoa.tabView
 {
 import mx.core.IVisualElement;
 import mx.core.UIComponent;
@@ -13,11 +13,11 @@ import org.flyti.view.pane.TitledPane;
 import spark.components.supportClasses.ListBase;
 import spark.events.IndexChangeEvent;
 
-use namespace view;
+use namespace ui;
 
 public class TabView extends SingleSelectionBar
 {
-	view var paneGroup:ViewStack;
+	ui var paneGroup:ViewStack;
 
 	public function TabView()
 	{
@@ -31,7 +31,7 @@ public class TabView extends SingleSelectionBar
 		return true;
 	}
 
-	view function paneGroupAdded():void
+	ui function paneGroupAdded():void
 	{
 //		for (var i:int = 0, n:int = items.size; i < n; i++)
 //		{

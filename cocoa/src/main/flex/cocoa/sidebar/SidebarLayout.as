@@ -1,4 +1,4 @@
-package org.flyti.view.sidebar
+package cocoa.sidebar
 {
 import mx.core.ILayoutElement;
 

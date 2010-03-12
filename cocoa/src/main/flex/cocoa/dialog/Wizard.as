@@ -5,13 +5,13 @@ import mx.core.IFactory;
 import org.flyti.view;
 import cocoa.View;
 
-use namespace view;
+use namespace ui;
 
 public class Wizard extends Dialog
 {
 	protected var steps:Vector.<IFactory>;
 
-	override view function contentGroupAdded():void
+	override ui function contentGroupAdded():void
 	{
 		super.contentGroupAdded();
 

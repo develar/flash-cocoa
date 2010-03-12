@@ -13,7 +13,7 @@ import cocoa.AbstractSkin;
 import cocoa.SingleSelectionDataGroup;
 import cocoa.SkinPartProvider;
 import cocoa.ViewStack;
-import org.flyti.view.tabView.TabView;
+import cocoa.tabView.TabView;
 
 use namespace mx_internal;
 

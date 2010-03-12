@@ -7,7 +7,7 @@ import org.flyti.view.pane.PaneItem;
 
 import spark.events.IndexChangeEvent;
 
-use namespace view;
+use namespace ui;
 
 [Abstract]
 public class SingleSelectionBar extends Bar
@@ -32,7 +32,7 @@ public class SingleSelectionBar extends Bar
 		return PaneItem(items.getItemAt(typedItemGroup == null ? pendingSelectedIndex : typedItemGroup.selectedIndex));
 	}
 
-	override view function itemGroupAdded():void
+	override ui function itemGroupAdded():void
 	{
 		super.itemGroupAdded();
 
@@ -43,7 +43,7 @@ public class SingleSelectionBar extends Bar
 		itemGroup.addEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
 	}
 
-	view function itemGroupRemoved():void
+	ui function itemGroupRemoved():void
 	{
 		itemGroup.removeEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
 	}

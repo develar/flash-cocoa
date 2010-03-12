@@ -12,7 +12,7 @@ import org.flyti.layout.LayoutMetrics;
 import cocoa.AbstractSkin;
 import cocoa.Container;
 import cocoa.SkinPartProvider;
-import org.flyti.view.sidebar.SourceListView;
+import cocoa.sidebar.SourceListView;
 
 public class SourceListSkin extends AbstractSkin implements AdvancedLayout, SkinPartProvider
 {

@@ -8,7 +8,7 @@ import mx.utils.OnDemandEventDispatcher;
 
 import org.flyti.view;
 
-use namespace view;
+use namespace ui;
 
 public class ViewBase extends OnDemandEventDispatcher
 {

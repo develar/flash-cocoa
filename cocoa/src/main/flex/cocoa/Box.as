@@ -7,12 +7,12 @@ import cocoa.Container;
 
 import spark.layouts.supportClasses.LayoutBase;
 
-use namespace view;
+use namespace ui;
 
 [DefaultProperty("elements")]
 public class Box extends AbstractView
 {
-	view var contentGroup:Container;
+	ui var contentGroup:Container;
 
 	public function Box()
 	{
@@ -39,7 +39,7 @@ public class Box extends AbstractView
 		_layout = value;
 	}
 
-	view function contentGroupAdded():void
+	ui function contentGroupAdded():void
 	{
 		if (_layout != null)
 		{

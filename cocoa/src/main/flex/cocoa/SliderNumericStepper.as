@@ -8,13 +8,13 @@ import flash.events.Event;
 
 import org.flyti.view;
 
-use namespace view;
+use namespace ui;
 
 [Event(name="change", type="flash.events.Event")]
 public class SliderNumericStepper extends AbstractView
 {
-	view var slider:HSlider;
-	view var stepper:NumericStepper;
+	ui var slider:HSlider;
+	ui var stepper:NumericStepper;
 
 	public function SliderNumericStepper()
 	{
@@ -113,7 +113,7 @@ public class SliderNumericStepper extends AbstractView
 		}
 	}
 
-	view function stepperAdded():void
+	ui function stepperAdded():void
 	{
 		stepper.minimum = _minimum * _stepperMultiplier;
 		stepper.maximum = _maximum * _stepperMultiplier;
@@ -133,7 +133,7 @@ public class SliderNumericStepper extends AbstractView
 		stepper.addEventListener(Event.CHANGE, stepperChangeHandler);
 	}
 
-	view function sliderAdded():void
+	ui function sliderAdded():void
 	{
 		slider.minimum = _minimum;
 		slider.maximum = _maximum;

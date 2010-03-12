@@ -1,4 +1,4 @@
-package org.flyti.view.tabView
+package cocoa.tabView
 {
 import flash.events.Event;
 

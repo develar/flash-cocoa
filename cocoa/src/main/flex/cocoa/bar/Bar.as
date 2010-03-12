@@ -15,12 +15,12 @@ import org.flyti.view.pane.TitledPane;
 
 import spark.components.IItemRenderer;
 
-use namespace view;
+use namespace ui;
 
 [Abstract]
 public class Bar extends AbstractView
 {
-	view var itemGroup:SelectableDataGroup;
+	ui var itemGroup:SelectableDataGroup;
 
 	public function Bar()
 	{
@@ -65,7 +65,7 @@ public class Bar extends AbstractView
 		invalidateProperties();
 	}
 
-	view function itemGroupAdded():void
+	ui function itemGroupAdded():void
 	{
 		itemGroup.dataProvider = items;
 	}

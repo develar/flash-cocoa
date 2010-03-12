@@ -9,18 +9,18 @@ import flash.events.MouseEvent;
 import mx.core.IVisualElement;
 
 import org.flyti.view;
-import org.flyti.view.sidebar.events.SidebarEvent;
+import cocoa.sidebar.events.SidebarEvent;
 
 import spark.components.supportClasses.TextBase;
 
-use namespace view;
+use namespace ui;
 
 public class Panel extends Window
 {
-	view var titleDisplay:TextBase;
+	ui var titleDisplay:TextBase;
 
-	view var minimizeButton:IVisualElement;
-	view var closeSideButton:IVisualElement;
+	ui var minimizeButton:IVisualElement;
+	ui var closeSideButton:IVisualElement;
 
 	public function Panel()
 	{
@@ -30,22 +30,22 @@ public class Panel extends Window
 		skinParts.closeSideButton = 0;
 	}
 
-	view function minimizeButtonAdded():void
+	ui function minimizeButtonAdded():void
 	{
 		minimizeButton.addEventListener(MouseEvent.CLICK, minimizeButtonClickHandler);
 	}
 
-	view function minimizeButtonRemoved():void
+	ui function minimizeButtonRemoved():void
 	{
 		minimizeButton.removeEventListener(MouseEvent.CLICK, minimizeButtonClickHandler);
 	}
 
-	view function closeSideButtonAdded():void
+	ui function closeSideButtonAdded():void
 	{
 		closeSideButton.addEventListener(MouseEvent.CLICK, closeSideButtonClickHandler);
 	}
 
-	view function closeSideButtonRemoved():void
+	ui function closeSideButtonRemoved():void
 	{
 		closeSideButton.removeEventListener(MouseEvent.CLICK, closeSideButtonClickHandler);
 	}

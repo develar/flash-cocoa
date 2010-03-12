@@ -23,7 +23,7 @@ import org.flyti.resources.ResourceManager;
 import org.flyti.view;
 import org.flyti.view.*;
 
-use namespace view;
+use namespace ui;
 
 [Exclude(kind="property", name="parent")]
 
