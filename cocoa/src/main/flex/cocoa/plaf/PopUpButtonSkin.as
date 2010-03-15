@@ -60,8 +60,8 @@ public class PopUpButtonSkin extends LightUIComponent
 		popUpAnchor.popUp = dropDown;
 		popUpAnchor.popUpParent = this;
 
-		PopUpButton(parent).skinPartAdded("dropDown", dropDown);
-		PopUpButton(parent).skinPartAdded("dataGroup", dataGroup);
+		PopUpButton(parent).uiPartAdded("dropDown", dropDown);
+		PopUpButton(parent).uiPartAdded("dataGroup", dataGroup);
 	}
 
 	private var _currentState:String;

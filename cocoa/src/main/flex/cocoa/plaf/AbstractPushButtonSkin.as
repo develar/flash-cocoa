@@ -19,7 +19,7 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 		super();
 
 		mouseChildren = false;
-		labelHelper = new LabelHelper(this);
+		labelHelper = new LabelHelper(this, getFont("SystemFont"));
 	}
 
 	override public function get baselinePosition():Number

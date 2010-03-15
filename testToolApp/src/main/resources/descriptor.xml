@@ -7,6 +7,6 @@
 	<initialWindow>
 		<systemChrome>none</systemChrome>
 		<transparent>true</transparent>
-		<content>testToolApp-1.1-SNAPSHOT.swf</content>
+		<content>assetBuilder-1.1-SNAPSHOT.swf</content>
 	</initialWindow>
 </application>

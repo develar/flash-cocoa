@@ -11,10 +11,10 @@ import org.flyti.layout.AdvancedLayout;
 import org.flyti.layout.LayoutMetrics;
 import cocoa.AbstractSkin;
 import cocoa.Container;
-import cocoa.SkinPartProvider;
+import cocoa.UIPartProvider;
 import cocoa.sidebar.SourceListView;
 
-public class SourceListSkin extends AbstractSkin implements AdvancedLayout, SkinPartProvider
+public class SourceListSkin extends AbstractSkin implements AdvancedLayout, UIPartProvider
 {
 	private static const STROKE_THICKNESS:Number = 1;
 	private static const STROKE_OFFSET:Number = STROKE_THICKNESS / 2;
@@ -50,7 +50,7 @@ public class SourceListSkin extends AbstractSkin implements AdvancedLayout, Skin
 		{
 			contentGroup = new Container();
 			addChild(contentGroup);
-			hostComponent.skinPartAdded("contentGroup", contentGroup);
+			hostComponent.uiPartAdded("contentGroup", contentGroup);
 		}
 	}
 

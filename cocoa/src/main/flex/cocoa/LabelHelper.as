@@ -32,7 +32,7 @@ public class LabelHelper
 	private var textLine:TextLine;
 	private var container:UIComponent;
 
-	public function LabelHelper(container:UIComponent, font:ElementFormat = null)
+	public function LabelHelper(container:UIComponent, font:ElementFormat)
 	{
 		this.container = container;
 		_font = font;

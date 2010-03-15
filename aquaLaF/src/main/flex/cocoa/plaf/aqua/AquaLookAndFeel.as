@@ -55,6 +55,11 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 
 	private static function initAssets():void
 	{
+		if (borders != null)
+		{
+			return;
+		}
+
 		var data:ByteArray = new buttonsImageData();
 		buttonsImageData = null;
 
@@ -84,9 +89,10 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		}
 	}
 
-	public static function setBorders(value:Vector.<Border>):void
+	public static function _setBordersAndIcons(borders:Vector.<Border>, icons:Vector.<Icon>):void
 	{
-		borders = value;
+		AquaLookAndFeel.borders = borders;
+		AquaLookAndFeel.icons = icons;
 	}
 }
 }

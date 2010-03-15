@@ -19,7 +19,7 @@ public class ViewBase extends OnDemandEventDispatcher
 	/**
 	 * @todo Подумать о том, чтобы сделать partAdded публичным или же в неком namespace типа view
 	 */
-	public function skinPartAdded(id:String, instance:Object):void
+	public function uiPartAdded(id:String, instance:Object):void
 	{
 		partAdded(id, instance);
 	}
@@ -29,7 +29,7 @@ public class ViewBase extends OnDemandEventDispatcher
 		untypedSkin = skin;
 		skin.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, skinPropertyChangeHandler);
 
-		if (!(skin is SkinPartProvider))
+		if (!(skin is UIPartProvider))
 		{
 			// PROPERTY_CHANGE вешается поздно, и некоторые skin part устанавливаются в конструкторе
 			for (var skinPartId:String in skinParts)

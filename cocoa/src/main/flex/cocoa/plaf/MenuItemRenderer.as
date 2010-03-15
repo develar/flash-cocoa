@@ -15,7 +15,7 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	public function MenuItemRenderer()
 	{
-		labelHelper = new LabelHelper(this);
+		labelHelper = new LabelHelper(this, getFont("SystemFont"));
 		
 		addRollHandlers();
 	}

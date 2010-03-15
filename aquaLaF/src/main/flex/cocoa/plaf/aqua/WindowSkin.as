@@ -15,7 +15,7 @@ import mx.core.mx_internal;
 import org.flyti.layout.AdvancedLayout;
 import cocoa.AbstractSkin;
 import cocoa.Container;
-import cocoa.SkinPartProvider;
+import cocoa.UIPartProvider;
 import cocoa.View;
 
 import spark.layouts.HorizontalLayout;
@@ -27,7 +27,7 @@ use namespace mx_internal;
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
  * На данный момент нет поддержки bottom bar как по спецификации Apple. Но есть нечто типа control bar как Open/Choose — явно там это так никак не названо.
  */
-public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, SkinPartProvider
+public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, UIPartProvider
 {
 	private var border:Border;
 
@@ -91,7 +91,7 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 		{
 			contentGroup = new Container();
 			addChild(contentGroup);
-			hostComponent.skinPartAdded("contentGroup", contentGroup);
+			hostComponent.uiPartAdded("contentGroup", contentGroup);
 		}
 
 		if (controlBar == null)
@@ -106,7 +106,7 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 			controlBar.layout = bottomBarGroupLayout;
 
 			addChild(controlBar);
-			hostComponent.skinPartAdded("controlBar", controlBar);
+			hostComponent.uiPartAdded("controlBar", controlBar);
 		}
 	}
 

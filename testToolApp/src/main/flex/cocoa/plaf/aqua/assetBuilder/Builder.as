@@ -71,7 +71,7 @@ public class Builder
 		
 		show(testContainer, data);
 
-		AquaLookAndFeel.setBorders(borders);
+		AquaLookAndFeel._setBordersAndIcons(borders, icons);
 		UIManager.lookAndFeel = new AquaLookAndFeel();
 	}
 

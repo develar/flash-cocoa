@@ -15,8 +15,10 @@ import mx.core.ContainerCreationPolicy;
 import mx.core.FlexGlobals;
 import mx.core.IFlexDisplayObject;
 import mx.core.IInvalidating;
+import mx.core.ILayoutElement;
 import mx.core.IVisualElement;
 import mx.core.Singleton;
+import mx.core.UIComponent;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
@@ -32,7 +34,7 @@ use namespace mx_internal;
 [Frame(factoryClass='org.flyti.managers.SystemManager')]
 
 [DefaultProperty("mxmlContent")]
-public class ApplicationImpl extends LightContainer implements Application
+public class ApplicationImpl extends LightContainer implements Application, IFocusManagerContainer
 {
 	public var frameRate:Number;
 	public var pageTitle:String;
@@ -61,7 +63,8 @@ public class ApplicationImpl extends LightContainer implements Application
 
 		showInAutomationHierarchy = true;
 
-		initResizeBehavior();
+		var version:Array = Capabilities.version.split(' ')[1].split(',');
+		synchronousResize = (parseFloat(version[0]) > 10 || (parseFloat(version[0]) == 10 && parseFloat(version[1]) >= 1)) && (Capabilities.playerType != "Desktop");
 
 		initializeMaps();
 		if (maps != null)
@@ -96,30 +99,11 @@ public class ApplicationImpl extends LightContainer implements Application
 		}
 	}
 
-	private function initResizeBehavior():void
-	{
-		var version:Array = Capabilities.version.split(' ')[1].split(',');
-
-		synchronousResize = (parseFloat(version[0]) > 10 ||
-							 (parseFloat(version[0]) == 10 && parseFloat(version[1]) >= 1))
-				&& (Capabilities.playerType != "Desktop");
-	}
-
-	override protected function createChildren():void
-	{
-		super.createChildren();
-	}
-
 	override protected function childrenCreated():void
 	{
 		parent.dispatchEvent(new InjectorEvent(this));
 
 		super.childrenCreated();
-	}
-
-	override public function prepareToPrint(target:IFlexDisplayObject):Object
-	{
-		return super.prepareToPrint(target);
 	}
 
 	public function createDeferredContent():void
@@ -186,10 +170,6 @@ public class ApplicationImpl extends LightContainer implements Application
 	{
 	}
 
-	/**
-	 *  Storage for the parameters property.
-	 *  This variable is set in the initialize() method of SystemManager.
-	 */
 	mx_internal var _parameters:Object;
 
 	/**
@@ -213,20 +193,10 @@ public class ApplicationImpl extends LightContainer implements Application
 		return _parameters;
 	}
 
-	/**
-	 *  @private
-	 *  Storage for the url property.
-	 *  This variable is set in the initialize().
-	 */
 	mx_internal var _url:String;
 
 	/**
-	 *  The URL from which this Application's SWF file was loaded.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
+	 *  The URL from which this Application's SWF file was loaded
 	 */
 	public function get url():String
 	{
@@ -259,6 +229,10 @@ public class ApplicationImpl extends LightContainer implements Application
 		_url = LoaderUtil.normalizeURL(sm.loaderInfo);
 		_parameters = sm.loaderInfo.parameters;
 
+		var focusManager:FocusManager = new FocusManager(this);
+		var awm:IActiveWindowManager = IActiveWindowManager(systemManager.getImplementation("mx.managers::IActiveWindowManager"));
+		awm == null ? focusManager.activate() : awm.activate(this);
+
 		// Setup the default context menu here. This allows the application
 		// developer to override it in the initialize event, if desired.
 		initContextMenu();
@@ -270,7 +244,9 @@ public class ApplicationImpl extends LightContainer implements Application
 		// This is strictly for the debugger to be able to halt.
 		// Note: isDebugger is true only with a Debugger Player.
 		if (sm.isTopLevel() && Capabilities.isDebugger)
+		{
 			setInterval(debugTickler, 1500);
+		}
 	}
 
 	/**
@@ -328,14 +304,7 @@ public class ApplicationImpl extends LightContainer implements Application
 		super.setUnscaledWidth(value);
 	}
 
-	//--------------------------------------------------------------------------
-	//
-	//  Methods
-	//
-	//--------------------------------------------------------------------------
-
 	/**
-	 *  @private
 	 *  This is here so we get the this pointer set to Application.
 	 */
 	private function debugTickler():void
@@ -467,16 +436,22 @@ public class ApplicationImpl extends LightContainer implements Application
 		invalidateDisplayList();
 	}
 
-	/**
-	 * Каждый ребенок App обладает своим FocusManager
-	 */
-	override public function addElement(element:IVisualElement):IVisualElement
+	public function get defaultButton():IFlexDisplayObject
 	{
-		super.addElement(element);
-		var focusManager:FocusManager = new FocusManager(IFocusManagerContainer(element));
-		var awm:IActiveWindowManager = IActiveWindowManager(systemManager.getImplementation("mx.managers::IActiveWindowManager"));
-		awm == null ? focusManager.activate() : awm.activate(element);
-		return element;
+		return null;
+	}
+
+	public function set defaultButton(value:IFlexDisplayObject):void
+	{
+	}
+
+	override protected function updateDisplayList(w:Number, h:Number):void
+	{
+		var n:int = numChildren;
+		while (n-- > 0)
+		{
+			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(NaN, NaN);
+		}
 	}
 }
 }

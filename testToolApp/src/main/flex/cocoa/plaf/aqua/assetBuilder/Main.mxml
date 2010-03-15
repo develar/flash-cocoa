@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
-					 xmlns:c="cocoa"
-					 xmlns:ac="acocoa"
-					 creationPolicy="none" width="600" height="600"
-					 creationComplete="creationCompleteHandler()">
+						xmlns:c="cocoa"
+						xmlns:ac="acocoa"
+						creationPolicy="none" width="600" height="600"
+						creationComplete="creationCompleteHandler()">
 
 	<fx:Script><![CDATA[
 		import cocoa.plaf.PopUpButtonSkin;
@@ -19,7 +19,7 @@
 		private function creationCompleteHandler():void
 		{
 			var testContainer:Sprite = new Sprite();
-			$addChild(testContainer);
+			container.$addChild(testContainer);
 			testContainer.x = 400;
 			new Builder().build(testContainer);
 
@@ -29,15 +29,15 @@
 		}
 		]]></fx:Script>
 
-	<Rect left="0" right="0" top="0" bottom="0">
-		<stroke>
-			<SolidColorStroke color="0xcccccc"/>
-		</stroke>
-		<fill>
-			<SolidColor alpha="0"/>
-		</fill>
-	</Rect>
-	<VGroup left="100" top="100" right="100" bottom="100">
+	<!--<Rect left="0" right="0" top="0" bottom="0">-->
+		<!--<stroke>-->
+			<!--<SolidColorStroke color="0xcccccc"/>-->
+		<!--</stroke>-->
+		<!--<fill>-->
+			<!--<SolidColor alpha="0"/>-->
+		<!--</fill>-->
+	<!--</Rect>--> 
+	<VGroup id="container" left="100" top="100" right="100" bottom="100">
 		<c:PushButton label="Help H" skinClass="{PushButtonSkin}"/>
 		<c:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}" bezel="texturedRounded"/>
 		

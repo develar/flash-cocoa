@@ -3,10 +3,10 @@ package cocoa.plaf
 import cocoa.AbstractSkin;
 import cocoa.HSlider;
 import cocoa.NumericStepper;
-import cocoa.SkinPartProvider;
+import cocoa.UIPartProvider;
 import cocoa.SliderNumericStepper;
 
-public class SliderNumericStepperSkin extends AbstractSkin implements SkinPartProvider
+public class SliderNumericStepperSkin extends AbstractSkin implements UIPartProvider
 {
 	private var slider:HSlider;
 	private var stepper:NumericStepper;
@@ -22,7 +22,7 @@ public class SliderNumericStepperSkin extends AbstractSkin implements SkinPartPr
 			slider = new HSlider();
 			slider.enabled = enabled;
 			addChild(slider);
-			hostComponent.skinPartAdded("slider", slider);
+			hostComponent.uiPartAdded("slider", slider);
 		}
 
 		if (stepper == null)
@@ -30,7 +30,7 @@ public class SliderNumericStepperSkin extends AbstractSkin implements SkinPartPr
 			stepper = new NumericStepper();
 			stepper.enabled = enabled;
 			addChild(stepper);
-			hostComponent.skinPartAdded("stepper", stepper);
+			hostComponent.uiPartAdded("stepper", stepper);
 		}
 	}
 

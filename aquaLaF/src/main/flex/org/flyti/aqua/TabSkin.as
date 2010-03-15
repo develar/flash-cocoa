@@ -11,13 +11,13 @@ import org.flyti.layout.AdvancedLayout;
 import org.flyti.layout.BarHorizontalLayout;
 import cocoa.AbstractSkin;
 import cocoa.SingleSelectionDataGroup;
-import cocoa.SkinPartProvider;
+import cocoa.UIPartProvider;
 import cocoa.ViewStack;
 import cocoa.tabView.TabView;
 
 use namespace mx_internal;
 
-public class TabSkin extends AbstractSkin implements AdvancedLayout, SkinPartProvider
+public class TabSkin extends AbstractSkin implements AdvancedLayout, UIPartProvider
 {
 	[Embed(source="/GroupBox.png", scaleGridTop="7", scaleGridBottom="11", scaleGridLeft="7", scaleGridRight="13")]
 	private static const contentBorderClass:Class;
@@ -46,7 +46,7 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout, SkinPartPro
 			paneGroup = new ViewStack();
 			paneGroup.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
 			addChild(paneGroup);
-			hostComponent.skinPartAdded("paneGroup", paneGroup);
+			hostComponent.uiPartAdded("paneGroup", paneGroup);
 		}
 
 		if (itemGroup == null)
@@ -56,7 +56,7 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout, SkinPartPro
 			itemGroup.itemRenderer = new ClassFactory(AquaBarButton);
 
 			addChild(itemGroup);
-			hostComponent.skinPartAdded("itemGroup", itemGroup);
+			hostComponent.uiPartAdded("itemGroup", itemGroup);
 		}
 	}
 

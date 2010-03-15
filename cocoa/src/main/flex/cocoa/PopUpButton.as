@@ -23,7 +23,7 @@ public class PopUpButton extends DropDownListBase
 	/**
 	 * dropDown and dataGroup must be deferred
 	 */
-	public function skinPartAdded(id:String, instance:Object):void
+	public function uiPartAdded(id:String, instance:Object):void
 	{
 		this[id] = instance;
 		partAdded(id, instance);
@@ -49,12 +49,42 @@ public class PopUpButton extends DropDownListBase
 
 	override public function getStyle(styleProp:String):*
     {
-		return styleProp == "skinClass" ? UIManager.getUI("PopUpButton") : super.getStyle("styleProp");
+		return styleProp == "skinClass" ? UIManager.getUI("PopUpButton") : undefined;
 	}
 
 	override public function regenerateStyleCache(recursive:Boolean):void
     {
 		
+	}
+
+	override public function styleChanged(styleProp:String):void
+    {
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+    {
+		return true;
+	}
+
+	override public function notifyStyleChangeInChildren(styleProp:String, recursive:Boolean):void
+	{
+
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+    {
+
+	}
+
+	override protected function resourcesChanged():void
+    {
+
+	}
+
+	override public function get layoutDirection():String
+    {
+		return LightUIComponent.LAYOUT_DIRECTION_LTR;
 	}
 }
 }

@@ -9,6 +9,8 @@ public interface View extends IVisualElement, IAdvancedStyleClient
 	
 	function createSkin():Skin;
 
+	function uiPartAdded(id:String, instance:Object):void;
+	
 	function commitProperties():void;
 }
 }

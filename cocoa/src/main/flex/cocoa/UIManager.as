@@ -13,14 +13,18 @@ public class UIManager
 
 	public static function setLookAndFeelByClassName(className:String):void
 	{
-		var clazz:Class = Class(getDefinitionByName(className));
+		setLookAndFeelByClass(Class(getDefinitionByName(className)));
+	}
+
+	public static function setLookAndFeelByClass(clazz:Class):void
+	{
 		lookAndFeel = new clazz();
 	}
 
 	public static function set lookAndFeel(value:LookAndFeel):void
 	{
-		laf.initialize();
 		laf = value;
+		laf.initialize();
 	}
 
 	public static function getBorder(key:String):Border
