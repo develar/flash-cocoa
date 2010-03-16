@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.Skin;
+
 import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
@@ -18,7 +20,7 @@ import mx.styles.CSSStyleDeclaration;
 import mx.styles.IAdvancedStyleClient;
 import mx.styles.StyleProtoChain;
 
-import org.flyti.layout.LayoutMetrics;
+import cocoa.layout.LayoutMetrics;
 import org.flyti.resources.ResourceManager;
 
 use namespace ui;
@@ -379,13 +381,6 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 
 	public function styleChanged(styleProp:String):void
 	{
-//		var allStyles:Boolean = styleProp == null || styleProp == "styleName";
-//
-//		if (allStyles || styleProp == "skinClass")
-//		{
-//			skinChanged = true;
-//			invalidateProperties();
-//		}
 	}
 
 	public function get className():String
@@ -503,11 +498,11 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 		regenerateStyleCache(false);
 		var skinClass:Class = _skinClass == null ? getStyle("skinClass") : _skinClass;
 		_skin = new skinClass();
-		initializeSkin();
+		attachSkin();
 		return _skin;
 	}
 
-	protected function initializeSkin():void
+	protected function attachSkin():void
 	{
 		skinV = _skin;
 		_skin.layoutMetrics = layoutMetrics;

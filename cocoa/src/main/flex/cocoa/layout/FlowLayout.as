@@ -1,4 +1,4 @@
-package org.flyti.layout
+package cocoa.layout
 {
 import flash.display.DisplayObject;
 

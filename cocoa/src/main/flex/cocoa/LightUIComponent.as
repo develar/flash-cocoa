@@ -3,7 +3,7 @@ package cocoa
 import mx.core.UIComponent;
 import mx.core.mx_internal;
 
-import org.flyti.layout.LayoutMetrics;
+import cocoa.layout.LayoutMetrics;
 
 use namespace mx_internal;
 

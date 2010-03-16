@@ -1,10 +1,12 @@
-package cocoa
+package cocoa.plaf
 {
+import cocoa.View;
+
 import mx.core.IStateClient;
 import mx.managers.IToolTipManagerClient;
 import mx.styles.ISimpleStyleClient;
 
-import org.flyti.layout.LayoutMetrics;
+import cocoa.layout.LayoutMetrics;
 
 public interface Skin extends SimpleSkin, IStateClient, ISimpleStyleClient, IToolTipManagerClient
 {

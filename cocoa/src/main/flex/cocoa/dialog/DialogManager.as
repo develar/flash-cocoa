@@ -1,6 +1,6 @@
 package cocoa.dialog
 {
-import cocoa.Skin;
+import cocoa.plaf.Skin;
 import cocoa.View;
 import cocoa.dialog.events.DialogEvent;
 

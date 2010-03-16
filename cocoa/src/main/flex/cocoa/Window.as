@@ -20,7 +20,7 @@ public class Window extends Box implements TitledPane
 		}
 	}
 
-	override protected function initializeSkin():void
+	override protected function attachSkin():void
 	{
 		typedSkin = WindowSkin(skin);
 
@@ -34,7 +34,7 @@ public class Window extends Box implements TitledPane
 			typedSkin.title = _title;
 		}
 		
-		super.initializeSkin();
+		super.attachSkin();
 	}
 }
 }

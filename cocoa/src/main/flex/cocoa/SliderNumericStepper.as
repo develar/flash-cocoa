@@ -142,14 +142,14 @@ public class SliderNumericStepper extends AbstractView
 		slider.addEventListener(Event.CHANGE, sliderChangeHandler);
 	}
 
-	override protected function initializeSkin():void
+	override protected function attachSkin():void
 	{
 		if (!_enabled)
 		{
 			skin.enabled = false;
 		}
 		
-		super.initializeSkin();
+		super.attachSkin();
 	}
 
 //	override protected function partRemoved(partName:String, instance:Object):void

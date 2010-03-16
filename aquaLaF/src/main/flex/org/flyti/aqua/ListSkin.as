@@ -6,7 +6,7 @@ import flash.display.LineScaleMode;
 
 import mx.core.UIComponent;
 
-import org.flyti.layout.TileLayout;
+import cocoa.layout.TileLayout;
 
 import spark.components.DataGroup;
 import spark.components.List;

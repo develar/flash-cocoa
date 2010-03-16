@@ -1,4 +1,4 @@
-package cocoa
+package cocoa.plaf
 {
 import mx.core.IInvalidating;
 import mx.core.IUIComponent;

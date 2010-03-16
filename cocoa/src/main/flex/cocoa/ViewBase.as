@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.SimpleSkin;
+
 import flash.utils.Dictionary;
 
 import mx.core.IVisualElement;
@@ -27,10 +29,11 @@ public class ViewBase extends OnDemandEventDispatcher
 	protected function listenSkinParts(skin:SimpleSkin):void
 	{
 		untypedSkin = skin;
-		skin.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, skinPropertyChangeHandler);
 
 		if (!(skin is UIPartProvider))
 		{
+			skin.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, skinPropertyChangeHandler);
+			
 			// PROPERTY_CHANGE вешается поздно, и некоторые skin part устанавливаются в конструкторе
 			for (var skinPartId:String in skinParts)
 			{
@@ -64,7 +67,7 @@ public class ViewBase extends OnDemandEventDispatcher
 	{
 		this[id] = instance;
 		const handlerName:String = id + "Added";
-		if (!((skinParts[id] as int) & HANDLER_NOT_EXISTS))
+		if ((int(skinParts[id]) & HANDLER_NOT_EXISTS) == 0)
 		{
 			this[handlerName]();
 		}

@@ -7,9 +7,9 @@ import mx.core.ILayoutElement;
 import mx.core.SpriteAsset;
 import mx.core.mx_internal;
 
-import org.flyti.layout.AdvancedLayout;
-import org.flyti.layout.BarHorizontalLayout;
-import cocoa.AbstractSkin;
+import cocoa.layout.AdvancedLayout;
+import cocoa.layout.BarHorizontalLayout;
+import cocoa.plaf.AbstractSkin;
 import cocoa.SingleSelectionDataGroup;
 import cocoa.UIPartProvider;
 import cocoa.ViewStack;

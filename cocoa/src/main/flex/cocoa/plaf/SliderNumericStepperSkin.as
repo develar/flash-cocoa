@@ -1,6 +1,6 @@
 package cocoa.plaf
 {
-import cocoa.AbstractSkin;
+import cocoa.plaf.AbstractSkin;
 import cocoa.HSlider;
 import cocoa.NumericStepper;
 import cocoa.UIPartProvider;

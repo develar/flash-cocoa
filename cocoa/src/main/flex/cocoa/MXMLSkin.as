@@ -1,9 +1,11 @@
 package cocoa
 {
+import cocoa.plaf.Skin;
+
 import mx.core.mx_internal;
 import mx.styles.IAdvancedStyleClient;
 
-import org.flyti.layout.LayoutMetrics;
+import cocoa.layout.LayoutMetrics;
 
 use namespace mx_internal;
 

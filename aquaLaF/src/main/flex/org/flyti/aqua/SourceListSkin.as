@@ -7,9 +7,9 @@ import flash.display.IGraphicsData;
 
 import mx.core.ILayoutElement;
 
-import org.flyti.layout.AdvancedLayout;
-import org.flyti.layout.LayoutMetrics;
-import cocoa.AbstractSkin;
+import cocoa.layout.AdvancedLayout;
+import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.AbstractSkin;
 import cocoa.Container;
 import cocoa.UIPartProvider;
 import cocoa.sidebar.SourceListView;

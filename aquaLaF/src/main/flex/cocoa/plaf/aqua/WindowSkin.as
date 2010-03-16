@@ -12,8 +12,8 @@ import flash.display.Graphics;
 import mx.core.ILayoutElement;
 import mx.core.mx_internal;
 
-import org.flyti.layout.AdvancedLayout;
-import cocoa.AbstractSkin;
+import cocoa.layout.AdvancedLayout;
+import cocoa.plaf.AbstractSkin;
 import cocoa.Container;
 import cocoa.UIPartProvider;
 import cocoa.View;

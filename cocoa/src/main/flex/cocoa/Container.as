@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.Skin;
+
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
@@ -9,7 +11,7 @@ import mx.core.IVisualElement;
 import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
 
-import org.flyti.layout.AdvancedLayout;
+import cocoa.layout.AdvancedLayout;
 import org.flyti.plexus.Injectable;
 import org.flyti.util.Assert;
 

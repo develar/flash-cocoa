@@ -1,17 +1,20 @@
-package cocoa
+package cocoa.plaf
 {
-import mx.core.UIComponent;
+import cocoa.LightUIComponent;
+import cocoa.plaf.Skin;
+import cocoa.View;
+
 import mx.core.mx_internal;
 import mx.styles.IAdvancedStyleClient;
 
-import org.flyti.layout.LayoutMetrics;
+import cocoa.layout.LayoutMetrics;
 
 use namespace mx_internal;
 
 /**
  * Default base skin implementation for view
  */
-public class AbstractSkin extends UIComponent implements Skin
+public class AbstractSkin extends LightUIComponent implements Skin
 {
 	private var _untypedHostComponent:View;
 	public function get untypedHostComponent():View

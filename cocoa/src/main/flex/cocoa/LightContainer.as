@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.Skin;
+
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;

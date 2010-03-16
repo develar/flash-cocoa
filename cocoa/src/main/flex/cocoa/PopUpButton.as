@@ -1,32 +1,43 @@
 package cocoa
 {
+import mx.collections.IList;
 import mx.core.mx_internal;
 
-import spark.components.supportClasses.DropDownListBase;
+import spark.components.DataGroup;
+import spark.components.supportClasses.ButtonBase;
 import spark.utils.LabelUtil;
 
 use namespace mx_internal;
+use namespace ui;
 
 /**
  * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
-public class PopUpButton extends DropDownListBase
+public class PopUpButton extends AbstractView
 {
+	ui var openButton:ButtonBase;
+	ui var dataGroup:DataGroup;
+
 	public function PopUpButton()
 	{
 		super();
 
+		skinParts.dataGroup = 0;
 		requireSelection = true;
-		useVirtualLayout = false; // present up to 12 mutually exclusive choices (according to Apple HIG) – virtual layout is needless
 	}
 
-	/**
-	 * dropDown and dataGroup must be deferred
-	 */
-	public function uiPartAdded(id:String, instance:Object):void
+	private var _dataProvider:IList;
+	public function set dataProvider(value:IList):void
 	{
-		this[id] = instance;
-		partAdded(id, instance);
+		if (value != _dataProvider)
+		{
+			_dataProvider = value;
+		}
+	}
+
+	ui function dataGroupAdded():void
+	{
+		dataGroup.dataProvider = _dataProvider;
 	}
 
 	override mx_internal function updateLabelDisplay(displayItem:* = undefined):void
@@ -40,51 +51,6 @@ public class PopUpButton extends DropDownListBase
 
 			PushButton(openButton).label = LabelUtil.itemToLabel(displayItem, labelField, labelFunction);
 		}
-	}
-
-	override public function get baselinePosition():Number
-	{
-		return skin.baselinePosition;
-	}
-
-	override public function getStyle(styleProp:String):*
-    {
-		return styleProp == "skinClass" ? UIManager.getUI("PopUpButton") : undefined;
-	}
-
-	override public function regenerateStyleCache(recursive:Boolean):void
-    {
-		
-	}
-
-	override public function styleChanged(styleProp:String):void
-    {
-
-	}
-
-	override mx_internal function initThemeColor():Boolean
-    {
-		return true;
-	}
-
-	override public function notifyStyleChangeInChildren(styleProp:String, recursive:Boolean):void
-	{
-
-	}
-
-	override public function registerEffects(effects:Array /* of String */):void
-    {
-
-	}
-
-	override protected function resourcesChanged():void
-    {
-
-	}
-
-	override public function get layoutDirection():String
-    {
-		return LightUIComponent.LAYOUT_DIRECTION_LTR;
 	}
 }
 }

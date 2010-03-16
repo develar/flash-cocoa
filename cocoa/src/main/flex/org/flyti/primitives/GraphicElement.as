@@ -1,6 +1,6 @@
 package org.flyti.primitives
 {
-import org.flyti.layout.AdvancedLayout;
+import cocoa.layout.AdvancedLayout;
 
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;

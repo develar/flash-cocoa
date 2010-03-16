@@ -1,4 +1,4 @@
-package org.flyti.layout
+package cocoa.layout
 {
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;

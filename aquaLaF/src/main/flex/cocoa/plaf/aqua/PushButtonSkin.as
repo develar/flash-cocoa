@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.plaf.AbstractPushButtonSkin;
-import cocoa.plaf.ButtonState;
+import cocoa.ButtonState;
 import cocoa.plaf.Scale3HBitmapBorder;
 
 import spark.components.Button;

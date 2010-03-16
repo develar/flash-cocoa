@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.Skin;
+
 import mx.core.IVisualElement;
 import mx.styles.IAdvancedStyleClient;
 

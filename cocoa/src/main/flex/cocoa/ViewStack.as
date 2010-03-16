@@ -3,7 +3,7 @@ package cocoa
 import mx.core.ILayoutElement;
 import mx.core.UIComponent;
 
-import org.flyti.layout.AdvancedLayout;
+import cocoa.layout.AdvancedLayout;
 
 public class ViewStack extends LightContainer implements AdvancedLayout
 {
