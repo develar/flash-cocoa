@@ -36,11 +36,11 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		data["TabView"] = TabSkin;
 
 		data["PushButton"] = PushButtonSkin;
-		data["PushButton.border.rounded"] = borders[BezelStyle.rounded.ordinal];
-		data["PushButton.border.texturedRounded"] = borders[BezelStyle.texturedRounded.ordinal];
+		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];
+//		data["PushButton.border.texturedRounded"] = borders[BezelStyle.texturedRounded.ordinal];
 
 		data["PopUpButton"] = PopUpButtonSkin;
-		data["PopUpButton.border.rounded"] = borders[2 + BezelStyle.rounded.ordinal];
+		data["PopUpButton.border"] = borders[2 + BezelStyle.rounded.ordinal];
 		data["PopUpButton.openButton.skin"] = PopUpOpenButtonSkin;
 		data["PopUpButton.menuItemFactory"] = new ClassFactory(MenuItemRenderer);
 		data["PopUpButton.menuBorder"] = borders[3];

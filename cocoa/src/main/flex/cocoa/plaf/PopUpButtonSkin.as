@@ -3,7 +3,6 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.BorderedDataGroup;
 import cocoa.Icon;
-import cocoa.LightUIComponent;
 import cocoa.PopUpButton;
 import cocoa.PushButton;
 import cocoa.UIManager;
@@ -13,7 +12,7 @@ import flash.text.engine.ElementFormat;
 import spark.layouts.HorizontalAlign;
 import spark.layouts.VerticalLayout;
 
-public class PopUpButtonSkin extends LightUIComponent
+public class PopUpButtonSkin extends AbstractSkin
 {
 	public var openButton:PushButton;
 	private var dropDown:BorderedDataGroup;
@@ -41,7 +40,7 @@ public class PopUpButtonSkin extends LightUIComponent
 		{
 			openButton = new PushButton();
 			openButton.setStyle("skinClass", UIManager.getUI("PopUpButton.openButton.skin"));
-			addChild(openButton);
+//			addChild(openButton);
 		}
 	}
 
@@ -92,16 +91,16 @@ public class PopUpButtonSkin extends LightUIComponent
 
 	override protected function measure():void
 	{
-		measuredMinWidth = openButton.measuredMinHeight;
-		measuredMinHeight = openButton.measuredMinHeight;
-
-		measuredWidth = openButton.getExplicitOrMeasuredWidth();
-		measuredHeight = openButton.getExplicitOrMeasuredHeight();
+//		measuredMinWidth = openButton.measuredMinHeight;
+//		measuredMinHeight = openButton.measuredMinHeight;
+//
+//		measuredWidth = openButton.getExplicitOrMeasuredWidth();
+//		measuredHeight = openButton.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		openButton.setActualSize(openButton.getExplicitOrMeasuredWidth(), openButton.getExplicitOrMeasuredHeight());
+//		openButton.setActualSize(openButton.getExplicitOrMeasuredWidth(), openButton.getExplicitOrMeasuredHeight());
 	}
 
 	override public function get baselinePosition():Number

@@ -1,13 +1,11 @@
 package cocoa.plaf
 {
 import cocoa.LightUIComponent;
-import cocoa.plaf.Skin;
 import cocoa.View;
+import cocoa.layout.LayoutMetrics;
 
 import mx.core.mx_internal;
 import mx.styles.IAdvancedStyleClient;
-
-import cocoa.layout.LayoutMetrics;
 
 use namespace mx_internal;
 

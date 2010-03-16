@@ -61,8 +61,16 @@
 								<class>**.sidebar.*</class>
 
 								<!--&lt;!&ndash;<class>**.MouseCursor</class>&ndash;&gt;-->
-								<!--<class>**.MXMLSkin</class>-->
-								<class>cocoa.*</class>
+								<class>**.MXMLSkin</class>
+								<class>**.*Button</class>
+								<class>**.*ApplicationImpl</class>
+								<class>**.ViewStack</class>
+								<class>**.*Group</class>
+								<class>**.Container</class>
+								<class>**.*Stepper</class>
+								<class>**.*Slider</class>
+								<class>**.*Bar</class>
+								<class>**.*Box</class>
 								<class>**.ResourceMetadata</class>
 
 								<class>org.flyti.primitives.*</class>

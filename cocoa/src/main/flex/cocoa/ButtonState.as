@@ -6,8 +6,8 @@ package cocoa
  */
 public final class ButtonState
 {
-	public static const mixed:int = -1;
 	public static const off:int = 0;
 	public static const on:int = 1;
+	public static const mixed:int = 2;
 }
 }

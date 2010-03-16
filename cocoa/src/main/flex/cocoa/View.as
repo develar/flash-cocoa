@@ -7,7 +7,10 @@ import mx.styles.IAdvancedStyleClient;
 
 public interface View extends IVisualElement, IAdvancedStyleClient
 {
+	function get stylePrefix():String;
 	function get skin():Skin;
+	
+	function set enabled(value:Boolean):void;
 	
 	function createSkin():Skin;
 

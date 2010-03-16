@@ -17,13 +17,13 @@ public class PopUpAnchor extends cocoa.plaf.PopUpAnchor
     {
 		var popUpButton:PopUpButton = PopUpButton(_popUpParent.parent);
 		var borderedDataGroup:BorderedDataGroup = BorderedDataGroup(_popUp);
-		var selectedItemRenderer:MenuItemRenderer = MenuItemRenderer(borderedDataGroup.getElementAt(popUpButton.selectedIndex));
+//		var selectedItemRenderer:MenuItemRenderer = MenuItemRenderer(borderedDataGroup.getElementAt(popUpButton.selectedIndex));
 
 		var stage:Stage = _popUp.stage;
 
 		var listBorderContentInsets:Insets = borderedDataGroup.border.contentInsets;
-		sharedPoint.x = - (listBorderContentInsets.left + selectedItemRenderer.labelLeftMargin) + PopUpOpenButtonSkin(popUpButton.openButton.skin).labelLeftMargin;
-		sharedPoint.y = - listBorderContentInsets.top - selectedItemRenderer.baselinePosition + popUpButton.baselinePosition - (selectedItemRenderer.height * popUpButton.selectedIndex);
+//		sharedPoint.x = - (listBorderContentInsets.left + selectedItemRenderer.labelLeftMargin) + PopUpOpenButtonSkin(popUpButton.openButton.skin).labelLeftMargin;
+//		sharedPoint.y = - listBorderContentInsets.top - selectedItemRenderer.baselinePosition + popUpButton.baselinePosition - (selectedItemRenderer.height * popUpButton.selectedIndex);
 //		sharedPoint.x = 50;
 //		sharedPoint.y = 20;
 		var globalPosition:Point = _popUpParent.localToGlobal(sharedPoint);

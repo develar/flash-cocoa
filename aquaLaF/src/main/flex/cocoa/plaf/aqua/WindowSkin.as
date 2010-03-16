@@ -61,8 +61,9 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 	{
 		super.untypedHostComponent = value;
 
-		var insetsStyle:String = value.getStyle("insets");
-		contentInsets = insetsStyle == null || insetsStyle == "none" ? WINDOW_CONTENT_INSETS : cocoa.plaf.aqua.WindowSkin[insetsStyle.toUpperCase() + "_CONTENT_INSETS"];
+//		var insetsStyle:String = value.getStyle("insets");
+//		contentInsets = insetsStyle == null || insetsStyle == "none" ? WINDOW_CONTENT_INSETS : cocoa.plaf.aqua.WindowSkin[insetsStyle.toUpperCase() + "_CONTENT_INSETS"];
+		contentInsets = WINDOW_CONTENT_INSETS;
 		mover = new WindowMover(this, TITLE_BAR_HEIGHT, contentInsets);
 	}
 

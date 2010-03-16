@@ -34,16 +34,6 @@ public class SliderNumericStepper extends AbstractView
 		_stepperMultiplier = value;
 	}
 
-	private var _enabled:Boolean = true;
-	public function set enabled(value:Boolean):void
-	{
-		_enabled = value;
-		if (skin != null)
-		{
-			skin.enabled = _enabled;
-		}
-	}
-
 	private var _minimum:Number = 0;
 	public function get minimum():Number
 	{
@@ -140,16 +130,6 @@ public class SliderNumericStepper extends AbstractView
 		}
 
 		slider.addEventListener(Event.CHANGE, sliderChangeHandler);
-	}
-
-	override protected function attachSkin():void
-	{
-		if (!_enabled)
-		{
-			skin.enabled = false;
-		}
-		
-		super.attachSkin();
 	}
 
 //	override protected function partRemoved(partName:String, instance:Object):void

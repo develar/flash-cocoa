@@ -1,25 +1,25 @@
 package cocoa
 {
-import cocoa.plaf.PushButtonSkin;
-
-import spark.components.Button;
-
-[Style(name="bezel", type="String", enumeration="rounded,texturedRounded")]
-public class PushButton extends Button
+public class PushButton extends AbstractButton
 {
+	override public function get stylePrefix():String
+	{
+		return "PushButton";
+	}
+
 	private var _label:String;
-	override public function get label():String
+	public function get label():String
 	{
 		return _label;
 	}
-	override public function set label(value:String):void
+	public function set label(value:String):void
 	{
 		if (value != _label)
 		{
 			_label = value;
-			if (skin != null)
+			if (mySkin != null)
 			{
-				PushButtonSkin(skin).label = _label;
+				mySkin.label = _label;
 			}
 		}
 	}
@@ -28,12 +28,12 @@ public class PushButton extends Button
     {
 		super.attachSkin();
 
-		PushButtonSkin(skin).label = _label;
+		mySkin.label = _label;
 	}
 
 	override public function get baselinePosition():Number
 	{
-		return skin.baselinePosition;
+		return skinV.baselinePosition;
 	}
 }
 }

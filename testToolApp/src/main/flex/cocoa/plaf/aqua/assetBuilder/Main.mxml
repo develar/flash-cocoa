@@ -1,13 +1,20 @@
 <?xml version="1.0"?>
-<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
-						xmlns:c="cocoa"
+<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns="cocoa"
 						xmlns:ac="acocoa"
 						creationPolicy="none" width="800" height="800"
 						creationComplete="creationCompleteHandler()">
 
 	<fx:Script><![CDATA[
-		import cocoa.plaf.PopUpButtonSkin;
-		import cocoa.plaf.aqua.PushButtonSkin;
+		import cocoa.dialog.DialogEventMap;
+
+		import cocoa.dialog.events.ShowDialogEvent;
+
+		import com.asfusion.mate.core.EventMap;
+
+		import com.asfusion.mate.core.MateManager;
+
+		import mx.managers.PopUpManager;
 
 		import org.flyti.util.ArrayList;
 
@@ -25,23 +32,24 @@
 
 			createDeferredContent();
 
-
+			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
 		}
+
+
+		override protected function initializeMaps():void
+		{
+			maps = new <EventMap>[
+				new DialogEventMap()
+			];
+		}
+
 		]]></fx:Script>
 
-	<!--<Rect left="0" right="0" top="0" bottom="0">-->
-		<!--<stroke>-->
-			<!--<SolidColorStroke color="0xcccccc"/>-->
-		<!--</stroke>-->
-		<!--<fill>-->
-			<!--<SolidColor alpha="0"/>-->
-		<!--</fill>-->
-	<!--</Rect>--> 
-	<VGroup id="container">
-		<c:PushButton label="Help H" skinClass="{PushButtonSkin}"/>
-		<c:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}" bezel="texturedRounded"/>
+	<Container id="container">
+		<PushButton label="Help H"/>
+		<!--<c:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}"/>-->
 		
-		<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>
-		<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testDataWithLongLabels}"/>
-	</VGroup>
+		<!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>-->
+		<!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testDataWithLongLabels}"/>-->
+	</Container>
 </ac:WindowedApplication>

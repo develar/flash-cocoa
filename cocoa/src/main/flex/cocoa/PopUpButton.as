@@ -4,8 +4,6 @@ import mx.collections.IList;
 import mx.core.mx_internal;
 
 import spark.components.DataGroup;
-import spark.components.supportClasses.ButtonBase;
-import spark.utils.LabelUtil;
 
 use namespace mx_internal;
 use namespace ui;
@@ -13,9 +11,8 @@ use namespace ui;
 /**
  * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
-public class PopUpButton extends AbstractView
+public class PopUpButton extends AbstractButton
 {
-	ui var openButton:ButtonBase;
 	ui var dataGroup:DataGroup;
 
 	public function PopUpButton()
@@ -23,7 +20,7 @@ public class PopUpButton extends AbstractView
 		super();
 
 		skinParts.dataGroup = 0;
-		requireSelection = true;
+//		requireSelection = true;
 	}
 
 	private var _dataProvider:IList;
@@ -40,17 +37,17 @@ public class PopUpButton extends AbstractView
 		dataGroup.dataProvider = _dataProvider;
 	}
 
-	override mx_internal function updateLabelDisplay(displayItem:* = undefined):void
-	{
-		if (openButton != null)
-		{
-			if (displayItem === undefined)
-			{
-				displayItem = selectedItem;
-			}
-
-			PushButton(openButton).label = LabelUtil.itemToLabel(displayItem, labelField, labelFunction);
-		}
-	}
+//	override mx_internal function updateLabelDisplay(displayItem:* = undefined):void
+//	{
+//		if (openButton != null)
+//		{
+//			if (displayItem === undefined)
+//			{
+////				displayItem = selectedItem;
+//			}
+//
+////			PushButton(openButton).label = LabelUtil.itemToLabel(displayItem, labelField, labelFunction);
+//		}
+//	}
 }
 }

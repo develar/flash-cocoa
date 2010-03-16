@@ -424,14 +424,7 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 
 	public function setStyle(styleProp:String, newValue:*):void
 	{
-		if (styleProp == "skinClass")
-		{
-			_skinClass = newValue;
-		}
-		else
-		{
-			throw new IllegalOperationError();
-		}
+		throw new IllegalOperationError();
 	}
 
 	public function clearStyle(styleProp:String):void
@@ -450,7 +443,7 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 
 	public function regenerateStyleCache(recursive:Boolean):void
 	{
-		StyleProtoChain.initProtoChain(this);
+		throw new IllegalOperationError();
 	}
 
 	public function registerEffects(effects:Array):void
@@ -492,18 +485,32 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 		return this is clazz;
 	}
 	
-	/* IViewHost */
+	/* View */
 	public function createSkin():Skin
 	{
-		regenerateStyleCache(false);
-		var skinClass:Class = _skinClass == null ? getStyle("skinClass") : _skinClass;
+		var skinClass:Class = _skinClass;
+		if (skinClass == null)
+		{
+			skinClass = UIManager.getUI(stylePrefix);
+		}
+
 		_skin = new skinClass();
 		attachSkin();
 		return _skin;
 	}
 
+	public function get stylePrefix():String
+	{
+		throw new Error("abstract");
+	}
+
 	protected function attachSkin():void
 	{
+		if (!_enabled)
+		{
+			_skin.enabled = false;
+		}
+
 		skinV = _skin;
 		_skin.layoutMetrics = layoutMetrics;
 		_skin.untypedHostComponent = this;
@@ -512,7 +519,6 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 			_skin["hostComponent"] = this;
 		}
 
-		_skin.styleName = this;
 		listenSkinParts(_skin);
 	}
 
@@ -544,6 +550,16 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
         return null;
     }
 
+	protected var _enabled:Boolean = true;
+	public function set enabled(value:Boolean):void
+	{
+		_enabled = value;
+		if (_skin != null)
+		{
+			_skin.enabled = _enabled;
+		}
+	}
+
 	/* IFlexModule */
 	private var _moduleFactory:IFlexModuleFactory;
 	public function get moduleFactory():IFlexModuleFactory
@@ -565,33 +581,6 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 	{
 		_id = value;
 	}
-
-	/* IEventDispatcher */
-//	private var eventDispather:EventDispatcher;
-//	public function dispatchEvent(event:Event):Boolean
-//	{
-//		return eventDispather.dispatchEvent(event);
-//	}
-//
-//	public function hasEventListener(type:String):Boolean
-//	{
-//		return eventDispather.hasEventListener(type);
-//	}
-//
-//	public function willTrigger(type:String):Boolean
-//	{
-//		return eventDispather.willTrigger(type);
-//	}
-//
-//	public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void
-//	{
-//		eventDispather.removeEventListener(type, listener, useCapture);
-//	}
-//
-//	public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
-//	{
-//		eventDispather.addEventListener(type, listener, useCapture, priority, useWeakReference);
-//	}
 
 	public function initialized(document:Object, id:String):void
 	{

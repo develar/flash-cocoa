@@ -1,18 +1,20 @@
 package cocoa.plaf
 {
+import cocoa.AbstractButton;
 import cocoa.Border;
 import cocoa.Icon;
 import cocoa.LabelHelper;
-import cocoa.LightUIComponent;
 import cocoa.UIManager;
 
 import flash.display.Graphics;
 import flash.text.engine.ElementFormat;
 
-public class AbstractPushButtonSkin extends LightUIComponent implements PushButtonSkin
+public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSkin
 {
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
+
+	public var hostComponent:AbstractButton;
 
 	public function AbstractPushButtonSkin()
 	{
@@ -20,6 +22,11 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 
 		mouseChildren = false;
 		labelHelper = new LabelHelper(this, getFont("SystemFont"));
+	}
+
+	override public function regenerateStyleCache(recursive:Boolean):void
+    {
+		border = getBorder("border");
 	}
 
 	override public function get baselinePosition():Number
@@ -47,12 +54,12 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 
 	protected function getBorder(key:String):Border
 	{
-		return UIManager.getBorder("PushButton." + key);
+		return UIManager.getBorder(hostComponent.stylePrefix + "." + key);
 	}
 
 	protected function getIcon(key:String):Icon
 	{
-		return UIManager.getIcon("PushButton." + key);
+		return UIManager.getIcon(hostComponent.stylePrefix + "." + key);
 	}
 
 	override protected function measure():void
@@ -70,6 +77,7 @@ public class AbstractPushButtonSkin extends LightUIComponent implements PushButt
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
+		labelHelper.font = getFont(enabled ? "SystemFont" : "SystemFont.disabled");
 		labelHelper.validate();
 		labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
 
