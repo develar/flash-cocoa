@@ -233,7 +233,7 @@ public class BitmapFill extends EventDispatcher implements IFill
 		{
 			var scaledToFill:Rectangle = RatioUtil.scaleToFill(sourceAsBitmapData.rect, targetBounds);
 			transformMatrix.scale(scaledToFill.width / sourceAsBitmapData.width, scaledToFill.height / sourceAsBitmapData.height);
-			transformMatrix.translate((targetBounds.width - scaledToFill.width) / 2, (targetBounds.height - scaledToFill.height) / 2);
+			transformMatrix.translate((targetBounds.width - scaledToFill.width) / 2 + targetBounds.x, (targetBounds.height - scaledToFill.height) / 2+targetBounds.y);
 
 		}
 		else if (fillType == BitmapFillType.STRETCH)

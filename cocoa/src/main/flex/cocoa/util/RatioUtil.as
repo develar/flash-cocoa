@@ -17,16 +17,16 @@ public class RatioUtil
 	public static function scaleWidth(rectangle:Rectangle, height:Number):Rectangle
 	{
 		var rec:Rectangle = rectangle.clone();
-		rec.width = height * widthToHeight(rectangle);
-		rec.height = height;
+		rec.width = Math.round(height * widthToHeight(rectangle));
+		rec.height = Math.round(height);
 		return rec;
 	}
 
 	public static function scaleHeight(rectangle:Rectangle, width:Number):Rectangle
 	{
 		var rec:Rectangle = rectangle.clone();
-		rec.width = width;
-		rec.height = width * heightToWidth(rectangle);
+		rec.width = Math.round(width);
+		rec.height = Math.round(width * heightToWidth(rectangle));
 		return rec;
 	}
 
