@@ -18,7 +18,6 @@ import mx.core.IInvalidating;
 import mx.core.ILayoutElement;
 import mx.core.IVisualElement;
 import mx.core.Singleton;
-import mx.core.UIComponent;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
@@ -28,6 +27,8 @@ import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
 import mx.utils.LoaderUtil;
+
+import spark.layouts.BasicLayout;
 
 use namespace mx_internal;
 
@@ -445,12 +446,13 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 	{
 	}
 
+	private var layout:BasicLayout = new BasicLayout();
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
 		var n:int = numChildren;
 		while (n-- > 0)
 		{
-			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(NaN, NaN);
+			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
 		}
 	}
 }
