@@ -12,9 +12,9 @@ public class AbstractItemRenderer extends LightUIComponent implements IItemRende
 {
 	protected var state:uint = 0;
 
-	public static const SELECTED:uint = 1 << 0;
-	public static const SHOWS_CARET:uint = 1 << 1;
-	public static const HOVERED:uint = 1 << 2;
+	protected static const SELECTED:uint = 1 << 0;
+	protected static const SHOWS_CARET:uint = 1 << 1;
+	protected static const HOVERED:uint = 1 << 2;
 
 	private var _itemIndex:int;
 	public function get itemIndex():int

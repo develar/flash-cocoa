@@ -1,14 +1,11 @@
 package cocoa.plaf.aqua.assetBuilder
 {
-import org.flyti.aqua.*;
-
+import cocoa.Border;
 import cocoa.Icon;
-
+import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
-
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
-
 import cocoa.plaf.Scale9BitmapBorder;
 
 import flash.display.BitmapData;
@@ -16,9 +13,6 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import mx.core.BitmapAsset;
-
-import cocoa.Border;
-import cocoa.Insets;
 
 internal final class CompoundImageReader
 {
@@ -59,7 +53,7 @@ internal final class CompoundImageReader
 
 		const firstItemY:Number = -listBorder.layoutInsets.top + listBorder.contentInsets.top + frameRectangle.top;
 		const itemX:Number = -listBorder.layoutInsets.left + listBorder.contentInsets.left + frameRectangle.x;
-		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY + itemHeight, 1, itemHeight);
+		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
 		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(1, true);
 		itemBitmaps[0] = createBitmapData(itemRectangle);
 		borders[position + 1] = Scale1HBitmapBorder.create(itemBitmaps, itemHeight, new Insets(21, NaN, 21, 5));
@@ -70,7 +64,7 @@ internal final class CompoundImageReader
 		itemRectangle.width = 10;
 		itemRectangle.height = 10;
 		icons[1] = BitmapIcon.create(createBitmapData(itemRectangle));
-		itemRectangle.y -= itemHeight;
+		itemRectangle.y += itemHeight;
 		icons[0] = BitmapIcon.create(createBitmapData(itemRectangle));
 
 		// clear item background

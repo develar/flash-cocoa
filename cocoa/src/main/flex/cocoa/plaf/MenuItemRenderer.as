@@ -58,14 +58,29 @@ public class MenuItemRenderer extends AbstractItemRenderer
 		return UIManager.getIcon("MenuItem." + key);
 	}
 
-	protected var menuItem:MenuItem;
+	protected var menuItem:Object;
 	override public function get data():Object
 	{
 		return menuItem;
 	}
 	override public function set data(value:Object):void
 	{
-		menuItem = MenuItem(value);
+		var enabled:Boolean = true;
+		var isSeparatorItem:Boolean = false;
+		menuItem = value;
+		if (menuItem is MenuItem)
+		{
+			enabled = !MenuItem(menuItem).enabled;
+			isSeparatorItem = MenuItem(menuItem).isSeparatorItem;
+		}
+
+		border = getBorder(isSeparatorItem ? "separatorBorder" : "border");
+
+		mouseEnabled = enabled;
+		mouseChildren = enabled;
+
+		invalidateSize();
+		invalidateDisplayList();
 	}
 
 	override protected function measure():void
@@ -83,17 +98,13 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		var hovered:Boolean = (state & HOVERED) != 0;
-		if (menuItem.isSeparatorItem)
+		var highlighted:Boolean = (state & HOVERED) != 0 || (state & SHOWS_CARET) != 0;
+		if (!(menuItem is MenuItem && MenuItem(menuItem).isSeparatorItem))
 		{
-			border = getBorder("separatorBorder");
-		}
-		else
-		{
-			border = getBorder(hovered ? "border.highlighted" : "border");
+			border = getBorder(highlighted ? "border.highlighted" : "border");
 		}
 
-		labelHelper.font = getFont(hovered ? "SystemFont.highlighted" : "SystemFont");
+		labelHelper.font = getFont(highlighted ? "SystemFont.highlighted" : "SystemFont");
 		labelHelper.validate();
 		labelHelper.moveByInset(h, border.contentInsets);
 		

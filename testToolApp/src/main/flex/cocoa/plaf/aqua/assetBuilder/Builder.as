@@ -6,6 +6,7 @@ import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.UIManager;
 import cocoa.plaf.AbstractBitmapBorder;
+import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
@@ -16,6 +17,7 @@ import cocoa.util.FileUtil;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObjectContainer;
+import flash.display.Shape;
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 
@@ -61,7 +63,7 @@ public class Builder
 		}
 
 		data.writeByte(icons.length);
-		for each (var icon:ExternalizableResource in borders)
+		for each (var icon:ExternalizableResource in icons)
 		{
 			icon.writeExternal(data);
 		}
@@ -103,6 +105,23 @@ public class Builder
 
 			x = 100;
 			y += 30;
+		}
+
+		n = data.readUnsignedByte();
+		var icon:BitmapIcon;
+		for (var i:int = 0; i < n; i++)
+		{
+			var shape:Shape = new Shape();
+			shape.x = x;
+			shape.y = y;
+
+			x += 20;
+
+			icon = new BitmapIcon();
+			icon.readExternal(data);
+			icon.draw(null, shape.graphics, 5, 3);
+
+			displayObject.addChild(shape);
 		}
 	}
 }

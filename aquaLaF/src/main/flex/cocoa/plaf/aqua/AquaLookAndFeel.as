@@ -19,7 +19,7 @@ import org.flyti.aqua.TabSkin;
 public final class AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
-	private static var buttonsImageData:Class;
+	private static var assetsDataClass:Class;
 	private static var borders:Vector.<Border>;
 	private static var icons:Vector.<Icon>;
 
@@ -46,9 +46,9 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		data["PopUpButton.menuBorder"] = borders[3];
 
 		data["MenuItem.onStateIcon"] = icons[0];
-		data["MenuItem.onStateIcon.highlighted"] = icons[0];
+		data["MenuItem.onStateIcon.highlighted"] = icons[1];
 
-		data["MenuItem.border"] = new MenuItemBorder();
+		data["MenuItem.border"] = new MenuItemBorder(borders[4].contentInsets);
 		data["MenuItem.border.highlighted"] = borders[4];
 		data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 	}
@@ -60,8 +60,8 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 			return;
 		}
 
-		var data:ByteArray = new buttonsImageData();
-		buttonsImageData = null;
+		var data:ByteArray = new assetsDataClass();
+		assetsDataClass = null;
 
 		var n:int = data.readUnsignedByte();
 		borders = new Vector.<Border>(n, true);
