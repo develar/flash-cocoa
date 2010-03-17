@@ -21,6 +21,12 @@ public class Box extends AbstractView
 	}
 
 	private var _elements:Array;
+
+	override public function get stylePrefix():String
+	{
+		return "Box";
+	}
+
 	public function get elements():Array
 	{
 		return _elements;

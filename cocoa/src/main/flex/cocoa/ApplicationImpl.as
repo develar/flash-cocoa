@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.LookAndFeel;
+
 import com.asfusion.mate.core.EventMap;
 import com.asfusion.mate.events.InjectorEvent;
 
@@ -27,8 +29,6 @@ import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
 import mx.utils.LoaderUtil;
-
-import spark.layouts.BasicLayout;
 
 use namespace mx_internal;
 
@@ -446,7 +446,6 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 	{
 	}
 
-	private var layout:BasicLayout = new BasicLayout();
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
 		var n:int = numChildren;
@@ -454,6 +453,16 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 		{
 			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
 		}
+	}
+
+	private var _laf:LookAndFeel;
+	public function get laf():LookAndFeel
+	{
+		return _laf;
+	}
+	public function set laf(value:LookAndFeel):void
+	{
+		_laf = value;
 	}
 }
 }

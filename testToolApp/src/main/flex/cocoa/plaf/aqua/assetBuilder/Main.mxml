@@ -7,14 +7,10 @@
 
 	<fx:Script><![CDATA[
 		import cocoa.dialog.DialogEventMap;
-
 		import cocoa.dialog.events.ShowDialogEvent;
 
 		import com.asfusion.mate.core.EventMap;
-
 		import com.asfusion.mate.core.MateManager;
-
-		import mx.managers.PopUpManager;
 
 		import org.flyti.util.ArrayList;
 

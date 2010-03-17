@@ -8,11 +8,9 @@ import cocoa.dialog.events.DialogEvent;
 import cocoa.ui;
 
 import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 
-import org.flyti.resources.ResourceManager;
-import org.flyti.util.Assert;
+import cocoa.resources.ResourceManager;
 
 use namespace ui;
 
@@ -89,27 +87,16 @@ public class Dialog extends Window
 
 			if (_cancelVisible)
 			{
-				cancelButton = createControlButton(resourceManager.getString(RESOURCE_BUNDLE, "cancel"), cancelClickHandler);
+				cancelButton = createControlButton(resourceManager.getString(RESOURCE_BUNDLE, "cancel"), cancel);
 				controlBar.addElement(cancelButton);
 			}
 
-			okButton = createControlButton(getOkLocalizedLabel(), okClickHandler);
+			okButton = createControlButton(getOkLocalizedLabel(), ok);
 			okButton.enabled = _valid;
 			controlBar.addElement(okButton);
 		}
 
 		super.commitProperties();
-	}
-
-	private function cancelClickHandler(event:MouseEvent):void
-	{
-		cancel();
-	}
-
-	private function okClickHandler(event:MouseEvent):void
-	{
-		Assert.assert(_valid);
-		ok();
 	}
 
 	protected function cancel():void
@@ -126,8 +113,7 @@ public class Dialog extends Window
 	{
 		var button:PushButton = new PushButton();
 		button.label = label;
-		button.addEventListener(MouseEvent.CLICK, clickHandler);
-
+		button.action = clickHandler;
 		return button;
 	}
 

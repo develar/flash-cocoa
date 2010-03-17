@@ -1,15 +1,21 @@
 package cocoa
 {
-import flash.display.Graphics;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
 
-import mx.core.mx_internal;
+import flash.display.Graphics;
 
 import spark.components.ResizeMode;
 
-use namespace mx_internal;
-
-public class BorderedContainer extends Container
+public class BorderedContainer extends Container implements ViewContainer, LookAndFeelProvider
 {
+	public function BorderedContainer()
+	{
+		super();
+
+		mouseEnabledWhereTransparent = false; // border is responsible for
+	}
+
 	private var _border:Border;
 	public function get border():Border
 	{
@@ -20,11 +26,24 @@ public class BorderedContainer extends Container
 		_border = value;
 	}
 
-	override mx_internal function drawBackground():void
+	// GroupBase не вызывает drawBackground, поэтому мы не переопределяем drawBackground как в BorderedDataGroup
+	override protected function updateDisplayList(w:Number, h:Number):void
 	{
 		var g:Graphics = graphics;
 		g.clear();
-		_border.draw(this, g, resizeMode == ResizeMode.SCALE ? measuredWidth : unscaledWidth, resizeMode == ResizeMode.SCALE ? measuredHeight : unscaledHeight);
+		_border.draw(this, g, resizeMode == ResizeMode.SCALE ? measuredWidth : w, resizeMode == ResizeMode.SCALE ? measuredHeight : h);
+
+		super.updateDisplayList(w, h);
+	}
+
+	private var _laf:LookAndFeel;
+	public function get laf():LookAndFeel
+	{
+		return _laf;
+	}
+	public function set laf(value:LookAndFeel):void
+	{
+		_laf = value;
 	}
 }
 }

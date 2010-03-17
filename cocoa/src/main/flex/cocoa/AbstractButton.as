@@ -47,9 +47,9 @@ public class AbstractButton extends AbstractControlView
 		if (event.target == mySkin)
 		{
 			adjustState(event);
-			if (_actionHandler != null)
+			if (_action != null)
 			{
-				_actionHandler();
+				_action();
 			}
 		}
 	}

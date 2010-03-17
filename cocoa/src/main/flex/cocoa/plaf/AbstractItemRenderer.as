@@ -1,8 +1,8 @@
 package cocoa.plaf
 {
 import cocoa.LightUIComponent;
-import cocoa.UIManager;
 
+import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import flash.text.engine.ElementFormat;
 
@@ -15,6 +15,27 @@ public class AbstractItemRenderer extends LightUIComponent implements IItemRende
 	protected static const SELECTED:uint = 1 << 0;
 	protected static const SHOWS_CARET:uint = 1 << 1;
 	protected static const HOVERED:uint = 1 << 2;
+
+	protected var laf:LookAndFeel;
+
+	override protected function initializationComplete():void
+	{
+		super.initializationComplete();
+
+		var p:DisplayObjectContainer = parent;
+		while (p != null)
+		{
+			if (p is LookAndFeelProvider)
+			{
+				laf = LookAndFeelProvider(p).laf;
+				break;
+			}
+			else
+			{
+				p = p.parent;
+			}
+		}
+	}
 
 	private var _itemIndex:int;
 	public function get itemIndex():int
@@ -101,7 +122,7 @@ public class AbstractItemRenderer extends LightUIComponent implements IItemRende
 
 	protected function getFont(key:String):ElementFormat
 	{
-		return UIManager.getFont(key);
+		return laf.getFont(key);
 	}
 }
 }

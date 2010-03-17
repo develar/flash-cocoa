@@ -2,12 +2,9 @@ package cocoa.plaf
 {
 import cocoa.AbstractButton;
 import cocoa.Border;
-import cocoa.Icon;
 import cocoa.LabelHelper;
-import cocoa.UIManager;
 
 import flash.display.Graphics;
-import flash.text.engine.ElementFormat;
 
 public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSkin
 {
@@ -21,12 +18,7 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 		super();
 
 		mouseChildren = false;
-		labelHelper = new LabelHelper(this, getFont("SystemFont"));
-	}
-
-	override public function regenerateStyleCache(recursive:Boolean):void
-    {
-		border = getBorder("border");
+		labelHelper = new LabelHelper(this);
 	}
 
 	override public function get baselinePosition():Number
@@ -47,19 +39,12 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 		invalidateDisplayList();
 	}
 
-	protected function getFont(key:String):ElementFormat
+	override protected function createChildren():void
 	{
-		return UIManager.getFont(key);
-	}
+		super.createChildren();
 
-	protected function getBorder(key:String):Border
-	{
-		return UIManager.getBorder(hostComponent.stylePrefix + "." + key);
-	}
-
-	protected function getIcon(key:String):Icon
-	{
-		return UIManager.getIcon(hostComponent.stylePrefix + "." + key);
+		labelHelper.font = getFont("SystemFont");
+		border = getBorder("border");
 	}
 
 	override protected function measure():void
@@ -84,6 +69,13 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 		var g:Graphics = graphics;
 		g.clear();
 		border.draw(this, g, w, h);
+	}
+
+	override public function set enabled(value:Boolean):void
+	{
+		super.enabled = value;
+
+		mouseEnabled = value;
 	}
 }
 }

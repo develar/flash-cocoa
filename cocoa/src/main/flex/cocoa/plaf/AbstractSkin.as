@@ -1,8 +1,13 @@
 package cocoa.plaf
 {
+import cocoa.Border;
+import cocoa.Icon;
 import cocoa.LightUIComponent;
 import cocoa.View;
 import cocoa.layout.LayoutMetrics;
+
+import flash.display.DisplayObjectContainer;
+import flash.text.engine.ElementFormat;
 
 import mx.core.mx_internal;
 import mx.styles.IAdvancedStyleClient;
@@ -14,6 +19,54 @@ use namespace mx_internal;
  */
 public class AbstractSkin extends LightUIComponent implements Skin
 {
+	protected var laf:LookAndFeel;
+
+	protected function getFont(key:String):ElementFormat
+	{
+		return laf.getFont(key);
+	}
+
+	protected function getBorder(key:String):Border
+	{
+		return laf.getBorder(_untypedHostComponent.stylePrefix + "." + key);
+	}
+
+	protected function getIcon(key:String):Icon
+	{
+		return laf.getIcon(_untypedHostComponent.stylePrefix + "." + key);
+	}
+
+	override protected function createChildren():void
+	{
+		if (untypedHostComponent is LookAndFeelProvider)
+		{
+			laf = LookAndFeelProvider(untypedHostComponent).laf;
+		}
+		else
+		{
+			var p:DisplayObjectContainer = parent;
+			while (p != null)
+			{
+				if (p is LookAndFeelProvider)
+				{
+					laf = LookAndFeelProvider(p).laf;
+					return;
+				}
+				else if (p is Skin && Skin(p).untypedHostComponent is LookAndFeelProvider)
+				{
+					laf = LookAndFeelProvider(Skin(p).untypedHostComponent).laf;
+					return;
+				}
+				else
+				{
+					p = p.parent;
+				}
+			}
+
+			throw new Error("laf not found");
+		}
+	}
+
 	private var _untypedHostComponent:View;
 	public function get untypedHostComponent():View
 	{

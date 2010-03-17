@@ -3,7 +3,7 @@ package cocoa.pane
 import mx.core.IFactory;
 import mx.core.IVisualElement;
 
-import org.flyti.resources.ResourceMetadata;
+import cocoa.resources.ResourceMetadata;
 
 public class PaneItem extends LabeledItem
 {

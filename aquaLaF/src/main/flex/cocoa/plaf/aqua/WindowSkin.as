@@ -2,16 +2,15 @@ package cocoa.plaf.aqua
 {
 import cocoa.Border;
 import cocoa.BorderedContainer;
-import cocoa.Container;
 import cocoa.Insets;
 import cocoa.LabelHelper;
-import cocoa.UIManager;
 import cocoa.UIPartProvider;
 import cocoa.View;
 import cocoa.dialog.Dialog;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
+import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 
 import flash.display.DisplayObject;
@@ -43,15 +42,10 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 	private var labelHelper:LabelHelper;
 
-	private var contentGroup:Container;
 	private var controlBar:BorderedContainer;
 
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
-	private static const WINDOW_CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
-	//noinspection JSUnusedLocalSymbols
-	private static const DIALOG_CONTENT_INSETS:Insets = new Insets(20, TITLE_BAR_HEIGHT + 14, 20, BOTTOM_BAR_HEIGHT + 20);
-	
-	private var contentInsets:Insets;
+	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
 
 	private var mover:WindowMover;
 
@@ -59,25 +53,20 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 	public function WindowSkin()
 	{
-		labelHelper = new LabelHelper(this, UIManager.getFont("SystemFont"));
+		labelHelper = new LabelHelper(this);
+	}
 
-		super();
+	private var _contentView:View;
+	private var contentViewSkin:Skin;
+	public function set contentView(value:View):void
+	{
+		_contentView = value;
 	}
 
 	private var _bottomBarStyle:BottomBarStyle;
 	public function set bottomBarStyle(value:BottomBarStyle):void
 	{
 		_bottomBarStyle = value;
-	}
-
-	override public function set untypedHostComponent(value:View):void
-	{
-		super.untypedHostComponent = value;
-
-//		var insetsStyle:String = value.getStyle("insets");
-//		contentInsets = insetsStyle == null || insetsStyle == "none" ? WINDOW_CONTENT_INSETS : cocoa.plaf.aqua.WindowSkin[insetsStyle.toUpperCase() + "_CONTENT_INSETS"];
-		contentInsets = WINDOW_CONTENT_INSETS;
-		mover = new WindowMover(this, TITLE_BAR_HEIGHT, contentInsets);
 	}
 
 	override public function set styleName(value:Object):void
@@ -101,25 +90,27 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 	override protected function createChildren():void
 	{
-		if (resizeGripperClass == null)
-		{
-			var resizeGripper:DisplayObject = new resizeGripperClass();
-			$addChild(resizeGripper);
-		}
+		super.createChildren();
 
-		if (contentGroup == null)
+		labelHelper.font = getFont("SystemFont");
+		mover = new WindowMover(this, TITLE_BAR_HEIGHT, CONTENT_INSETS);
+		border = laf.getBorder("Window.border");
+
+		contentViewSkin = _contentView.createSkin(laf);
+		addChild(DisplayObject(contentViewSkin));
+
+		if (resizeGripper == null)
 		{
-			contentGroup = new Container();
-			addChild(contentGroup);
-			hostComponent.uiPartAdded("contentGroup", contentGroup);
+			resizeGripper = new resizeGripperClass();
+			$addChild(resizeGripper);
 		}
 
 		if (controlBar == null)
 		{
-//			var bottomBarBorer:Border =
 			controlBar = new BorderedContainer();
 			controlBar.height = BOTTOM_BAR_HEIGHT;
-			controlBar.border = UIManager.getBorder("Window.bottomBar." + _bottomBarStyle.name);
+			controlBar.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
+			controlBar.border = laf.getBorder("Window.bottomBar." + _bottomBarStyle.name);
 
 			var bottomBarGroupLayout:HorizontalLayout = new HorizontalLayout();
 			bottomBarGroupLayout.verticalAlign = VerticalAlign.MIDDLE;
@@ -128,8 +119,8 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 			bottomBarGroupLayout.gap = 12;
 			controlBar.layout = bottomBarGroupLayout;
 
-			addChild(controlBar);
 			hostComponent.uiPartAdded("controlBar", controlBar);
+			addChild(controlBar);
 		}
 	}
 
@@ -141,11 +132,11 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 	override protected function measure():void
 	{
-		measuredMinWidth = Math.max(contentGroup.minWidth, controlBar.minWidth);
-		measuredMinHeight = contentInsets.height + contentGroup.minHeight;
+		measuredMinWidth = Math.max(contentViewSkin.minWidth, controlBar.minWidth);
+		measuredMinHeight = CONTENT_INSETS.height + contentViewSkin.minHeight;
 
-		measuredWidth = Math.max(contentGroup.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + contentInsets.width;
-		measuredHeight = contentInsets.height + contentGroup.getExplicitOrMeasuredHeight();
+		measuredWidth = Math.max(contentViewSkin.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
+		measuredHeight = CONTENT_INSETS.height + contentViewSkin.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -159,10 +150,10 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 			labelHelper.moveToCenter(w, 16);
 		}
 
-		//border.draw(this, g, w, h);
+		border.draw(this, g, w, h);
 
-		contentGroup.move(contentInsets.left, contentInsets.top);
-		contentGroup.setActualSize(w - contentInsets.width, h - contentInsets.height);
+		contentViewSkin.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
+		contentViewSkin.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
 
 		var controlBarGroupWidth:Number = controlBar.getExplicitOrMeasuredWidth();
 		controlBar.move(w - controlBarGroupWidth, h - BOTTOM_BAR_HEIGHT);

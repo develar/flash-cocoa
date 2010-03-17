@@ -5,6 +5,7 @@ import cocoa.Icon;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.BoxSkin;
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
@@ -23,7 +24,12 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 	private static var borders:Vector.<Border>;
 	private static var icons:Vector.<Icon>;
 
-	override public function initialize():void
+	public function AquaLookAndFeel()
+	{
+		initialize();
+	}
+
+	private function initialize():void
 	{
 		initAssets();
 
@@ -31,7 +37,10 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
 		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
+		data["Box"] = BoxSkin;
+
 		data["Dialog"] = WindowSkin;
+		data["Window.border"] = new WindowBorder();
 		data["Window.bottomBar.application"] = borders[5];
 
 		data["SourceListView"] = SourceListSkin;
@@ -96,11 +105,40 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		AquaLookAndFeel.borders = borders;
 		AquaLookAndFeel.icons = icons;
 	}
+
+	private var windowFrameLookAndFeel:WindowFrameLookAndFeel;
+	public function createWindowFrameLookAndFeel():WindowFrameLookAndFeel
+	{
+		if (windowFrameLookAndFeel == null)
+		{
+			windowFrameLookAndFeel = new WindowFrameLookAndFeel(borders, this);
+		}
+		return windowFrameLookAndFeel;
+	}
 }
 }
 
+import cocoa.Border;
+import cocoa.plaf.AbstractLookAndFeel;
+import cocoa.plaf.aqua.AquaLookAndFeel;
+import cocoa.plaf.aqua.BezelStyle;
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
+
+final class WindowFrameLookAndFeel extends AbstractLookAndFeel
+{
+	public function WindowFrameLookAndFeel(borders:Vector.<Border>, parent:AquaLookAndFeel)
+	{
+		initialize(borders);
+		this.parent = parent;
+	}
+
+	private function initialize(borders:Vector.<Border>):void
+	{
+		data["PushButton.border"] = borders[BezelStyle.texturedRounded.ordinal];
+	}
+}
 
 final class AquaFonts
 {

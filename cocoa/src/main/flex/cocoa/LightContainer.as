@@ -1,11 +1,13 @@
 package cocoa
 {
+import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
 
+import mx.core.FlexGlobals;
 import mx.core.IVisualElement;
 import mx.core.mx_internal;
 
@@ -26,7 +28,7 @@ public class LightContainer extends LightUIComponent implements ViewContainer
 			var skin:Skin = view.skin;
 			if (skin == null)
 			{
-				skin = view.createSkin();
+				skin = view.createSkin(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
 			}
 
 			addChild(DisplayObject(skin));

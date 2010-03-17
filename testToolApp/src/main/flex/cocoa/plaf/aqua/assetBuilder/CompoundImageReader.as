@@ -70,8 +70,8 @@ internal final class CompoundImageReader
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
 
-		const firstItemY:Number = -listBorder.layoutInsets.top + listBorder.contentInsets.top + frameRectangle.top;
-		const itemX:Number = -listBorder.layoutInsets.left + listBorder.contentInsets.left + frameRectangle.x;
+		const firstItemY:Number = -listBorder.frameInsets.top + listBorder.contentInsets.top + frameRectangle.top;
+		const itemX:Number = -listBorder.frameInsets.left + listBorder.contentInsets.left + frameRectangle.x;
 		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
 		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(1, true);
 		itemBitmaps[0] = createBitmapData(itemRectangle);
@@ -89,7 +89,7 @@ internal final class CompoundImageReader
 		// clear item background
 		itemRectangle.x = itemX;
 		itemRectangle.y = firstItemY;
-		itemRectangle.width = frameRectangle.right - (-listBorder.layoutInsets.right + listBorder.contentInsets.right) - itemX;
+		itemRectangle.width = frameRectangle.right - (-listBorder.frameInsets.right + listBorder.contentInsets.right) - itemX;
 		itemRectangle.height = (itemHeight * 2) + 12 /* separator item */;
 		compoundBitmapData.fillRect(itemRectangle, 0);
 

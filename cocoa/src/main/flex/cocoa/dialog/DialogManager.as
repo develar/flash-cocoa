@@ -1,5 +1,7 @@
 package cocoa.dialog
 {
+import cocoa.Window;
+import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 import cocoa.View;
 import cocoa.dialog.events.DialogEvent;
@@ -16,7 +18,7 @@ public class DialogManager
 {
 	private var modalBoxExists:Boolean;
 
-	public function open(box:View, modal:Boolean = true):void
+	public function open(box:Window, modal:Boolean = true):void
 	{
 		if (modal)
 		{
@@ -37,7 +39,8 @@ public class DialogManager
 		var parent:DisplayObject = DisplayObject(FlexGlobals.topLevelApplication);
 		if (skin == null)
 		{
-			skin = box.createSkin();
+			box.laf = LookAndFeelProvider(FlexGlobals.topLevelApplication).laf;
+			skin = box.createSkin(box.laf);
 			skin.dispatchEvent(new InjectorEvent(box));
 			// на данный момент у нас каждое окно имеет local event map, поэтому проблемы из-за того, что скин еще не в dispay list, нет
 //			parent.dispatchEvent(new InjectorEvent(box));

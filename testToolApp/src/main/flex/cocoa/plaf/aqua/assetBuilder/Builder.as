@@ -5,10 +5,10 @@ import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
-import cocoa.UIManager;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
+import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
@@ -22,6 +22,8 @@ import flash.display.Shape;
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 
+import mx.core.FlexGlobals;
+
 public class Builder
 {
 	[Embed(source="/buttons.png")]
@@ -34,8 +36,11 @@ public class Builder
 	private static var windowBottomBarApplicationClass:Class;
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
+	// rounded
 	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
+	// textured rounded
 	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new FrameInsets(0, -1, 0), new Insets(10, NaN, 10, 6)));
+	// pop up button
 	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(9, NaN, 9 + 21/* width of double-arrow area */, 5)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
@@ -81,7 +86,7 @@ public class Builder
 		show(testContainer, data);
 
 		AquaLookAndFeel._setBordersAndIcons(borders, icons);
-		UIManager.lookAndFeel = new AquaLookAndFeel();
+		LookAndFeelProvider(FlexGlobals.topLevelApplication).laf = new AquaLookAndFeel();
 	}
 
 	private function show(displayObject:DisplayObjectContainer, data:ByteArray):void

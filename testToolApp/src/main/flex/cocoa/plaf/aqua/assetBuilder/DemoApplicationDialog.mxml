@@ -12,4 +12,11 @@
 			super.attachSkin();
 		}
 		]]></fx:Script>
+
+	<Box>
+		<layout>
+			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
+		</layout>
+		<PushButton label="Help H"/>
+	</Box>
 </Dialog>

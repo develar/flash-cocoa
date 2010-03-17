@@ -11,43 +11,43 @@ public class UIManager
 {
 	protected static var laf:LookAndFeel;
 
-	public static function setLookAndFeelByClassName(className:String):void
+	public function setLookAndFeelByClassName(className:String):void
 	{
 		setLookAndFeelByClass(Class(getDefinitionByName(className)));
 	}
 
-	public static function setLookAndFeelByClass(clazz:Class):void
+	public function setLookAndFeelByClass(clazz:Class):void
 	{
 		lookAndFeel = new clazz();
 	}
 
-	public static function set lookAndFeel(value:LookAndFeel):void
+	public function set lookAndFeel(value:LookAndFeel):void
 	{
 		laf = value;
-		laf.initialize();
+//		laf.initialize();
 	}
 
-	public static function getBorder(key:String):Border
+	public function getBorder(key:String):Border
 	{
 		return laf.getBorder(key);
 	}
 
-	public static function getIcon(key:String):Icon
+	public function getIcon(key:String):Icon
 	{
 		return laf.getIcon(key);
 	}
 
-	public static function getFont(key:String):ElementFormat
+	public function getFont(key:String):ElementFormat
 	{
 		return laf.getFont(key);
 	}
 
-	public static function getUI(key:String):Class
+	public function getUI(key:String):Class
 	{
 		return laf.getUI(key);
 	}
 	
-	public static function getFactory(key:String):IFactory
+	public function getFactory(key:String):IFactory
 	{
 		return laf.getFactory(key);
 	}

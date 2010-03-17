@@ -1,5 +1,6 @@
 package cocoa
 {
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
 import mx.core.IVisualElement;
@@ -12,7 +13,7 @@ public interface View extends IVisualElement, IAdvancedStyleClient
 	
 	function set enabled(value:Boolean):void;
 	
-	function createSkin():Skin;
+	function createSkin(laf:LookAndFeel):Skin;
 
 	function uiPartAdded(id:String, instance:Object):void;
 	

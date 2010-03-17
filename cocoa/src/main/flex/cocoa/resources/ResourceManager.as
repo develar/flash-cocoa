@@ -1,4 +1,4 @@
-package org.flyti.resources
+package cocoa.resources
 {
 import mx.resources.ResourceManagerImpl;
 

@@ -21,19 +21,13 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 	private var sliceHeight:Number;
 	private var sliceSizes:Insets;
 
-	public static function create(layoutHeight:Number, layoutInsets:FrameInsets, contentInsets:Insets):Scale3HBitmapBorder
+	public static function create(layoutHeight:Number, frameInsets:FrameInsets, contentInsets:Insets):Scale3HBitmapBorder
 	{
 		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
 		border._layoutHeight = layoutHeight;
-		border._layoutInsets = layoutInsets;
+		border._frameInsets = frameInsets;
 		border._contentInsets = contentInsets;
 		return border;
-	}
-
-	private var _layoutInsets:FrameInsets;
-	public function get layoutInsets():FrameInsets
-	{
-		return _layoutInsets;
 	}
 
 	public function configure(sliceSizes:Insets, bitmaps:Vector.<BitmapData>):void
@@ -47,12 +41,12 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 
 	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
 	{
-		sharedMatrix.tx = _layoutInsets.left;
-		sharedMatrix.ty = _layoutInsets.top;
+		sharedMatrix.tx = _frameInsets.left;
+		sharedMatrix.ty = _frameInsets.top;
 
-		var rightSliceX:Number = w - sliceSizes.right - _layoutInsets.right;
+		var rightSliceX:Number = w - sliceSizes.right - _frameInsets.right;
 		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
-		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _layoutInsets.left, sliceHeight);
+		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _frameInsets.left, sliceHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
@@ -66,7 +60,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		super.readExternal(input);
 		
 		sliceSizes = readInsets(input);
-		_layoutInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte());
+		_frameInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte());
 
 		sliceHeight = bitmaps[0].height;
 	}
@@ -77,9 +71,9 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		super.writeExternal(output);
 		writeInsets(output, sliceSizes);
 
-		output.writeByte(_layoutInsets.left);
-		output.writeByte(_layoutInsets.top);
-		output.writeByte(_layoutInsets.right);
+		output.writeByte(_frameInsets.left);
+		output.writeByte(_frameInsets.top);
+		output.writeByte(_frameInsets.right);
 	}
 }
 }

@@ -9,7 +9,7 @@ import mx.core.IFactory;
 
 public interface LookAndFeel
 {
-	function initialize():void;
+//	function initialize():void;
 	
 	function getBorder(key:String):Border;
 	function getIcon(key:String):Icon;

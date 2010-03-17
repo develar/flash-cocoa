@@ -1,13 +1,15 @@
 package cocoa
 {
 import cocoa.layout.AdvancedLayout;
+import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
-import flash.errors.IllegalOperationError;
 
+import mx.core.FlexGlobals;
+import mx.core.IFlexModule;
 import mx.core.IVisualElement;
 import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
@@ -15,7 +17,6 @@ import mx.core.mx_internal;
 import org.flyti.plexus.Injectable;
 import org.flyti.util.Assert;
 
-import spark.components.Group;
 import spark.components.supportClasses.GroupBase;
 import spark.components.supportClasses.SkinnableComponent;
 import spark.layouts.BasicLayout;
@@ -27,7 +28,7 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class Container extends Group implements ViewContainer
+public class Container extends GroupBase implements ViewContainer
 {
 	private var createChildrenCalled:Boolean;
 	private var elementsChanged:Boolean;
@@ -67,7 +68,7 @@ public class Container extends Group implements ViewContainer
 		}
 	}
 
-	override public function set mxmlContent(value:Array):void
+	public function set mxmlContent(value:Array):void
     {
 		elements = value;
 	}
@@ -95,13 +96,8 @@ public class Container extends Group implements ViewContainer
 			elementAdded(_elements[i], i);
 		}
 	}
-
-	override mx_internal function getMXMLContent():Array
-    {
-		throw new IllegalOperationError();
-	}
 	
-	override mx_internal function elementAdded(element:IVisualElement, index:int, notifyListeners:Boolean = true):void
+	private function elementAdded(element:IVisualElement, index:int):void
     {
 		if (element is View)
 		{
@@ -109,20 +105,41 @@ public class Container extends Group implements ViewContainer
 			var skin:Skin = view.skin;
 			if (skin == null)
 			{
-				skin = view.createSkin();
+				skin = view.createSkin(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
 			}
 
-			super.elementAdded(skin, index, notifyListeners);
+			element = skin;
 		}
-		else
+		else if (element is Injectable || element is SkinnableComponent || (element is GroupBase && GroupBase(element).id != null))
 		{
-			if (element is Injectable || element is SkinnableComponent || (element is GroupBase && GroupBase(element).id != null))
-			{
-				dispatchEvent(new InjectorEvent(element));
-			}
-
-			super.elementAdded(element, index, notifyListeners);
+			dispatchEvent(new InjectorEvent(element));
 		}
+
+		if (layout)
+		{
+			layout.elementAdded(index);
+		}
+
+		if (element is IFlexModule && IFlexModule(element).moduleFactory == null)
+		{
+			if (moduleFactory != null)
+			{
+				IFlexModule(element).moduleFactory = moduleFactory;
+			}
+			else if (document is IFlexModule && document.moduleFactory != null)
+			{
+				IFlexModule(element).moduleFactory = document.moduleFactory;
+			}
+			else if (parent is IFlexModule && IFlexModule(element).moduleFactory != null)
+			{
+				IFlexModule(element).moduleFactory = IFlexModule(parent).moduleFactory;
+			}
+		}
+
+		super.addChildAt(DisplayObject(element), index != -1 ? index : super.numChildren);
+
+		invalidateSize();
+        invalidateDisplayList();
 	}
 
 	/**
@@ -139,15 +156,6 @@ public class Container extends Group implements ViewContainer
 		super.childAdded(child);
 	}
 
-	override mx_internal function elementRemoved(element:IVisualElement, index:int, notifyListeners:Boolean = true):void
-    {
-		if (element is View)
-		{
-			element = View(element).skin;
-		}
-		super.elementRemoved(element, index, notifyListeners);
-	}
-
 	override public function get numElements():int
     {
 		return _elements == null ? 0 : _elements.length;
@@ -159,7 +167,7 @@ public class Container extends Group implements ViewContainer
 		return element is View ? View(element).skin : element;
 	}
 
-	override public function addElementAt(element:IVisualElement, index:int):IVisualElement
+	public function addElementAt(element:IVisualElement, index:int):IVisualElement
     {
 		Assert.assert(element != this);
 
@@ -203,17 +211,23 @@ public class Container extends Group implements ViewContainer
 
 	override public function getElementIndex(element:IVisualElement):int
     {
-		var index:int = _elements.indexOf(element);
-		Assert.assert(index != -1);
-		return index;
+		return _elements.indexOf(element);
 	}
 
-	override public function removeElementAt(index:int):IVisualElement
+	public function removeElementAt(index:int):IVisualElement
 	{
 		var element:IVisualElement = _elements[index];
 		if (!elementsChanged)
 		{
-			elementRemoved(element, index);
+			super.removeChild(DisplayObject(element is View ? View(element).skin : element));
+
+			invalidateSize();
+			invalidateDisplayList();
+
+			if (layout)
+			{
+				layout.elementRemoved(index);
+			}
 		}
 
 		_elements.splice(index, 1);
@@ -243,6 +257,16 @@ public class Container extends Group implements ViewContainer
 		}
 		
 		return super.canSkipMeasurement();
+	}
+
+	public function addElement(element:IVisualElement):IVisualElement
+	{
+		return addElementAt(element, element.parent == this ? (numElements - 1) : numElements);
+	}
+
+	public function removeElement(element:IVisualElement):IVisualElement
+	{
+		return removeElementAt(getElementIndex(element));
 	}
 }
 }

@@ -1,6 +1,6 @@
 package cocoa.pane
 {
-import org.flyti.resources.ResourceMetadata;
+import cocoa.resources.ResourceMetadata;
 
 [Abstract]
 public class LabeledItem

@@ -4,7 +4,6 @@ import cocoa.Border;
 import cocoa.Icon;
 import cocoa.LabelHelper;
 import cocoa.MenuItem;
-import cocoa.UIManager;
 
 import flash.display.Graphics;
 
@@ -50,12 +49,12 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	protected function getBorder(key:String):Border
 	{
-		return UIManager.getBorder("MenuItem." + key);
+		return laf.getBorder("MenuItem." + key);
 	}
 
 	protected function getIcon(key:String):Icon
 	{
-		return UIManager.getIcon("MenuItem." + key);
+		return laf.getIcon("MenuItem." + key);
 	}
 
 	protected var menuItem:Object;

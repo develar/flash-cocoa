@@ -2,10 +2,10 @@ package cocoa
 {
 public class AbstractControlView extends AbstractView
 {
-	protected var _actionHandler:Function;
-	public function set actionHandler(value:Function):void
+	protected var _action:Function;
+	public function set action(value:Function):void
 	{
-		_actionHandler = value;
+		_action = value;
 	}
 }
 }

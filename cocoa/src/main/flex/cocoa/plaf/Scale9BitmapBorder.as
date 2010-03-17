@@ -17,43 +17,37 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 	private var rightSliceInnerWidth:int;
 	private var bottomSliceInnerHeight:int;
 
-	public static function create(layoutInsets:FrameInsets, contentInsets:Insets):Scale9BitmapBorder
+	public static function create(frameInsets:FrameInsets, contentInsets:Insets):Scale9BitmapBorder
 	{
 		var border:Scale9BitmapBorder = new Scale9BitmapBorder();
-		border._layoutInsets = layoutInsets;
+		border._frameInsets = frameInsets;
 		border._contentInsets = contentInsets;
 		return border;
-	}
-
-	private var _layoutInsets:FrameInsets;
-	public function get layoutInsets():FrameInsets
-	{
-		return _layoutInsets;
 	}
 
 	public function configure(bitmaps:Vector.<BitmapData>):void
 	{
 		this.bitmaps = bitmaps;
 
-		rightSliceInnerWidth = bitmaps[1].width + _layoutInsets.right;
-		bottomSliceInnerHeight = bitmaps[2].height + _layoutInsets.bottom;
+		rightSliceInnerWidth = bitmaps[1].width + _frameInsets.right;
+		bottomSliceInnerHeight = bitmaps[2].height + _frameInsets.bottom;
 	}
 
 	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
 	{
-		sharedMatrix.tx = _layoutInsets.left;
-		sharedMatrix.ty = _layoutInsets.top;
+		sharedMatrix.tx = _frameInsets.left;
+		sharedMatrix.ty = _frameInsets.top;
 
 		const rightSliceX:Number = w - rightSliceInnerWidth;
 		const bottomSliceY:Number = h - bottomSliceInnerHeight;
 
-		const topAreaHeight:Number = bottomSliceY - _layoutInsets.top;
+		const topAreaHeight:Number = bottomSliceY - _frameInsets.top;
 		const bottomAreaHeight:Number = bitmaps[2].height;
-		const leftAreaWidth:Number = rightSliceX - _layoutInsets.left;
+		const leftAreaWidth:Number = rightSliceX - _frameInsets.left;
 		const rightAreaWidth:Number = bitmaps[1].width;
 
 		g.beginBitmapFill(bitmaps[0], sharedMatrix, false);
-		g.drawRect(_layoutInsets.left, sharedMatrix.ty, leftAreaWidth, topAreaHeight);
+		g.drawRect(_frameInsets.left, sharedMatrix.ty, leftAreaWidth, topAreaHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
@@ -63,9 +57,9 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 
 		sharedMatrix.ty = bottomSliceY;
 
-		sharedMatrix.tx = _layoutInsets.left;
+		sharedMatrix.tx = _frameInsets.left;
 		g.beginBitmapFill(bitmaps[2], sharedMatrix, false);
-		g.drawRect(_layoutInsets.left, bottomSliceY, leftAreaWidth, bottomAreaHeight);
+		g.drawRect(_frameInsets.left, bottomSliceY, leftAreaWidth, bottomAreaHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
@@ -79,10 +73,10 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 		super.readExternal(input);
 
 		_contentInsets = readInsets(input);
-		_layoutInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
+		_frameInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
 
-		rightSliceInnerWidth = bitmaps[1].width + _layoutInsets.right;
-		bottomSliceInnerHeight = bitmaps[2].height + _layoutInsets.bottom;
+		rightSliceInnerWidth = bitmaps[1].width + _frameInsets.right;
+		bottomSliceInnerHeight = bitmaps[2].height + _frameInsets.bottom;
 	}
 
 	override public function writeExternal(output:ByteArray):void
@@ -93,10 +87,10 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 
 		writeInsets(output, _contentInsets);
 
-		output.writeByte(_layoutInsets.left);
-		output.writeByte(_layoutInsets.top);
-		output.writeByte(_layoutInsets.right);
-		output.writeByte(_layoutInsets.bottom);
+		output.writeByte(_frameInsets.left);
+		output.writeByte(_frameInsets.top);
+		output.writeByte(_frameInsets.right);
+		output.writeByte(_frameInsets.bottom);
 	}
 }
 }

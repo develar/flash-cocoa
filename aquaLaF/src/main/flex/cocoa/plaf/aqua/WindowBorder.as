@@ -21,17 +21,10 @@ public class WindowBorder extends AbstractBorder
 	bodySlicedImage.slice2(bodyClass, null, NaN, new Insets(58, 0, 58, 0));
 	bodyClass = null;
 
-	[Embed(source="/bottomBar-shadow.png")]
-	private static var bottomBarClass:Class;
-	private static const bottomBarSlicedImage:SlicedImage = new SlicedImage();
-	bottomBarSlicedImage.slice2(bottomBarClass, null, NaN, new Insets(58, 0, 58, 0));
-	bottomBarClass = null;
-
 	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
 	{
 		titleSlicedImage.draw(g, w, 0, -33, -33, -18);
 		bodySlicedImage.draw(g, w, 0, -33, -33, 41, h - 41 - 47);
-		bottomBarSlicedImage.draw(g, w, 0, -33, -33, h - 47);
 	}
 }
 }

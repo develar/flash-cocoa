@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
@@ -8,7 +10,6 @@ import flash.events.Event;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
 import flash.geom.Vector3D;
-import flash.utils.getDefinitionByName;
 
 import mx.core.DesignLayer;
 import mx.core.IFlexModule;
@@ -18,10 +19,8 @@ import mx.core.IVisualElement;
 import mx.geom.TransformOffsets;
 import mx.styles.CSSStyleDeclaration;
 import mx.styles.IAdvancedStyleClient;
-import mx.styles.StyleProtoChain;
 
-import cocoa.layout.LayoutMetrics;
-import org.flyti.resources.ResourceManager;
+import cocoa.resources.ResourceManager;
 
 use namespace ui;
 
@@ -388,29 +387,27 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 		throw new IllegalOperationError();
 	}
 
-	private var _inheritingStyles:Object = StyleProtoChain.STYLE_UNINITIALIZED;
 	public function get inheritingStyles():Object
 	{
-		return _inheritingStyles;
+		throw new IllegalOperationError();
 	}
 	public function set inheritingStyles(value:Object):void
 	{
-		_inheritingStyles = value;
+		throw new IllegalOperationError();
 	}
 
-	private var _nonInheritingStyles:Object;
 	public function get nonInheritingStyles():Object
 	{
-		return _nonInheritingStyles;
+		throw new IllegalOperationError();
 	}
 	public function set nonInheritingStyles(value:Object):void
 	{
-		_nonInheritingStyles = value;
+		throw new IllegalOperationError();
 	}
 
 	public function get styleDeclaration():CSSStyleDeclaration
 	{
-		return null;
+		throw new IllegalOperationError();
 	}
 	public function set styleDeclaration(value:CSSStyleDeclaration):void
 	{
@@ -419,7 +416,7 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 
 	public function getStyle(styleProp:String):*
 	{
-		return _nonInheritingStyles[styleProp];
+		throw new IllegalOperationError();
 	}
 
 	public function setStyle(styleProp:String, newValue:*):void
@@ -434,11 +431,12 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 
 	public function getClassStyleDeclarations():Array
 	{
-		return StyleProtoChain.getClassStyleDeclarations(this);
+		throw new IllegalOperationError();
 	}
 
 	public function notifyStyleChangeInChildren(styleProp:String, recursive:Boolean):void
 	{
+		throw new IllegalOperationError();
 	}
 
 	public function regenerateStyleCache(recursive:Boolean):void
@@ -476,22 +474,21 @@ public class AbstractView extends ViewBase implements View, IAdvancedStyleClient
 
 	public function matchesCSSState(cssState:String):Boolean
 	{
-		return false;
+		throw new IllegalOperationError();
 	}
 
 	public function matchesCSSType(cssType:String):Boolean
 	{
-		var clazz:Class = getDefinitionByName(cssType) as Class;
-		return this is clazz;
+		throw new IllegalOperationError();
 	}
 	
 	/* View */
-	public function createSkin():Skin
+	public function createSkin(laf:LookAndFeel):Skin
 	{
 		var skinClass:Class = _skinClass;
 		if (skinClass == null)
 		{
-			skinClass = UIManager.getUI(stylePrefix);
+			skinClass = laf.getUI(stylePrefix);
 		}
 
 		_skin = new skinClass();
