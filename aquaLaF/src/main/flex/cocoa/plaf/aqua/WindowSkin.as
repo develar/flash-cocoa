@@ -1,22 +1,24 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Border;
+import cocoa.BorderedContainer;
+import cocoa.Container;
 import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.UIManager;
+import cocoa.UIPartProvider;
+import cocoa.View;
 import cocoa.dialog.Dialog;
+import cocoa.layout.AdvancedLayout;
+import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.BottomBarStyle;
 import cocoa.plaf.WindowSkin;
 
+import flash.display.DisplayObject;
 import flash.display.Graphics;
 
 import mx.core.ILayoutElement;
 import mx.core.mx_internal;
-
-import cocoa.layout.AdvancedLayout;
-import cocoa.plaf.AbstractSkin;
-import cocoa.Container;
-import cocoa.UIPartProvider;
-import cocoa.View;
 
 import spark.layouts.HorizontalLayout;
 import spark.layouts.VerticalAlign;
@@ -29,6 +31,11 @@ use namespace mx_internal;
  */
 public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, UIPartProvider
 {
+	[Embed(source="/Window.resizeGripper.png")]
+	private static const resizeGripperClass:Class;
+
+	private var resizeGripper:DisplayObject;
+
 	private var border:Border;
 
 	private static const TITLE_BAR_HEIGHT:Number = 23; // вместе с 1px полосой внизу, которая визуально разделяет label bar от content pane
@@ -37,7 +44,7 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 	private var labelHelper:LabelHelper;
 
 	private var contentGroup:Container;
-	private var controlBar:Container;
+	private var controlBar:BorderedContainer;
 
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
 	private static const WINDOW_CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
@@ -55,6 +62,12 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 		labelHelper = new LabelHelper(this, UIManager.getFont("SystemFont"));
 
 		super();
+	}
+
+	private var _bottomBarStyle:BottomBarStyle;
+	public function set bottomBarStyle(value:BottomBarStyle):void
+	{
+		_bottomBarStyle = value;
 	}
 
 	override public function set untypedHostComponent(value:View):void
@@ -88,6 +101,12 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 	override protected function createChildren():void
 	{
+		if (resizeGripperClass == null)
+		{
+			var resizeGripper:DisplayObject = new resizeGripperClass();
+			$addChild(resizeGripper);
+		}
+
 		if (contentGroup == null)
 		{
 			contentGroup = new Container();
@@ -97,7 +116,10 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 		if (controlBar == null)
 		{
-			controlBar = new Container();
+//			var bottomBarBorer:Border =
+			controlBar = new BorderedContainer();
+			controlBar.height = BOTTOM_BAR_HEIGHT;
+			controlBar.border = UIManager.getBorder("Window.bottomBar." + _bottomBarStyle.name);
 
 			var bottomBarGroupLayout:HorizontalLayout = new HorizontalLayout();
 			bottomBarGroupLayout.verticalAlign = VerticalAlign.MIDDLE;
@@ -137,7 +159,7 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 			labelHelper.moveToCenter(w, 16);
 		}
 
-		border.draw(this, g, w, h);
+		//border.draw(this, g, w, h);
 
 		contentGroup.move(contentInsets.left, contentInsets.top);
 		contentGroup.setActualSize(w - contentInsets.width, h - contentInsets.height);
@@ -145,6 +167,11 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 		var controlBarGroupWidth:Number = controlBar.getExplicitOrMeasuredWidth();
 		controlBar.move(w - controlBarGroupWidth, h - BOTTOM_BAR_HEIGHT);
 		controlBar.setActualSize(controlBarGroupWidth, BOTTOM_BAR_HEIGHT);
+
+//		var offset:Number = 1;
+		var offset:Number = 4; 
+		resizeGripper.x = w - 11 - offset;
+		resizeGripper.y = h - 11 - offset;
 	}
 }
 }

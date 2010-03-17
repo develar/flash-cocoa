@@ -7,7 +7,7 @@ import mx.core.UIComponent;
 public class AbstractBorder implements Border
 {
 	private static const EMPTY_FRAME_INSETS:FrameInsets = new FrameInsets();
-	protected static const EMPTY_CONTENT_INSETS:Insets = new Insets();
+	public static const EMPTY_CONTENT_INSETS:Insets = new Insets();
 
 	public function get layoutHeight():Number
 	{

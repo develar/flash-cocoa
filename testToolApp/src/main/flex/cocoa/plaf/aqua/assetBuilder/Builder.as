@@ -1,5 +1,6 @@
 package cocoa.plaf.aqua.assetBuilder
 {
+import cocoa.AbstractBorder;
 import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
@@ -29,6 +30,9 @@ public class Builder
 	[Embed(source="/popUpMenu.png")]
 	private static var popUpMenuClass:Class;
 
+	[Embed(source="/Window.bottomBar.application.png")]
+	private static var windowBottomBarApplicationClass:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
 	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new FrameInsets(0, -1, 0), new Insets(10, NaN, 10, 6)));
@@ -45,15 +49,18 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var compoundImageReader:CompoundImageReader = new CompoundImageReader();
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3, true);
+		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 2, true);
+
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
-		compoundImageReader.read(borders, buttonsClass, buttonRowsInfo);
+		compoundImageReader.read(buttonsClass, buttonRowsInfo);
 
-		compoundImageReader.readMenu(borders, icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+
+		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3HBitmapBorder.create(47, new FrameInsets(-33, 0, -33, -48), AbstractBorder.EMPTY_CONTENT_INSETS));
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

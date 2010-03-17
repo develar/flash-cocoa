@@ -44,7 +44,7 @@
 					</runtimeLocales>
 					<manifests>
 						<manifest>
-							<uri>cocoa</uri>
+							<uri>library://cocoa</uri>
 							<excludes>
 								<class>**.Application</class>
 							</excludes>
@@ -59,8 +59,8 @@
 								<class>**.colorPicker.ColorPicker</class>
 
 								<class>**.sidebar.*</class>
-
-								<!--&lt;!&ndash;<class>**.MouseCursor</class>&ndash;&gt;-->
+								<class>**.Panel</class>
+								<class>**.MouseCursor</class>
 								<class>**.MXMLSkin</class>
 								<class>**.*Button</class>
 								<class>**.*ApplicationImpl</class>

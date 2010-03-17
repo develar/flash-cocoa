@@ -23,7 +23,14 @@ internal final class CompoundImageReader
 
 	private var position:int = 0;
 
-	public function read(borders:Vector.<Border>, bitmapDataClass:Class, rowsInfo:Vector.<RowInfo>):void
+	private var borders:Vector.<Border>;
+
+	public function CompoundImageReader(borders:Vector.<Border>)
+	{
+		this.borders = borders;
+	}
+
+	public function read(bitmapDataClass:Class, rowsInfo:Vector.<RowInfo>):void
 	{
 		this.rowsInfo = rowsInfo;
 
@@ -38,7 +45,7 @@ internal final class CompoundImageReader
 
 			var sliceSize:Insets = calculateSliceSize(frameRectangle, rowInfo.top, false, false);
 			var bitmaps:Vector.<BitmapData> = slice3HGrid(frameRectangle, sliceSize, rowInfo);
-			Scale3HBitmapBorder(rowInfo.border).configure(sliceSize, frameRectangle.height, bitmaps);
+			Scale3HBitmapBorder(rowInfo.border).configure(sliceSize, bitmaps);
 
 			borders[position + row] = rowInfo.border;
 		}
@@ -46,7 +53,19 @@ internal final class CompoundImageReader
 		position += rowsInfo.length;
 	}
 
-	public function readMenu(borders:Vector.<Border>, icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
+	public function readScale3(bitmapDataClass:Class, border:Scale3HBitmapBorder):void
+	{
+		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
+		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
+
+		var sliceSize:Insets = calculateSliceSize(frameRectangle, frameRectangle.top, false, false);
+		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
+		border.configure(sliceSize, bitmaps);
+
+		borders[position++] = border;
+	}
+
+	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -242,18 +261,23 @@ internal final class CompoundImageReader
 
 	private function slice3HGrid(frameRectangle:Rectangle, sliceSize:Insets, rowInfo:RowInfo):Vector.<BitmapData>
 	{
-		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(3 * 2, true);
+		return slice3H(frameRectangle, sliceSize, rowInfo.top, rowInfo.width, 3);
+	}
+
+	private function slice3H(frameRectangle:Rectangle, sliceSize:Insets, rowTop:Number = 0, rowWidth:Number = NaN, count:int = 1):Vector.<BitmapData>
+	{
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(count * 2, true);
 
 		const relativeRightBitmapX:int = frameRectangle.width - sliceSize.right;
-		const top:Number = rowInfo.top + frameRectangle.top;
+		const top:Number = rowTop + frameRectangle.top;
 		// x как 0, актуальное значение устанавливается в цикле
 		var leftWithCenterRectangle:Rectangle = new Rectangle(0, top, sliceSize.left + 1, frameRectangle.height);
 		var rightRectangle:Rectangle = new Rectangle(0, top, sliceSize.right, frameRectangle.height);
 
 		var bitmapData:BitmapData;
 
-		var x:int = frameRectangle.left;
-		for (var i:int = 0, n:int = bitmaps.length; i < n; x += rowInfo.width)
+		var x:Number = frameRectangle.left;
+		for (var i:int = 0, n:int = bitmaps.length; i < n; x += rowWidth)
 		{
 			leftWithCenterRectangle.x = x;
 

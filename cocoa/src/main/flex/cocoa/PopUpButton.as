@@ -49,5 +49,15 @@ public class PopUpButton extends AbstractButton
 ////			PushButton(openButton).label = LabelUtil.itemToLabel(displayItem, labelField, labelFunction);
 //		}
 //	}
+
+	public function set labelFunction(labelFunction:Function):void
+	{
+//		_labelFunction = labelFunction;
+	}
+
+	public function get selectedItem():*
+	{
+		return null;
+	}
 }
 }

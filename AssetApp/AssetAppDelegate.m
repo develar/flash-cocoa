@@ -15,7 +15,7 @@
 		
 	NSRect frame = NSMakeRect(500, 500, BUTTON_WIDTH * 5, CONTROL_FRAME_HEIGHT * 10);
 	// должно NSTitledWindowMask, иначе окно не active
-	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
+	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
 	[testWindow setHasShadow:NO];
 	[testWindow makeKeyAndOrderFront:NSApp];

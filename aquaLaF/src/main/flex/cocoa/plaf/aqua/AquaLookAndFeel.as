@@ -32,6 +32,8 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
 		data["Dialog"] = WindowSkin;
+		data["Window.bottomBar.application"] = borders[5];
+
 		data["SourceListView"] = SourceListSkin;
 		data["TabView"] = TabSkin;
 

@@ -36,7 +36,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		return _layoutInsets;
 	}
 
-	public function configure(sliceSizes:Insets, sliceHeight:Number, bitmaps:Vector.<BitmapData>):void
+	public function configure(sliceSizes:Insets, bitmaps:Vector.<BitmapData>):void
 	{
 		this.sliceSizes = sliceSizes;
 		this.sliceHeight = sliceHeight;
