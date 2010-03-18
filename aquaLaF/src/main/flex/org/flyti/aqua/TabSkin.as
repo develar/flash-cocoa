@@ -1,23 +1,21 @@
 package org.flyti.aqua
 {
 import cocoa.Insets;
+import cocoa.SingleSelectionDataGroup;
+import cocoa.ViewStack;
+import cocoa.layout.AdvancedLayout;
+import cocoa.layout.BarHorizontalLayout;
+import cocoa.plaf.AbstractSkin;
+import cocoa.tabView.TabView;
 
 import mx.core.ClassFactory;
 import mx.core.ILayoutElement;
 import mx.core.SpriteAsset;
 import mx.core.mx_internal;
 
-import cocoa.layout.AdvancedLayout;
-import cocoa.layout.BarHorizontalLayout;
-import cocoa.plaf.AbstractSkin;
-import cocoa.SingleSelectionDataGroup;
-import cocoa.UIPartProvider;
-import cocoa.ViewStack;
-import cocoa.tabView.TabView;
-
 use namespace mx_internal;
 
-public class TabSkin extends AbstractSkin implements AdvancedLayout, UIPartProvider
+public class TabSkin extends AbstractSkin implements AdvancedLayout
 {
 	[Embed(source="/GroupBox.png", scaleGridTop="7", scaleGridBottom="11", scaleGridLeft="7", scaleGridRight="13")]
 	private static const contentBorderClass:Class;
@@ -38,7 +36,7 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout, UIPartProvi
 			contentBorder = new contentBorderClass();
 			contentBorder.y = 10;
 			contentBorder.mouseEnabled = false;
-			$addChild(contentBorder);
+//			$addChild(contentBorder);
 		}
 
 		if (paneGroup == null)

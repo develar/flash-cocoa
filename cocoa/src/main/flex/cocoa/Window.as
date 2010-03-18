@@ -5,8 +5,12 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.WindowSkin;
 
-[DefaultProperty("contentView")]
-public class Window extends AbstractComponent implements TitledPane, LookAndFeelProvider
+import flash.events.IEventDispatcher;
+
+import org.flyti.plexus.Injectable;
+
+[DefaultProperty("mxmlContent")]
+public class Window extends AbstractComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher
 {
 	protected var mySkin:WindowSkin;
 
@@ -30,10 +34,10 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		}
 	}
 
-	private var _contentView:Component;
-	public function set contentView(value:Component):void
+	private var _mxmlContent:Array;
+	public function set mxmlContent(value:Array):void
 	{
-		_contentView = value;
+		_mxmlContent = value;
 	}
 
 	protected var _resourceBundle:String;
@@ -42,7 +46,7 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		_resourceBundle = value;
 	}
 
-	override protected function attachView():void
+	override protected function viewAttachedHandler():void
 	{
 		mySkin = WindowSkin(skin);
 
@@ -56,12 +60,35 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 			mySkin.title = _title;
 		}
 
-		if (_contentView != null)
+		if (_mxmlContent != null)
 		{
-			mySkin.contentView = _contentView;
+			if (_mxmlContent.length > 1)
+			{
+				var container:Container = new Container();
+				container.subviews = _mxmlContent;
+				mySkin.contentView = container;
+			}
+			else
+			{
+				var view:Viewable = _mxmlContent[0];
+				if (view is Component)
+				{
+					setContentView(Component(view));
+				}
+				else
+				{
+					mySkin.contentView = View(view);
+				}
+			}
+			_mxmlContent = null;
 		}
 		
-		super.attachView();
+		super.viewAttachedHandler();
+	}
+
+	protected function setContentView(component:Component):void
+	{
+		mySkin.contentView = component.skin == null ? component.createView(laf) : component.skin;
 	}
 
 	private var _laf:LookAndFeel;

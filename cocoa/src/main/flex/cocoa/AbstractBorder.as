@@ -2,8 +2,6 @@ package cocoa
 {
 import flash.display.Graphics;
 
-import mx.core.UIComponent;
-
 public class AbstractBorder implements Border
 {
 	private static const EMPTY_FRAME_INSETS:FrameInsets = new FrameInsets();
@@ -26,7 +24,7 @@ public class AbstractBorder implements Border
 		return _contentInsets;
 	}
 
-	public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		throw new Error("abstract");
 	}

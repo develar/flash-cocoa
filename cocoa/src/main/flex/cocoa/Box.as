@@ -49,7 +49,7 @@ public class Box extends AbstractComponent
 			contentGroup.layout = _layout;
 		}
 
-		contentGroup.elements = _elements;
+		contentGroup.subviews = _elements;
 	}
 
 	protected var _resourceBundle:String;

@@ -24,16 +24,11 @@ public class PushButton extends AbstractButton
 		}
 	}
 
-	override protected function attachView():void
+	override protected function viewAttachedHandler():void
     {
-		super.attachView();
+		super.viewAttachedHandler();
 
 		mySkin.label = _label;
-	}
-
-	override public function get baselinePosition():Number
-	{
-		return skinV.baselinePosition;
 	}
 }
 }

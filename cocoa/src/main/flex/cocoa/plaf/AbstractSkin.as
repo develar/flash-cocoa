@@ -1,24 +1,33 @@
 package cocoa.plaf
 {
+import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Component;
 import cocoa.Icon;
-import cocoa.LightUIComponent;
-import cocoa.layout.LayoutMetrics;
+import cocoa.UIPartProvider;
 
-import flash.display.DisplayObjectContainer;
+import com.asfusion.mate.events.InjectorEvent;
+
 import flash.text.engine.ElementFormat;
 
 import mx.core.mx_internal;
+
+import org.flyti.plexus.Injectable;
 
 use namespace mx_internal;
 
 /**
  * Default base skin implementation for view
  */
-public class AbstractSkin extends LightUIComponent implements Skin
+public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 {
 	protected var laf:LookAndFeel;
+
+	private var _component:Component;
+	public function get component():Component
+	{
+		return _component;
+	}
 
 	protected function getFont(key:String):ElementFormat
 	{
@@ -27,157 +36,33 @@ public class AbstractSkin extends LightUIComponent implements Skin
 
 	protected function getBorder(key:String):Border
 	{
-		return laf.getBorder(_untypedComponent.stylePrefix + "." + key);
+		return laf.getBorder(_component.stylePrefix + "." + key);
 	}
 
 	protected function getIcon(key:String):Icon
 	{
-		return laf.getIcon(_untypedComponent.stylePrefix + "." + key);
+		return laf.getIcon(_component.stylePrefix + "." + key);
+	}
+
+	public function attach(component:Component, laf:LookAndFeel):void
+	{
+		_component = component;
+		this.laf = laf;
 	}
 
 	override protected function createChildren():void
 	{
-		if (untypedComponent is LookAndFeelProvider)
+		// Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга,
+		// поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.
+		if (_component is Injectable)
 		{
-			laf = LookAndFeelProvider(untypedComponent).laf;
+			dispatchEvent(new InjectorEvent(_component));
 		}
-		else
-		{
-			var p:DisplayObjectContainer = parent;
-			while (p != null)
-			{
-				if (p is LookAndFeelProvider)
-				{
-					laf = LookAndFeelProvider(p).laf;
-					return;
-				}
-				else if (p is Skin && Skin(p).untypedComponent is LookAndFeelProvider)
-				{
-					laf = LookAndFeelProvider(Skin(p).untypedComponent).laf;
-					return;
-				}
-				else
-				{
-					p = p.parent;
-				}
-			}
-
-			throw new Error("laf not found");
-		}
-	}
-
-	private var _untypedComponent:Component;
-	public function get untypedComponent():Component
-	{
-		return _untypedComponent;
-	}
-	public function set untypedComponent(value:Component):void
-	{
-		_untypedComponent = value;
-	}
-
-	protected var _layoutMetrics:LayoutMetrics;
-	public function set layoutMetrics(value:LayoutMetrics):void
-	{
-		_layoutMetrics = value;
-		if (!isNaN(_layoutMetrics.width))
-		{
-			explicitWidth = _layoutMetrics.width;
-			_width = _layoutMetrics.width;
-		}
-		if (!isNaN(_layoutMetrics.height))
-		{
-			explicitHeight = _layoutMetrics.height;
-			_height = _layoutMetrics.height;
-		}
-	}
-
-	override public function get left():Object
-	{
-		return _layoutMetrics.left;
-	}
-	override public function set left(value:Object):void
-	{
-		_layoutMetrics.left = Number(value);
-	}
-
-	override public function get right():Object
-	{
-		return _layoutMetrics.right;
-	}
-	override public function set right(value:Object):void
-	{
-		_layoutMetrics.right = Number(value);
-	}
-
-	override public function get top():Object
-	{
-		return _layoutMetrics.top;
-	}
-	override public function set top(value:Object):void
-	{
-		_layoutMetrics.top = Number(value);
-	}
-
-	override public function get bottom():Object
-	{
-		return _layoutMetrics.bottom;
-	}
-	override public function set bottom(value:Object):void
-	{
-		_layoutMetrics.bottom = Number(value);
-	}
-
-	override public function get horizontalCenter():Object
-	{
-		return _layoutMetrics.horizontalCenter;
-	}
-	override public function set horizontalCenter(value:Object):void
-	{
-		_layoutMetrics.horizontalCenter = Number(value);
-	}
-
-	override public function get verticalCenter():Object
-	{
-		return _layoutMetrics.verticalCenter;
-	}
-	override public function set verticalCenter(value:Object):void
-	{
-		_layoutMetrics.verticalCenter = Number(value);
-	}
-
-	override public function get baseline():Object
-	{
-		return _layoutMetrics.baseline;
-	}
-	override public function set baseline(value:Object):void
-	{
-		_layoutMetrics.baseline = Number(value);
-	}
-
-	override public function get percentWidth():Number
-    {
-        return _layoutMetrics.percentWidth;
-    }
-	override public function set percentWidth(value:Number):void
-    {
-		_layoutMetrics.percentWidth = value;
-		super.percentWidth = value;
-	}
-
-	override public function get percentHeight():Number
-    {
-        return _layoutMetrics.percentHeight;
-    }
-	override public function set percentHeight(value:Number):void
-    {
-		_layoutMetrics.percentHeight = value;
-		super.percentHeight = value;
 	}
 
 	override protected function commitProperties():void
 	{
-		untypedComponent.commitProperties();
+		component.commitProperties();
 		super.commitProperties();
 	}
 }

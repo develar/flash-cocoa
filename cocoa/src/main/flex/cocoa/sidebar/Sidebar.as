@@ -1,6 +1,7 @@
 package cocoa.sidebar
 {
 import cocoa.Panel;
+import cocoa.ViewContainer;
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 import cocoa.sidebar.events.MultipleSelectionChangeEvent;
@@ -9,13 +10,11 @@ import cocoa.ui;
 
 import org.flyti.util.Assert;
 
-import spark.components.Group;
-
 use namespace ui;
 
 public class Sidebar extends Bar
 {
-	ui var paneGroup:Group;
+	ui var paneGroup:ViewContainer;
 
 	private var collapsed:Boolean = true;
 
@@ -134,7 +133,7 @@ public class Sidebar extends Bar
 
 		if (paneGroup != null)
 		{
-			paneGroup.addElement(pane);
+			paneGroup.addSubview(pane);
 		}
 	}
 
@@ -150,12 +149,17 @@ public class Sidebar extends Bar
 	{
 		var pane:Panel = Panel(event.currentTarget);
 		Assert.assert(!pane.hidden);
-		typedPaneLabelBar.adjustSelectionIndices(paneGroup.getElementIndex(pane), false);
+		typedPaneLabelBar.adjustSelectionIndices(paneGroup.getSubviewIndex(pane), false);
 	}
 
 	private function hideSideHandler(event:SidebarEvent):void
 	{
 		selectedIndices = null;
+	}
+
+	override public function get stylePrefix():String
+	{
+		return "Sidebar";
 	}
 }
 }

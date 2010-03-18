@@ -14,15 +14,13 @@
 
 		import org.flyti.util.ArrayList;
 
-		use namespace mx_internal;
-
 		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
 		private static const testDataWithLongLabels:ArrayList = new ArrayList(new <Object>["Short Label", "Item 2", "Loooooooooong Item Label"]);
 
 		private function creationCompleteHandler():void
 		{
 			var testContainer:Sprite = new Sprite();
-			container.$addChild(testContainer);
+			container.addDisplayObject(testContainer);
 			testContainer.x = 300;
 			new Builder().build(testContainer);
 

@@ -1,5 +1,11 @@
 package org.flyti.aqua
 {
+import cocoa.Container;
+import cocoa.layout.AdvancedLayout;
+import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.AbstractSkin;
+import cocoa.sidebar.SourceListView;
+
 import flash.display.Graphics;
 import flash.display.GraphicsSolidFill;
 import flash.display.GraphicsStroke;
@@ -7,14 +13,7 @@ import flash.display.IGraphicsData;
 
 import mx.core.ILayoutElement;
 
-import cocoa.layout.AdvancedLayout;
-import cocoa.layout.LayoutMetrics;
-import cocoa.plaf.AbstractSkin;
-import cocoa.Container;
-import cocoa.UIPartProvider;
-import cocoa.sidebar.SourceListView;
-
-public class SourceListSkin extends AbstractSkin implements AdvancedLayout, UIPartProvider
+public class SourceListSkin extends AbstractSkin implements AdvancedLayout
 {
 	private static const STROKE_THICKNESS:Number = 1;
 	private static const STROKE_OFFSET:Number = STROKE_THICKNESS / 2;

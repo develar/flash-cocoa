@@ -2,8 +2,6 @@ package cocoa
 {
 import flash.display.Graphics;
 
-import mx.core.UIComponent;
-
 /**
  * Терминология frame/layout взята из Cocoa.
  * У объекта два rect — frame и layout. примерно то же самое, что и DisplayObject.getBounds() и DisplayObject.getRect()
@@ -26,10 +24,10 @@ public interface Border
 	 * border может определять высоту — практически все кнопки в Aqua имеют фиксированную высоту
 	 */
 	function get layoutHeight():Number;
-	
+
 	/**
-	 * UIComponent, так как для добавления детей нам нужен $addChild
+	 * View для добавления детей
 	 */
-	function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void;
+	function draw(view:View, g:Graphics, w:Number, h:Number):void;
 }
 }

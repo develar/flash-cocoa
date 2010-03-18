@@ -1,14 +1,17 @@
 package cocoa
 {
 import cocoa.layout.AdvancedLayout;
+import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 
-import mx.core.FlexGlobals;
+import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IVisualElement;
 import mx.core.IVisualElementContainer;
@@ -31,50 +34,79 @@ use namespace mx_internal;
 public class Container extends GroupBase implements ViewContainer
 {
 	private var createChildrenCalled:Boolean;
-	private var elementsChanged:Boolean;
+	private var subviewsChanged:Boolean;
 
-	private var _elements:Array;
-	public function set elements(value:Array):void
+	public function Container()
 	{
-		if (value == _elements)
+		super();
+
+		mouseEnabledWhereTransparent = false;
+	}
+
+	private var _subviews:Array;
+	public function set subviews(value:Array):void
+	{
+		if (value == _subviews)
 		{
 			return;
 		}
 
-		_elements = value;
-		//_elements.fixed = _contentFixed;
+		_subviews = value;
 
 		if (createChildrenCalled)
         {
-            createElements();
+            createSubviews();
         }
         else
         {
-            elementsChanged = true;
+            subviewsChanged = true;
         }
-	}
-
-	/**
-	 * Если вектор элементов создается на лету по addElementAt, то он не фиксирован.
-	 * Если вектор определен компилятором, то фиксирован. Но иногда нам хочется иметь смешанное — указать вектор элементов в MXML и потом еще добавить
-	 */
-	private var _contentFixed:Boolean = true;
-	public function set fixedContent(value:Boolean):void
-	{
-		_contentFixed = value;
-		if (_elements != null)
-		{
-			//_elements.fixed = _contentFixed;
-		}
 	}
 
 	public function set mxmlContent(value:Array):void
     {
-		elements = value;
+		subviews = value;
+	}
+
+	protected var _laf:LookAndFeel;
+	public function get laf():LookAndFeel
+	{
+		return _laf;
+	}
+	public function set laf(value:LookAndFeel):void
+	{
+		_laf = value;
 	}
 
 	override protected function createChildren():void
 	{
+		var p:DisplayObjectContainer = parent;
+		while (p != null)
+		{
+			if (p is LookAndFeelProvider)
+			{
+				_laf = LookAndFeelProvider(p).laf;
+				break;
+			}
+			else
+			{
+				if (p is Skin && Skin(p).component is LookAndFeelProvider)
+				{
+					_laf = LookAndFeelProvider(Skin(p).component).laf;
+					return;
+				}
+				else
+				{
+					p = p.parent;
+				}
+			}
+		}
+
+		if (_laf == null)
+		{
+			throw new Error("laf not found");
+		}
+
 		if (layout == null)
 		{
 			layout = new BasicLayout();
@@ -82,37 +114,31 @@ public class Container extends GroupBase implements ViewContainer
 
 		createChildrenCalled = true;
 
-		if (elementsChanged)
+		if (subviewsChanged)
 		{
-			elementsChanged = false;
-            createElements();
+			subviewsChanged = false;
+            createSubviews();
         }
 	}
 
-	private function createElements():void
+	private function createSubviews():void
 	{
-		for (var i:int = 0, n:int = _elements.length; i < n; i++)
+		for (var i:int = 0, n:int = _subviews.length; i < n; i++)
 		{
-			elementAdded(_elements[i], i);
+			subviewAdded(_subviews[i], i);
 		}
 	}
 	
-	private function elementAdded(element:IVisualElement, index:int):void
+	private function subviewAdded(view:Object, index:int):void
     {
-		if (element is Component)
+		if (view is Component)
 		{
-			var view:Component = Component(element);
-			var skin:Skin = view.skin;
-			if (skin == null)
-			{
-				skin = view.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
-			}
-
-			element = skin;
+			var component:Component = Component(view);
+			view = component.skin == null ? component.createView(laf) : component.skin;
 		}
-		else if (element is Injectable || element is SkinnableComponent || (element is GroupBase && GroupBase(element).id != null))
+		else if (view is Injectable || view is SkinnableComponent || (view is GroupBase && GroupBase(view).id != null))
 		{
-			dispatchEvent(new InjectorEvent(element));
+			dispatchEvent(new InjectorEvent(view));
 		}
 
 		if (layout)
@@ -120,104 +146,53 @@ public class Container extends GroupBase implements ViewContainer
 			layout.elementAdded(index);
 		}
 
-		if (element is IFlexModule && IFlexModule(element).moduleFactory == null)
+		if (view is IFlexModule && IFlexModule(view).moduleFactory == null)
 		{
 			if (moduleFactory != null)
 			{
-				IFlexModule(element).moduleFactory = moduleFactory;
+				IFlexModule(view).moduleFactory = moduleFactory;
 			}
 			else if (document is IFlexModule && document.moduleFactory != null)
 			{
-				IFlexModule(element).moduleFactory = document.moduleFactory;
+				IFlexModule(view).moduleFactory = document.moduleFactory;
 			}
-			else if (parent is IFlexModule && IFlexModule(element).moduleFactory != null)
+			else if (parent is IFlexModule && IFlexModule(view).moduleFactory != null)
 			{
-				IFlexModule(element).moduleFactory = IFlexModule(parent).moduleFactory;
+				IFlexModule(view).moduleFactory = IFlexModule(parent).moduleFactory;
 			}
 		}
 
-		super.addChildAt(DisplayObject(element), index != -1 ? index : super.numChildren);
+		super.addChildAt(DisplayObject(view), index != -1 ? index : super.numChildren);
 
 		invalidateSize();
         invalidateDisplayList();
 	}
 
-	/**
-	 * Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга
-	 *  — поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.
-	 */
-	override mx_internal function childAdded(child:DisplayObject):void
-    {
-		if (child is Skin)
-		{
-			child.dispatchEvent(new InjectorEvent(Skin(child).untypedComponent));
-		}
-
-		super.childAdded(child);
-	}
-
 	override public function get numElements():int
     {
-		return _elements == null ? 0 : _elements.length;
+		return _subviews == null ? 0 : _subviews.length;
 	}
 
 	override public function getElementAt(index:int):IVisualElement
     {
-		var element:IVisualElement = _elements[index];
+		var element:IVisualElement = _subviews[index];
 		return element is Component ? Component(element).skin : element;
-	}
-
-	public function addElementAt(element:IVisualElement, index:int):IVisualElement
-    {
-		Assert.assert(element != this);
-
-		var host:DisplayObject;
-		if (element is Component)
-		{
-			var view:Component = Component(element);
-			if (view.skin != null)
-			{
-				host = IVisualElement(view.skin).parent;
-			}
-		}
-		else
-		{
-			host = element.parent;
-		}
-
-		if (host is IVisualElementContainer)
-        {
-			Assert.assert(host != this);
-            // Remove the item from the group if that group isn't this group
-            IVisualElementContainer(host).removeElement(element);
-        }
-
-		if (_elements == null)
-		{
-			_elements = [element];
-		}
-		else
-		{
-			_elements.splice(index, 0, element);
-		}
-
-		if (!elementsChanged)
-		{
-			elementAdded(element, index);
-		}
-
-		return element;
 	}
 
 	override public function getElementIndex(element:IVisualElement):int
     {
-		return _elements.indexOf(element);
+		return _subviews.indexOf(element);
+	}
+
+	public function getSubviewIndex(view:Viewable):int
+	{
+		return _subviews.indexOf(view);
 	}
 
 	public function removeElementAt(index:int):IVisualElement
 	{
-		var element:IVisualElement = _elements[index];
-		if (!elementsChanged)
+		var element:IVisualElement = _subviews[index];
+		if (!subviewsChanged)
 		{
 			super.removeChild(DisplayObject(element is Component ? Component(element).skin : element));
 
@@ -230,9 +205,56 @@ public class Container extends GroupBase implements ViewContainer
 			}
 		}
 
-		_elements.splice(index, 1);
+		_subviews.splice(index, 1);
 
 		return element;
+	}
+
+	public function addSubview(view:Viewable, index:int = -1):void
+	{
+		var host:DisplayObject;
+		if (view is Component)
+		{
+			var component:Component = Component(view);
+			if (component.skin != null)
+			{
+				host = IFlexDisplayObject(component.skin).parent;
+			}
+		}
+		else
+		{
+			host = IFlexDisplayObject(view).parent;
+		}
+
+		if (host is IVisualElementContainer)
+        {
+			Assert.assert(host != this);
+
+            IVisualElementContainer(host).removeElement(IVisualElement(view));
+        }
+		else if (host is ViewContainer)
+		{
+			ViewContainer(host).removeSubview(view);
+		}
+
+		if (_subviews == null)
+		{
+			_subviews = [view];
+		}
+		else
+		{
+			_subviews.splice(index, 0, view);
+		}
+
+		if (!subviewsChanged)
+		{
+			subviewAdded(view, index);
+		}
+	}
+
+	public function removeSubview(view:Viewable):void
+	{
+		removeElementAt(_subviews.indexOf(view));
 	}
 
 	override protected function canSkipMeasurement():Boolean
@@ -255,18 +277,74 @@ public class Container extends GroupBase implements ViewContainer
 		{
 			return true;
 		}
-		
+
 		return super.canSkipMeasurement();
 	}
 
-	public function addElement(element:IVisualElement):IVisualElement
+	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
 	{
-		return addElementAt(element, element.parent == this ? (numElements - 1) : numElements);
+		$addChildAt(displayObject, index == -1 ? numChildren : index);
 	}
 
-	public function removeElement(element:IVisualElement):IVisualElement
+	public final function removeDisplayObject(child:DisplayObject):void
 	{
-		return removeElementAt(getElementIndex(element));
+		$removeChild(child);
+	}
+
+	// disable unwanted legacy
+	override public function regenerateStyleCache(recursive:Boolean):void
+	{
+
+	}
+
+	override public function styleChanged(styleProp:String):void
+    {
+
+	}
+
+	override protected function resourcesChanged():void
+    {
+
+	}
+
+	override public function get layoutDirection():String
+    {
+		return AbstractView.LAYOUT_DIRECTION_LTR;
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+    {
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+    {
+		return true;
+	}
+
+	private var layoutMetrics:LayoutMetrics;
+
+	override public function getConstraintValue(constraintName:String):*
+    {
+		if (layoutMetrics == null)
+		{
+			return undefined;
+		}
+		else
+		{
+			var value:Number = layoutMetrics[constraintName];
+			return isNaN(value) ? undefined : value;
+		}
+	}
+
+	override public function setConstraintValue(constraintName:String, value:*):void
+    {
+		if (layoutMetrics == null)
+		{
+			layoutMetrics = new LayoutMetrics();
+		}
+
+		layoutMetrics[constraintName] = value;
 	}
 }
 }

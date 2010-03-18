@@ -3,10 +3,9 @@ package cocoa.plaf.aqua
 import cocoa.AbstractBorder;
 import cocoa.Border;
 import cocoa.Insets;
+import cocoa.View;
 
 import flash.display.Graphics;
-
-import mx.core.UIComponent;
 
 internal class MenuItemBorder extends AbstractBorder implements Border
 {
@@ -20,7 +19,7 @@ internal class MenuItemBorder extends AbstractBorder implements Border
 		return 18;
 	}
 
-	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		g.beginFill(0xffffff, 242 / 255);
 		g.drawRect(0, 0, w, h);

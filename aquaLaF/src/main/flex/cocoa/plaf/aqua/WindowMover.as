@@ -5,7 +5,7 @@ import cocoa.Insets;
 import flash.events.MouseEvent;
 import flash.text.engine.TextLine;
 
-import mx.core.UIComponent;
+import mx.core.IFlexDisplayObject;
 
 /**
  * В отличие от flash native startDrag/stopDrag вешает mouse move на stage — в результате при выходе мыши за границы окна все продолжает работать.
@@ -15,14 +15,14 @@ public class WindowMover
 	private var offsetX:Number;
 	private var offsetY:Number;
 
-	private var object:UIComponent;
+	private var object:IFlexDisplayObject;
 	private var titleBarHeight:Number;
 
 	private var contentInsets:Insets;
 
 	private static const MIN_SIDE_VISIBLE_WIDTH:Number = 4;
 
-	public function WindowMover(object:UIComponent, titleBarHeight:Number, contentInsets:Insets)
+	public function WindowMover(object:IFlexDisplayObject, titleBarHeight:Number, contentInsets:Insets)
 	{
 		this.object = object;
 		this.titleBarHeight = titleBarHeight;

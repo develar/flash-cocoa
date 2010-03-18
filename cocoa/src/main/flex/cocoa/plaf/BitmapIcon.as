@@ -1,13 +1,12 @@
 package cocoa.plaf
 {
 import cocoa.Icon;
+import cocoa.View;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Matrix;
 import flash.utils.ByteArray;
-
-import mx.core.UIComponent;
 
 public class BitmapIcon implements Icon, ExternalizableResource
 {
@@ -32,7 +31,7 @@ public class BitmapIcon implements Icon, ExternalizableResource
 		return bitmapData.height;
 	}
 
-	public function draw(object:UIComponent, g:Graphics, x:Number, y:Number):void
+	public function draw(view:View, g:Graphics, x:Number, y:Number):void
 	{
 		sharedMatrix.tx = x;
 		sharedMatrix.ty = y;

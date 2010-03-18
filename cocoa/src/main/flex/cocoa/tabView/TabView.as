@@ -2,11 +2,11 @@ package cocoa.tabView
 {
 import cocoa.SingleSelectionBar;
 import cocoa.ViewStack;
+import cocoa.Viewable;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
 import cocoa.ui;
 
-import mx.core.IVisualElement;
 import mx.core.UIComponent;
 
 import org.flyti.util.Assert;
@@ -77,7 +77,7 @@ public class TabView extends SingleSelectionBar
 		{
 			createPaneView(paneMetadata);
 		}
-		var pane:IVisualElement = paneMetadata.view;
+		var pane:Viewable = paneMetadata.view;
 		show ? paneGroup.show(UIComponent(pane)) : paneGroup.hide();
 		if (pane is Tab)
 		{
@@ -89,7 +89,7 @@ public class TabView extends SingleSelectionBar
 	{
 		Assert.assert(paneMetadata.view == null);
 
-		var pane:IVisualElement = paneMetadata.viewFactory.newInstance();
+		var pane:Viewable = paneMetadata.viewFactory.newInstance();
 		paneMetadata.view = pane;
 
 		if (pane is TitledPane)

@@ -9,8 +9,6 @@ import mx.core.IFactory;
 
 public interface LookAndFeel
 {
-//	function initialize():void;
-	
 	function getBorder(key:String):Border;
 	function getIcon(key:String):Icon;
 	function getFont(key:String):ElementFormat;
@@ -18,5 +16,7 @@ public interface LookAndFeel
 	function getUI(key:String):Class;
 
 	function getFactory(key:String):IFactory;
+
+	function getCursor(key:String):CursorData;
 }
 }

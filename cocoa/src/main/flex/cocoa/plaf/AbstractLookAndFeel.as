@@ -108,5 +108,22 @@ public class AbstractLookAndFeel implements LookAndFeel
 			return _parent.getFactory(key);
 		}
 	}
+
+	public function getCursor(key:String):CursorData
+	{
+		var value:CursorData = data[key];
+		if (value != null)
+		{
+			return value;
+		}
+		else if (_parent == null)
+		{
+			throw new ArgumentError("Unknown " + key);
+		}
+		else
+		{
+			return _parent.getCursor(key);
+		}
+	}
 }
 }

@@ -1,7 +1,5 @@
 package cocoa
 {
-import cocoa.plaf.LookAndFeel;
-
 import com.asfusion.mate.core.EventMap;
 import com.asfusion.mate.events.InjectorEvent;
 
@@ -18,7 +16,6 @@ import mx.core.FlexGlobals;
 import mx.core.IFlexDisplayObject;
 import mx.core.IInvalidating;
 import mx.core.ILayoutElement;
-import mx.core.IVisualElement;
 import mx.core.Singleton;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
@@ -35,11 +32,13 @@ use namespace mx_internal;
 [Frame(factoryClass='org.flyti.managers.SystemManager')]
 
 [DefaultProperty("mxmlContent")]
-public class ApplicationImpl extends LightContainer implements Application, IFocusManagerContainer
+public class ApplicationImpl extends LayoutlessContainer implements Application, IFocusManagerContainer
 {
 	public var frameRate:Number;
 	public var pageTitle:String;
 	public var preloader:Object;
+
+	protected var maps:Vector.<EventMap>;
 
 	private var resizeWidth:Boolean = true;
 	private var resizeHeight:Boolean = true;
@@ -47,8 +46,6 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 
 	private var resizeHandlerAdded:Boolean = false;
 	private var percentBoundsChanged:Boolean;
-
-	protected var maps:Vector.<EventMap>;
 
 	private var mxmlContentCreated:Boolean = false;
 
@@ -90,10 +87,10 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 		return _deferredContentCreated;
 	}
 
-	private var subviews:Vector.<IVisualElement>;
-	public function set mxmlContent(value:Vector.<IVisualElement>):void
+	private var _mxmlContent:Vector.<Viewable>;
+	public function set mxmlContent(value:Vector.<Viewable>):void
 	{
-		subviews = value;
+		_mxmlContent = value;
 		if (creationPolicy == ContainerCreationPolicy.ALL)
 		{
 			createDeferredContent();
@@ -114,13 +111,13 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 			return;
 		}
 
-		if (subviews != null)
+		if (_mxmlContent != null)
 		{
-			for each (var subview:IVisualElement in subviews)
+			for each (var subview:Viewable in _mxmlContent)
 			{
-				addElement(subview);
+				addSubview(subview);
 			}
-			subviews = null;
+			_mxmlContent = null;
 		}
 
 		mxmlContentCreated = true;
@@ -223,8 +220,6 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 
 	override public function initialize():void
 	{
-		// trace("FxApp initialize FxApp");
-
 		var sm:ISystemManager = systemManager;
 
 		_url = LoaderUtil.normalizeURL(sm.loaderInfo);
@@ -285,24 +280,6 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 			updateBounds();
 			percentBoundsChanged = false;
 		}
-	}
-
-	override mx_internal function setUnscaledHeight(value:Number):void
-	{
-		// we invalidate so we can properly add/remove the resize
-		// event handler (SDK-12664)
-		invalidateProperties();
-
-		super.setUnscaledHeight(value);
-	}
-
-	override mx_internal function setUnscaledWidth(value:Number):void
-	{
-		// we invalidate so we can properly add/remove the resize
-		// event handler (SDK-12664)
-		invalidateProperties();
-
-		super.setUnscaledWidth(value);
 	}
 
 	/**
@@ -453,16 +430,6 @@ public class ApplicationImpl extends LightContainer implements Application, IFoc
 		{
 			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
 		}
-	}
-
-	private var _laf:LookAndFeel;
-	public function get laf():LookAndFeel
-	{
-		return _laf;
-	}
-	public function set laf(value:LookAndFeel):void
-	{
-		_laf = value;
 	}
 }
 }

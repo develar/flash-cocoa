@@ -2,12 +2,11 @@ package cocoa.plaf
 {
 import cocoa.Border;
 import cocoa.Insets;
+import cocoa.View;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
-
-import mx.core.UIComponent;
 
 public final class Scale1HBitmapBorder extends AbstractControlBitmapBorder implements Border
 {
@@ -20,7 +19,7 @@ public final class Scale1HBitmapBorder extends AbstractControlBitmapBorder imple
 		return border;
 	}
 
-	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = 0;
 		sharedMatrix.ty = 0;

@@ -88,12 +88,12 @@ public class Dialog extends Window
 			if (_cancelVisible)
 			{
 				cancelButton = createControlButton(resourceManager.getString(RESOURCE_BUNDLE, "cancel"), cancel);
-				controlBar.addElement(cancelButton);
+				controlBar.addSubview(cancelButton);
 			}
 
 			okButton = createControlButton(getOkLocalizedLabel(), ok);
 			okButton.enabled = _valid;
-			controlBar.addElement(okButton);
+			controlBar.addSubview(okButton);
 		}
 
 		super.commitProperties();

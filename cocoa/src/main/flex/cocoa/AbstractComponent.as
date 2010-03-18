@@ -10,11 +10,12 @@ import flash.events.Event;
 import mx.core.IFlexModule;
 import mx.core.IFlexModuleFactory;
 import mx.core.IMXMLObject;
+import mx.core.IStateClient2;
 import mx.core.IVisualElement;
 
 use namespace ui;
 
-public class AbstractComponent extends ViewBase implements Component, IFlexModule, IMXMLObject
+public class AbstractComponent extends ComponentBase implements Component, IFlexModule, IMXMLObject
 {
 	// только как прокси
 	private var layoutMetrics:LayoutMetrics = new LayoutMetrics();
@@ -22,6 +23,10 @@ public class AbstractComponent extends ViewBase implements Component, IFlexModul
 	protected var resourceManager:ResourceManager;
 
 	private var _skinClass:Class;
+	public function set skinClass(value:Class):void
+	{
+		_skinClass = value;
+	}
 
 	private var _skin:Skin;
 	public function get skin():Skin
@@ -106,16 +111,24 @@ public class AbstractComponent extends ViewBase implements Component, IFlexModul
 	}
 	
 	/* Component */
-	public function createView(laf:LookAndFeel):Skin
+	public final function createView(laf:LookAndFeel):Skin
 	{
-		var skinClass:Class = _skinClass;
-		if (skinClass == null)
+		if (_skinClass == null)
 		{
-			skinClass = laf.getUI(stylePrefix);
+			_skinClass = laf.getUI(stylePrefix);
+		}
+		_skin = new _skinClass();
+		_skinClass = null;
+		if (!_enabled)
+		{
+			_skin.enabled = false;
 		}
 
-		_skin = new skinClass();
-		attachView();
+		skinV = _skin;
+		_skin.layoutMetrics = layoutMetrics;
+		_skin.attach(this, laf);
+		viewAttachedHandler();
+		listenSkinParts(_skin);
 		return _skin;
 	}
 
@@ -124,22 +137,9 @@ public class AbstractComponent extends ViewBase implements Component, IFlexModul
 		throw new Error("abstract");
 	}
 
-	protected function attachView():void
+	protected function viewAttachedHandler():void
 	{
-		if (!_enabled)
-		{
-			_skin.enabled = false;
-		}
 
-		skinV = _skin;
-		_skin.layoutMetrics = layoutMetrics;
-		_skin.untypedComponent = this;
-		if ("component" in _skin)
-		{
-			_skin["component"] = this;
-		}
-
-		listenSkinParts(_skin);
 	}
 
 	public function commitProperties():void
@@ -150,7 +150,7 @@ public class AbstractComponent extends ViewBase implements Component, IFlexModul
 			//noinspection UnnecessaryLocalVariableJS
 			var pendingState:String = getCurrentSkinState();
 			// stateChanged(skin.currentState, pendingState, false);
-			_skin.currentState = pendingState;
+			IStateClient2(_skin).currentState = pendingState;
 			skinStateIsDirty = false;
 		}
 	}

@@ -5,19 +5,17 @@ import cocoa.BorderedContainer;
 import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.UIPartProvider;
-import cocoa.Component;
+import cocoa.View;
 import cocoa.dialog.Dialog;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
-import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 
 import mx.core.ILayoutElement;
-import mx.core.UIComponent;
 import mx.core.mx_internal;
 
 import spark.layouts.HorizontalLayout;
@@ -29,7 +27,7 @@ use namespace mx_internal;
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
  * На данный момент нет поддержки bottom bar как по спецификации Apple. Но есть нечто типа control bar как Open/Choose — явно там это так никак не названо.
  */
-public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, UIPartProvider
+public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout
 {
 	[Embed(source="/Window.resizeGripper.png")]
 	private static const resizeGripperClass:Class;
@@ -57,8 +55,8 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 		labelHelper = new LabelHelper(this);
 	}
 
-	private var _contentElement:Component;
-	public function set contentElement(value:UIComponent):void
+	private var _contentView:View;
+	public function set contentView(value:View):void
 	{
 		_contentView = value;
 	}
@@ -67,11 +65,6 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 	public function set bottomBarStyle(value:BottomBarStyle):void
 	{
 		_bottomBarStyle = value;
-	}
-
-	override public function set styleName(value:Object):void
-    {
-		super.styleName = value;
 	}
 
 	private var _title:String;
@@ -96,13 +89,12 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 		mover = new WindowMover(this, TITLE_BAR_HEIGHT, CONTENT_INSETS);
 		border = laf.getBorder("Window.border");
 
-		contentViewSkin = _contentView.createSkin(laf);
-		addChild(DisplayObject(contentViewSkin));
+		addChild(DisplayObject(_contentView));
 
 		if (resizeGripper == null)
 		{
 			resizeGripper = new resizeGripperClass();
-			$addChild(resizeGripper);
+			addDisplayObject(resizeGripper);
 		}
 
 		if (controlBar == null)
@@ -132,11 +124,11 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 	override protected function measure():void
 	{
-		measuredMinWidth = Math.max(contentViewSkin.minWidth, controlBar.minWidth);
-		measuredMinHeight = CONTENT_INSETS.height + contentViewSkin.minHeight;
+		measuredMinWidth = Math.max(_contentView.minWidth, controlBar.minWidth);
+		measuredMinHeight = CONTENT_INSETS.height + _contentView.minHeight;
 
-		measuredWidth = Math.max(contentViewSkin.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
-		measuredHeight = CONTENT_INSETS.height + contentViewSkin.getExplicitOrMeasuredHeight();
+		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
+		measuredHeight = CONTENT_INSETS.height + _contentView.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -152,8 +144,8 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 
 		border.draw(this, g, w, h);
 
-		contentViewSkin.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
-		contentViewSkin.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
+		_contentView.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
+		_contentView.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
 
 		var controlBarGroupWidth:Number = controlBar.getExplicitOrMeasuredWidth();
 		controlBar.move(w - controlBarGroupWidth, h - BOTTOM_BAR_HEIGHT);

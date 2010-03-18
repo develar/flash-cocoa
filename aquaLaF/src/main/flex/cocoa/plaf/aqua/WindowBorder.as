@@ -2,10 +2,9 @@ package cocoa.plaf.aqua
 {
 import cocoa.AbstractBorder;
 import cocoa.Insets;
+import cocoa.View;
 
 import flash.display.Graphics;
-
-import mx.core.UIComponent;
 
 public class WindowBorder extends AbstractBorder
 {
@@ -21,7 +20,7 @@ public class WindowBorder extends AbstractBorder
 	bodySlicedImage.slice2(bodyClass, null, NaN, new Insets(58, 0, 58, 0));
 	bodyClass = null;
 
-	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		titleSlicedImage.draw(g, w, 0, -33, -33, -18);
 		bodySlicedImage.draw(g, w, 0, -33, -33, 41, h - 41 - 47);

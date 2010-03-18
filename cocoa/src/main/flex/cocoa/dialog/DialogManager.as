@@ -1,10 +1,9 @@
 package cocoa.dialog
 {
 import cocoa.Window;
+import cocoa.dialog.events.DialogEvent;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
-import cocoa.Component;
-import cocoa.dialog.events.DialogEvent;
 
 import com.asfusion.mate.events.InjectorEvent;
 
@@ -53,13 +52,12 @@ public class DialogManager
 
 	private function dialogCreationCompleteHandler(event:ResizeEvent):void
 	{
-		var skin:Skin = Skin(event.currentTarget);
-		PopUpManager.centerPopUp(skin);
+		PopUpManager.centerPopUp(Skin(event.currentTarget));
 	}
 
 	private function okOrCancelHandler(event:DialogEvent):void
 	{
-		var box:Component = Component(event.currentTarget);
+		var box:Window = Window(event.currentTarget);
 
 		box.removeEventListener(DialogEvent.OK, okOrCancelHandler);
 		box.removeEventListener(DialogEvent.CANCEL, okOrCancelHandler);

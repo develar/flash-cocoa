@@ -7,7 +7,6 @@ import flash.text.engine.TextLine;
 import flash.text.engine.TextLineCreationResult;
 import flash.utils.Dictionary;
 
-import mx.core.UIComponent;
 import mx.core.mx_internal;
 
 use namespace mx_internal;
@@ -30,9 +29,9 @@ public class LabelHelper
 	private var truncated:Boolean;
 
 	private var textLine:TextLine;
-	private var container:UIComponent;
+	private var container:View;
 
-	public function LabelHelper(container:UIComponent, font:ElementFormat = null)
+	public function LabelHelper(container:View, font:ElementFormat = null)
 	{
 		this.container = container;
 		_font = font;
@@ -143,7 +142,7 @@ public class LabelHelper
 
 		if (textLine != null)
 		{
-			container.$removeChild(textLine);
+			container.removeDisplayObject(textLine);
 		}
 
 		if (_text != null)
@@ -167,7 +166,7 @@ public class LabelHelper
 				textBlock.releaseLines(textLine, textLine);
 				textLine.mouseEnabled = false;
 				textLine.mouseChildren = false;
-				container.$addChild(textLine);
+				container.addDisplayObject(textLine);
 			}
 		}
 		else

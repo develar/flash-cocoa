@@ -3,10 +3,12 @@ package cocoa
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-public interface Component
+public interface Component extends Viewable
 {
 	function get stylePrefix():String;
 	function get skin():Skin;
+
+	function set skinClass(value:Class):void;
 	
 	function set enabled(value:Boolean):void;
 	

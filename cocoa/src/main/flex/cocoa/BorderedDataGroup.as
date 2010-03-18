@@ -1,5 +1,6 @@
 package cocoa
 {
+import flash.display.DisplayObject;
 import flash.display.Graphics;
 
 import mx.core.mx_internal;
@@ -10,7 +11,7 @@ import spark.layouts.VerticalLayout;
 
 use namespace mx_internal;
 
-public class BorderedDataGroup extends DataGroup
+public class BorderedDataGroup extends DataGroup implements View
 {
 	public function BorderedDataGroup()
 	{
@@ -27,6 +28,16 @@ public class BorderedDataGroup extends DataGroup
 	public function set border(value:Border):void
 	{
 		_border = value;
+	}
+
+	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
+	{
+		$addChildAt(displayObject, index == -1 ? numChildren : index);
+	}
+
+	public final function removeDisplayObject(child:DisplayObject):void
+	{
+		$removeChild(child);
 	}
 
 	override protected function measure():void

@@ -388,9 +388,9 @@ public class WindowedApplication extends ApplicationImpl implements IWindow
 			else
 			{
 				// in the conditions below we will play an effect
-				if (getStyle("hideEffect") && initialized && $visible != value)
-					addEventListener(EffectEvent.EFFECT_END, hideEffectEndHandler);
-				else
+//				if (getStyle("hideEffect") && initialized && $visible != value)
+//					addEventListener(EffectEvent.EFFECT_END, hideEffectEndHandler);
+//				else
 					_nativeWindow.visible = value;
 			}
 		}
@@ -1672,12 +1672,12 @@ public class WindowedApplication extends ApplicationImpl implements IWindow
 			return;
 		if (event.afterDisplayState == NativeWindowDisplayState.MINIMIZED)
 		{
-			if (getStyle("minimizeEffect"))
-			{
-				event.preventDefault();
-				addEventListener(EffectEvent.EFFECT_END, windowMinimizeHandler);
-				dispatchEvent(new Event("windowMinimize"));
-			}
+//			if (getStyle("minimizeEffect"))
+//			{
+//				event.preventDefault();
+//				addEventListener(EffectEvent.EFFECT_END, windowMinimizeHandler);
+//				dispatchEvent(new Event("windowMinimize"));
+//			}
 		}
 
 	}
@@ -1803,13 +1803,13 @@ public class WindowedApplication extends ApplicationImpl implements IWindow
 		{
 			event.preventDefault();
 		}
-		else if (getStyle("closeEffect") &&
-				 stage.nativeWindow.transparent)
-		{
-			addEventListener(EffectEvent.EFFECT_END, window_closeEffectEndHandler);
-			dispatchEvent(new Event("windowClose"));
-			event.preventDefault();
-		}
+//		else if (getStyle("closeEffect") &&
+//				 stage.nativeWindow.transparent)
+//		{
+//			addEventListener(EffectEvent.EFFECT_END, window_closeEffectEndHandler);
+//			dispatchEvent(new Event("windowClose"));
+//			event.preventDefault();
+//		}
 	}
 
 	/**

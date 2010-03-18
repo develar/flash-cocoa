@@ -45,7 +45,7 @@ public class TabLabelSkin extends AbstractPushButtonSkin
 	{
 		if (_currentState == ToggleButtonState.up)
 		{
-			currentState = ToggleButtonState.down.name;
+//			currentState = ToggleButtonState.down.name;
 			event.updateAfterEvent();
 		}
 	}
@@ -54,7 +54,7 @@ public class TabLabelSkin extends AbstractPushButtonSkin
 	{
 		if (_currentState == ToggleButtonState.up && event.buttonDown)
 		{
-			currentState = ToggleButtonState.down.name;
+//			currentState = ToggleButtonState.down.name;
 			event.updateAfterEvent();
 		}
 	}
@@ -63,24 +63,24 @@ public class TabLabelSkin extends AbstractPushButtonSkin
 	{
 		if (_currentState == ToggleButtonState.down)
 		{
-			currentState = ToggleButtonState.up.name;
+//			currentState = ToggleButtonState.up.name;
 			event.updateAfterEvent();
 		}
 	}
 
 	private var _currentState:ToggleButtonState;
-	override public function get currentState():String
-	{
-		return _currentState.name;
-	}
-	override public function set currentState(value:String):void
-	{
-		if (value != _currentState.name && !(value == ToggleButtonState.downAndSelected.name && _currentState == ToggleButtonState.upAndSelected))
-		{
-			_currentState = ToggleButtonState.valueOf(value);
-			invalidateDisplayList();
-		}
-    }
+//	override public function get currentState():String
+//	{
+//		return _currentState.name;
+//	}
+//	override public function set currentState(value:String):void
+//	{
+//		if (value != _currentState.name && !(value == ToggleButtonState.downAndSelected.name && _currentState == ToggleButtonState.upAndSelected))
+//		{
+//			_currentState = ToggleButtonState.valueOf(value);
+//			invalidateDisplayList();
+//		}
+//    }
 
 	override protected function measure():void
 	{

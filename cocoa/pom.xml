@@ -71,6 +71,7 @@
 								<class>**.*Slider</class>
 								<class>**.*Bar</class>
 								<class>**.*Box</class>
+								<class>**.ListView</class>
 								<class>**.ResourceMetadata</class>
 
 								<class>org.flyti.primitives.*</class>

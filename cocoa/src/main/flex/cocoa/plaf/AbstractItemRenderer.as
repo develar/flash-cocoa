@@ -1,6 +1,6 @@
 package cocoa.plaf
 {
-import cocoa.LightUIComponent;
+import cocoa.AbstractView;
 
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
@@ -8,7 +8,7 @@ import flash.text.engine.ElementFormat;
 
 import spark.components.IItemRenderer;
 
-public class AbstractItemRenderer extends LightUIComponent implements IItemRenderer
+public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 {
 	protected var state:uint = 0;
 

@@ -4,7 +4,7 @@ import cocoa.plaf.PushButtonSkin;
 
 import flash.events.MouseEvent;
 
-public class AbstractButton extends AbstractControlView
+public class AbstractButton extends AbstractControl
 {
 	protected var mySkin:PushButtonSkin;
 	
@@ -14,9 +14,9 @@ public class AbstractButton extends AbstractControlView
 		return _state;
 	}
 
-	override protected function attachView():void
+	override protected function viewAttachedHandler():void
 	{
-		super.attachView();
+		super.viewAttachedHandler();
 
 		mySkin = PushButtonSkin(skin);
 		addHandlers();

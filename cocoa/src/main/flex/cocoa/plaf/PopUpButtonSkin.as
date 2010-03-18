@@ -19,7 +19,7 @@ public class PopUpButtonSkin extends AbstractSkin
 		if (openButton == null)
 		{
 			openButton = new PushButton();
-			openButton.setStyle("skinClass", laf.getUI("PopUpButton.openButton.skin"));
+//			openButton.setStyle("skinClass", laf.getUI("PopUpButton.openButton.skin"));
 //			addChild(openButton);
 		}
 	}
@@ -44,30 +44,30 @@ public class PopUpButtonSkin extends AbstractSkin
 	}
 
 	private var _currentState:String;
-	override public function get currentState():String
-    {
-        return _currentState;
-    }
-    override public function set currentState(value:String):void
-    {
-        if (value != _currentState)
-		{
-			_currentState = value;
-			if (_currentState == "open")
-			{
-				if (popUpAnchor == null)
-				{
-					createDropDownAndPopUpAnchor();
-				}
-				popUpAnchor.displayPopUp = true;
-			}
-			else if (popUpAnchor != null)
-			{
-				popUpAnchor.displayPopUp = false;
-			}
-			invalidateDisplayList();
-		}
-    }
+//	override public function get currentState():String
+//    {
+//        return _currentState;
+//    }
+//    override public function set currentState(value:String):void
+//    {
+//        if (value != _currentState)
+//		{
+//			_currentState = value;
+//			if (_currentState == "open")
+//			{
+//				if (popUpAnchor == null)
+//				{
+//					createDropDownAndPopUpAnchor();
+//				}
+//				popUpAnchor.displayPopUp = true;
+//			}
+//			else if (popUpAnchor != null)
+//			{
+//				popUpAnchor.displayPopUp = false;
+//			}
+//			invalidateDisplayList();
+//		}
+//    }
 
 	override protected function measure():void
 	{
@@ -83,9 +83,9 @@ public class PopUpButtonSkin extends AbstractSkin
 //		openButton.setActualSize(openButton.getExplicitOrMeasuredWidth(), openButton.getExplicitOrMeasuredHeight());
 	}
 
-	override public function get baselinePosition():Number
-	{
-		return openButton.baselinePosition;
-	}
+//	override public function get baselinePosition():Number
+//	{
+//		return openButton.baselinePosition;
+//	}
 }
 }

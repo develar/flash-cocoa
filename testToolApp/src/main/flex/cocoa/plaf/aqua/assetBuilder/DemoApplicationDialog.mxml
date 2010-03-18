@@ -6,10 +6,10 @@
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.WindowSkin;
 
-		override protected function attachView():void
+		override protected function viewAttachedHandler():void
 		{
 			WindowSkin(skin).bottomBarStyle = BottomBarStyle.application;
-			super.attachView();
+			super.viewAttachedHandler();
 		}
 		]]></fx:Script>
 

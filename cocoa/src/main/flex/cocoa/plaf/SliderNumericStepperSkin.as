@@ -1,12 +1,10 @@
 package cocoa.plaf
 {
-import cocoa.plaf.AbstractSkin;
 import cocoa.HSlider;
 import cocoa.NumericStepper;
-import cocoa.UIPartProvider;
 import cocoa.SliderNumericStepper;
 
-public class SliderNumericStepperSkin extends AbstractSkin implements UIPartProvider
+public class SliderNumericStepperSkin extends AbstractSkin
 {
 	private var slider:HSlider;
 	private var stepper:NumericStepper;

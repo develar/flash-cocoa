@@ -1,6 +1,6 @@
 package org.flyti.aqua
 {
-import cocoa.LightUIComponent;
+import cocoa.AbstractView;
 import cocoa.plaf.PushButtonSkin;
 
 import mx.core.mx_internal;
@@ -72,7 +72,7 @@ public class AquaBarButton extends ButtonBarButton
 
 	override public function get layoutDirection():String
     {
-		return LightUIComponent.LAYOUT_DIRECTION_LTR;
+		return AbstractView.LAYOUT_DIRECTION_LTR;
 	}
 }
 }

@@ -1,12 +1,11 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Border;
+import cocoa.View;
 
 import flash.display.CapsStyle;
 import flash.display.Graphics;
 import flash.display.LineScaleMode;
-
-import mx.core.UIComponent;
 
 internal class SeparatorMenuItemBorder extends MenuItemBorder implements Border
 {
@@ -20,9 +19,9 @@ internal class SeparatorMenuItemBorder extends MenuItemBorder implements Border
 		return 12;
 	}
 
-	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
-		super.draw(object, g, w, h);
+		super.draw(view, g, w, h);
 
 		g.moveTo(1, 5);
 		g.lineStyle(1, 0xe3e3e3, 243 / 255, false, LineScaleMode.NORMAL, CapsStyle.NONE);

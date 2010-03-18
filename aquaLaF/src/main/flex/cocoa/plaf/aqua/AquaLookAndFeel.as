@@ -17,7 +17,7 @@ import mx.core.ClassFactory;
 import org.flyti.aqua.SourceListSkin;
 import org.flyti.aqua.TabSkin;
 
-public final class AquaLookAndFeel extends AbstractLookAndFeel
+public class AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
 	private static var assetsDataClass:Class;
@@ -29,7 +29,7 @@ public final class AquaLookAndFeel extends AbstractLookAndFeel
 		initialize();
 	}
 
-	private function initialize():void
+	protected function initialize():void
 	{
 		initAssets();
 

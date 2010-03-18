@@ -4,7 +4,7 @@ import cocoa.Box;
 import cocoa.Container;
 import cocoa.UIPartProvider;
 
-public class BoxSkin extends AbstractSkin implements UIPartProvider
+public class BoxSkin extends AbstractSkin
 {
 	public var hostComponent:Box;
 

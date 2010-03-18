@@ -1,10 +1,10 @@
 package cocoa
 {
-import mx.core.IVisualElement;
-
-public interface ViewContainer
+public interface ViewContainer extends View
 {
-	function addElement(element:IVisualElement):IVisualElement;
-	function removeElement(element:IVisualElement):IVisualElement;
+	function addSubview(view:Viewable, index:int = -1):void;
+	function removeSubview(view:Viewable):void;
+
+	function getSubviewIndex(view:Viewable):int;
 }
 }

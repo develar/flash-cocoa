@@ -1,15 +1,15 @@
 package cocoa.pane
 {
-import mx.core.IFactory;
-import mx.core.IVisualElement;
-
+import cocoa.Viewable;
 import cocoa.resources.ResourceMetadata;
+
+import mx.core.IFactory;
 
 public class PaneItem extends LabeledItem
 {
 	public var viewFactory:IFactory;
 
-	public var view:IVisualElement;
+	public var view:Viewable;
 
 	public function PaneItem(label:ResourceMetadata, viewFactory:IFactory)
 	{

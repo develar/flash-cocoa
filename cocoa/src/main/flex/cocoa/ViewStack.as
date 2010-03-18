@@ -5,7 +5,7 @@ import mx.core.UIComponent;
 
 import cocoa.layout.AdvancedLayout;
 
-public class ViewStack extends LightContainer implements AdvancedLayout
+public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 {
 	private var currentView:UIComponent;
 
@@ -13,7 +13,7 @@ public class ViewStack extends LightContainer implements AdvancedLayout
 	{
 		if (view.parent == null)
 		{
-			addElement(view);
+			addSubview(Viewable(view));
 		}
 
 		view.visible = true;

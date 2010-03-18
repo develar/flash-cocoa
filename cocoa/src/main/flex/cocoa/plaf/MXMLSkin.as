@@ -1,24 +1,28 @@
 package cocoa.plaf
 {
-import cocoa.Container;
 import cocoa.Component;
+import cocoa.MXMLContainer;
 import cocoa.layout.LayoutMetrics;
 
+import com.asfusion.mate.events.InjectorEvent;
+
+import flash.display.DisplayObject;
+
+import mx.core.IStateClient;
 import mx.core.mx_internal;
-import mx.styles.IAdvancedStyleClient;
+
+import org.flyti.plexus.Injectable;
 
 use namespace mx_internal;
 
-public class MXMLSkin extends Container implements Skin
+public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 {
-	private var _untypedHostComponent:Component;
-	public function get untypedComponent():Component
+	protected var laf:LookAndFeel;
+	
+	private var _component:Component;
+	public function get component():Component
 	{
-		return _untypedHostComponent;
-	}
-	public function set untypedComponent(value:Component):void
-	{
-		_untypedHostComponent = value;
+		return _component;
 	}
 
 	private var _layoutMetrics:LayoutMetrics;
@@ -122,13 +126,34 @@ public class MXMLSkin extends Container implements Skin
 
 	override protected function commitProperties():void
 	{
-		untypedComponent.commitProperties();
+		component.commitProperties();
 		super.commitProperties();
 	}
 
-	override public function get styleParent():IAdvancedStyleClient
+	override protected function createChildren():void
 	{
-		return untypedComponent;
+		// Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга,
+		// поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.
+		if (_component is Injectable)
+		{
+			dispatchEvent(new InjectorEvent(_component));
+		}
+	}
+
+	public function attach(component:Component, laf:LookAndFeel):void
+	{
+		_component = component;
+		this.laf = laf;
+	}
+
+	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
+	{
+		$addChildAt(displayObject, index == -1 ? numChildren : index);
+	}
+
+	public final function removeDisplayObject(value:DisplayObject):void
+	{
+		$removeChild(value);
 	}
 }
 }

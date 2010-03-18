@@ -3,12 +3,11 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Insets;
+import cocoa.View;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
-
-import mx.core.UIComponent;
 
 /**
  * Фиксированная высота, произвольная ширина — масштабируется только по горизонтали.
@@ -39,7 +38,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		sliceHeight = bitmaps[0].height;
 	}
 
-	override public function draw(object:UIComponent, g:Graphics, w:Number, h:Number):void
+	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = _frameInsets.left;
 		sharedMatrix.ty = _frameInsets.top;
