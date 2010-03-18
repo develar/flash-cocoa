@@ -3,7 +3,7 @@ package cocoa.dialog
 import cocoa.Window;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
-import cocoa.View;
+import cocoa.Component;
 import cocoa.dialog.events.DialogEvent;
 
 import com.asfusion.mate.events.InjectorEvent;
@@ -40,7 +40,7 @@ public class DialogManager
 		if (skin == null)
 		{
 			box.laf = LookAndFeelProvider(FlexGlobals.topLevelApplication).laf;
-			skin = box.createSkin(box.laf);
+			skin = box.createView(box.laf);
 			skin.dispatchEvent(new InjectorEvent(box));
 			// на данный момент у нас каждое окно имеет local event map, поэтому проблемы из-за того, что скин еще не в dispay list, нет
 //			parent.dispatchEvent(new InjectorEvent(box));
@@ -59,7 +59,7 @@ public class DialogManager
 
 	private function okOrCancelHandler(event:DialogEvent):void
 	{
-		var box:View = View(event.currentTarget);
+		var box:Component = Component(event.currentTarget);
 
 		box.removeEventListener(DialogEvent.OK, okOrCancelHandler);
 		box.removeEventListener(DialogEvent.CANCEL, okOrCancelHandler);

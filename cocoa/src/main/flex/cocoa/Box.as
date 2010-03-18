@@ -7,7 +7,7 @@ import spark.layouts.supportClasses.LayoutBase;
 use namespace ui;
 
 [DefaultProperty("elements")]
-public class Box extends AbstractView
+public class Box extends AbstractComponent
 {
 	ui var contentGroup:Container;
 

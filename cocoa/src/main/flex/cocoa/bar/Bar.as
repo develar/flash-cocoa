@@ -1,6 +1,6 @@
 package cocoa.bar
 {
-import cocoa.AbstractView;
+import cocoa.AbstractComponent;
 import cocoa.SelectableDataGroup;
 import cocoa.pane.LabeledItem;
 import cocoa.pane.PaneItem;
@@ -18,7 +18,7 @@ import spark.components.IItemRenderer;
 use namespace ui;
 
 [Abstract]
-public class Bar extends AbstractView
+public class Bar extends AbstractComponent
 {
 	ui var itemGroup:SelectableDataGroup;
 

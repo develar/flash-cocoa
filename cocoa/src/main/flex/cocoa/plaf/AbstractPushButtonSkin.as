@@ -11,7 +11,7 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
 
-	public var hostComponent:AbstractButton;
+	public var component:AbstractButton;
 
 	public function AbstractPushButtonSkin()
 	{

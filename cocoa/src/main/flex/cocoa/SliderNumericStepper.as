@@ -5,7 +5,7 @@ import flash.events.Event;
 use namespace ui;
 
 [Event(name="change", type="flash.events.Event")]
-public class SliderNumericStepper extends AbstractView
+public class SliderNumericStepper extends AbstractComponent
 {
 	ui var slider:HSlider;
 	ui var stepper:NumericStepper;

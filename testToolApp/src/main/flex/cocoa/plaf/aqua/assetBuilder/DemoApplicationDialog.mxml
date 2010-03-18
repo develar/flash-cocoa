@@ -6,17 +6,17 @@
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.WindowSkin;
 
-		override protected function attachSkin():void
+		override protected function attachView():void
 		{
 			WindowSkin(skin).bottomBarStyle = BottomBarStyle.application;
-			super.attachSkin();
+			super.attachView();
 		}
 		]]></fx:Script>
 
-	<Box>
+	<Container>
 		<layout>
 			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
 		</layout>
 		<PushButton label="Help H"/>
-	</Box>
+	</Container>
 </Dialog>

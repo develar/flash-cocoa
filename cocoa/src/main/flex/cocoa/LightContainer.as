@@ -22,13 +22,13 @@ public class LightContainer extends LightUIComponent implements ViewContainer
 {
 	public function addElement(element:IVisualElement):IVisualElement
 	{
-		if (element is View)
+		if (element is Component)
 		{
-			var view:View = View(element);
+			var view:Component = Component(element);
 			var skin:Skin = view.skin;
 			if (skin == null)
 			{
-				skin = view.createSkin(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
+				skin = view.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
 			}
 
 			addChild(DisplayObject(skin));
@@ -50,7 +50,7 @@ public class LightContainer extends LightUIComponent implements ViewContainer
     {
 		if (child is Skin)
 		{
-			child.dispatchEvent(new InjectorEvent(Skin(child).untypedHostComponent));
+			child.dispatchEvent(new InjectorEvent(Skin(child).untypedComponent));
 		}
 
 		super.childAdded(child);
@@ -58,9 +58,9 @@ public class LightContainer extends LightUIComponent implements ViewContainer
 
 	public function removeElement(element:IVisualElement):IVisualElement
 	{
-		if (element is View)
+		if (element is Component)
 		{
-			element = View(element).skin;
+			element = Component(element).skin;
 		}
 
 		removeChild(DisplayObject(element));

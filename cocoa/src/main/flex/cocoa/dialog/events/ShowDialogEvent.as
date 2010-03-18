@@ -1,6 +1,6 @@
 package cocoa.dialog.events
 {
-import cocoa.View;
+import cocoa.Component;
 
 import flash.events.Event;
 
@@ -8,7 +8,7 @@ public class ShowDialogEvent extends Event
 {
 	public static const SHOW_DIALOG:String = "showDialog";
 
-	public function ShowDialogEvent(box:View, modal:Boolean = true)
+	public function ShowDialogEvent(box:Component, modal:Boolean = true)
 	{
 		_box = box;
 		_modal = modal;
@@ -16,8 +16,8 @@ public class ShowDialogEvent extends Event
 		super(SHOW_DIALOG, true);
 	}
 
-	private var _box:View;
-	public function get box():View
+	private var _box:Component;
+	public function get box():Component
 	{
 		return _box;
 	}

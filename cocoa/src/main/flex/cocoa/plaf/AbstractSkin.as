@@ -1,16 +1,15 @@
 package cocoa.plaf
 {
 import cocoa.Border;
+import cocoa.Component;
 import cocoa.Icon;
 import cocoa.LightUIComponent;
-import cocoa.View;
 import cocoa.layout.LayoutMetrics;
 
 import flash.display.DisplayObjectContainer;
 import flash.text.engine.ElementFormat;
 
 import mx.core.mx_internal;
-import mx.styles.IAdvancedStyleClient;
 
 use namespace mx_internal;
 
@@ -28,19 +27,19 @@ public class AbstractSkin extends LightUIComponent implements Skin
 
 	protected function getBorder(key:String):Border
 	{
-		return laf.getBorder(_untypedHostComponent.stylePrefix + "." + key);
+		return laf.getBorder(_untypedComponent.stylePrefix + "." + key);
 	}
 
 	protected function getIcon(key:String):Icon
 	{
-		return laf.getIcon(_untypedHostComponent.stylePrefix + "." + key);
+		return laf.getIcon(_untypedComponent.stylePrefix + "." + key);
 	}
 
 	override protected function createChildren():void
 	{
-		if (untypedHostComponent is LookAndFeelProvider)
+		if (untypedComponent is LookAndFeelProvider)
 		{
-			laf = LookAndFeelProvider(untypedHostComponent).laf;
+			laf = LookAndFeelProvider(untypedComponent).laf;
 		}
 		else
 		{
@@ -52,9 +51,9 @@ public class AbstractSkin extends LightUIComponent implements Skin
 					laf = LookAndFeelProvider(p).laf;
 					return;
 				}
-				else if (p is Skin && Skin(p).untypedHostComponent is LookAndFeelProvider)
+				else if (p is Skin && Skin(p).untypedComponent is LookAndFeelProvider)
 				{
-					laf = LookAndFeelProvider(Skin(p).untypedHostComponent).laf;
+					laf = LookAndFeelProvider(Skin(p).untypedComponent).laf;
 					return;
 				}
 				else
@@ -67,14 +66,14 @@ public class AbstractSkin extends LightUIComponent implements Skin
 		}
 	}
 
-	private var _untypedHostComponent:View;
-	public function get untypedHostComponent():View
+	private var _untypedComponent:Component;
+	public function get untypedComponent():Component
 	{
-		return _untypedHostComponent;
+		return _untypedComponent;
 	}
-	public function set untypedHostComponent(value:View):void
+	public function set untypedComponent(value:Component):void
 	{
-		_untypedHostComponent = value;
+		_untypedComponent = value;
 	}
 
 	protected var _layoutMetrics:LayoutMetrics;
@@ -178,13 +177,8 @@ public class AbstractSkin extends LightUIComponent implements Skin
 
 	override protected function commitProperties():void
 	{
-		untypedHostComponent.commitProperties();
+		untypedComponent.commitProperties();
 		super.commitProperties();
-	}
-
-	override public function get styleParent():IAdvancedStyleClient
-	{
-		return untypedHostComponent;
 	}
 }
 }

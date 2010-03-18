@@ -99,13 +99,13 @@ public class Container extends GroupBase implements ViewContainer
 	
 	private function elementAdded(element:IVisualElement, index:int):void
     {
-		if (element is View)
+		if (element is Component)
 		{
-			var view:View = View(element);
+			var view:Component = Component(element);
 			var skin:Skin = view.skin;
 			if (skin == null)
 			{
-				skin = view.createSkin(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
+				skin = view.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
 			}
 
 			element = skin;
@@ -150,7 +150,7 @@ public class Container extends GroupBase implements ViewContainer
     {
 		if (child is Skin)
 		{
-			child.dispatchEvent(new InjectorEvent(Skin(child).untypedHostComponent));
+			child.dispatchEvent(new InjectorEvent(Skin(child).untypedComponent));
 		}
 
 		super.childAdded(child);
@@ -164,7 +164,7 @@ public class Container extends GroupBase implements ViewContainer
 	override public function getElementAt(index:int):IVisualElement
     {
 		var element:IVisualElement = _elements[index];
-		return element is View ? View(element).skin : element;
+		return element is Component ? Component(element).skin : element;
 	}
 
 	public function addElementAt(element:IVisualElement, index:int):IVisualElement
@@ -172,9 +172,9 @@ public class Container extends GroupBase implements ViewContainer
 		Assert.assert(element != this);
 
 		var host:DisplayObject;
-		if (element is View)
+		if (element is Component)
 		{
-			var view:View = View(element);
+			var view:Component = Component(element);
 			if (view.skin != null)
 			{
 				host = IVisualElement(view.skin).parent;
@@ -219,7 +219,7 @@ public class Container extends GroupBase implements ViewContainer
 		var element:IVisualElement = _elements[index];
 		if (!elementsChanged)
 		{
-			super.removeChild(DisplayObject(element is View ? View(element).skin : element));
+			super.removeChild(DisplayObject(element is Component ? Component(element).skin : element));
 
 			invalidateSize();
 			invalidateDisplayList();

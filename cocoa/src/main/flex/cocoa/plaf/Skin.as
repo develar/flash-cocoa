@@ -1,6 +1,6 @@
 package cocoa.plaf
 {
-import cocoa.View;
+import cocoa.Component;
 
 import mx.core.IStateClient;
 import mx.managers.IToolTipManagerClient;
@@ -12,8 +12,8 @@ public interface Skin extends SimpleSkin, IStateClient, ISimpleStyleClient, IToo
 {
 	function set layoutMetrics(value:LayoutMetrics):void;
 
-	function get untypedHostComponent():View;
-	function set untypedHostComponent(value:View):void;
+	function get untypedComponent():Component;
+	function set untypedComponent(value:Component):void;
 
 	function set resourceBundle(value:String):void;
 	function m(key:String):String;

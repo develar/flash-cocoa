@@ -14,9 +14,9 @@ public class AbstractButton extends AbstractControlView
 		return _state;
 	}
 
-	override protected function attachSkin():void
+	override protected function attachView():void
 	{
-		super.attachSkin();
+		super.attachView();
 
 		mySkin = PushButtonSkin(skin);
 		addHandlers();
@@ -29,36 +29,37 @@ public class AbstractButton extends AbstractControlView
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
+//		trace(event);
 		mySkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mySkin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverOrOutHandler);
-		mySkin.addEventListener(MouseEvent.MOUSE_OUT, mouseOverOrOutHandler);
+		mySkin.addEventListener(MouseEvent.MOUSE_OVER, adjustState);
+		mySkin.addEventListener(MouseEvent.MOUSE_OUT, adjustState);
 
 		adjustState(event);
 	}
 
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
+//		trace(event);
 		mySkin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverOrOutHandler);
-		mySkin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOverOrOutHandler);
+		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, adjustState);
+		mySkin.removeEventListener(MouseEvent.MOUSE_OUT, adjustState);
 		
 		if (event.target == mySkin)
 		{
-			adjustState(event);
+			// может быть уже отвалидировано в roll over/out
+			if (_state == ButtonState.on)
+			{
+				_state = ButtonState.off;
+				mySkin.invalidateDisplayList();
+				event.updateAfterEvent();
+			}
+
 			if (_action != null)
 			{
 				_action();
 			}
-		}
-	}
-
-	private function mouseOverOrOutHandler(event:MouseEvent):void
-	{
-		if (!(event.localX == -1 && event.localY == -1 && event.stageX == -1))
-		{
-			adjustState(event);
 		}
 	}
 

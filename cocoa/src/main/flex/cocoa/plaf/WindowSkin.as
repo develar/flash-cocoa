@@ -1,11 +1,11 @@
 package cocoa.plaf
 {
-import cocoa.View;
+import mx.core.UIComponent;
 
 public interface WindowSkin
 {
 	function set title(value:String):void
-	function set contentView(value:View):void
+	function set contentElement(value:UIComponent):void
 	function set bottomBarStyle(value:BottomBarStyle):void
 }
 }

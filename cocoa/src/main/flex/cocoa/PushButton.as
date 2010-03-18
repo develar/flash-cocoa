@@ -24,9 +24,9 @@ public class PushButton extends AbstractButton
 		}
 	}
 
-	override protected function attachSkin():void
+	override protected function attachView():void
     {
-		super.attachSkin();
+		super.attachView();
 
 		mySkin.label = _label;
 	}

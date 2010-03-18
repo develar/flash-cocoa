@@ -6,7 +6,7 @@ import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.WindowSkin;
 
 [DefaultProperty("contentView")]
-public class Window extends AbstractView implements TitledPane, LookAndFeelProvider
+public class Window extends AbstractComponent implements TitledPane, LookAndFeelProvider
 {
 	protected var mySkin:WindowSkin;
 
@@ -30,8 +30,8 @@ public class Window extends AbstractView implements TitledPane, LookAndFeelProvi
 		}
 	}
 
-	private var _contentView:View;
-	public function set contentView(value:View):void
+	private var _contentView:Component;
+	public function set contentView(value:Component):void
 	{
 		_contentView = value;
 	}
@@ -42,7 +42,7 @@ public class Window extends AbstractView implements TitledPane, LookAndFeelProvi
 		_resourceBundle = value;
 	}
 
-	override protected function attachSkin():void
+	override protected function attachView():void
 	{
 		mySkin = WindowSkin(skin);
 
@@ -61,7 +61,7 @@ public class Window extends AbstractView implements TitledPane, LookAndFeelProvi
 			mySkin.contentView = _contentView;
 		}
 		
-		super.attachSkin();
+		super.attachView();
 	}
 
 	private var _laf:LookAndFeel;

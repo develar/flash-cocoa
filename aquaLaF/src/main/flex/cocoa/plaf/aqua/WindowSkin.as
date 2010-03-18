@@ -5,7 +5,7 @@ import cocoa.BorderedContainer;
 import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.UIPartProvider;
-import cocoa.View;
+import cocoa.Component;
 import cocoa.dialog.Dialog;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
@@ -17,6 +17,7 @@ import flash.display.DisplayObject;
 import flash.display.Graphics;
 
 import mx.core.ILayoutElement;
+import mx.core.UIComponent;
 import mx.core.mx_internal;
 
 import spark.layouts.HorizontalLayout;
@@ -56,9 +57,8 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 		labelHelper = new LabelHelper(this);
 	}
 
-	private var _contentView:View;
-	private var contentViewSkin:Skin;
-	public function set contentView(value:View):void
+	private var _contentElement:Component;
+	public function set contentElement(value:UIComponent):void
 	{
 		_contentView = value;
 	}

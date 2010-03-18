@@ -3,17 +3,14 @@ package cocoa
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-import mx.core.IVisualElement;
-import mx.styles.IAdvancedStyleClient;
-
-public interface View extends IVisualElement, IAdvancedStyleClient
+public interface Component
 {
 	function get stylePrefix():String;
 	function get skin():Skin;
 	
 	function set enabled(value:Boolean):void;
 	
-	function createSkin(laf:LookAndFeel):Skin;
+	function createView(laf:LookAndFeel):Skin;
 
 	function uiPartAdded(id:String, instance:Object):void;
 	

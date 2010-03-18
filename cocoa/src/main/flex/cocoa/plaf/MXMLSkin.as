@@ -1,7 +1,7 @@
 package cocoa.plaf
 {
 import cocoa.Container;
-import cocoa.View;
+import cocoa.Component;
 import cocoa.layout.LayoutMetrics;
 
 import mx.core.mx_internal;
@@ -11,12 +11,12 @@ use namespace mx_internal;
 
 public class MXMLSkin extends Container implements Skin
 {
-	private var _untypedHostComponent:View;
-	public function get untypedHostComponent():View
+	private var _untypedHostComponent:Component;
+	public function get untypedComponent():Component
 	{
 		return _untypedHostComponent;
 	}
-	public function set untypedHostComponent(value:View):void
+	public function set untypedComponent(value:Component):void
 	{
 		_untypedHostComponent = value;
 	}
@@ -122,13 +122,13 @@ public class MXMLSkin extends Container implements Skin
 
 	override protected function commitProperties():void
 	{
-		untypedHostComponent.commitProperties();
+		untypedComponent.commitProperties();
 		super.commitProperties();
 	}
 
 	override public function get styleParent():IAdvancedStyleClient
 	{
-		return untypedHostComponent;
+		return untypedComponent;
 	}
 }
 }
