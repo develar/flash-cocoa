@@ -19,11 +19,6 @@ public class AbstractLookAndFeel implements LookAndFeel
 		_parent = value;
 	}
 
-//	public function initialize():void
-//	{
-//		throw new Error("abstract");
-//	}
-
 	public function getBorder(key:String):Border
 	{
 		var value:Object = data[key];
@@ -109,20 +104,20 @@ public class AbstractLookAndFeel implements LookAndFeel
 		}
 	}
 
-	public function getCursor(key:String):CursorData
+	public function getCursor(cursorType:int):CursorData
 	{
-		var value:CursorData = data[key];
+		var value:CursorData = data[cursorType];
 		if (value != null)
 		{
 			return value;
 		}
 		else if (_parent == null)
 		{
-			throw new ArgumentError("Unknown " + key);
+			throw new ArgumentError("Unknown " + cursorType);
 		}
 		else
 		{
-			return _parent.getCursor(key);
+			return _parent.getCursor(cursorType);
 		}
 	}
 }

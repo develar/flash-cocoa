@@ -17,6 +17,6 @@ public interface LookAndFeel
 
 	function getFactory(key:String):IFactory;
 
-	function getCursor(key:String):CursorData;
+	function getCursor(cursorType:int):CursorData;
 }
 }
