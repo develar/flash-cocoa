@@ -15,7 +15,7 @@
 		}
 		]]></fx:Script>
 
-	<c:Dialog>
-		<c:PopUpButton dataProvider="{testData}"/>
-	</c:Dialog>
+	<!--<c:Dialog>-->
+		<!--<c:PopUpButton dataProvider="{testData}"/>-->
+	<!--</c:Dialog>-->
 </c:Application>

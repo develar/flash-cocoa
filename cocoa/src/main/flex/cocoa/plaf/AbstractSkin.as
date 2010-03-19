@@ -10,6 +10,7 @@ import com.asfusion.mate.events.InjectorEvent;
 
 import flash.text.engine.ElementFormat;
 
+import mx.core.IFactory;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
@@ -42,6 +43,11 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 	protected function getIcon(key:String):Icon
 	{
 		return laf.getIcon(_component.lafPrefix + "." + key);
+	}
+
+	protected function getFactory(key:String):IFactory
+	{
+		return laf.getFactory(_component.lafPrefix + "." + key);
 	}
 
 	public function attach(component:Component, laf:LookAndFeel):void

@@ -1,61 +1,73 @@
 package cocoa
 {
-import mx.collections.IList;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.PopUpMenuController;
+import cocoa.plaf.PushButtonSkin;
+import cocoa.plaf.Skin;
 
-import spark.components.DataGroup;
+import flash.display.DisplayObject;
+
+import spark.utils.LabelUtil;
 
 use namespace ui;
 
 /**
  * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
-public class PopUpButton extends AbstractComponent
+[DefaultProperty("menu")]
+public class PopUpButton extends AbstractComponent implements Button
 {
-	ui var dataGroup:DataGroup;
+	private var labelChanged:Boolean = false;
+
+	private var menuController:PopUpMenuController;
 
 	public function PopUpButton()
 	{
-		super();
-
-		skinParts.dataGroup = 0;
-//		requireSelection = true;
 	}
 
-	private var _dataProvider:IList;
-	public function set dataProvider(value:IList):void
+	private var _state:int = ButtonState.off;
+	public function get state():int
 	{
-		if (value != _dataProvider)
+		return _state;
+	}
+
+	private var _menu:Menu;
+	public function set menu(value:Menu):void
+	{
+		if (value != _menu)
 		{
-			_dataProvider = value;
+			_menu = value;
+			labelChanged = true;
+			invalidateProperties();
 		}
 	}
 
-	ui function dataGroupAdded():void
+	override public final function createView(laf:LookAndFeel):Skin
 	{
-		dataGroup.dataProvider = _dataProvider;
+		super.createView(laf);
+		menuController = new PopUpMenuController(DisplayObject(skin), _menu, laf);
+		return skin;
 	}
 
-//	override mx_internal function updateLabelDisplay(displayItem:* = undefined):void
-//	{
-//		if (openButton != null)
-//		{
-//			if (displayItem === undefined)
-//			{
-////				displayItem = selectedItem;
-//			}
-//
-////			PushButton(openButton).label = LabelUtil.itemToLabel(displayItem, labelField, labelFunction);
-//		}
-//	}
+	override public function commitProperties():void
+    {
+        super.commitProperties();
 
-	public function set labelFunction(labelFunction:Function):void
+        if (labelChanged)
+        {
+            labelChanged = false;
+            updateLabelDisplay();
+        }
+    }
+
+	protected function updateLabelDisplay():void
 	{
-//		_labelFunction = labelFunction;
+		PushButtonSkin(skin).label = LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
 	}
 
 	public function get selectedItem():Object
 	{
-		return null;
+		return "Item 1";
 	}
 
 	override public function get lafPrefix():String

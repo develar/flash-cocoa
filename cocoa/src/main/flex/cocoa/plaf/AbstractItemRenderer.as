@@ -2,7 +2,6 @@ package cocoa.plaf
 {
 import cocoa.AbstractView;
 
-import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import flash.text.engine.ElementFormat;
 
@@ -16,25 +15,10 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 	protected static const SHOWS_CARET:uint = 1 << 1;
 	protected static const HOVERED:uint = 1 << 2;
 
-	protected var laf:LookAndFeel;
-
-	override protected function initializationComplete():void
+	protected var _laf:LookAndFeel;
+	public function set laf(value:LookAndFeel):void
 	{
-		super.initializationComplete();
-
-		var p:DisplayObjectContainer = parent;
-		while (p != null)
-		{
-			if (p is LookAndFeelProvider)
-			{
-				laf = LookAndFeelProvider(p).laf;
-				break;
-			}
-			else
-			{
-				p = p.parent;
-			}
-		}
+		_laf = value;
 	}
 
 	private var _itemIndex:int;
@@ -122,7 +106,7 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 
 	protected function getFont(key:String):ElementFormat
 	{
-		return laf.getFont(key);
+		return _laf.getFont(key);
 	}
 }
 }

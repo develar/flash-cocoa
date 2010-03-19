@@ -14,7 +14,7 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	public function MenuItemRenderer()
 	{
-		labelHelper = new LabelHelper(this, getFont("SystemFont"));
+		labelHelper = new LabelHelper(this);
 		
 		addRollHandlers();
 	}
@@ -49,12 +49,12 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	protected function getBorder(key:String):Border
 	{
-		return laf.getBorder("MenuItem." + key);
+		return _laf.getBorder("MenuItem." + key);
 	}
 
 	protected function getIcon(key:String):Icon
 	{
-		return laf.getIcon("MenuItem." + key);
+		return _laf.getIcon("MenuItem." + key);
 	}
 
 	protected var menuItem:Object;
@@ -80,6 +80,12 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 		invalidateSize();
 		invalidateDisplayList();
+	}
+
+	override public function set laf(value:LookAndFeel):void
+	{
+		super.laf = value;
+		labelHelper.font = getFont("SystemFont");
 	}
 
 	override protected function measure():void

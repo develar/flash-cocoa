@@ -14,7 +14,25 @@ public class ComponentBase extends OnDemandEventDispatcher
 {
 	protected static const HANDLER_NOT_EXISTS:int = 2;
 
-	protected const skinParts:Dictionary = new Dictionary();
+	//noinspection JSUnusedLocalSymbols
+	protected function getSkinPartFlags(id:String):int
+	{
+		return 0;
+	}
+
+	protected static function _cl(own:Dictionary, parent:Dictionary):void
+	{
+		for (var id:Object in parent)
+		{
+			own[id] = parent[id];
+		}
+	}
+
+	private static const _skinParts:Dictionary = new Dictionary();
+	protected function get skinParts():Dictionary
+	{
+		return _skinParts;
+	}
 
 	private var untypedSkin:SimpleSkin;
 

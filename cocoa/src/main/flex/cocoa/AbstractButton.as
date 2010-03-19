@@ -4,7 +4,7 @@ import cocoa.plaf.PushButtonSkin;
 
 import flash.events.MouseEvent;
 
-public class AbstractButton extends AbstractControl
+public class AbstractButton extends AbstractControl implements Button
 {
 	protected var mySkin:PushButtonSkin;
 

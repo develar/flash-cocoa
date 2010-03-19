@@ -72,6 +72,7 @@
 								<class>**.*Box</class>
 								<class>**.ListView</class>
 								<class>**.ResourceMetadata</class>
+								<class>**.Menu</class>
 
 								<class>org.flyti.primitives.*</class>
 								<class>**.layout.*Layout</class>

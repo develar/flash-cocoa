@@ -5,12 +5,12 @@ import cocoa.PushButton;
 import cocoa.ViewContainer;
 import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
+import cocoa.resources.ResourceManager;
 import cocoa.ui;
 
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
-
-import cocoa.resources.ResourceManager;
+import flash.utils.Dictionary;
 
 use namespace ui;
 
@@ -27,17 +27,17 @@ public class Dialog extends Window
 
 	private var controlBarInitialized:Boolean;
 
+	private static const _skinParts:Dictionary = new Dictionary();
+	_skinParts.controlBar = HANDLER_NOT_EXISTS;
+	override protected function get skinParts():Dictionary
+	{
+		return _skinParts;
+	}
+
 	ui var controlBar:ViewContainer;
 
 	private var okButton:PushButton;
 	private var cancelButton:PushButton;
-
-	public function Dialog()
-	{
-		super();
-		
-		skinParts.controlBar = HANDLER_NOT_EXISTS;
-	}
 
 	override public function get lafPrefix():String
 	{

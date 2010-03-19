@@ -111,7 +111,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	}
 	
 	/* Component */
-	public final function createView(laf:LookAndFeel):Skin
+	public function createView(laf:LookAndFeel):Skin
 	{
 		if (_skinClass == null)
 		{

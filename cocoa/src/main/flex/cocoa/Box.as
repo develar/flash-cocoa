@@ -1,6 +1,7 @@
 package cocoa
 {
 import flash.events.Event;
+import flash.utils.Dictionary;
 
 import spark.layouts.supportClasses.LayoutBase;
 
@@ -9,13 +10,18 @@ use namespace ui;
 [DefaultProperty("elements")]
 public class Box extends AbstractComponent
 {
+	protected static const _skinParts:Dictionary = new Dictionary();
+	_skinParts.contentGroup = 0;
+	override protected function get skinParts():Dictionary
+	{
+		return _skinParts;
+	}
+
 	ui var contentGroup:Container;
 
 	public function Box()
 	{
 		super();
-
-		skinParts.contentGroup = 0;
 
 		listenResourceChange();
 	}

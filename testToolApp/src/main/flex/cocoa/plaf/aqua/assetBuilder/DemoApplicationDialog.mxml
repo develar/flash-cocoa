@@ -22,6 +22,10 @@
 			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
 		</layout>
 		<PushButton label="Help H"/>
-		<PopUpButton dataProvider="{testData}"/>
+		<PopUpButton>
+			<Menu>
+				<items>{testData}</items>
+			</Menu>
+		</PopUpButton>
 	</Container>
 </Dialog>

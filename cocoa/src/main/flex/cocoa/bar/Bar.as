@@ -7,6 +7,8 @@ import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
 import cocoa.ui;
 
+import flash.utils.Dictionary;
+
 import mx.core.IVisualElement;
 import mx.events.CollectionEvent;
 import mx.events.CollectionEventKind;
@@ -20,14 +22,17 @@ use namespace ui;
 [Abstract]
 public class Bar extends AbstractComponent
 {
+	protected static const skinParts:Dictionary = new Dictionary();
+	skinParts.itemGroup = 0;
+	override protected function get skinParts():Dictionary
+	{
+		return skinParts;
+	}
+
 	ui var itemGroup:SelectableDataGroup;
 
 	public function Bar()
 	{
-		super();
-
-		skinParts.itemGroup = 0;
-
 		listenResourceChange();
 	}
 
@@ -139,10 +144,5 @@ public class Bar extends AbstractComponent
 
 		}
 	}
-
-//	protected function addPane(paneMetadata:PaneItem, show:Boolean):void
-//	{
-//
-//	}
 }
 }
