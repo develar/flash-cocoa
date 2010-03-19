@@ -279,7 +279,7 @@ public class BitmapFill extends EventDispatcher implements IFill
 			sourceAsBitmapData = alphaSource;
 		}
 
-		target.beginBitmapFill(sourceAsBitmapData, transformMatrix);
+		target.beginBitmapFill(sourceAsBitmapData, transformMatrix, fillType == BitmapFillType.TILE);
 	}
 
 	public function end(target:Graphics):void
