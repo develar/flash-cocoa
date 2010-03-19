@@ -4,9 +4,7 @@ import cocoa.Border;
 import cocoa.BorderedContainer;
 import cocoa.Insets;
 import cocoa.LabelHelper;
-import cocoa.UIPartProvider;
 import cocoa.View;
-import cocoa.dialog.Dialog;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
@@ -47,8 +45,6 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
 
 	private var mover:WindowMover;
-
-	public var hostComponent:Dialog;
 
 	public function WindowSkin()
 	{
@@ -103,6 +99,7 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 			controlBar.height = BOTTOM_BAR_HEIGHT;
 			controlBar.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
 			controlBar.border = laf.getBorder("Window.bottomBar." + _bottomBarStyle.name);
+			controlBar.mouseEnabled = false;
 
 			var bottomBarGroupLayout:HorizontalLayout = new HorizontalLayout();
 			bottomBarGroupLayout.verticalAlign = VerticalAlign.MIDDLE;
@@ -111,7 +108,7 @@ public class WindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, A
 			bottomBarGroupLayout.gap = 12;
 			controlBar.layout = bottomBarGroupLayout;
 
-			hostComponent.uiPartAdded("controlBar", controlBar);
+			component.uiPartAdded("controlBar", controlBar);
 			addChild(controlBar);
 		}
 	}

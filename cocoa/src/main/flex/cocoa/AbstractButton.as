@@ -7,6 +7,8 @@ import flash.events.MouseEvent;
 public class AbstractButton extends AbstractControl
 {
 	protected var mySkin:PushButtonSkin;
+
+	private var oldState:int;
 	
 	private var _state:int = ButtonState.off;
 	public function get state():int
@@ -29,13 +31,14 @@ public class AbstractButton extends AbstractControl
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-//		trace(event);
+		oldState = state;
+
 		mySkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mySkin.addEventListener(MouseEvent.MOUSE_OVER, adjustState);
-		mySkin.addEventListener(MouseEvent.MOUSE_OUT, adjustState);
+		mySkin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+		mySkin.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 
-		adjustState(event);
+		mouseOverHandler(event);
 	}
 
 	private function stageMouseUpHandler(event:MouseEvent):void
@@ -43,8 +46,8 @@ public class AbstractButton extends AbstractControl
 //		trace(event);
 		mySkin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, adjustState);
-		mySkin.removeEventListener(MouseEvent.MOUSE_OUT, adjustState);
+		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+		mySkin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 		
 		if (event.target == mySkin)
 		{
@@ -52,8 +55,7 @@ public class AbstractButton extends AbstractControl
 			if (_state == ButtonState.on)
 			{
 				_state = ButtonState.off;
-				mySkin.invalidateDisplayList();
-				event.updateAfterEvent();
+				adjustState(event);
 			}
 
 			if (_action != null)
@@ -63,9 +65,20 @@ public class AbstractButton extends AbstractControl
 		}
 	}
 
+	private function mouseOverHandler(event:MouseEvent):void
+	{
+		_state = oldState == ButtonState.off ? ButtonState.on : ButtonState.off;
+		adjustState(event);
+	}
+
+	private function mouseOutHandler(event:MouseEvent):void
+	{
+		_state = oldState;
+		adjustState(event);
+	}
+
 	private function adjustState(event:MouseEvent):void
 	{
-		_state = _state == ButtonState.off ? ButtonState.on : ButtonState.off;
 		mySkin.invalidateDisplayList();
 		event.updateAfterEvent();
 	}

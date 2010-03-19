@@ -28,6 +28,11 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 
 	override protected function createChildren():void
 	{
+		if (_laf != null)
+		{
+			return;
+		}
+
 		var p:DisplayObjectContainer = parent;
 		while (p != null)
 		{

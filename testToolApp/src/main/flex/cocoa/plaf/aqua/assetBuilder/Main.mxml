@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 						xmlns="library://cocoa"
-						xmlns:ac="acocoa"
+						xmlns:ac="library://acocoa"
 						creationPolicy="none" width="800" height="800"
 						creationComplete="creationCompleteHandler()">
 
 	<fx:Script><![CDATA[
 		import cocoa.dialog.DialogEventMap;
 		import cocoa.dialog.events.ShowDialogEvent;
+		import cocoa.plaf.aqua.AquaLookAndFeel;
 
 		import com.asfusion.mate.core.EventMap;
 		import com.asfusion.mate.core.MateManager;
@@ -19,16 +20,16 @@
 
 		private function creationCompleteHandler():void
 		{
-			var testContainer:Sprite = new Sprite();
-			container.addDisplayObject(testContainer);
-			testContainer.x = 300;
-			new Builder().build(testContainer);
+//			var testContainer:Sprite = new Sprite();
+//			container.addDisplayObject(testContainer);
+//			testContainer.x = 300;
+//			new Builder().build(testContainer);
 
+			laf = new AquaLookAndFeel();
 			createDeferredContent();
 
 			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
 		}
-
 
 		override protected function initializeMaps():void
 		{
@@ -40,7 +41,7 @@
 		]]></fx:Script>
 
 	<Container id="container">
-		<PushButton label="Help H"/>
+		<!--<PushButton label="Help H"/>-->
 		<!--<c:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}"/>-->
 		
 		<!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>-->

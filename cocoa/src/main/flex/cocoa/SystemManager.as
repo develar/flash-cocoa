@@ -1,4 +1,4 @@
-package org.flyti.managers
+package cocoa
 {
 import mx.core.Singleton;
 import mx.core.mx_internal;

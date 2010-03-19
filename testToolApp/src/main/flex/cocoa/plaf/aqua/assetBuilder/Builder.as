@@ -8,7 +8,6 @@ import cocoa.Insets;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
-import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
@@ -21,8 +20,6 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Shape;
 import flash.filesystem.File;
 import flash.utils.ByteArray;
-
-import mx.core.FlexGlobals;
 
 public class Builder
 {
@@ -86,7 +83,6 @@ public class Builder
 		show(testContainer, data);
 
 		AquaLookAndFeel._setBordersAndIcons(borders, icons);
-		LookAndFeelProvider(FlexGlobals.topLevelApplication).laf = new AquaLookAndFeel();
 	}
 
 	private function show(displayObject:DisplayObjectContainer, data:ByteArray):void

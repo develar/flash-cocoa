@@ -26,24 +26,24 @@ import mx.managers.SystemManagerGlobals;
 
 use namespace mx_internal;
 
-[Frame(factoryClass='org.flyti.managers.SystemManager')]
+[Frame(factoryClass='cocoa.SystemManager')]
 public class WindowedApplication extends ApplicationImpl implements IWindow
 {
 	public function WindowedApplication()
 	{
 		super();
 
-		        addEventListener(FlexEvent.PREINITIALIZE, preinitializeHandler);
-		        addEventListener(FlexEvent.UPDATE_COMPLETE, updateComplete_handler);
-		        addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
+		addEventListener(FlexEvent.PREINITIALIZE, preinitializeHandler);
+		addEventListener(FlexEvent.UPDATE_COMPLETE, updateComplete_handler);
+		addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 
-		        var nativeApplication:NativeApplication = NativeApplication.nativeApplication;
-		        nativeApplication.addEventListener(Event.ACTIVATE, nativeApplication_activateHandler);
-		        nativeApplication.addEventListener(Event.DEACTIVATE, nativeApplication_deactivateHandler);
-		        nativeApplication.addEventListener(Event.NETWORK_CHANGE, dispatchEvent);
+		var nativeApplication:NativeApplication = NativeApplication.nativeApplication;
+		nativeApplication.addEventListener(Event.ACTIVATE, nativeApplication_activateHandler);
+		nativeApplication.addEventListener(Event.DEACTIVATE, nativeApplication_deactivateHandler);
+		nativeApplication.addEventListener(Event.NETWORK_CHANGE, dispatchEvent);
 
-		        nativeApplication.addEventListener(InvokeEvent.INVOKE, nativeApplication_invokeHandler);
-		        initialInvokes = new Array();
+		nativeApplication.addEventListener(InvokeEvent.INVOKE, nativeApplication_invokeHandler);
+		initialInvokes = new Array();
 
 		//Force DragManager to instantiate so that it can handle drags from
 		//outside the app.

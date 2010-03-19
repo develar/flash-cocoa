@@ -29,7 +29,7 @@ import mx.utils.LoaderUtil;
 
 use namespace mx_internal;
 
-[Frame(factoryClass='org.flyti.managers.SystemManager')]
+[Frame(factoryClass='cocoa.SystemManager')]
 
 [DefaultProperty("mxmlContent")]
 public class ApplicationImpl extends LayoutlessContainer implements Application, IFocusManagerContainer
@@ -99,9 +99,17 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
 	override protected function childrenCreated():void
 	{
-		parent.dispatchEvent(new InjectorEvent(this));
+		systemManager.dispatchEvent(new InjectorEvent(this));
 
 		super.childrenCreated();
+	}
+
+	override protected function createChildren():void
+	{
+		if (creationPolicy == ContainerCreationPolicy.ALL)
+		{
+			super.createChildren();
+		}
 	}
 
 	public function createDeferredContent():void
@@ -109,6 +117,11 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		if (mxmlContentCreated)
 		{
 			return;
+		}
+
+		if (creationPolicy == ContainerCreationPolicy.NONE)
+		{
+			super.createChildren();
 		}
 
 		if (_mxmlContent != null)

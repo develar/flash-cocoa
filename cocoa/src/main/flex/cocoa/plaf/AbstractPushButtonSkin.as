@@ -2,6 +2,7 @@ package cocoa.plaf
 {
 import cocoa.AbstractButton;
 import cocoa.Border;
+import cocoa.Component;
 import cocoa.LabelHelper;
 
 import flash.display.Graphics;
@@ -19,6 +20,12 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 
 		mouseChildren = false;
 		labelHelper = new LabelHelper(this);
+	}
+
+	override public function attach(component:Component, laf:LookAndFeel):void
+	{
+		super.attach(component, laf);
+		myComponent = AbstractButton(component);
 	}
 
 	override public function get baselinePosition():Number

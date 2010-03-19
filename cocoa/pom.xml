@@ -60,7 +60,6 @@
 
 								<class>**.sidebar.*</class>
 								<class>**.Panel</class>
-								<class>**.MouseCursor</class>
 								<class>**.MXMLSkin</class>
 								<class>**.*Button</class>
 								<class>**.*ApplicationImpl</class>

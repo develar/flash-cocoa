@@ -42,7 +42,7 @@
 				<configuration>
 					<manifests>
 						<manifest>
-							<uri>acocoa</uri>
+							<uri>library://acocoa</uri>
 							<includes>
 								<class>**.WindowedApplication</class>
 							</includes>

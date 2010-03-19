@@ -54,7 +54,6 @@ import mx.effects.EffectManager;
 import mx.effects.IEffectInstance;
 import mx.events.DynamicEvent;
 import mx.events.FlexEvent;
-import mx.events.MoveEvent;
 import mx.events.PropertyChangeEvent;
 import mx.events.ResizeEvent;
 import mx.filters.BaseFilter;
@@ -77,7 +76,6 @@ import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
 import mx.managers.IToolTipManagerClient;
-import mx.managers.SystemManager;
 import mx.managers.SystemManagerGlobals;
 import mx.managers.ToolTipManager;
 import mx.styles.ISimpleStyleClient;
@@ -175,42 +173,6 @@ use namespace mx_internal;
  *  @productversion Flex 3
  */
 [Event(name="initialize", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched when the object has moved.
- *
- *  <p>You can move the component by setting the <code>x</code>
- *  or <code>y</code> properties, by calling the <code>move()</code>
- *  method, by setting one
- *  of the following properties either on the component or on other
- *  components such that the LayoutManager needs to change the
- *  <code>x</code> or <code>y</code> properties of the component:</p>
- *
- *  <ul>
- *	<li><code>minWidth</code></li>
- *	<li><code>minHeight</code></li>
- *	<li><code>maxWidth</code></li>
- *	<li><code>maxHeight</code></li>
- *	<li><code>explicitWidth</code></li>
- *	<li><code>explicitHeight</code></li>
- *  </ul>
- *
- *  <p>When you call the <code>move()</code> method, the <code>move</code>
- *  event is dispatched before the method returns.
- *  In all other situations, the <code>move</code> event is not dispatched
- *  until after the property changes.</p>
- *
- *  <p>This event only dispatched when there are one or more
- *  relevant listeners attached to the dispatching object.</p>
- *
- *  @eventType mx.events.MoveEvent.MOVE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="move", type="mx.events.MoveEvent")]
 
 /**
  *  Dispatched at the beginning of the component initialization sequence.
@@ -752,7 +714,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 {
 	public static const LAYOUT_DIRECTION_LTR:String = "ltr";
 
-	protected var _layoutMetrics:LayoutMetrics;
+	private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
+
+	protected var _layoutMetrics:LayoutMetrics = EMPTY_LAYOUT_METRICS;
 	public function set layoutMetrics(value:LayoutMetrics):void
 	{
 		_layoutMetrics = value;
@@ -820,6 +784,36 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 *  that the Singleton registry has already been initialized.
 	 */
 	private static var _embeddedFontRegistry:IEmbeddedFontRegistry;
+
+	public function AbstractView()
+	{
+		super();
+
+		// Override  variables in superclasses.
+		focusRect = false; // We do our own focus drawing.
+		// We are tab enabled by default if IFocusManagerComponent
+		tabEnabled = (this is IFocusManagerComponent);
+		tabFocusEnabled = (this is IFocusManagerComponent);
+
+		// Make the component invisible until the initialization sequence
+		// is complete.
+		// It will be set visible when the 'initialized' flag is set.
+		$visible = false;
+
+		addEventListener(Event.REMOVED, removedHandler);
+
+		// Register for focus and keyboard events.
+		if (this is IFocusManagerComponent)
+		{
+			addEventListener(FocusEvent.FOCUS_IN, focusInHandler);
+			addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler);
+			addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+			addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+		}
+
+		_width = super.width;
+		_height = super.height;
+	}
 
 	/**
 	 *  @private
@@ -913,45 +907,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			}
 		}
 	}
-
-	/**
-	 *  Constructor.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public function AbstractView()
-	{
-		super();
-
-		// Override  variables in superclasses.
-		focusRect = false; // We do our own focus drawing.
-		// We are tab enabled by default if IFocusManagerComponent
-		tabEnabled = (this is IFocusManagerComponent);
-		tabFocusEnabled = (this is IFocusManagerComponent);
-
-		// Make the component invisible until the initialization sequence
-		// is complete.
-		// It will be set visible when the 'initialized' flag is set.
-		$visible = false;
-
-		addEventListener(Event.REMOVED, removedHandler);
-
-		// Register for focus and keyboard events.
-		if (this is IFocusManagerComponent)
-		{
-			addEventListener(FocusEvent.FOCUS_IN, focusInHandler);
-			addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler);
-			addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-			addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
-		}
-
-		_width = super.width;
-		_height = super.height;
-	}
-
 
 	/**
 	 *  @private
@@ -1153,20 +1108,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	/**
 	 *  @private
-	 *  Holds the last recorded value of the x property.
-	 *  Used in dispatching a MoveEvent.
-	 */
-	private var oldX:Number = 0;
-
-	/**
-	 *  @private
-	 *  Holds the last recorded value of the y property.
-	 *  Used in dispatching a MoveEvent.
-	 */
-	private var oldY:Number = 0;
-
-	/**
-	 *  @private
 	 *  Holds the last recorded value of the width property.
 	 *  Used in dispatching a ResizeEvent.
 	 */
@@ -1303,74 +1244,19 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//
 	//--------------------------------------------------------------------------
 
-	//----------------------------------
-	//  owner
-	//----------------------------------
-
 	/**
 	 *  @private
 	 */
 	mx_internal var _owner:DisplayObjectContainer;
 
-	/**
-	 *  @copy mx.core.IVisualElement#owner
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
 	public function get owner():DisplayObjectContainer
 	{
-		return _owner ? _owner : parent;
+		return _owner != null ? _owner : parent;
 	}
 
 	public function set owner(value:DisplayObjectContainer):void
 	{
 		_owner = value;
-	}
-
-	//----------------------------------
-	//  parent
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Reference to this component's virtual parent container.
-	 *  "Virtual" means that this parent may not be the same
-	 *  as the one that the Player returns as the 'parent'
-	 *  property of a DisplayObject.
-	 *  For example, if a Container has created a contentPane
-	 *  to improve scrolling performance,
-	 *  then its "children" are really its grandchildren
-	 *  and their "parent" is actually their grandparent,
-	 *  because we don't want developers to be concerned with
-	 *  whether a contentPane exists or not.
-	 */
-	mx_internal var _parent:DisplayObjectContainer;
-
-	/**
-	 *  @copy mx.core.IVisualElement#parent
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	override public function get parent():DisplayObjectContainer
-	{
-		// Flash PlaceObject tags can have super.parent set
-		// before we get to setting the _parent property.
-		try
-		{
-			return _parent ? _parent : super.parent;
-		}
-		catch (e:SecurityError)
-		{
-			// trace("UIComponent.get parent(): " + e);
-		}
-
-		return null;
 	}
 
 	//----------------------------------
@@ -2932,47 +2818,36 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			{
 				// keep the existing proxy
 			}
+			else if (r && !(r is Stage))
+			{
+				// If this object is attached to the display list, then
+				// the root property holds its SystemManager.
+				_systemManager = (r as ISystemManager);
+			}
+			else if (r)
+			{
+				// if the root is the Stage, then we are in a second AIR window
+				_systemManager = Stage(r).getChildAt(0) as ISystemManager;
+			}
 			else
 			{
-				if (r && !(r is Stage
-						  ))
+				// If this object isn't attached to the display list, then
+				// we need to walk up the parent chain ourselves.
+				var o:DisplayObjectContainer = parent;
+				while (o)
 				{
-					// If this object is attached to the display list, then
-					// the root property holds its SystemManager.
-					_systemManager = (r as ISystemManager
-									 );
-				}
-				else
-				{
-					if (r)
+					var ui:IUIComponent = o as IUIComponent;
+					if (ui)
 					{
-						// if the root is the Stage, then we are in a second AIR window
-						_systemManager = Stage(r).getChildAt(0) as ISystemManager;
+						_systemManager = ui.systemManager;
+						break;
 					}
-					else
+					else if (o is ISystemManager)
 					{
-						// If this object isn't attached to the display list, then
-						// we need to walk up the parent chain ourselves.
-						var o:DisplayObjectContainer = parent;
-						while (o)
-						{
-							var ui:IUIComponent = o as IUIComponent;
-							if (ui)
-							{
-								_systemManager = ui.systemManager;
-								break;
-							}
-							else
-							{
-								if (o is ISystemManager)
-								{
-									_systemManager = o as ISystemManager;
-									break;
-								}
-							}
-							o = o.parent;
-						}
+						_systemManager = o as ISystemManager;
+						break;
 					}
+					o = o.parent;
 				}
 			}
 			_systemManagerDirty = false;
@@ -2981,9 +2856,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _systemManager;
 	}
 
-	/**
-	 *  @private
-	 */
 	public function set systemManager(value:ISystemManager):void
 	{
 		_systemManager = value;
@@ -3003,10 +2875,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	{
 		var sm:ISystemManager = systemManager;
 
-		if (!sm)
-		{
-			sm = ISystemManager(SystemManager.getSWFRoot(this));
-		}
+//		if (!sm) subapp не поддерживаем
+//		{
+//			sm = ISystemManager(SystemManager.getSWFRoot(this));
+//		}
 
 		if (!sm)
 		{
@@ -3033,18 +2905,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		_systemManagerDirty = true;
 	}
 
-	//----------------------------------
-	//  nestLevel
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Storage for the nestLevel property.
-	 */
 	private var _nestLevel:int = 0;
 
 	[Inspectable(environment="none")]
-
 	public function get nestLevel():int
 	{
 		return _nestLevel;
@@ -5182,9 +5045,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//
 	//--------------------------------------------------------------------------
 
-	/**
-	 *  @private
-	 */
 	override public function addChild(child:DisplayObject):DisplayObject
 	{
 		var formerParent:DisplayObjectContainer = child.parent;
@@ -5247,36 +5107,21 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return child;
 	}
 
-	/**
-	 *  @private
-	 */
 	override public function removeChild(child:DisplayObject):DisplayObject
 	{
-		removingChild(child);
-
 		removeDisplayObject(child);
-
 		childRemoved(child);
-
 		return child;
 	}
 
 	override public function removeChildAt(index:int):DisplayObject
 	{
 		var child:DisplayObject = getChildAt(index);
-
-		removingChild(child);
-
 		removeDisplayObject(child);
-
 		childRemoved(child);
-
 		return child;
 	}
 
-	/**
-	 *  @private
-	 */
 	override public function setChildIndex(child:DisplayObject, newIndex:int):void
 	{
 		// Place the child underneath the overlay.
@@ -5392,33 +5237,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	public function parentChanged(p:DisplayObjectContainer):void
 	{
-		// trace("parentChanged: " + _parent + " of " + this + " changed to ");
-
-		if (!p)
+		if (p == null)
 		{
-			_parent = null;
 			_nestLevel = 0;
 		}
-		else
-		{
-			if (p is IStyleClient)
-			{
-				_parent = p;
-			}
-			else
-			{
-				if (p is ISystemManager)
-				{
-					_parent = p;
-				}
-				else
-				{
-					_parent = p.parent;
-				}
-			}
-		}
 
-		// trace("               " + p);
 		parentChangedFlag = true;
 	}
 
@@ -5433,7 +5256,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		// descendants of the child that exist.
 		if (child is IUIComponent && !IUIComponent(child).document)
 		{
-			IUIComponent(child).document = document ? document : FlexGlobals.topLevelApplication;
+			IUIComponent(child).document = document == null ? document : FlexGlobals.topLevelApplication;
 		}
 
 		// Propagate moduleFactory to the child, but don't overwrite an existing moduleFactory.
@@ -5443,26 +5266,17 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			{
 				IFlexModule(child).moduleFactory = moduleFactory;
 			}
-
-			else
+			else if (document is IFlexModule && document.moduleFactory != null)
 			{
-				if (document is IFlexModule && document.moduleFactory != null)
-				{
-					IFlexModule(child).moduleFactory = document.moduleFactory;
-				}
-
-				else
-				{
-					if (parent is IFlexModule && IFlexModule(parent).moduleFactory != null)
-					{
-						IFlexModule(child).moduleFactory = IFlexModule(parent).moduleFactory;
-					}
-				}
+				IFlexModule(child).moduleFactory = document.moduleFactory;
+			}
+			else if (parent is IFlexModule && IFlexModule(parent).moduleFactory != null)
+			{
+				IFlexModule(child).moduleFactory = IFlexModule(parent).moduleFactory;
 			}
 		}
 
-		// Set the font context in non-UIComponent children.
-		// UIComponent children use moduleFactory.
+		// Set the font context in non-UIComponent children. UIComponent children use moduleFactory.
 		if (child is IFontContextComponent && !child is UIComponent && IFontContextComponent(child).fontContext == null)
 		{
 			IFontContextComponent(child).fontContext = moduleFactory;
@@ -5482,12 +5296,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			ILayoutManagerClient(child).nestLevel = nestLevel + 1;
 		}
 
-		if (child is InteractiveObject)
+		if (child is InteractiveObject && doubleClickEnabled)
 		{
-			if (doubleClickEnabled)
-			{
-				InteractiveObject(child).doubleClickEnabled = true;
-			}
+			InteractiveObject(child).doubleClickEnabled = true;
 		}
 
 		// Sets up the inheritingStyles and nonInheritingStyles objects
@@ -5512,13 +5323,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		if (child is UIComponent)
 		{
 			UIComponent(child).initThemeColor();
-		}
-
-		// Inform the component that it's style properties
-		// have been fully initialized. Most components won't care,
-		// but some need to react to even this early change.
-		if (child is UIComponent)
-		{
 			UIComponent(child).stylesInitialized();
 		}
 	}
@@ -5532,17 +5336,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 				UIComponent(child).initialize();
 			}
 		}
-		else
+		else if (child is IUIComponent)
 		{
-			if (child is IUIComponent)
-			{
-				IUIComponent(child).initialize();
-			}
+			IUIComponent(child).initialize();
 		}
-	}
-
-	mx_internal function removingChild(child:DisplayObject):void
-	{
 	}
 
 	mx_internal function childRemoved(child:DisplayObject):void
@@ -5932,18 +5729,16 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	private function isOnDisplayList():Boolean
 	{
 		var p:DisplayObjectContainer;
-
 		try
 		{
-			p = _parent ? _parent : super.parent;
+			p = super.parent;
 		}
 		catch (e:SecurityError)
 		{
-			// trace("UIComponent.isOnDisplayList(): " + e);
-			return true;        // we are on the display list but the parent is in another sandbox
+			return true; // we are on the display list but the parent is in another sandbox
 		}
 
-		return p ? true : false;
+		return p != null;
 	}
 
 	/**
@@ -6102,11 +5897,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		oldScaleX = scaleX;
 		oldScaleY = scaleY;
 
-		if (x != oldX || y != oldY)
-		{
-			dispatchMoveEvent();
-		}
-
 		if (width != oldWidth || height != oldHeight)
 		{
 			dispatchResizeEvent();
@@ -6194,17 +5984,14 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 				var child:DisplayObject = getChildAt(i);
 				if (child is ILayoutManagerClient)
 				{
-					(child as ILayoutManagerClient
-					).validateSize(true);
+					ILayoutManagerClient(child).validateSize(true);
 				}
 			}
 		}
 
 		if (invalidateSizeFlag)
 		{
-			var sizeChanging:Boolean = measureSizes();
-
-			if (sizeChanging && includeInLayout)
+			if (includeInLayout && measureSizes())
 			{
 				// TODO (egeorgie): we don't need this invalidateDisplayList() here
 				// because we'll call it if the parent sets new actual size?
@@ -6719,7 +6506,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		if (changed)
 		{
 			invalidateTransform();
-//			dispatchMoveEvent();
 		}
 	}
 
@@ -6906,23 +6692,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		{
 			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, prop, oldValue, value));
 		}
-	}
-
-	/**
-	 *  @private
-	 */
-	private function dispatchMoveEvent():void
-	{
-		if (hasEventListener(MoveEvent.MOVE))
-		{
-			var moveEvent:MoveEvent = new MoveEvent(MoveEvent.MOVE);
-			moveEvent.oldX = oldX;
-			moveEvent.oldY = oldY;
-			dispatchEvent(moveEvent);
-		}
-
-		oldX = x;
-		oldY = y;
 	}
 
 	/**
@@ -8006,8 +7775,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	public function set postLayoutTransformOffsets(value:TransformOffsets):void
 	{
-		// validateMatrix when switching between 2D/3D, works around player bug
-		// see sdk-23421
+		// validateMatrix when switching between 2D/3D, works around player bug see sdk-23421
 		var was3D:Boolean = is3D;
 
 		if (_layoutFeatures == null)
@@ -8030,11 +7798,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	/**
-	 * @private
-	 */
 	private var _maintainProjectionCenter:Boolean = false;
-
 	/**
 	 *  When true, the component keeps its projection matrix centered on the
 	 *  middle of its bounding box.  If no projection matrix is defined on the

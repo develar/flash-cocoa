@@ -93,7 +93,7 @@ public class Container extends GroupBase implements ViewContainer
 				if (p is Skin && Skin(p).component is LookAndFeelProvider)
 				{
 					_laf = LookAndFeelProvider(Skin(p).component).laf;
-					return;
+					break;
 				}
 				else
 				{
@@ -175,8 +175,8 @@ public class Container extends GroupBase implements ViewContainer
 
 	override public function getElementAt(index:int):IVisualElement
     {
-		var element:IVisualElement = _subviews[index];
-		return element is Component ? Component(element).skin : element;
+		var element:Viewable = _subviews[index];
+		return IVisualElement(element is Component ? Component(element).skin : element);
 	}
 
 	override public function getElementIndex(element:IVisualElement):int
@@ -212,6 +212,11 @@ public class Container extends GroupBase implements ViewContainer
 
 	public function addSubview(view:Viewable, index:int = -1):void
 	{
+		if (index == -1)
+		{
+			index = numElements;
+		}
+
 		var host:DisplayObject;
 		if (view is Component)
 		{
@@ -345,6 +350,16 @@ public class Container extends GroupBase implements ViewContainer
 		}
 
 		layoutMetrics[constraintName] = value;
+	}
+
+	override public function parentChanged(p:DisplayObjectContainer):void
+	{
+		super.parentChanged(p);
+
+		if (p != null)
+		{
+			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+		}
 	}
 }
 }
