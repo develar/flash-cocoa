@@ -36,12 +36,12 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 
 	protected function getBorder(key:String):Border
 	{
-		return laf.getBorder(_component.stylePrefix + "." + key);
+		return laf.getBorder(_component.lafPrefix + "." + key);
 	}
 
 	protected function getIcon(key:String):Icon
 	{
-		return laf.getIcon(_component.stylePrefix + "." + key);
+		return laf.getIcon(_component.lafPrefix + "." + key);
 	}
 
 	public function attach(component:Component, laf:LookAndFeel):void

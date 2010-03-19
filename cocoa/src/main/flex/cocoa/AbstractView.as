@@ -1145,18 +1145,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	private var oldExplicitHeight:Number;
 
 	/**
-	 *  @private
-	 *  Holds the last recorded value of the scaleX property.
-	 */
-	private var oldScaleX:Number = 1.0;
-
-	/**
-	 *  @private
-	 *  Holds the last recorded value of the scaleY property.
-	 */
-	private var oldScaleY:Number = 1.0;
-
-	/**
 	 * @private
 	 *
 	 * storage for advanced layout and transform properties.
@@ -5894,9 +5882,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	protected function commitProperties():void
 	{
-		oldScaleX = scaleX;
-		oldScaleY = scaleY;
-
 		if (width != oldWidth || height != oldHeight)
 		{
 			dispatchResizeEvent();
@@ -6073,8 +6058,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			}
 		}
 
-		adjustSizesForScaleChanges();
-
 		if (isNaN(oldMinWidth))
 		{
 			// This branch does the same thing as the else branch,
@@ -6189,25 +6172,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		measuredMinHeight = 0;
 		measuredWidth = 0;
 		measuredHeight = 0;
-	}
-
-	/**
-	 *  @private
-	 */
-	mx_internal function adjustSizesForScaleChanges():void
-	{
-		var xScale:Number = scaleX;
-		var yScale:Number = scaleY;
-
-		if (xScale != oldScaleX)
-		{
-			oldScaleX = xScale;
-		}
-
-		if (yScale != oldScaleY)
-		{
-			oldScaleY = yScale;
-		}
 	}
 
 	/**

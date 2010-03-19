@@ -115,7 +115,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	{
 		if (_skinClass == null)
 		{
-			_skinClass = laf.getUI(stylePrefix);
+			_skinClass = laf.getUI(lafPrefix);
 		}
 		_skin = new _skinClass();
 		_skinClass = null;
@@ -132,7 +132,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 		return _skin;
 	}
 
-	public function get stylePrefix():String
+	public function get lafPrefix():String
 	{
 		throw new Error("abstract");
 	}

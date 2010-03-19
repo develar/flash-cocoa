@@ -22,7 +22,7 @@ public class Box extends AbstractComponent
 
 	private var _elements:Array;
 
-	override public function get stylePrefix():String
+	override public function get lafPrefix():String
 	{
 		return "Box";
 	}

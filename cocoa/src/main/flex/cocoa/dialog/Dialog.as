@@ -39,7 +39,7 @@ public class Dialog extends Window
 		skinParts.controlBar = HANDLER_NOT_EXISTS;
 	}
 
-	override public function get stylePrefix():String
+	override public function get lafPrefix():String
 	{
 		return RESOURCE_BUNDLE;
 	}

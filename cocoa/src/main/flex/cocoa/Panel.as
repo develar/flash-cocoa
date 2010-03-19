@@ -55,7 +55,7 @@ public class Panel extends Window
 		dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_SIDE));
 	}
 
-	override public function get stylePrefix():String
+	override public function get lafPrefix():String
 	{
 		return "Panel";
 	}

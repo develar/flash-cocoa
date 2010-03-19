@@ -2,7 +2,7 @@ package cocoa
 {
 public class PushButton extends AbstractButton
 {
-	override public function get stylePrefix():String
+	override public function get lafPrefix():String
 	{
 		return "PushButton";
 	}

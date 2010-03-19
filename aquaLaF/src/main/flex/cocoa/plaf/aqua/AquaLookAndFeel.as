@@ -12,8 +12,6 @@ import cocoa.plaf.Scale9BitmapBorder;
 
 import flash.utils.ByteArray;
 
-import mx.core.ClassFactory;
-
 import org.flyti.aqua.SourceListSkin;
 import org.flyti.aqua.TabSkin;
 
@@ -50,11 +48,11 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];
 //		data["PushButton.border.texturedRounded"] = borders[BezelStyle.texturedRounded.ordinal];
 
-		data["PopUpButton"] = PopUpButtonSkin;
+		data["PopUpButton"] = PushButtonSkin;
 		data["PopUpButton.border"] = borders[2 + BezelStyle.rounded.ordinal];
-		data["PopUpButton.openButton.skin"] = PopUpOpenButtonSkin;
-		data["PopUpButton.menuItemFactory"] = new ClassFactory(MenuItemRenderer);
-		data["PopUpButton.menuBorder"] = borders[3];
+//		data["PopUpButton.openButton.skin"] = PopUpOpenButtonSkin;
+//		data["PopUpButton.menuItemFactory"] = new ClassFactory(MenuItemRenderer);
+//		data["PopUpButton.menuBorder"] = borders[3];
 
 		data["MenuItem.onStateIcon"] = icons[0];
 		data["MenuItem.onStateIcon.highlighted"] = icons[1];

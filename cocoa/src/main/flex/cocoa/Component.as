@@ -5,7 +5,7 @@ import cocoa.plaf.Skin;
 
 public interface Component extends Viewable
 {
-	function get stylePrefix():String;
+	function get lafPrefix():String;
 	function get skin():Skin;
 
 	function set skinClass(value:Class):void;

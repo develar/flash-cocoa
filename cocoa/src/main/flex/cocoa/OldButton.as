@@ -16,7 +16,7 @@ import spark.primitives.BitmapImage;
 
 [Style(name="iconName", type="String")]
 [Style(name="icon", type="Class")]
-public class Button extends spark.components.Button implements KeyboardManagerClient
+public class OldButton extends spark.components.Button implements KeyboardManagerClient
 {
 	[SkinPart(required="false")]
 	public var bitmapImage:BitmapImage;
@@ -28,7 +28,7 @@ public class Button extends spark.components.Button implements KeyboardManagerCl
 
 	private var prevButtonMode:Boolean = false;
 
-	public function Button()
+	public function OldButton()
 	{
 		shortcutHelper = new KeyboardManagerClientHelper(this);
 

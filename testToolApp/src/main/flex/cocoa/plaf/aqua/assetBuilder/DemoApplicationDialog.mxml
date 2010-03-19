@@ -6,6 +6,10 @@
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.WindowSkin;
 
+		import org.flyti.util.ArrayList;
+
+		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
+
 		override protected function viewAttachedHandler():void
 		{
 			WindowSkin(skin).bottomBarStyle = BottomBarStyle.application;
@@ -18,5 +22,6 @@
 			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
 		</layout>
 		<PushButton label="Help H"/>
+		<PopUpButton dataProvider="{testData}"/>
 	</Container>
 </Dialog>

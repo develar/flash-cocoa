@@ -1,17 +1,15 @@
 package cocoa
 {
 import mx.collections.IList;
-import mx.core.mx_internal;
 
 import spark.components.DataGroup;
 
-use namespace mx_internal;
 use namespace ui;
 
 /**
  * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
-public class PopUpButton extends AbstractButton
+public class PopUpButton extends AbstractComponent
 {
 	ui var dataGroup:DataGroup;
 
@@ -55,9 +53,14 @@ public class PopUpButton extends AbstractButton
 //		_labelFunction = labelFunction;
 	}
 
-	public function get selectedItem():*
+	public function get selectedItem():Object
 	{
 		return null;
+	}
+
+	override public function get lafPrefix():String
+	{
+		return "PopUpButton";
 	}
 }
 }

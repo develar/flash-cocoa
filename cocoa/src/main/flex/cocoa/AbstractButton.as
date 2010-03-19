@@ -43,7 +43,6 @@ public class AbstractButton extends AbstractControl
 
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
-//		trace(event);
 		mySkin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
 		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);

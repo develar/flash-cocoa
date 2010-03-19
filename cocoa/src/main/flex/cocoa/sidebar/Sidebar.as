@@ -157,7 +157,7 @@ public class Sidebar extends Bar
 		selectedIndices = null;
 	}
 
-	override public function get stylePrefix():String
+	override public function get lafPrefix():String
 	{
 		return "Sidebar";
 	}
