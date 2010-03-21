@@ -4,16 +4,19 @@ import cocoa.Menu;
 
 import flash.display.DisplayObject;
 import flash.events.MouseEvent;
+import flash.geom.Point;
 
 import mx.managers.PopUpManager;
 
 public class PopUpMenuController
 {
-	private var openButton:DisplayObject;
-	private var menu:Menu;
+	protected static const sharedPoint:Point = new Point();
+	
+	protected var openButton:DisplayObject;
+	protected var menu:Menu;
 	private var laf:LookAndFeel;
 
-	public function PopUpMenuController(openButton:DisplayObject, menu:Menu, laf:LookAndFeel)
+	public function initialize(openButton:DisplayObject, menu:Menu, laf:LookAndFeel):void
 	{
 		this.openButton = openButton;
 		this.menu = menu;
@@ -34,8 +37,15 @@ public class PopUpMenuController
 			menuSkin = menu.createView(laf);
 		}
 		PopUpManager.addPopUp(menuSkin, openButton, false);
+		PopUpManager.centerPopUp(menuSkin);
+		setPopUpPosition();
 
 		openButton.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+	}
+
+	protected function setPopUpPosition():void
+    {
+
 	}
 
 	private function stageMouseUpHandler(event:MouseEvent):void

@@ -4,8 +4,6 @@ import flash.utils.Dictionary;
 
 import mx.collections.IList;
 
-import spark.components.DataGroup;
-
 use namespace ui;
 
 public class Menu extends AbstractComponent
@@ -17,7 +15,7 @@ public class Menu extends AbstractComponent
 		return _skinParts;
 	}
 
-	ui var itemGroup:DataGroup;
+	ui var itemGroup:SingleSelectionDataGroup;
 
 	ui function itemGroupAdded():void
 	{
@@ -62,6 +60,16 @@ public class Menu extends AbstractComponent
 	override public function get lafPrefix():String
 	{
 		return "Menu";
+	}
+
+	public function get selectedIndex():int
+	{
+		return itemGroup.selectedIndex;
+	}
+
+	public function get selectedItem():Object
+	{
+		return _items.getItemAt(itemGroup == null ? 0 : itemGroup.selectedIndex);
 	}
 }
 }

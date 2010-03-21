@@ -53,6 +53,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["PopUpButton"] = PushButtonSkin;
 		data["PopUpButton.border"] = borders[2 + BezelStyle.rounded.ordinal];
+		data["PopUpButton.menuController"] = new ClassFactory(PopUpMenuController);
 //		data["PopUpButton.openButton.skin"] = PopUpOpenButtonSkin;
 		data["Menu"] = MenuSkin;
 		data["Menu.border"] = borders[3];

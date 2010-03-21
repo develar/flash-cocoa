@@ -1,12 +1,14 @@
 package cocoa.plaf
 {
 import cocoa.Border;
+import cocoa.Insets;
 import cocoa.Menu;
 import cocoa.SingleSelectionDataGroup;
 
+import flash.display.Graphics;
+
 import mx.core.IDataRenderer;
 import mx.core.IVisualElement;
-
 import mx.core.mx_internal;
 
 import spark.components.IItemRenderer;
@@ -20,17 +22,17 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 {
 	private var itemGroup:SingleSelectionDataGroup;
 
-	private var border:Border;
-
-	public function MenuSkin()
+	private var _border:Border;
+	public function get border():Border
 	{
+		return _border;
 	}
 
 	override protected function createChildren():void
 	{
 		super.createChildren();
 
-		border = getBorder("border");
+		_border = getBorder("border");
 
 		itemGroup = new SingleSelectionDataGroup();
 		itemGroup.itemRenderer = getFactory("itemFactory");
@@ -64,6 +66,20 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 		{
 			IDataRenderer(renderer).data = data;
 		}
+	}
+
+	override protected function measure():void
+	{
+		var contentInsets:Insets = _border.contentInsets;
+		measuredMinWidth = measuredWidth = contentInsets.width + itemGroup.getExplicitOrMeasuredWidth();
+		measuredMinHeight = measuredHeight = contentInsets.height + itemGroup.getExplicitOrMeasuredHeight();
+	}
+
+	override protected function updateDisplayList(w:Number, h:Number):void
+	{
+		var g:Graphics = graphics;
+		g.clear();
+		_border.draw(this, g, w, h);
 	}
 }
 }

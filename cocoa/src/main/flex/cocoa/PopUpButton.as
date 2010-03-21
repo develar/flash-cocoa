@@ -45,7 +45,8 @@ public class PopUpButton extends AbstractComponent implements Button
 	override public final function createView(laf:LookAndFeel):Skin
 	{
 		super.createView(laf);
-		menuController = new PopUpMenuController(DisplayObject(skin), _menu, laf);
+		menuController = laf.getFactory(lafPrefix + ".menuController").newInstance();
+		menuController.initialize(DisplayObject(skin), _menu, laf);
 		return skin;
 	}
 
@@ -62,12 +63,7 @@ public class PopUpButton extends AbstractComponent implements Button
 
 	protected function updateLabelDisplay():void
 	{
-		PushButtonSkin(skin).label = LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
-	}
-
-	public function get selectedItem():Object
-	{
-		return "Item 1";
+		PushButtonSkin(skin).label = LabelUtil.itemToLabel(_menu.selectedItem, null, _menu.labelFunction);
 	}
 
 	override public function get lafPrefix():String

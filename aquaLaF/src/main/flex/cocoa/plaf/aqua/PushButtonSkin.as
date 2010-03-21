@@ -12,5 +12,10 @@ public class PushButtonSkin extends AbstractPushButtonSkin
 
 		super.updateDisplayList(w, h);
 	}
+
+	public function get labelLeftMargin():Number
+	{
+		return border.contentInsets.left + border.frameInsets.left;
+	}
 }
 }
