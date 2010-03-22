@@ -2,7 +2,7 @@ package cocoa.plaf
 {
 public class CursorData
 {
-	public function CursorData(clazz:Class, x:Number = 10, y:Number = 10)
+	public function CursorData(clazz:Class, x:Number = -10, y:Number = -10)
 	{
 		_clazz = clazz;
 		_x = x;

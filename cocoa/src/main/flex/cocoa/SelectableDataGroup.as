@@ -2,8 +2,11 @@ package cocoa
 {
 import cocoa.layout.LayoutMetrics;
 
+import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
+
+import flash.text.engine.TextLine;
 
 import mx.core.IFlexDisplayObject;
 import mx.core.IVisualElement;
@@ -23,6 +26,7 @@ public class SelectableDataGroup extends DataGroup
 	{
 		super();
 
+		mouseEnabled = false;
 		addEventListener(mouseEventTypeForItemSelect, itemMouseSelectHandler);
 	}
 
@@ -65,7 +69,12 @@ public class SelectableDataGroup extends DataGroup
     {
 		if (event.target != this)
 		{
-			itemSelecting(event.target is IItemRenderer ? IItemRenderer(event.target).itemIndex : getElementIndex(IVisualElement(event.target)));
+			var target:DisplayObject = DisplayObject(event.target);
+			if (target is TextLine)
+			{
+				target = target.parent;
+			}
+			itemSelecting(target is IItemRenderer ? IItemRenderer(target).itemIndex : getElementIndex(IVisualElement(target)));
 		}
 	}
 

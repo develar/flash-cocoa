@@ -61,9 +61,12 @@ public class PopUpMenuController
 
 	private function stageMouseDownHandler(event:MouseEvent):void
 	{
-		openButton.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-		openButton.stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
-		close();
+		if (!menu.skin.hitTestPoint(event.stageX, event.stageY))
+		{
+			openButton.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+			openButton.stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
+			close();
+		}
 	}
 }
 }
