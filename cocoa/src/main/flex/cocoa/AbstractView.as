@@ -724,33 +724,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	
 	// LEGACY
 
-	/**
-	 *  The default value for the <code>maxWidth</code> property.
-	 *
-	 *  @default 10000
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public static const DEFAULT_MAX_WIDTH:Number = 10000;
-	// When changing this constant, make sure you change
-	// the constant with the same name in LayoutElementUIComponentUtils
-
-	/**
-	 *  The default value for the <code>maxHeight</code> property.
-	 *
-	 *  @default 10000
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public static const DEFAULT_MAX_HEIGHT:Number = 10000;
-	// When changing this constant, make sure you change
-	// the constant with the same name in LayoutElementUIComponentUtils
+	private static const DEFAULT_MAX_WIDTH:Number = 10000;
+	private static const DEFAULT_MAX_HEIGHT:Number = 10000;
 
 	//----------------------------------
 	//  embeddedFontRegistry
@@ -6196,18 +6171,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//
 	//--------------------------------------------------------------------------
 
-	/**
-	 *  @private
-	 */
-	private var lastUnscaledWidth:Number;
-	/**
-	 *  @private
-	 */
-	private var lastUnscaledHeight:Number;
-
-	/**
-	 *  @private
-	 */
 	protected function validateMatrix():void
 	{
 		if (_layoutFeatures != null && _layoutFeatures.updatePending)
@@ -6245,13 +6208,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 			// Don't validate transform.matrix until after setting actual size
 			validateMatrix();
-
-			var unscaledWidth:Number = width;
-			var unscaledHeight:Number = height;
-
-			updateDisplayList(unscaledWidth, unscaledHeight);
-			lastUnscaledWidth = unscaledWidth;
-			lastUnscaledHeight = unscaledHeight;
+			updateDisplayList(width, height);
 
 			invalidateDisplayListFlag = false;
 
@@ -6262,7 +6219,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		{
 			validateMatrix();
 		}
-
 	}
 
 	/**

@@ -18,15 +18,13 @@ public class PopUpMenuController extends cocoa.plaf.PopUpMenuController
 	override protected function setPopUpPosition():void
     {
 		var selectedItemRenderer:MenuItemRenderer = MenuItemRenderer(menu.itemGroup.getElementAt(menu.selectedIndex));
-
 		var stage:Stage = openButton.stage;
-
 		var menuSkin:MenuSkin = MenuSkin(menu.skin);
 		var menuBorderContentInsets:Insets = menuSkin.border.contentInsets;
 		sharedPoint.x = - (menuBorderContentInsets.left + selectedItemRenderer.labelLeftMargin) + PushButtonSkin(openButton).labelLeftMargin;
 		sharedPoint.y = - menuBorderContentInsets.top - selectedItemRenderer.baselinePosition + PushButtonSkin(openButton).baselinePosition - (selectedItemRenderer.height * menu.selectedIndex);
-		sharedPoint.x = 50;
-		sharedPoint.y = 20;
+//		sharedPoint.x = 50;
+//		sharedPoint.y = 20;
 		var globalPosition:Point = openButton.localToGlobal(sharedPoint);
 
 		var x:Number = globalPosition.x;

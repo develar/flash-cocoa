@@ -8,11 +8,9 @@ import flash.events.MouseEvent;
 import mx.core.IFlexDisplayObject;
 import mx.core.IVisualElement;
 import mx.core.mx_internal;
-import mx.managers.IFocusManagerComponent;
 
 import spark.components.DataGroup;
 import spark.components.IItemRenderer;
-import spark.events.RendererExistenceEvent;
 
 use namespace mx_internal;
 
@@ -25,8 +23,7 @@ public class SelectableDataGroup extends DataGroup
 	{
 		super();
 
-		addEventListener(RendererExistenceEvent.RENDERER_ADD, rendererAddHandler);
-		addEventListener(RendererExistenceEvent.RENDERER_REMOVE, rendererRemoveHandler);
+		addEventListener(mouseEventTypeForItemSelect, itemMouseSelectHandler);
 	}
 
 	private var _iconFunction:Function;
@@ -64,23 +61,12 @@ public class SelectableDataGroup extends DataGroup
 
 	}
 
-	private function rendererAddHandler(event:RendererExistenceEvent):void
-	{
-		event.renderer.addEventListener(mouseEventTypeForItemSelect, itemMouseSelectHandler);
-		if (event.renderer is IFocusManagerComponent)
-		{
-			IFocusManagerComponent(event.renderer).focusEnabled = false;
-		}
-	}
-
-	private function rendererRemoveHandler(event:RendererExistenceEvent):void
-	{
-		event.renderer.removeEventListener(mouseEventTypeForItemSelect, itemMouseSelectHandler);
-	}
-
 	private function itemMouseSelectHandler(event:MouseEvent):void
     {
-		itemSelecting(event.currentTarget is IItemRenderer ? IItemRenderer(event.currentTarget).itemIndex : getElementIndex(IVisualElement(event.currentTarget)));
+		if (event.target != this)
+		{
+			itemSelecting(event.target is IItemRenderer ? IItemRenderer(event.target).itemIndex : getElementIndex(IVisualElement(event.target)));
+		}
 	}
 
 	protected function itemSelecting(itemIndex:int):void

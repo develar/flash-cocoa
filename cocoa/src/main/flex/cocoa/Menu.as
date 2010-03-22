@@ -19,6 +19,29 @@ public class Menu extends AbstractComponent
 
 	ui function itemGroupAdded():void
 	{
+
+	}
+
+	private var pendingSelectedIndex:int = 0;
+	public function get selectedIndex():int
+	{
+		return itemGroup.selectedIndex;
+	}
+	public function set selectedIndex(value:int):void
+	{
+		if (itemGroup == null)
+		{
+			pendingSelectedIndex = value;
+		}
+		else
+		{
+			itemGroup.selectedIndex = value;
+		}
+	}
+
+	public function get selectedItem():Object
+	{
+		return _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
 	}
 
 	private var _labelFunction:Function;
@@ -43,6 +66,11 @@ public class Menu extends AbstractComponent
 		}
 	}
 
+	override public function get lafPrefix():String
+	{
+		return "Menu";
+	}
+
 	override public function commitProperties():void
 	{
 		super.commitProperties();
@@ -50,26 +78,10 @@ public class Menu extends AbstractComponent
 		if (itemsChanged)
 		{
 			itemsChanged = false;
-			if (itemGroup != null)
-			{
-				itemGroup.dataProvider = _items;
-			}
+			itemGroup.dataProvider = _items;
+			itemGroup.selectedIndex = pendingSelectedIndex;
+			pendingSelectedIndex = -1;
 		}
-	}
-
-	override public function get lafPrefix():String
-	{
-		return "Menu";
-	}
-
-	public function get selectedIndex():int
-	{
-		return itemGroup.selectedIndex;
-	}
-
-	public function get selectedItem():Object
-	{
-		return _items.getItemAt(itemGroup == null ? 0 : itemGroup.selectedIndex);
 	}
 }
 }

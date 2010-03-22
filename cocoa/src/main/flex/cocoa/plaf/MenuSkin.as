@@ -41,6 +41,8 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 		itemGroupLayout.gap = 0;
 		itemGroupLayout.horizontalAlign = HorizontalAlign.CONTENT_JUSTIFY;
 		itemGroup.layout = itemGroupLayout;
+		itemGroup.x = _border.contentInsets.left;
+		itemGroup.y = _border.contentInsets.top;
 		addChild(itemGroup);
 
 		component.uiPartAdded("itemGroup", itemGroup);
@@ -77,6 +79,8 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
+		itemGroup.setActualSize(w - _border.contentInsets.width, h - _border.contentInsets.height);
+		
 		var g:Graphics = graphics;
 		g.clear();
 		_border.draw(this, g, w, h);

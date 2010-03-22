@@ -1,13 +1,12 @@
 package cocoa.plaf.aqua
 {
 import cocoa.AbstractBorder;
-import cocoa.Border;
 import cocoa.Insets;
 import cocoa.View;
 
 import flash.display.Graphics;
 
-internal class MenuItemBorder extends AbstractBorder implements Border
+internal class MenuItemBorder extends AbstractBorder
 {
 	public function MenuItemBorder(contentInsets:Insets)
 	{

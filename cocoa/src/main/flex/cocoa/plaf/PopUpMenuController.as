@@ -31,26 +31,39 @@ public class PopUpMenuController
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
+		event.stopImmediatePropagation();
+
 		var menuSkin:Skin = menu.skin;
 		if (menuSkin == null)
 		{
 			menuSkin = menu.createView(laf);
 		}
 		PopUpManager.addPopUp(menuSkin, openButton, false);
-		PopUpManager.centerPopUp(menuSkin);
 		setPopUpPosition();
 
 		openButton.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+		openButton.stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
+	}
+
+	protected function close():void
+	{
+		PopUpManager.removePopUp(menu.skin);
 	}
 
 	protected function setPopUpPosition():void
     {
-
+		throw new Error("abstract");
 	}
 
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
+	}
 
+	private function stageMouseDownHandler(event:MouseEvent):void
+	{
+		openButton.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+		openButton.stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
+		close();
 	}
 }
 }
