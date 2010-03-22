@@ -15,8 +15,7 @@ public class MenuItemRenderer extends AbstractItemRenderer
 	public function MenuItemRenderer()
 	{
 		labelHelper = new LabelHelper(this);
-		
-		addRollHandlers();
+		mouseChildren = false;
 	}
 
 	public function get labelLeftMargin():Number
@@ -76,7 +75,6 @@ public class MenuItemRenderer extends AbstractItemRenderer
 		border = getBorder(isSeparatorItem ? "separatorBorder" : "border");
 
 		mouseEnabled = enabled;
-		mouseChildren = enabled;
 
 		invalidateSize();
 		invalidateDisplayList();
@@ -103,7 +101,7 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		var highlighted:Boolean = (state & HOVERED) != 0 || (state & SHOWS_CARET) != 0;
+		const highlighted:Boolean = (state & HIGHLIGHTED) != 0;
 		if (!(menuItem is MenuItem && MenuItem(menuItem).isSeparatorItem))
 		{
 			border = getBorder(highlighted ? "border.highlighted" : "border");

@@ -1,19 +1,19 @@
 package cocoa.plaf
 {
 import cocoa.AbstractView;
+import cocoa.HighlightableItemRenderer;
 
-import flash.events.MouseEvent;
 import flash.text.engine.ElementFormat;
 
 import spark.components.IItemRenderer;
 
-public class AbstractItemRenderer extends AbstractView implements IItemRenderer
+public class AbstractItemRenderer extends AbstractView implements IItemRenderer, HighlightableItemRenderer
 {
 	protected var state:uint = 0;
 
 	protected static const SELECTED:uint = 1 << 0;
 	protected static const SHOWS_CARET:uint = 1 << 1;
-	protected static const HOVERED:uint = 1 << 2;
+	protected static const HIGHLIGHTED:uint = 1 << 3;
 
 	protected var _laf:LookAndFeel;
 	public function set laf(value:LookAndFeel):void
@@ -78,30 +78,21 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 		}
 	}
 
+	public function set highlighted(value:Boolean)
+	{
+		if (value == ((state & HIGHLIGHTED) == 0))
+		{
+			value ? state |= HIGHLIGHTED : state ^= HIGHLIGHTED;
+			invalidateDisplayList();
+		}
+	}
+
 	public function get data():Object
 	{
 		return null;
 	}
 	public function set data(value:Object):void
 	{
-	}
-
-	protected function addRollHandlers():void
-	{
-		addEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
-		addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
-	}
-
-	private function rollOverHandler(event:MouseEvent):void
-	{
-		state |= HOVERED;
-		invalidateDisplayList();
-	}
-
-	private function rollOutHandler(event:MouseEvent):void
-	{
-		state ^= HOVERED;
-		invalidateDisplayList();
 	}
 
 	protected function getFont(key:String):ElementFormat

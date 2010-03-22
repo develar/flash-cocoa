@@ -13,7 +13,7 @@ internal class MenuItemRenderer extends cocoa.plaf.MenuItemRenderer
 		// нам пока что слишком неоправданно исcледовать данный вопрос глубоко и поэтому мы просто вырезали битмапу из уже computed image.
 		if (selected)
 		{
-			getIcon(((state & HOVERED) != 0) ? "onStateIcon.highlighted" : "onStateIcon").draw(this, graphics, 5, 3);
+			getIcon(((state & HIGHLIGHTED) != 0) ? "onStateIcon.highlighted" : "onStateIcon").draw(this, graphics, 5, 3);
 		}
 	}
 }

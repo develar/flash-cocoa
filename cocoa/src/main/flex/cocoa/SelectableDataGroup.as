@@ -5,7 +5,6 @@ import cocoa.layout.LayoutMetrics;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
-
 import flash.text.engine.TextLine;
 
 import mx.core.IFlexDisplayObject;
@@ -20,7 +19,13 @@ use namespace mx_internal;
 [Abstract]
 public class SelectableDataGroup extends DataGroup
 {
+	private static const SELECT_ON_DOWN:uint = 1 << 0;
+	private static const HIGHLIGHTABLE:uint = 1 << 1;
+	private var flags:uint = 0;
+
 	protected var selectionChanged:Boolean = false;
+
+	private var highlightedRenderer:HighlightableItemRenderer;
 
 	public function SelectableDataGroup()
 	{
@@ -36,15 +41,14 @@ public class SelectableDataGroup extends DataGroup
 		_iconFunction = value;
 	}
 
-	private var _selectOnDown:Boolean;
 	public function set selectOnMouseDown(value:Boolean):void
 	{
-		_selectOnDown = value;
+		value ? flags ^= SELECT_ON_DOWN : flags |= SELECT_ON_DOWN;
 	}
 
 	protected function get mouseEventTypeForItemSelect():String
 	{
-		return _selectOnDown ? MouseEvent.MOUSE_DOWN : MouseEvent.CLICK;
+		return (flags & SELECT_ON_DOWN) == 0 ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN;
 	}
 
 	override protected function commitProperties():void
@@ -99,6 +103,35 @@ public class SelectableDataGroup extends DataGroup
 		if (renderer is IconedItemRenderer)
 		{
 			IconedItemRenderer(renderer).icon = itemToIcon(data);
+		}
+	}
+
+	private function mouseOutOrOverHandler(event:MouseEvent):void
+	{
+		if (event.target != this)
+		{
+			if (event.type == MouseEvent.MOUSE_OVER)
+			{
+				if (highlightedRenderer != null)
+				{
+					highlightedRenderer.highlighted = false;
+				}
+				highlightedRenderer = HighlightableItemRenderer(event.target);
+				highlightedRenderer.highlighted = true;
+			}
+			else
+			{
+				highlightedRenderer.highlighted = false;
+				highlightedRenderer = null;
+			}
+
+			event.updateAfterEvent();
+		}
+		else if (highlightedRenderer != null)
+		{
+			highlightedRenderer.highlighted = false;
+			highlightedRenderer = null;
+			event.updateAfterEvent();
 		}
 	}
 
@@ -170,6 +203,19 @@ public class SelectableDataGroup extends DataGroup
 		if (p != null)
 		{
 			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+		}
+	}
+
+	mx_internal override function childAdded(child:DisplayObject):void
+	{
+		super.childAdded(child);
+
+		if (child is HighlightableItemRenderer && (flags & HIGHLIGHTABLE) == 0)
+		{
+			flags |= HIGHLIGHTABLE;
+
+			addEventListener(MouseEvent.MOUSE_OUT, mouseOutOrOverHandler);
+			addEventListener(MouseEvent.MOUSE_OVER, mouseOutOrOverHandler);
 		}
 	}
 }

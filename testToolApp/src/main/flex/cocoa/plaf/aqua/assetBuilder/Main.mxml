@@ -20,10 +20,10 @@
 
 		private function creationCompleteHandler():void
 		{
-//			var testContainer:Sprite = new Sprite();
-//			container.addDisplayObject(testContainer);
-//			testContainer.x = 300;
-//			new Builder().build(testContainer);
+			//			var testContainer:Sprite = new Sprite();
+			//			container.addDisplayObject(testContainer);
+			//			testContainer.x = 300;
+			//			new Builder().build(testContainer);
 
 			laf = new AquaLookAndFeel();
 			createDeferredContent();
@@ -38,7 +38,15 @@
 			];
 		}
 
-		]]></fx:Script>
+		override protected function updateDisplayList(w:Number, h:Number):void
+		{
+			super.updateDisplayList(w, h);
+
+			graphics.clear();
+			graphics.beginFill(0x00aa00, 0.1);
+			graphics.drawRect(0, 0, w, h);
+			graphics.endFill();
+		}]]></fx:Script>
 
 	<Container id="container">
 		<!--<PushButton label="Help H"/>-->
