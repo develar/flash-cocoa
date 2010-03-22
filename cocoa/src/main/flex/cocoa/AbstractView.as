@@ -214,24 +214,6 @@ use namespace mx_internal;
 [Event(name="remove", type="mx.events.FlexEvent")]
 
 /**
- *  Dispatched when the component is resized.
- *
- *  <p>You can resize the component by setting the <code>width</code> or
- *  <code>height</code> property, by calling the <code>setActualSize()</code>
- *  method, or by setting one of
- *  the following properties either on the component or on other components
- *  such that the LayoutManager needs to change the <code>width</code> or
- *  <code>height</code> properties of the component:</p>
- *
- *  <ul>
- *	<li><code>minWidth</code></li>
- *	<li><code>minHeight</code></li>
- *	<li><code>maxWidth</code></li>
- *	<li><code>maxHeight</code></li>
- *	<li><code>explicitWidth</code></li>
- *	<li><code>explicitHeight</code></li>
- *  </ul>
- *
  *  <p>The <code>resize</code> event is not
  *  dispatched until after the property changes.</p>
  *
@@ -1773,7 +1755,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	override public function set width(value:Number):void
 	{
-		if (explicitWidth != value)
+		if (_layoutMetrics.width != value)
 		{
 			explicitWidth = value;
 
@@ -1851,7 +1833,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	override public function set height(value:Number):void
 	{
-		if (explicitHeight != value)
+		if (_layoutMetrics.height != value)
 		{
 			explicitHeight = value;
 
@@ -4541,14 +4523,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 *  @playerversion Flash 9
 	 *  @playerversion AIR 1.1
 	 *  @productversion Flex 3
-	 */ public function get explicitHeight():Number
+	 */
+	public function get explicitHeight():Number
 	{
 		return _layoutMetrics.height;
 	}
 
-	/**
-	 *  @private
-	 */
 	public function set explicitHeight(value:Number):void
 	{
 		if (_layoutMetrics.height == value)
@@ -6008,7 +5988,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		// If an object's width and height have been explicitly specified,
 		// then the explicitWidth and explicitHeight properties contain
 		// Numbers (as opposed to NaN)
-		return !isNaN(explicitWidth) && !isNaN(explicitHeight);
+		return !isNaN(_layoutMetrics.width) && !isNaN(_layoutMetrics.height);
 	}
 
 	/**
@@ -6067,9 +6047,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 			oldMinHeight = !isNaN(explicitMinHeight) ? explicitMinHeight : measuredMinHeight;
 
-			oldExplicitWidth = !isNaN(explicitWidth) ? explicitWidth : measuredWidth;
+			oldExplicitWidth = !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
 
-			oldExplicitHeight = !isNaN(explicitHeight) ? explicitHeight : measuredHeight;
+			oldExplicitHeight = !isNaN(_layoutMetrics.height) ? explicitHeight : measuredHeight;
 
 			changed = true;
 		}
@@ -6089,7 +6069,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 				changed = true;
 			}
 
-			newValue = !isNaN(explicitWidth) ? explicitWidth : measuredWidth;
+			newValue = !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
 			if (newValue != oldExplicitWidth)
 			{
 				oldExplicitWidth = newValue;
@@ -6188,7 +6168,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	public function getExplicitOrMeasuredWidth():Number
 	{
-		return !isNaN(explicitWidth) ? explicitWidth : measuredWidth;
+		return !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
 	}
 
 	/**
@@ -6205,7 +6185,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 */
 	public function getExplicitOrMeasuredHeight():Number
 	{
-		return !isNaN(explicitHeight) ? explicitHeight : measuredHeight;
+		return !isNaN(_layoutMetrics.height) ? _layoutMetrics.height : measuredHeight;
 	}
 
 	//--------------------------------------------------------------------------

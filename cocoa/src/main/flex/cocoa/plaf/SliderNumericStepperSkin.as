@@ -2,14 +2,11 @@ package cocoa.plaf
 {
 import cocoa.HSlider;
 import cocoa.NumericStepper;
-import cocoa.SliderNumericStepper;
 
 public class SliderNumericStepperSkin extends AbstractSkin
 {
 	private var slider:HSlider;
 	private var stepper:NumericStepper;
-
-	public var hostComponent:SliderNumericStepper;
 
 	private static const GAP:Number = 5;
 
@@ -20,7 +17,7 @@ public class SliderNumericStepperSkin extends AbstractSkin
 			slider = new HSlider();
 			slider.enabled = enabled;
 			addChild(slider);
-			hostComponent.uiPartAdded("slider", slider);
+			component.uiPartAdded("slider", slider);
 		}
 
 		if (stepper == null)
@@ -28,7 +25,7 @@ public class SliderNumericStepperSkin extends AbstractSkin
 			stepper = new NumericStepper();
 			stepper.enabled = enabled;
 			addChild(stepper);
-			hostComponent.uiPartAdded("stepper", stepper);
+			component.uiPartAdded("stepper", stepper);
 		}
 	}
 

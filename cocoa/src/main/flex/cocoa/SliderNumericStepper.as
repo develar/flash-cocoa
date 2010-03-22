@@ -1,20 +1,23 @@
 package cocoa
 {
 import flash.events.Event;
+import flash.utils.Dictionary;
 
 use namespace ui;
 
 [Event(name="change", type="flash.events.Event")]
 public class SliderNumericStepper extends AbstractComponent
 {
+	protected static const _skinParts:Dictionary = new Dictionary();
+	_skinParts.slider = 0;
+	_skinParts.stepper = 0;
+	override protected function get skinParts():Dictionary
+	{
+		return _skinParts;
+	}
+
 	ui var slider:HSlider;
 	ui var stepper:NumericStepper;
-
-	public function SliderNumericStepper()
-	{
-		skinParts.slider = 0;
-		skinParts.stepper = 0;
-	}
 
 	private var _stepSize:Number = 0.01;
 	public function set stepSize(value:Number):void
@@ -185,6 +188,11 @@ public class SliderNumericStepper extends AbstractComponent
 		{
 			return Number(value);
 		}
+	}
+
+	override public function get lafPrefix():String
+	{
+		return "SliderNumericStepper";
 	}
 }
 }

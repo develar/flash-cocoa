@@ -11,6 +11,8 @@ import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 
+import cocoa.plaf.SliderNumericStepperSkin;
+
 import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
@@ -65,6 +67,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["MenuItem.border"] = new MenuItemBorder(borders[4].contentInsets);
 		data["MenuItem.border.highlighted"] = borders[4];
 		data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
+
+
+		data["SliderNumericStepper"] = SliderNumericStepperSkin;
 	}
 
 	private static function initAssets():void

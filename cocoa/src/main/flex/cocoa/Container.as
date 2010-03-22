@@ -175,7 +175,8 @@ public class Container extends GroupBase implements ViewContainer
 
 	override public function getElementAt(index:int):IVisualElement
     {
-		var element:Viewable = _subviews[index];
+//		var element:Viewable = _subviews[index];
+		var element:Object = _subviews[index];
 		return IVisualElement(element is Component ? Component(element).skin : element);
 	}
 
