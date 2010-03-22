@@ -4479,8 +4479,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			return;
 		}
 
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		// width can be pixel or percent not both
-		if (!isNaN(value))
+		else if (!isNaN(value))
 		{
 			_layoutMetrics.percentWidth = NaN;
 		}
@@ -4495,13 +4499,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		//dispatchEvent(new Event("explicitWidthChanged"));
 	}
 
-	//----------------------------------
-	//  explicitHeight
-	//----------------------------------
-
-
 	[Inspectable(environment="none")]
-
 	/**
 	 *  Number that specifies the explicit height of the component,
 	 *  in pixels, in the component's coordinates.
@@ -4536,8 +4534,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			return;
 		}
 
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		// height can be pixel or percent, not both
-		if (!isNaN(value))
+		else if (!isNaN(value))
 		{
 			_layoutMetrics.percentHeight = NaN;
 		}
@@ -6325,6 +6327,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set right(value:Object):void
 	{
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		_layoutMetrics.right = Number(value);
 	}
 
@@ -6335,6 +6341,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set top(value:Object):void
 	{
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		_layoutMetrics.top = Number(value);
 	}
 
@@ -6345,6 +6355,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set bottom(value:Object):void
 	{
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		_layoutMetrics.bottom = Number(value);
 	}
 
@@ -6355,6 +6369,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set horizontalCenter(value:Object):void
 	{
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		_layoutMetrics.horizontalCenter = Number(value);
 	}
 
@@ -6365,6 +6383,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set verticalCenter(value:Object):void
 	{
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		_layoutMetrics.verticalCenter = Number(value);
 	}
 
@@ -6375,6 +6397,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set baseline(value:Object):void
 	{
+		if (_layoutMetrics == EMPTY_LAYOUT_METRICS)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
 		_layoutMetrics.baseline = Number(value);
 	}
 

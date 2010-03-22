@@ -40,6 +40,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
 		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
+		data["ViewFont"] = AquaFonts.VIEW_FONT;
+		data["ViewFont.highlighted"] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
+
 		data["Box"] = BoxSkin;
 
 		data["Dialog"] = WindowSkin;
@@ -163,6 +166,6 @@ final class AquaFonts
 	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = SYSTEM_FONT.clone();
 	SYSTEM_FONT_HIGHLIGHTED.color = 0xffffff;
 
-	public static const VIEW_FONT_WHITE:ElementFormat = VIEW_FONT.clone();
-	VIEW_FONT_WHITE.color = 0xffffff;
+	public static const VIEW_FONT_HIGHLIGHTED:ElementFormat = VIEW_FONT.clone();
+	VIEW_FONT_HIGHLIGHTED.color = 0xffffff;
 }
