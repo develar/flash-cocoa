@@ -7,7 +7,7 @@ import spark.components.ToggleButton;
 
 [Style(name="icon", type="Class")]
 [Style(name="iconSelected", type="Class")]
-public class ToggleButton extends spark.components.ToggleButton implements KeyboardManagerClient
+public class ToggleButton extends spark.components.ToggleButton implements KeyboardManagerClient, Viewable
 {
 	public static const UNSELECTED_STATES:Vector.<String> = new <String>["up", "over", "down", "disabled"];
 	public static const SELECTED_STATES:Vector.<String> = new <String>["upAndSelected", "overAndSelected", "downAndSelected", "disabledAndSelected"];

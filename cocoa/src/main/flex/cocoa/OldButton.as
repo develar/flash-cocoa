@@ -16,7 +16,7 @@ import spark.primitives.BitmapImage;
 
 [Style(name="iconName", type="String")]
 [Style(name="icon", type="Class")]
-public class OldButton extends spark.components.Button implements KeyboardManagerClient
+public class OldButton extends spark.components.Button implements KeyboardManagerClient, Viewable
 {
 	[SkinPart(required="false")]
 	public var bitmapImage:BitmapImage;

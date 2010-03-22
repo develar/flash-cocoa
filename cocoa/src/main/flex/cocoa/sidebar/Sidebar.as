@@ -8,24 +8,26 @@ import cocoa.sidebar.events.MultipleSelectionChangeEvent;
 import cocoa.sidebar.events.SidebarEvent;
 import cocoa.ui;
 
+import flash.utils.Dictionary;
+
 import org.flyti.util.Assert;
 
 use namespace ui;
 
 public class Sidebar extends Bar
 {
+	private static const _skinParts:Dictionary = new Dictionary();
+	_cl(_skinParts, Bar._skinParts);
+	_skinParts.paneGroup = HANDLER_NOT_EXISTS;
+	override protected function get skinParts():Dictionary
+	{
+		return _skinParts;
+	}
+
 	ui var paneGroup:ViewContainer;
 
 	private var collapsed:Boolean = true;
-
 	private var typedPaneLabelBar:SidebarPaneLabelBar;
-
-	public function Sidebar()
-	{
-		super();
-
-		skinParts.paneGroup = 0;
-	}
 
 	override protected function get editAware():Boolean
 	{

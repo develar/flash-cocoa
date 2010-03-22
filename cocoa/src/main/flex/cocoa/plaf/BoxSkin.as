@@ -1,19 +1,15 @@
 package cocoa.plaf
 {
-import cocoa.Box;
 import cocoa.Container;
-import cocoa.UIPartProvider;
 
 public class BoxSkin extends AbstractSkin
 {
-	public var hostComponent:Box;
-
 	private var contentGroup:Container;
 
 	override protected function createChildren():void
 	{
 		contentGroup = new Container();
-		hostComponent.uiPartAdded("contentGroup", contentGroup);
+		component.uiPartAdded("contentGroup", contentGroup);
 		addChild(contentGroup);
 	}
 

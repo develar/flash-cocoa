@@ -13,6 +13,7 @@ import mx.core.IVisualElement;
 import mx.events.CollectionEvent;
 import mx.events.CollectionEventKind;
 
+import org.flyti.plexus.Injectable;
 import org.flyti.util.List;
 
 import spark.components.IItemRenderer;
@@ -20,13 +21,13 @@ import spark.components.IItemRenderer;
 use namespace ui;
 
 [Abstract]
-public class Bar extends AbstractComponent
+public class Bar extends AbstractComponent implements Injectable
 {
-	protected static const skinParts:Dictionary = new Dictionary();
-	skinParts.itemGroup = 0;
+	protected static const _skinParts:Dictionary = new Dictionary();
+	_skinParts.itemGroup = 0;
 	override protected function get skinParts():Dictionary
 	{
-		return skinParts;
+		return _skinParts;
 	}
 
 	ui var itemGroup:SelectableDataGroup;

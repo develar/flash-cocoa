@@ -3,6 +3,7 @@ package cocoa
 import cocoa.pane.TitledPane;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
+import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 
 import flash.events.IEventDispatcher;
@@ -99,6 +100,16 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 	public function set laf(value:LookAndFeel):void
 	{
 		_laf = value;
+	}
+
+	override public function createView(laf:LookAndFeel):Skin
+	{
+		if (_laf == null)
+		{
+			_laf = laf;
+		}
+		
+		return super.createView(laf);
 	}
 }
 }

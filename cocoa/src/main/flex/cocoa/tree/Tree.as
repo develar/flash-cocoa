@@ -2,6 +2,8 @@ package cocoa.tree
 {
 import cocoa.IEditable;
 
+import cocoa.Viewable;
+
 import flash.display.DisplayObject;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
@@ -31,7 +33,7 @@ use namespace mx_internal;
 [Exclude(name="borderThickness", kind="style")]
 
 [Style(name="pageIcon", type="Class", format="EmbeddedFile")]
-public class Tree extends mx.controls.Tree implements IEditable
+public class Tree extends mx.controls.Tree implements IEditable, Viewable
 {
 	public function Tree()
 	{

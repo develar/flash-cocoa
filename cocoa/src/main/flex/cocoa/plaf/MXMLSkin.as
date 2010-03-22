@@ -1,12 +1,13 @@
 package cocoa.plaf
 {
+import cocoa.AbstractView;
 import cocoa.Component;
 import cocoa.MXMLContainer;
 import cocoa.layout.LayoutMetrics;
 
 import com.asfusion.mate.events.InjectorEvent;
 
-import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 
 import mx.core.IStateClient;
 import mx.core.mx_internal;
@@ -17,8 +18,6 @@ use namespace mx_internal;
 
 public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 {
-	protected var laf:LookAndFeel;
-	
 	private var _component:Component;
 	public function get component():Component
 	{
@@ -138,22 +137,57 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 		{
 			dispatchEvent(new InjectorEvent(_component));
 		}
+
+		super.createChildren();
 	}
 
 	public function attach(component:Component, laf:LookAndFeel):void
 	{
 		_component = component;
 		this.laf = laf;
+
+		this["hostComponent"] = component;
 	}
 
-	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
+	// disable unwanted legacy
+	override public function regenerateStyleCache(recursive:Boolean):void
 	{
-		$addChildAt(displayObject, index == -1 ? numChildren : index);
+
 	}
 
-	public final function removeDisplayObject(value:DisplayObject):void
+	override public function styleChanged(styleProp:String):void
+    {
+
+	}
+
+	override protected function resourcesChanged():void
+    {
+
+	}
+
+	override public function get layoutDirection():String
+    {
+		return AbstractView.LAYOUT_DIRECTION_LTR;
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+    {
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+    {
+		return true;
+	}
+
+	override public function parentChanged(p:DisplayObjectContainer):void
 	{
-		$removeChild(value);
+		super.parentChanged(p);
+
+		if (p != null)
+		{
+			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+		}
 	}
 }
 }

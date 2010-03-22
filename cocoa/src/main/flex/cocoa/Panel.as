@@ -3,6 +3,7 @@ package cocoa
 import cocoa.sidebar.events.SidebarEvent;
 
 import flash.events.MouseEvent;
+import flash.utils.Dictionary;
 
 import mx.core.IVisualElement;
 
@@ -12,18 +13,18 @@ use namespace ui;
 
 public class Panel extends Window
 {
+	protected static const _skinParts:Dictionary = new Dictionary();
+	_skinParts.minimizeButton = 0;
+	_skinParts.closeSideButton = 0;
+	override protected function get skinParts():Dictionary
+	{
+		return _skinParts;
+	}
+
 	ui var titleDisplay:TextBase;
 
 	ui var minimizeButton:IVisualElement;
 	ui var closeSideButton:IVisualElement;
-
-	public function Panel()
-	{
-		super();
-
-		skinParts.minimizeButton = 0;
-		skinParts.closeSideButton = 0;
-	}
 
 	ui function minimizeButtonAdded():void
 	{

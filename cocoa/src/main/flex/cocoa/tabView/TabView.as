@@ -3,9 +3,12 @@ package cocoa.tabView
 import cocoa.SingleSelectionBar;
 import cocoa.ViewStack;
 import cocoa.Viewable;
+import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
 import cocoa.ui;
+
+import flash.utils.Dictionary;
 
 import mx.core.UIComponent;
 
@@ -18,30 +21,19 @@ use namespace ui;
 
 public class TabView extends SingleSelectionBar
 {
-	ui var paneGroup:ViewStack;
-
-	public function TabView()
+	protected static const _skinParts:Dictionary = new Dictionary();
+	_cl(_skinParts, Bar._skinParts);
+	_skinParts.paneGroup = HANDLER_NOT_EXISTS;
+	override protected function get skinParts():Dictionary
 	{
-		super();
-
-		skinParts.paneGroup = 0;
+		return _skinParts;
 	}
+
+	ui var paneGroup:ViewStack;
 
 	override protected function get editAware():Boolean
 	{
 		return true;
-	}
-
-	ui function paneGroupAdded():void
-	{
-//		for (var i:int = 0, n:int = items.size; i < n; i++)
-//		{
-//			var paneVisualElement:IVisualElement = PaneItem(items.getItemAt(i)).view;
-//			if (paneVisualElement != null)
-//			{
-//				paneGroup.addElement(paneVisualElement);
-//			}
-//		}
 	}
 
 	override protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void

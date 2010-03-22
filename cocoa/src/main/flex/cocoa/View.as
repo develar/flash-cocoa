@@ -14,5 +14,7 @@ public interface View extends Viewable, IUIComponent
 	 *  This method allows access to the Player's native implementation of removeChild()
 	 */
 	function removeDisplayObject(displayObject:DisplayObject):void;
+
+	function get initialized():Boolean;
 }
 }
