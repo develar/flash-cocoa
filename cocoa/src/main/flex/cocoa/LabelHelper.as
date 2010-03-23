@@ -98,15 +98,15 @@ public class LabelHelper
 		textLine.y = y;
 	}
 
-	public function moveByInset(h:Number, textInsets:Insets):void
+	public function moveByInset(h:Number, contentInsets:Insets):void
 	{
 		if (textLine == null)
 		{
 			return;
 		}
 
-		textLine.x = textInsets.left;
-		textLine.y = h - textInsets.bottom;
+		textLine.x = contentInsets.left;
+		textLine.y = h - contentInsets.bottom;
 	}
 	
 	public function moveByInsets(h:Number, contentInsets:Insets, frameInsets:FrameInsets):void

@@ -24,7 +24,7 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
 		}
 
 		proposedSelectedIndex = value;
-		selectionChanged = true;
+		flags |= selectionChanged;
 
 		invalidateProperties();
 	}

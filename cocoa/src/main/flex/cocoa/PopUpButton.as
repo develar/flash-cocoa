@@ -15,7 +15,7 @@ use namespace ui;
  * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
 [DefaultProperty("menu")]
-public class PopUpButton extends AbstractComponent implements Button
+public class PopUpButton extends AbstractControl implements Button
 {
 	private var labelChanged:Boolean = false;
 
@@ -63,7 +63,12 @@ public class PopUpButton extends AbstractComponent implements Button
 
 	protected function updateLabelDisplay():void
 	{
-		PushButtonSkin(skin).label = LabelUtil.itemToLabel(_menu.selectedItem, null, _menu.labelFunction);
+		PushButtonSkin(skin).label = LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
+	}
+
+	public function get selectedItem():Object
+	{
+		return _menu.selectedItem;
 	}
 
 	override public function get lafPrefix():String

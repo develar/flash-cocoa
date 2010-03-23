@@ -24,7 +24,7 @@ public class SidebarPaneLabelBar extends SelectableDataGroup
 		}
 
 		proposedSelectedIndices = value;
-		selectionChanged = true;
+		flags |= selectionChanged;
 
 		invalidateProperties();
 	}

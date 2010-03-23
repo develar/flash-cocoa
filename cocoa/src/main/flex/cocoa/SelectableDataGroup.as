@@ -5,7 +5,6 @@ import cocoa.layout.LayoutMetrics;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
-import flash.text.engine.TextLine;
 
 import mx.core.IFlexDisplayObject;
 import mx.core.IVisualElement;
@@ -19,11 +18,11 @@ use namespace mx_internal;
 [Abstract]
 public class SelectableDataGroup extends DataGroup
 {
-	private static const SELECT_ON_DOWN:uint = 1 << 0;
-	private static const HIGHLIGHTABLE:uint = 1 << 1;
-	private var flags:uint = 0;
+	private static const highlightable:uint = 1 << 0;
+	protected static const selectionChanged:uint = 1 << 1;
+	private static const mouseSelectionModeChanged:uint = 1 << 2;
 
-	protected var selectionChanged:Boolean = false;
+	protected var flags:uint = mouseSelectionModeChanged;
 
 	private var highlightedRenderer:HighlightableItemRenderer;
 
@@ -32,7 +31,6 @@ public class SelectableDataGroup extends DataGroup
 		super();
 
 		mouseEnabled = false;
-		addEventListener(mouseEventTypeForItemSelect, itemMouseSelectHandler);
 	}
 
 	private var _iconFunction:Function;
@@ -41,23 +39,33 @@ public class SelectableDataGroup extends DataGroup
 		_iconFunction = value;
 	}
 
-	public function set selectOnMouseDown(value:Boolean):void
+	private var _mouseSelectionMode:int;
+	public function set mouseSelectionMode(value:int):void
 	{
-		value ? flags ^= SELECT_ON_DOWN : flags |= SELECT_ON_DOWN;
-	}
-
-	protected function get mouseEventTypeForItemSelect():String
-	{
-		return (flags & SELECT_ON_DOWN) == 0 ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN;
+		if (value != _mouseSelectionMode)
+		{
+			_mouseSelectionMode = value;
+			flags ^= mouseSelectionModeChanged;
+			invalidateProperties();
+		}
 	}
 
 	override protected function commitProperties():void
 	{
 		super.commitProperties();
 
-		if (selectionChanged)
+		if (flags & mouseSelectionModeChanged)
 		{
-			selectionChanged = false;
+			flags ^= mouseSelectionModeChanged;
+			if (_mouseSelectionMode != ItemMouseSelectionMode.none)
+			{
+				addEventListener(_mouseSelectionMode == ItemMouseSelectionMode.click ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN, itemMouseSelectHandler);
+			}
+		}
+
+		if (flags & selectionChanged)
+		{
+			flags ^= selectionChanged;
 
 			commitSelection();
 		}
@@ -71,14 +79,10 @@ public class SelectableDataGroup extends DataGroup
 
 	private function itemMouseSelectHandler(event:MouseEvent):void
     {
-		if (event.target != this)
+		if (event.target != this && event.target != parent)
 		{
-			var target:DisplayObject = DisplayObject(event.target);
-			if (target is TextLine)
-			{
-				target = target.parent;
-			}
-			itemSelecting(target is IItemRenderer ? IItemRenderer(target).itemIndex : getElementIndex(IVisualElement(target)));
+			itemSelecting(event.target is IItemRenderer ? IItemRenderer(event.target).itemIndex : getElementIndex(IVisualElement(event.target)));
+			event.updateAfterEvent();
 		}
 	}
 
@@ -210,9 +214,9 @@ public class SelectableDataGroup extends DataGroup
 	{
 		super.childAdded(child);
 
-		if (child is HighlightableItemRenderer && (flags & HIGHLIGHTABLE) == 0)
+		if (child is HighlightableItemRenderer && (flags & highlightable) == 0)
 		{
-			flags |= HIGHLIGHTABLE;
+			flags |= highlightable;
 
 			addEventListener(MouseEvent.MOUSE_OUT, mouseOutOrOverHandler);
 			addEventListener(MouseEvent.MOUSE_OVER, mouseOutOrOverHandler);
