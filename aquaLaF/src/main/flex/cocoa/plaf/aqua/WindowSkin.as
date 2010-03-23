@@ -5,8 +5,12 @@ import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.BottomBarStyle;
 import cocoa.plaf.WindowSkin;
 
+import mx.core.IFlexDisplayObject;
 import mx.core.mx_internal;
 
+import mx.managers.IFocusManagerContainer;
+
+import spark.layouts.HorizontalAlign;
 import spark.layouts.HorizontalLayout;
 import spark.layouts.VerticalAlign;
 
@@ -16,7 +20,7 @@ use namespace mx_internal;
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
  * На данный момент нет поддержки bottom bar как по спецификации Apple. Но есть нечто типа control bar как Open/Choose — явно там это так никак не названо.
  */
-public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowSkin, AdvancedLayout
+public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, IFocusManagerContainer
 {
 	private var controlBar:BorderedContainer;
 
@@ -40,6 +44,7 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 
 			var bottomBarGroupLayout:HorizontalLayout = new HorizontalLayout();
 			bottomBarGroupLayout.verticalAlign = VerticalAlign.MIDDLE;
+			bottomBarGroupLayout.horizontalAlign = HorizontalAlign.RIGHT;
 			bottomBarGroupLayout.paddingLeft = 21;
 			bottomBarGroupLayout.paddingRight = 21;
 			bottomBarGroupLayout.gap = 12;
@@ -63,9 +68,17 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 	{
 		super.updateDisplayList(w, h);
 
-		var controlBarGroupWidth:Number = controlBar.getExplicitOrMeasuredWidth();
-		controlBar.move(w - controlBarGroupWidth, h - BOTTOM_BAR_HEIGHT);
-		controlBar.setActualSize(controlBarGroupWidth, BOTTOM_BAR_HEIGHT);
+		controlBar.y = h - BOTTOM_BAR_HEIGHT;
+		controlBar.setActualSize(w, BOTTOM_BAR_HEIGHT);
+	}
+
+	public function get defaultButton():IFlexDisplayObject
+	{
+		return null;
+	}
+
+	public function set defaultButton(value:IFlexDisplayObject):void
+	{
 	}
 }
 }

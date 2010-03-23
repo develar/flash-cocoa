@@ -298,10 +298,10 @@ public class Container extends GroupBase implements ViewContainer
 	}
 
 	// disable unwanted legacy
-	override public function regenerateStyleCache(recursive:Boolean):void
-	{
-
-	}
+//	override public function regenerateStyleCache(recursive:Boolean):void
+//	{
+//
+//	}
 
 	override public function styleChanged(styleProp:String):void
     {

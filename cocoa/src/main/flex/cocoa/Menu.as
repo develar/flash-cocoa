@@ -19,7 +19,7 @@ public class Menu extends AbstractComponent
 
 	ui function itemGroupAdded():void
 	{
-
+		itemGroup.mouseSelectionMode = ItemMouseSelectionMode.none; // delegate to MenuController (see PopUpMenuController)
 	}
 
 	private var pendingSelectedIndex:int = 0;

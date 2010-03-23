@@ -123,6 +123,11 @@ public class LabelHelper
 
 	public function adjustWidth(newWidth:Number):void
 	{
+		if (isNaN(newWidth))
+		{
+			newWidth = 1000000;
+		}
+
 		if (newWidth < availableWidth || (newWidth > availableWidth && truncated))
 		{
 			invalid = true;

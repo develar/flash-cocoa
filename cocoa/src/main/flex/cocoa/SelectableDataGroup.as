@@ -39,14 +39,15 @@ public class SelectableDataGroup extends DataGroup
 		_iconFunction = value;
 	}
 
-	private var _mouseSelectionMode:int;
+	/**
+	 * Only once before initial commitProperties.
+	 */
+	private var _mouseSelectionMode:int = ItemMouseSelectionMode.click;
 	public function set mouseSelectionMode(value:int):void
 	{
 		if (value != _mouseSelectionMode)
 		{
 			_mouseSelectionMode = value;
-			flags ^= mouseSelectionModeChanged;
-			invalidateProperties();
 		}
 	}
 
@@ -221,6 +222,11 @@ public class SelectableDataGroup extends DataGroup
 			addEventListener(MouseEvent.MOUSE_OUT, mouseOutOrOverHandler);
 			addEventListener(MouseEvent.MOUSE_OVER, mouseOutOrOverHandler);
 		}
+	}
+
+	override protected function initializationComplete():void
+	{
+		super.initializationComplete();
 	}
 }
 }

@@ -3,6 +3,8 @@ package cocoa.plaf
 import cocoa.AbstractBorder;
 import cocoa.Insets;
 
+import cocoa.TextInsets;
+
 import flash.display.BitmapData;
 import flash.geom.Matrix;
 import flash.utils.ByteArray;
@@ -46,15 +48,21 @@ public class AbstractBitmapBorder extends AbstractBorder implements Externalizab
 
 	protected final function readInsets(input:IDataInput):Insets
 	{
-		return new Insets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
+		return input.readByte() == 0 ? new Insets(input.readByte(), input.readByte(), input.readByte(), input.readByte()) : new TextInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte(), input.readByte());
 	}
 
 	protected final function writeInsets(output:IDataOutput, insets:Insets):void
 	{
+		output.writeByte(insets is TextInsets ? 1 : 0);
 		output.writeByte(insets.left);
 		output.writeByte(insets.top);
 		output.writeByte(insets.right);
 		output.writeByte(insets.bottom);
+
+		if (insets is TextInsets)
+		{
+			output.writeByte(TextInsets(insets).truncatedTailMargin);
+		}
 	}
 
 	// for debug purposes only

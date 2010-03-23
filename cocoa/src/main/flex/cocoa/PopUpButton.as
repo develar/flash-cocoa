@@ -5,8 +5,6 @@ import cocoa.plaf.PopUpMenuController;
 import cocoa.plaf.PushButtonSkin;
 import cocoa.plaf.Skin;
 
-import flash.display.DisplayObject;
-
 import spark.utils.LabelUtil;
 
 use namespace ui;
@@ -46,7 +44,7 @@ public class PopUpButton extends AbstractControl implements Button
 	{
 		super.createView(laf);
 		menuController = laf.getFactory(lafPrefix + ".menuController").newInstance();
-		menuController.initialize(DisplayObject(skin), _menu, laf);
+		menuController.initialize(this, _menu, laf);
 		return skin;
 	}
 
@@ -69,6 +67,23 @@ public class PopUpButton extends AbstractControl implements Button
 	public function get selectedItem():Object
 	{
 		return _menu.selectedItem;
+	}
+
+	public function get selectedIndex():int
+	{
+		return _menu.selectedIndex;
+	}
+	public function set selectedIndex(value:int):void
+	{
+		if (value != selectedIndex)
+		{
+			_menu.selectedIndex = value;
+			if (_action != null)
+			{
+				_action();
+			}
+			updateLabelDisplay();
+		}
 	}
 
 	override public function get lafPrefix():String

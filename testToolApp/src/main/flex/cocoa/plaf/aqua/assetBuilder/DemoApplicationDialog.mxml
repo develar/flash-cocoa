@@ -3,12 +3,14 @@
 		xmlns="library://cocoa">
 
 	<fx:Script><![CDATA[
+		import cocoa.MenuItem;
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.WindowSkin;
 
 		import org.flyti.util.ArrayList;
 
-		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
+		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", MenuItem.createSeparatorItem(), "Item 3"]);
+		private static const testData2:ArrayList = new ArrayList(new <Object>["Item 1", "Loooooooooooong Label", MenuItem.createSeparatorItem(), "Item 3"]);
 
 		override protected function viewAttachedHandler():void
 		{
@@ -25,6 +27,12 @@
 		<PopUpButton>
 			<Menu>
 				<items>{testData}</items>
+			</Menu>
+		</PopUpButton>
+
+		<PopUpButton width="100">
+			<Menu>
+				<items>{testData2}</items>
 			</Menu>
 		</PopUpButton>
 	</Container>

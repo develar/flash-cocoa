@@ -1,5 +1,6 @@
 package cocoa.tabView
 {
+import cocoa.ListSelection;
 import cocoa.SingleSelectionBar;
 import cocoa.ViewStack;
 import cocoa.Viewable;
@@ -14,7 +15,6 @@ import mx.core.UIComponent;
 
 import org.flyti.util.Assert;
 
-import spark.components.supportClasses.ListBase;
 import spark.events.IndexChangeEvent;
 
 use namespace ui;
@@ -40,7 +40,7 @@ public class TabView extends SingleSelectionBar
 	{
 		var oldItem:PaneItem;
 		//  при удалении элемента, придет событие с его старым индексом, если он был ранее выделен
-		if (event.oldIndex != ListBase.NO_SELECTION && event.oldIndex < items.size)
+		if (event.oldIndex != ListSelection.NO_SELECTION && event.oldIndex < items.size)
 		{
         	oldItem = PaneItem(items.getItemAt(event.oldIndex));
 		}

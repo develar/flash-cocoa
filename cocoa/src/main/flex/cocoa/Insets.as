@@ -1,6 +1,6 @@
 package cocoa
 {
-public final class Insets
+public class Insets
 {	
 	public var left:Number;
 	public var top:Number;

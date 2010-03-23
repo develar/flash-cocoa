@@ -1,5 +1,7 @@
 package cocoa.dialog
 {
+import cocoa.AbstractView;
+import cocoa.View;
 import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
 import cocoa.plaf.LookAndFeelProvider;

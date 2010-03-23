@@ -138,6 +138,11 @@ public class Dialog extends Window
 
 	private function keyDownHandler(event:KeyboardEvent):void
 	{
+		if (event.isDefaultPrevented())
+		{
+			return;
+		}
+
 		// Safari перехватывает cmd + period
 		if (event.keyCode == Keyboard.ESCAPE || (event.ctrlKey && event.keyCode == KeyCode.PERIOD))
 		{

@@ -68,7 +68,7 @@ public class MenuItemRenderer extends AbstractItemRenderer
 		menuItem = value;
 		if (menuItem is MenuItem)
 		{
-			enabled = !MenuItem(menuItem).enabled;
+			enabled = MenuItem(menuItem).enabled;
 			isSeparatorItem = MenuItem(menuItem).isSeparatorItem;
 		}
 
@@ -88,15 +88,17 @@ public class MenuItemRenderer extends AbstractItemRenderer
 
 	override protected function measure():void
 	{
-		if (!labelHelper.hasText)
-		{
-			return;
-		}
-
-		labelHelper.validate();
-
-		measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
 		measuredMinHeight = measuredHeight = border.layoutHeight;
+
+		if (labelHelper.hasText)
+		{
+			labelHelper.validate();
+			measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
+		}
+		else
+		{
+			measuredMinWidth = measuredWidth = 0;
+		}
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

@@ -760,13 +760,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		addEventListener(Event.REMOVED, removedHandler);
 
 		// Register for focus and keyboard events.
-		if (this is IFocusManagerComponent)
-		{
-			addEventListener(FocusEvent.FOCUS_IN, focusInHandler);
-			addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler);
-			addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-			addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
-		}
+//		if (this is IFocusManagerComponent)
+//		{
+//			addEventListener(FocusEvent.FOCUS_IN, focusInHandler);
+//			addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler);
+//			addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+//			addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+//		}
 
 		_width = super.width;
 		_height = super.height;
@@ -1725,9 +1725,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _width;
 	}
 
-	/**
-	 *  @private
-	 */
 	override public function set width(value:Number):void
 	{
 		if (_layoutMetrics.width != value)
@@ -6469,20 +6466,20 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 				_layoutFeatures.layoutWidth = w;  // for the mirror transform
 				invalidateTransform();
 			}
-			if (hasEventListener("widthChanged"))
-			{
-				dispatchEvent(new Event("widthChanged"));
-			}
+//			if (hasEventListener("widthChanged"))
+//			{
+//				dispatchEvent(new Event("widthChanged"));
+//			}
 			changed = true;
 		}
 
 		if (_height != h)
 		{
 			_height = h;
-			if (hasEventListener("heightChanged"))
-			{
-				dispatchEvent(new Event("heightChanged"));
-			}
+//			if (hasEventListener("heightChanged"))
+//			{
+//				dispatchEvent(new Event("heightChanged"));
+//			}
 			changed = true;
 		}
 

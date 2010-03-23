@@ -5,6 +5,7 @@ import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
+import cocoa.TextInsets;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
@@ -33,12 +34,12 @@ public class Builder
 	private static var windowBottomBarApplicationClass:Class;
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
-	// rounded
+	// rounded push button
 	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
-	// textured rounded
+	// textured rounded push button
 	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(22, new FrameInsets(0, -1, 0), new Insets(10, NaN, 10, 6)));
-	// pop up button
-	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(9, NaN, 9 + 21/* width of double-arrow area */, 5)));
+	// rounded pop up button
+	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
 	{
@@ -53,7 +54,6 @@ public class Builder
 	{
 		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
-
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 

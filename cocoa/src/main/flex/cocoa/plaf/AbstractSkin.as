@@ -8,6 +8,7 @@ import cocoa.UIPartProvider;
 
 import com.asfusion.mate.events.InjectorEvent;
 
+import flash.geom.Point;
 import flash.text.engine.ElementFormat;
 
 import mx.core.IFactory;
@@ -22,6 +23,8 @@ use namespace mx_internal;
  */
 public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 {
+	private static var sharedPoint:Point;
+
 	protected var laf:LookAndFeel;
 
 	private var _component:Component;
@@ -70,6 +73,29 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 	{
 		component.commitProperties();
 		super.commitProperties();
+	}
+
+	override public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean = false):Boolean
+	{
+		if (shapeFlag)
+		{
+			return super.hitTestPoint(x, y, shapeFlag);
+		}
+		else
+		{
+			if (sharedPoint == null)
+			{
+				sharedPoint = new Point(x, y);
+			}
+			else
+			{
+				sharedPoint.x = x;
+				sharedPoint.y = y;
+			}
+
+			var local:Point = globalToLocal(sharedPoint);
+			return local.x >= 0 && local.x <= width && local.y >= 0 && local.y <= height;
+		}
 	}
 }
 }

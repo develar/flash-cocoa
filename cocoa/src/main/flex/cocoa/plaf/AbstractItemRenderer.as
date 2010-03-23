@@ -78,7 +78,7 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer,
 		}
 	}
 
-	public function set highlighted(value:Boolean)
+	public function set highlighted(value:Boolean):void
 	{
 		if (value == ((state & HIGHLIGHTED) == 0))
 		{

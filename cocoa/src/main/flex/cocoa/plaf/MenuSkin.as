@@ -3,11 +3,10 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.Menu;
+import cocoa.MenuItem;
 import cocoa.SingleSelectionDataGroup;
 
 import flash.display.Graphics;
-
-import flash.geom.Point;
 
 import mx.core.IDataRenderer;
 import mx.core.IVisualElement;
@@ -22,8 +21,6 @@ use namespace mx_internal;
 
 public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 {
-	private static var sharedPoint:Point;
-
 	private var itemGroup:SingleSelectionDataGroup;
 
 	private var _border:Border;
@@ -64,7 +61,7 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 		if (renderer is IItemRenderer)
 		{
 			IItemRenderer(renderer).itemIndex = itemIndex;
-			IItemRenderer(renderer).label = itemToLabel(data);
+			IItemRenderer(renderer).label = (data is MenuItem && MenuItem(data).isSeparatorItem) ? null : itemToLabel(data);
 		}
 
 		// always set the data last
@@ -88,29 +85,6 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 		var g:Graphics = graphics;
 		g.clear();
 		_border.draw(this, g, w, h);
-	}
-
-	override public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean = false):Boolean
-	{
-		if (shapeFlag)
-		{
-			return super.hitTestPoint(x, y, shapeFlag);
-		}
-		else
-		{
-			if (sharedPoint == null)
-			{
-				sharedPoint = new Point(x, y);
-			}
-			else
-			{
-				sharedPoint.x = x;
-				sharedPoint.y = y;
-			}
-
-			var local:Point = globalToLocal(sharedPoint);
-			return local.x >= 0 && local.x <= width && local.y >= 0 && local.y <= height;
-		}
 	}
 }
 }

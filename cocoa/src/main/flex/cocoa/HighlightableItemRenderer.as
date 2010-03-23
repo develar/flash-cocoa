@@ -2,6 +2,6 @@ package cocoa
 {
 public interface HighlightableItemRenderer
 {
-	function set highlighted(value:Boolean);
+	function set highlighted(value:Boolean):void;
 }
 }

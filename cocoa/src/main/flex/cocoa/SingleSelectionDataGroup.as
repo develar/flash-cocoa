@@ -2,16 +2,15 @@ package cocoa
 {
 import mx.core.mx_internal;
 
-import spark.components.supportClasses.ListBase;
 import spark.events.IndexChangeEvent;
 
 use namespace mx_internal;
 
 public class SingleSelectionDataGroup extends SelectableDataGroup
 {
-	private var proposedSelectedIndex:int = ListBase.NO_SELECTION;
+	private var oldSelectedIndex:int = ListSelection.NO_SELECTION;
 
-	private var _selectedIndex:int = ListBase.NO_SELECTION;
+	private var _selectedIndex:int = ListSelection.NO_SELECTION;
 	public function get selectedIndex():int
 	{
 		return _selectedIndex;
@@ -23,7 +22,8 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
 			return;
 		}
 
-		proposedSelectedIndex = value;
+		oldSelectedIndex = _selectedIndex;
+		_selectedIndex = value;
 		flags |= selectionChanged;
 
 		invalidateProperties();
@@ -33,30 +33,28 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
     {
 		if (itemIndex != _selectedIndex)
 		{
-			adjustSelection(_selectedIndex, itemIndex);
+			oldSelectedIndex = _selectedIndex;
+			_selectedIndex = itemIndex;
+			adjustSelection();
 		}
     }
 
-	private function adjustSelection(oldIndex:int, newIndex:int):void
+	private function adjustSelection():void
 	{
-		_selectedIndex = newIndex;
-
-		if (oldIndex != ListBase.NO_SELECTION)
+		if (oldSelectedIndex != ListSelection.NO_SELECTION)
 		{
-			itemSelected(oldIndex, false);
+			itemSelected(oldSelectedIndex, false);
 		}
-		itemSelected(newIndex, true);
+		itemSelected(_selectedIndex, true);
 
-		dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, oldIndex, newIndex));
+		dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, oldSelectedIndex, _selectedIndex));
+
+		oldSelectedIndex = -1;
 	}
 
 	override protected function commitSelection():void
 	{
-		var oldIndex:int = _selectedIndex;
-		_selectedIndex = proposedSelectedIndex;
-		proposedSelectedIndex = -1;
-
-		adjustSelection(oldIndex, _selectedIndex);
+		adjustSelection();
 	}
 
 	override mx_internal function itemRemoved(item:Object, index:int):void
