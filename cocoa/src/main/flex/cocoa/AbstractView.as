@@ -2256,26 +2256,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	//----------------------------------
-	//  enabled
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _enabled:Boolean = true;
-
 	[Inspectable(category="General", enumeration="true,false", defaultValue="true")]
-	[Bindable("enabledChanged")]
-
-	/**
-	 *  @copy mx.core.IUIComponent#enabled
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
 	public function get enabled():Boolean
 	{
 		return _enabled;
@@ -2283,11 +2265,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	public function set enabled(value:Boolean):void
 	{
-		_enabled = value;
+		if (value != _enabled)
+		{
+			_enabled = value;
+			invalidateDisplayList();
+		}
 
-		invalidateDisplayList();
-
-		dispatchEvent(new Event("enabledChanged"));
+		//dispatchEvent(new Event("enabledChanged"));
 	}
 
 	//----------------------------------

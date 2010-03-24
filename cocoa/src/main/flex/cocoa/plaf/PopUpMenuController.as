@@ -5,7 +5,6 @@ import cocoa.PopUpButton;
 import cocoa.ui;
 
 import flash.display.DisplayObject;
-import flash.display.DisplayObject;
 import flash.display.Stage;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
@@ -19,7 +18,7 @@ import spark.components.IItemRenderer;
 
 use namespace ui;
 
-public class PopUpMenuController
+public class PopUpMenuController extends ListController
 {
 	private const MOUSE_CLICK_INTERVAL:int = 400;
 
@@ -37,26 +36,52 @@ public class PopUpMenuController
 		this.menu = menu;
 		this.laf = laf;
 		addHandlers();
+
+		flags |= HIGHLIGHTABLE;
 	}
 
-	private function addHandlers():void
+	override protected function addHandlers():void
 	{
 		popUpButton.skin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 	}
 
-	private function keyDownHandler(event:KeyboardEvent):void
+	override protected function keyDownHandler(event:KeyboardEvent):void
 	{
-		if (event.keyCode == Keyboard.ESCAPE && menu.skin != null && DisplayObject(menu.skin).parent != null)
+		super.keyDownHandler(event);
+
+		if (event.preventDefault())
 		{
-			event.preventDefault();
-			close();
+			return;
+		}
+
+		switch (event.keyCode)
+		{
+			case Keyboard.ESCAPE:
+			{
+				if (menu.skin != null && DisplayObject(menu.skin).parent != null)
+				{
+					event.preventDefault();
+					close();
+				}
+			}
+			break;
+
+			case Keyboard.ENTER:
+			case Keyboard.SPACE:
+			{
+				if (highlightedRenderer != null)
+				{
+					popUpButton.selectedIndex = highlightedRenderer.itemIndex;
+				}
+				close();
+			}
 		}
 	}
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-		//event.stopImmediatePropagation();
+//		event.stopImmediatePropagation();
 
 		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
 		var menuSkin:Skin = menu.skin;
@@ -66,6 +91,9 @@ public class PopUpMenuController
 		}
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		setPopUpPosition();
+
+		itemGroup = menu.itemGroup;
+		super.addHandlers();
 
 		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
@@ -97,9 +125,13 @@ public class PopUpMenuController
 				mouseDownTime = -1;
 			}
 		}
-		else if (event.target != menu.skin && event.target != menu.itemGroup)
+		else if (event.target != menu.skin && event.target != itemGroup)
 		{
 			popUpButton.selectedIndex = IItemRenderer(event.target).itemIndex;
+		}
+		else
+		{
+			return;
 		}
 
 		if (mouseDownTime == -1 || (getTimer() - mouseDownTime) > MOUSE_CLICK_INTERVAL)

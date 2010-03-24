@@ -12,16 +12,19 @@ import cocoa.plaf.WindowSkin;
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 
+import mx.core.IFlexDisplayObject;
 import mx.core.ILayoutElement;
 import mx.core.mx_internal;
+import mx.managers.IFocusManagerContainer;
 
 use namespace mx_internal;
 
 /**
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
- * На данный момент нет поддержки bottom bar как по спецификации Apple. Но есть нечто типа control bar как Open/Choose — явно там это так никак не названо.
+ *
+ * IFocusManagerContainer нужен так как flex PopUpManager только в этом случае создаст focus manager для окна (а он нужен)
  */
-public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout
+public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, IFocusManagerContainer
 {
 	[Embed(source="/Window.resizeGripper.png")]
 	private static const resizeGripperClass:Class;
@@ -121,6 +124,15 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		var offset:Number = 4;
 		resizeGripper.x = w - 11 - offset;
 		resizeGripper.y = h - 11 - offset;
+	}
+
+	public function get defaultButton():IFlexDisplayObject
+	{
+		return null;
+	}
+
+	public function set defaultButton(value:IFlexDisplayObject):void
+	{
 	}
 }
 }

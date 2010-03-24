@@ -49,7 +49,7 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
 
 		dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, oldSelectedIndex, _selectedIndex));
 
-		oldSelectedIndex = -1;
+		oldSelectedIndex = ListSelection.NO_SELECTION;
 	}
 
 	override protected function commitSelection():void

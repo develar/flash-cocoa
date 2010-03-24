@@ -1,13 +1,14 @@
 package cocoa.plaf
 {
 import cocoa.Border;
+import cocoa.HighlightableItemRenderer;
 import cocoa.Icon;
 import cocoa.LabelHelper;
 import cocoa.MenuItem;
 
 import flash.display.Graphics;
 
-public class MenuItemRenderer extends AbstractItemRenderer
+public class MenuItemRenderer extends AbstractItemRenderer implements HighlightableItemRenderer
 {	
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
@@ -63,18 +64,19 @@ public class MenuItemRenderer extends AbstractItemRenderer
 	}
 	override public function set data(value:Object):void
 	{
-		var enabled:Boolean = true;
 		var isSeparatorItem:Boolean = false;
 		menuItem = value;
 		if (menuItem is MenuItem)
 		{
-			enabled = MenuItem(menuItem).enabled;
+			enabled = mouseEnabled = MenuItem(menuItem).enabled;
 			isSeparatorItem = MenuItem(menuItem).isSeparatorItem;
+		}
+		else
+		{
+			enabled = mouseEnabled = true;
 		}
 
 		border = getBorder(isSeparatorItem ? "separatorBorder" : "border");
-
-		mouseEnabled = enabled;
 
 		invalidateSize();
 		invalidateDisplayList();

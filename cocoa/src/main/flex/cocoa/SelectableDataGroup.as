@@ -2,7 +2,6 @@ package cocoa
 {
 import cocoa.layout.LayoutMetrics;
 
-import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 
@@ -18,13 +17,10 @@ use namespace mx_internal;
 [Abstract]
 public class SelectableDataGroup extends DataGroup
 {
-	private static const highlightable:uint = 1 << 0;
-	protected static const selectionChanged:uint = 1 << 1;
-	private static const mouseSelectionModeChanged:uint = 1 << 2;
+	protected static const selectionChanged:uint = 1 << 0;
+	private static const mouseSelectionModeChanged:uint = 1 << 1;
 
 	protected var flags:uint = mouseSelectionModeChanged;
-
-	private var highlightedRenderer:HighlightableItemRenderer;
 
 	public function SelectableDataGroup()
 	{
@@ -111,35 +107,6 @@ public class SelectableDataGroup extends DataGroup
 		}
 	}
 
-	private function mouseOutOrOverHandler(event:MouseEvent):void
-	{
-		if (event.target != this)
-		{
-			if (event.type == MouseEvent.MOUSE_OVER)
-			{
-				if (highlightedRenderer != null)
-				{
-					highlightedRenderer.highlighted = false;
-				}
-				highlightedRenderer = HighlightableItemRenderer(event.target);
-				highlightedRenderer.highlighted = true;
-			}
-			else
-			{
-				highlightedRenderer.highlighted = false;
-				highlightedRenderer = null;
-			}
-
-			event.updateAfterEvent();
-		}
-		else if (highlightedRenderer != null)
-		{
-			highlightedRenderer.highlighted = false;
-			highlightedRenderer = null;
-			event.updateAfterEvent();
-		}
-	}
-
 	public function itemToIcon(item:Object):IFlexDisplayObject
     {
 		return _iconFunction(item);
@@ -209,24 +176,6 @@ public class SelectableDataGroup extends DataGroup
 		{
 			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
 		}
-	}
-
-	mx_internal override function childAdded(child:DisplayObject):void
-	{
-		super.childAdded(child);
-
-		if (child is HighlightableItemRenderer && (flags & highlightable) == 0)
-		{
-			flags |= highlightable;
-
-			addEventListener(MouseEvent.MOUSE_OUT, mouseOutOrOverHandler);
-			addEventListener(MouseEvent.MOUSE_OVER, mouseOutOrOverHandler);
-		}
-	}
-
-	override protected function initializationComplete():void
-	{
-		super.initializationComplete();
 	}
 }
 }

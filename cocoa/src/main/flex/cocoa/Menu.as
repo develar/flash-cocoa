@@ -66,6 +66,11 @@ public class Menu extends AbstractComponent
 		}
 	}
 
+	public function get numberOfItems():int
+	{
+		return _items.length;
+	}
+
 	override public function get lafPrefix():String
 	{
 		return "Menu";

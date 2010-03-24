@@ -1,13 +1,12 @@
 package cocoa.plaf
 {
 import cocoa.AbstractView;
-import cocoa.HighlightableItemRenderer;
 
 import flash.text.engine.ElementFormat;
 
 import spark.components.IItemRenderer;
 
-public class AbstractItemRenderer extends AbstractView implements IItemRenderer, HighlightableItemRenderer
+public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 {
 	protected var state:uint = 0;
 
