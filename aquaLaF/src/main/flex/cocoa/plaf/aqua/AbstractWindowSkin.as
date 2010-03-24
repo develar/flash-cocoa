@@ -56,6 +56,10 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	public function set contentView(value:View):void
 	{
 		_contentView = value;
+		if (initialized)
+		{
+			addChild(DisplayObject(_contentView)); 
+		}
 	}
 
 	private var _title:String;
@@ -117,8 +121,11 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 		border.draw(this, g, w, h);
 
-		_contentView.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
-		_contentView.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
+		if (_contentView != null)
+		{
+			_contentView.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
+			_contentView.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
+		}
 
 //		var offset:Number = 1;
 		var offset:Number = 4;

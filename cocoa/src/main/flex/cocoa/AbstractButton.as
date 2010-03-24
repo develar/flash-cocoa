@@ -16,9 +16,9 @@ public class AbstractButton extends AbstractControl implements Button
 		return _state;
 	}
 
-	override protected function viewAttachedHandler():void
+	override protected function skinAttachedHandler():void
 	{
-		super.viewAttachedHandler();
+		super.skinAttachedHandler();
 
 		mySkin = PushButtonSkin(skin);
 		addHandlers();

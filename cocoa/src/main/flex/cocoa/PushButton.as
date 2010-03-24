@@ -24,9 +24,9 @@ public class PushButton extends AbstractButton
 		}
 	}
 
-	override protected function viewAttachedHandler():void
+	override protected function skinAttachedHandler():void
     {
-		super.viewAttachedHandler();
+		super.skinAttachedHandler();
 
 		mySkin.label = _label;
 	}

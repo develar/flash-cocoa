@@ -47,7 +47,7 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		_resourceBundle = value;
 	}
 
-	override protected function viewAttachedHandler():void
+	override protected function skinAttachedHandler():void
 	{
 		mySkin = WindowSkin(skin);
 
@@ -71,25 +71,31 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 			}
 			else
 			{
-				var view:Viewable = _mxmlContent[0];
-				if (view is Component)
-				{
-					setContentView(Component(view));
-				}
-				else
-				{
-					mySkin.contentView = View(view);
-				}
+				_contentView = _mxmlContent[0];
 			}
 			_mxmlContent = null;
 		}
+
+		if (_contentView != null)
+		{
+			if (_contentView is Component)
+			{
+				mySkin.contentView = Component(_contentView).skin == null ? Component(_contentView).createView(laf) : Component(_contentView).skin;
+			}
+			else
+			{
+				mySkin.contentView = View(_contentView);
+			}
+			_contentView = null;
+		}
 		
-		super.viewAttachedHandler();
+		super.skinAttachedHandler();
 	}
 
-	protected function setContentView(component:Component):void
+	private var _contentView:Viewable;
+	public function set contentView(view:Viewable):void
 	{
-		mySkin.contentView = component.skin == null ? component.createView(laf) : component.skin;
+		_contentView = view;
 	}
 
 	private var _laf:LookAndFeel;

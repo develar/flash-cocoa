@@ -1,7 +1,7 @@
 package cocoa.dialog
 {
-import cocoa.AbstractView;
-import cocoa.View;
+import cocoa.ComponentEvent;
+import cocoa.DeferredSkinOwner;
 import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
 import cocoa.plaf.LookAndFeelProvider;
@@ -12,14 +12,13 @@ import com.asfusion.mate.events.InjectorEvent;
 import flash.display.DisplayObject;
 
 import mx.core.FlexGlobals;
-import mx.events.ResizeEvent;
 import mx.managers.PopUpManager;
 
 public class DialogManager
 {
 	private var modalBoxExists:Boolean;
 
-	public function open(box:Window, modal:Boolean = true):void
+	public function open(window:Window, modal:Boolean = true):void
 	{
 		if (modal)
 		{
@@ -33,29 +32,46 @@ public class DialogManager
 			}
 		}
 
-		box.addEventListener(DialogEvent.OK, okOrCancelHandler);
-		box.addEventListener(DialogEvent.CANCEL, okOrCancelHandler);
+		window.addEventListener(DialogEvent.OK, okOrCancelHandler);
+		window.addEventListener(DialogEvent.CANCEL, okOrCancelHandler);
 
-		var skin:Skin = box.skin;
-		var parent:DisplayObject = DisplayObject(FlexGlobals.topLevelApplication);
+		if (window is DeferredSkinOwner && !DeferredSkinOwner(window).isReadyToCreateSkin)
+		{
+			window.addEventListener(ComponentEvent.READY_TO_CREATE_SKIN, readyToCreateSkinHandler);
+		}
+		else
+		{
+			addPopUp(window, modal);
+		}
+	}
+
+	private function readyToCreateSkinHandler(event:ComponentEvent):void
+	{
+		addPopUp(Window(event.currentTarget), true, false);
+	}
+
+	private function addPopUp(window:Window, modal:Boolean = true, dispatchInjectorEvent:Boolean = true):void
+	{
+		var skin:Skin = window.skin;
 		if (skin == null)
 		{
-			box.laf = LookAndFeelProvider(FlexGlobals.topLevelApplication).laf;
-			skin = box.createView(box.laf);
-			skin.dispatchEvent(new InjectorEvent(box));
-			// на данный момент у нас каждое окно имеет local event map, поэтому проблемы из-за того, что скин еще не в dispay list, нет
-//			parent.dispatchEvent(new InjectorEvent(box));
+			window.laf = LookAndFeelProvider(FlexGlobals.topLevelApplication).laf;
+			skin = window.createView(window.laf);
+			if (dispatchInjectorEvent)
+			{
+				skin.dispatchEvent(new InjectorEvent(window));
+			}
 		}
 
-		skin.addEventListener(ResizeEvent.RESIZE, dialogCreationCompleteHandler);
-		PopUpManager.addPopUp(skin, parent, modal);
+		//		skin.addEventListener(ResizeEvent.RESIZE, dialogCreationCompleteHandler);
+		PopUpManager.addPopUp(skin, DisplayObject(FlexGlobals.topLevelApplication), modal);
 		skin.setFocus();
 	}
 
-	private function dialogCreationCompleteHandler(event:ResizeEvent):void
-	{
-		PopUpManager.centerPopUp(Skin(event.currentTarget));
-	}
+//	private function dialogCreationCompleteHandler(event:ResizeEvent):void
+//	{
+//		PopUpManager.centerPopUp(Skin(event.currentTarget));
+//	}
 
 	private function okOrCancelHandler(event:DialogEvent):void
 	{

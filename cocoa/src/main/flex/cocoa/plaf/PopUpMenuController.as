@@ -81,8 +81,6 @@ public class PopUpMenuController extends ListController
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-//		event.stopImmediatePropagation();
-
 		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
 		var menuSkin:Skin = menu.skin;
 		if (menuSkin == null)

@@ -1,4 +1,4 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
 import cocoa.Insets;
 import cocoa.SingleSelectionDataGroup;
@@ -6,7 +6,6 @@ import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.BarHorizontalLayout;
 import cocoa.plaf.AbstractSkin;
-import cocoa.tabView.TabView;
 
 import mx.core.ClassFactory;
 import mx.core.ILayoutElement;
@@ -21,8 +20,6 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 	private static const contentBorderClass:Class;
 
 	private static const CONTENT_INSETS:Insets = new Insets(16, 16 + 10, 16, 16);
-	
-	public var hostComponent:TabView;
 
 	private var itemGroup:SingleSelectionDataGroup;
 	private var paneGroup:ViewStack;
@@ -44,17 +41,19 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 			paneGroup = new ViewStack();
 			paneGroup.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
 			addChild(paneGroup);
-			hostComponent.uiPartAdded("paneGroup", paneGroup);
+			component.uiPartAdded("paneGroup", paneGroup);
 		}
 
 		if (itemGroup == null)
 		{
 			itemGroup = new SingleSelectionDataGroup();
 			itemGroup.layout = new BarHorizontalLayout();
-			itemGroup.itemRenderer = new ClassFactory(AquaBarButton);
+			var factory:ClassFactory = new ClassFactory(TabLabelSkin);
+//			factory.properties = {"laf": laf};
+			itemGroup.itemRenderer = factory;
 
 			addChild(itemGroup);
-			hostComponent.uiPartAdded("itemGroup", itemGroup);
+			component.uiPartAdded("itemGroup", itemGroup);
 		}
 	}
 

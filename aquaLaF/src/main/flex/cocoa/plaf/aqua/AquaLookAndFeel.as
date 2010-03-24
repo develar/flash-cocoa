@@ -10,7 +10,6 @@ import cocoa.plaf.MenuSkin;
 import cocoa.plaf.Scale1HBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
-
 import cocoa.plaf.SliderNumericStepperSkin;
 
 import flash.utils.ByteArray;
@@ -18,7 +17,6 @@ import flash.utils.ByteArray;
 import mx.core.ClassFactory;
 
 import org.flyti.aqua.SourceListSkin;
-import org.flyti.aqua.TabSkin;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel
 {

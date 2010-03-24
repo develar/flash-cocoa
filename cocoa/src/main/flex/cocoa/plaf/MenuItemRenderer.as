@@ -3,48 +3,15 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.HighlightableItemRenderer;
 import cocoa.Icon;
-import cocoa.LabelHelper;
 import cocoa.MenuItem;
 
 import flash.display.Graphics;
 
-public class MenuItemRenderer extends AbstractItemRenderer implements HighlightableItemRenderer
-{	
-	protected var labelHelper:LabelHelper;
-	protected var border:Border;
-
-	public function MenuItemRenderer()
-	{
-		labelHelper = new LabelHelper(this);
-		mouseChildren = false;
-	}
-
+public class MenuItemRenderer extends LabeledListItemRenderer implements HighlightableItemRenderer
+{
 	public function get labelLeftMargin():Number
 	{
 		return border.contentInsets.left;
-	}
-
-	override public function get baselinePosition():Number
-	{
-		return border.layoutHeight - border.contentInsets.bottom;
-	}
-
-	override public function get label():String
-	{
-		return labelHelper.text;
-	}
-
-	override public function set label(value:String):void
-	{
-		if (value == labelHelper.text)
-		{
-			return;
-		}
-
-		labelHelper.text = value;
-
-		invalidateSize();
-		invalidateDisplayList();
 	}
 
 	protected function getBorder(key:String):Border
@@ -80,27 +47,6 @@ public class MenuItemRenderer extends AbstractItemRenderer implements Highlighta
 
 		invalidateSize();
 		invalidateDisplayList();
-	}
-
-	override public function set laf(value:LookAndFeel):void
-	{
-		super.laf = value;
-		labelHelper.font = getFont("SystemFont");
-	}
-
-	override protected function measure():void
-	{
-		measuredMinHeight = measuredHeight = border.layoutHeight;
-
-		if (labelHelper.hasText)
-		{
-			labelHelper.validate();
-			measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
-		}
-		else
-		{
-			measuredMinWidth = measuredWidth = 0;
-		}
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

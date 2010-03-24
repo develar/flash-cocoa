@@ -127,7 +127,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 		skinV = _skin;
 		_skin.layoutMetrics = layoutMetrics;
 		_skin.attach(this, laf);
-		viewAttachedHandler();
+		skinAttachedHandler();
 		listenSkinParts(_skin);
 		return _skin;
 	}
@@ -137,7 +137,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 		throw new Error("abstract");
 	}
 
-	protected function viewAttachedHandler():void
+	protected function skinAttachedHandler():void
 	{
 
 	}

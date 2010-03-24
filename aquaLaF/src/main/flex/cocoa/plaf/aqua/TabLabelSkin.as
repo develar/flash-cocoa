@@ -1,12 +1,10 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
 import cocoa.Insets;
+import cocoa.ToggleButtonState;
 import cocoa.plaf.AbstractPushButtonSkin;
-import cocoa.plaf.aqua.SlicedImage;
 
 import flash.events.MouseEvent;
-
-import cocoa.ToggleButtonState;
 
 /**
  * artwork для down state нету, мы используем похожий.
@@ -97,10 +95,10 @@ public class TabLabelSkin extends AbstractPushButtonSkin
 		measuredHeight = REGULAR_HEIGHT;
 
 		// все табы кроме последнего имеют разделяющую линию в конце — ее ширина 1px и мы должны увеличить ширину соответственно
-		if (AquaBarButton(parent).itemIndex != (AquaBarButton(parent).parent.numChildren - 1))
-		{
-			measuredWidth += 1;
-		}
+//		if (AquaBarButton(parent).itemIndex != (AquaBarButton(parent).parent.numChildren - 1))
+//		{
+//			measuredWidth += 1;
+//		}
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

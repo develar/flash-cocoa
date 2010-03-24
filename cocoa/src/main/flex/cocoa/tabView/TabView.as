@@ -89,5 +89,10 @@ public class TabView extends SingleSelectionBar
 			TitledPane(pane).title = paneMetadata.localizedLabel;
 		}
 	}
+
+	override public function get lafPrefix():String
+	{
+		return "TabView";
+	}
 }
 }
