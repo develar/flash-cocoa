@@ -7,7 +7,7 @@ import flash.utils.Dictionary;
 import mx.binding.utils.ChangeWatcher;
 import mx.events.StateChangeEvent;
 
-import org.flyti.util.Assert;
+
 import org.flyti.util.HashMap;
 import org.flyti.util.Map;
 
@@ -33,7 +33,7 @@ public class ClientBinder
 		{
 			var bindabilityInfoList:Vector.<ClientBindabilityInfo> = Vector.<ClientBindabilityInfo>(clients.get(client));
 			var alreadyBinded:Boolean = isAlreadyBinded(bindabilityInfoList, eventMetadata, states);
-			Assert.assert(!alreadyBinded);
+			assert(!alreadyBinded);
 			if (!alreadyBinded)
 			{
 				bindabilityInfo = new ClientBindabilityInfo(eventMetadata, states);

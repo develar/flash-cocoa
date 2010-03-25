@@ -10,7 +10,7 @@ import cocoa.ui;
 
 import flash.utils.Dictionary;
 
-import org.flyti.util.Assert;
+
 
 use namespace ui;
 
@@ -63,20 +63,6 @@ public class Sidebar extends Bar
 		paneGroup.includeInLayout = !collapsed;
 	}
 
-//	override protected function validateItems():void
-//	{
-//		super.validateItems();
-//
-//		for each (var item:LabeledItem in items.iterator)
-//		{
-//			var paneVisualElement:IVisualElement = PaneItem(items.getItemAt(i)).view;
-//			if (paneVisualElement != null)
-//			{
-//				paneGroup.addElement(paneVisualElement);
-//			}
-//		}
-//	}
-
 	private function paneLabelBarSelectionChangeHandler(event:MultipleSelectionChangeEvent):void
 	{
         if (event.removed != null)
@@ -123,7 +109,7 @@ public class Sidebar extends Bar
 
 	private function createPaneView(paneMetadata:PaneItem):void
 	{
-		Assert.assert(paneMetadata.view == null);
+		assert(paneMetadata.view == null);
 
 		var pane:Panel = paneMetadata.viewFactory.newInstance();
 		paneMetadata.view = pane;
@@ -139,18 +125,10 @@ public class Sidebar extends Bar
 		}
 	}
 
-//	public function addPane(paneMetadata:PaneItem, show:Boolean):void
-//	{
-//		if (show)
-//		{
-//			typedPaneLabelBar.adjustSelectionIndices(items.size - 1, true);
-//		}
-//	}
-
 	private function hidePaneHandler(event:SidebarEvent):void
 	{
 		var pane:Panel = Panel(event.currentTarget);
-		Assert.assert(!pane.hidden);
+		assert(!pane.hidden);
 		typedPaneLabelBar.adjustSelectionIndices(paneGroup.getSubviewIndex(pane), false);
 	}
 

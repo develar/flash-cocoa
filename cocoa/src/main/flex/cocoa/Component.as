@@ -11,6 +11,9 @@ public interface Component extends Viewable
 	function set skinClass(value:Class):void;
 	
 	function set enabled(value:Boolean):void;
+
+	function get hidden():Boolean;
+	function set hidden(value:Boolean):void;
 	
 	function createView(laf:LookAndFeel):Skin;
 

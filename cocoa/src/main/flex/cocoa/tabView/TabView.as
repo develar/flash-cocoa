@@ -13,7 +13,7 @@ import flash.utils.Dictionary;
 
 import mx.core.UIComponent;
 
-import org.flyti.util.Assert;
+
 
 import spark.events.IndexChangeEvent;
 
@@ -79,7 +79,7 @@ public class TabView extends SingleSelectionBar
 
 	private function createPaneView(paneMetadata:PaneItem):void
 	{
-		Assert.assert(paneMetadata.view == null);
+		assert(paneMetadata.view == null);
 
 		var pane:Viewable = paneMetadata.viewFactory.newInstance();
 		paneMetadata.view = pane;

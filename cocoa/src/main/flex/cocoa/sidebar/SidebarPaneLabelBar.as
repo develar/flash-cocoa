@@ -5,7 +5,7 @@ import cocoa.SelectableDataGroup;
 import cocoa.pane.PaneItem;
 import cocoa.sidebar.events.MultipleSelectionChangeEvent;
 
-import org.flyti.util.Assert;
+
 
 public class SidebarPaneLabelBar extends SelectableDataGroup
 {
@@ -98,7 +98,7 @@ public class SidebarPaneLabelBar extends SelectableDataGroup
 	{
 		if (isEmpty(selectedIndices))
 		{
-			Assert.assert(selected);
+			assert(selected);
 			_selectedIndices = new <int>[paneIndex];
 		}
 		else
@@ -107,12 +107,12 @@ public class SidebarPaneLabelBar extends SelectableDataGroup
 			var currentSelectionIndex:int = selectedIndices.indexOf(paneIndex);
 			if (selected)
 			{
-				Assert.assert(currentSelectionIndex == -1);
+				assert(currentSelectionIndex == -1);
 				newSelectedIndices.push(paneIndex);
 			}
 			else
 			{
-				Assert.assert(currentSelectionIndex != -1);
+				assert(currentSelectionIndex != -1);
 				newSelectedIndices.splice(currentSelectionIndex, 1);
 			}
 

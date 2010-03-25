@@ -13,7 +13,7 @@ import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
-import org.flyti.util.Assert;
+
 
 import spark.components.Group;
 import spark.components.supportClasses.GroupBase;
@@ -128,7 +128,7 @@ public class MXMLContainer extends Group implements ViewContainer
 
 	override public function addElementAt(element:IVisualElement, index:int):IVisualElement
     {
-		Assert.assert(element != this);
+		assert(element != this);
 
 		var host:DisplayObject;
 		if (element is Component)
@@ -146,7 +146,7 @@ public class MXMLContainer extends Group implements ViewContainer
 
 		if (host is IVisualElementContainer)
         {
-			Assert.assert(host != this);
+			assert(host != this);
             // Remove the item from the group if that group isn't this group
             IVisualElementContainer(host).removeElement(element);
         }

@@ -18,7 +18,7 @@ import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
-import org.flyti.util.Assert;
+
 
 import spark.components.supportClasses.GroupBase;
 import spark.components.supportClasses.SkinnableComponent;
@@ -234,7 +234,7 @@ public class Container extends GroupBase implements ViewContainer
 
 		if (host is IVisualElementContainer)
         {
-			Assert.assert(host != this);
+			assert(host != this);
 
             IVisualElementContainer(host).removeElement(IVisualElement(view));
         }
