@@ -246,6 +246,10 @@ public class Container extends GroupBase implements ViewContainer
 		if (_subviews == null)
 		{
 			_subviews = [view];
+			if (!createChildrenCalled)
+			{
+				subviewsChanged = true;
+			}
 		}
 		else
 		{
