@@ -3,7 +3,9 @@ package cocoa
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-public interface Component extends Viewable
+import flash.events.IEventDispatcher;
+
+public interface Component extends Viewable, IEventDispatcher
 {
 	function get lafPrefix():String;
 	function get skin():Skin;
