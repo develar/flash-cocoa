@@ -78,7 +78,6 @@ public class Sidebar extends Bar
 		{
 			collapsed = !collapsed;
 
-			invalidateSkinState();
 			skin.invalidateSize();
 
 			paneGroup.includeInLayout = !collapsed;

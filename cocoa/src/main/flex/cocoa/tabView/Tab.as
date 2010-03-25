@@ -7,19 +7,7 @@ import spark.layouts.HorizontalLayout;
 [Abstract]
 public class Tab extends Container
 {
-	private var _active:Boolean;
-	public function get active():Boolean
-	{
-		return _active;
-	}
-	public function set active(value:Boolean):void
-	{
-		if (value != active)
-		{
-			_active = value;
-			invalidateActiveState();
-		}
-	}
+	protected var active:Boolean;
 
 	protected function invalidateActiveState():void
 	{
@@ -41,6 +29,16 @@ public class Tab extends Container
 		}
 
 		super.createChildren();
+	}
+
+	override public function set visible(value:Boolean):void
+	{
+		if (value != visible)
+		{
+			super.visible = value;
+			active = value;
+			invalidateActiveState();
+		}
 	}
 }
 }

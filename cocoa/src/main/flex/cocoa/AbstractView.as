@@ -892,14 +892,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//
 	//--------------------------------------------------------------------------
 
-	//----------------------------------
-	//  initialized
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Storage for the initialized property.
-	 */
 	private var _initialized:Boolean = false;
 
 	[Inspectable(environment="none")]
@@ -918,9 +910,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _initialized;
 	}
 
-	/**
-	 *  @private
-	 */
 	public function set initialized(value:Boolean):void
 	{
 		_initialized = value;
@@ -2095,9 +2084,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _visible;
 	}
 
-	/**
-	 *  @private
-	 */
 	override public function set visible(value:Boolean):void
 	{
 		setVisible(value);
@@ -2125,12 +2111,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	{
 		_visible = value;
 
-		if (!initialized)
-		{
-			return;
-		}
-
-		if ($visible == value)
+		if (!initialized || $visible == value)
 		{
 			return;
 		}
@@ -2735,7 +2716,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 *  @playerversion Flash 9
 	 *  @playerversion AIR 1.1
 	 *  @productversion Flex 3
-	 */ public function get systemManager():ISystemManager
+	 */
+	public function get systemManager():ISystemManager
 	{
 		if (!_systemManager || _systemManagerDirty)
 		{
@@ -3065,73 +3047,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	}
 
 	//----------------------------------
-	//  parentApplication
-	//----------------------------------
-
-	[Bindable("initialize")]
-
-	/*
-	 *  Note:
-	 *  There are two reasons that 'parentApplication' is typed as Object
-	 *  rather than as Application. The first is that typing it as Application
-	 *  would make UIComponent dependent on Application, slowing down compile
-	 *  times not only for SWCs for also for MXML and AS components. The
-	 *  second is that authors would not be able to access properties and
-	 *  methods in the <Script> of their <Application> without casting it
-	 *  to their application's subclass, as in
-	 *     MyApplication(paentApplication).myAppMethod().
-	 *  Therefore we decided to dispense with strict typing for
-	 *  'parentApplication'.
-	 */ /**
-	 *  A reference to the Application object that contains this UIComponent
-	 *  instance.
-	 *  This Application object might exist in a SWFLoader control in another
-	 *  Application, and so on, creating a chain of Application objects that
-	 *  can be walked using parentApplication.
-	 *
-	 *  <p>The <code>parentApplication</code> property of an Application is never itself;
-	 *  it is either the Application into which it was loaded or null
-	 *  (for the top-level Application).</p>
-	 *
-	 *  <p>Walking the application chain using the <code>parentApplication</code>
-	 *  property is similar to walking the document chain using the
-	 *  <code>parentDocument</code> property.
-	 *  You can access the top-level application using the
-	 *  <code>application</code> property of the Application class.</p>
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public function get parentApplication():Object
-	{
-		// Look for the SystemManager's document,
-		// which should be the Application.
-		var o:Object = systemManager.document;
-
-		// If this UIComponent is its own root, then it is an Application.
-		// We want to return its parent Application, or null
-		// (if it has no parent because it is the top-level Application).
-		// The hierarchy in this situation looks something like this:
-		//
-		//  SystemManager
-		//      Application
-		//          SomeContainer
-		//              Loader
-		//                  Loaded App's SystemManager
-		//                      Application
-		//                          ThisComponent
-		if (o == this)
-		{
-			var p:UIComponent = o.systemManager.parent as UIComponent;
-			o = p ? p.systemManager.document : null;
-		}
-
-		return o;
-	}
-
-	//----------------------------------
 	//  parentDocument
 	//----------------------------------
 
@@ -3197,7 +3112,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	public function get screen():Rectangle
 	{
 		var sm:ISystemManager = systemManager;
-
 		return sm ? sm.screen : null;
 	}
 

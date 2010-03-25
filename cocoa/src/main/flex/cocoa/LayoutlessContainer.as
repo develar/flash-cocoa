@@ -58,21 +58,21 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 		throw new Error("laf not found");
 	}
 
-	public function addSubview(view:Viewable, index:int = -1):void
+	public function addSubview(viewable:Viewable, index:int = -1):void
 	{
-		if (view is Component)
+		if (viewable is Component)
 		{
-			var component:Component = Component(view);
+			var component:Component = Component(viewable);
 			addChildAt(DisplayObject(component.skin == null ? component.createView(laf) : component.skin), index == -1 ? numChildren : index);
 		}
 		else
 		{
-			if (view is Injectable || view is SkinnableComponent || (view is GroupBase && GroupBase(view).id != null))
+			if (viewable is Injectable || viewable is SkinnableComponent || (viewable is GroupBase && GroupBase(viewable).id != null))
 			{
-				dispatchEvent(new InjectorEvent(view));
+				dispatchEvent(new InjectorEvent(viewable));
 			}
 
-			addChildAt(DisplayObject(view), index == -1 ? numChildren : index);
+			addChildAt(DisplayObject(viewable), index == -1 ? numChildren : index);
 		}
 	}
 

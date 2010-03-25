@@ -1,23 +1,39 @@
 package cocoa
 {
-import mx.core.ILayoutElement;
-import mx.core.UIComponent;
-
 import cocoa.layout.AdvancedLayout;
+
+import mx.core.ILayoutElement;
 
 public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 {
-	private var currentView:UIComponent;
+	private var currentView:View;
 
-	public function show(view:UIComponent):void
+	public function show(viewable:Viewable):void
 	{
-		if (view.parent == null)
+		if (currentView != null)
 		{
-			addSubview(Viewable(view));
+			currentView.visible = false;
 		}
 
-		view.visible = true;
-		currentView = view;
+		if (viewable is Component)
+		{
+			currentView = Component(viewable).skin;
+			if (currentView == null)
+			{
+				addSubview(viewable);
+				currentView = Component(viewable).skin;
+			}
+		}
+		else
+		{
+			currentView = View(viewable);
+			if (currentView.parent == null)
+			{
+				addSubview(viewable);
+			}
+		}
+
+		currentView.visible = true;
 	}
 
 	public function hide():void
@@ -36,7 +52,7 @@ public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		currentView.setLayoutBoundsSize(w, h);
+		currentView.setActualSize(w, h);
 	}
 
 	public function childCanSkipMeasurement(element:ILayoutElement):Boolean

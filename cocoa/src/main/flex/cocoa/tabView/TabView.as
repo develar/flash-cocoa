@@ -11,10 +11,6 @@ import cocoa.ui;
 
 import flash.utils.Dictionary;
 
-import mx.core.UIComponent;
-
-
-
 import spark.events.IndexChangeEvent;
 
 use namespace ui;
@@ -23,13 +19,13 @@ public class TabView extends SingleSelectionBar
 {
 	protected static const _skinParts:Dictionary = new Dictionary();
 	_cl(_skinParts, Bar._skinParts);
-	_skinParts.paneGroup = HANDLER_NOT_EXISTS;
+	_skinParts.viewStack = HANDLER_NOT_EXISTS;
 	override protected function get skinParts():Dictionary
 	{
 		return _skinParts;
 	}
 
-	ui var paneGroup:ViewStack;
+	ui var viewStack:ViewStack;
 
 	override protected function get editAware():Boolean
 	{
@@ -51,11 +47,7 @@ public class TabView extends SingleSelectionBar
 			dispatchEvent(new CurrentPaneChangeEvent(CurrentPaneChangeEvent.CHANGING, oldItem, newItem));
 		}
 
-		if (oldItem != null)
-		{
-			showPane(oldItem, false);
-		}
-		showPane(newItem, true);
+		showPane(newItem);
 
 		if (oldItem != null && hasEventListener(CurrentPaneChangeEvent.CHANGED))
 		{
@@ -63,30 +55,26 @@ public class TabView extends SingleSelectionBar
 		}
 	}
 
-	protected function showPane(paneMetadata:PaneItem, show:Boolean):void
+	protected function showPane(paneItem:PaneItem):void
 	{
-		if (paneMetadata.view == null)
+		if (paneItem.view == null)
 		{
-			createPaneView(paneMetadata);
+			createPaneView(paneItem);
 		}
-		var pane:Viewable = paneMetadata.view;
-		show ? paneGroup.show(UIComponent(pane)) : paneGroup.hide();
-		if (pane is Tab)
-		{
-			Tab(pane).active = show;
-		}
+		var pane:Viewable = paneItem.view;
+		viewStack.show(pane);
 	}
 
-	private function createPaneView(paneMetadata:PaneItem):void
+	private function createPaneView(paneItem:PaneItem):void
 	{
-		assert(paneMetadata.view == null);
+		assert(paneItem.view == null);
 
-		var pane:Viewable = paneMetadata.viewFactory.newInstance();
-		paneMetadata.view = pane;
+		var pane:Viewable = paneItem.viewFactory.newInstance();
+		paneItem.view = pane;
 
 		if (pane is TitledPane)
 		{
-			TitledPane(pane).title = paneMetadata.localizedLabel;
+			TitledPane(pane).title = paneItem.localizedLabel;
 		}
 	}
 

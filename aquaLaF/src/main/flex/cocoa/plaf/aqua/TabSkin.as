@@ -22,7 +22,7 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 	private static const CONTENT_INSETS:Insets = new Insets(16, 16 + 10, 16, 16);
 
 	private var itemGroup:SingleSelectionDataGroup;
-	private var paneGroup:ViewStack;
+	private var viewStack:ViewStack;
 
 	private var contentBorder:SpriteAsset;
 
@@ -36,12 +36,12 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 //			$addChild(contentBorder);
 		}
 
-		if (paneGroup == null)
+		if (viewStack == null)
 		{
-			paneGroup = new ViewStack();
-			paneGroup.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
-			addChild(paneGroup);
-			component.uiPartAdded("paneGroup", paneGroup);
+			viewStack = new ViewStack();
+			viewStack.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
+			addChild(viewStack);
+			component.uiPartAdded("viewStack", viewStack);
 		}
 
 		if (itemGroup == null)
@@ -65,11 +65,11 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 
 	override protected function measure():void
 	{
-		measuredMinWidth = paneGroup.minWidth + CONTENT_INSETS.width;
-		measuredMinHeight = paneGroup.minHeight + CONTENT_INSETS.height;
+		measuredMinWidth = viewStack.minWidth + CONTENT_INSETS.width;
+		measuredMinHeight = viewStack.minHeight + CONTENT_INSETS.height;
 
-		measuredWidth = paneGroup.getExplicitOrMeasuredWidth() + CONTENT_INSETS.width;
-		measuredHeight = paneGroup.getExplicitOrMeasuredHeight() + CONTENT_INSETS.height;
+		measuredWidth = viewStack.getExplicitOrMeasuredWidth() + CONTENT_INSETS.width;
+		measuredHeight = viewStack.getExplicitOrMeasuredHeight() + CONTENT_INSETS.height;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -80,7 +80,7 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 		itemGroup.setLayoutBoundsSize(NaN, NaN);
 		itemGroup.x = Math.round((w - itemGroup.getExplicitOrMeasuredWidth()) / 2);
 
-		paneGroup.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
+		viewStack.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
 	}
 }
 }
