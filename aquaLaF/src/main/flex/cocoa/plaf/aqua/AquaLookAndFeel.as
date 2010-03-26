@@ -1,6 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Border;
+import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.AbstractLookAndFeel;
@@ -72,6 +73,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
 		data["SegmentItem.border"] = borders[6];
+		Scale1HBitmapBorder(borders[6]).frameInsets = new FrameInsets(0, 0, 0, -3);
 	}
 
 	private static function initAssets():void

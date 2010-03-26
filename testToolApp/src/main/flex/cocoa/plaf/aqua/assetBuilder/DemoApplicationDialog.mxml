@@ -7,7 +7,6 @@
 		import cocoa.pane.PaneItem;
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.WindowSkin;
-
 		import cocoa.resources.ResourceMetadata;
 
 		import org.flyti.util.ArrayList;
@@ -54,9 +53,5 @@
 		</PopUpButton>
 
 		<TabView items="{tabViewPanes}"/>
-
-		<!--<ViewStack>-->
-
-		<!--</ViewStack>-->
 	</Container>
 </Dialog>

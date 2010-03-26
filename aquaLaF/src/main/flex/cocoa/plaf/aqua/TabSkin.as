@@ -28,6 +28,8 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 
 	override protected function createChildren():void
 	{
+		super.createChildren();
+
 		if (contentBorder == null)
 		{
 			contentBorder = new contentBorderClass();

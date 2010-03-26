@@ -2,7 +2,6 @@ package cocoa.plaf
 {
 import cocoa.AbstractBorder;
 import cocoa.Insets;
-
 import cocoa.TextInsets;
 
 import flash.display.BitmapData;
@@ -17,7 +16,7 @@ public class AbstractBitmapBorder extends AbstractBorder implements Externalizab
 
 	protected var bitmaps:Vector.<BitmapData>;
 
-	protected var _bitmapIndex:int;
+	protected var _bitmapIndex:int = 0;
 	public function set bitmapIndex(value:int):void
 	{
 		_bitmapIndex = value;

@@ -89,6 +89,8 @@
 	[[self createSegmentedControl] setSelectedSegment:1];
 	[[self createSegmentedControl] setSelectedSegment:2];
 	
+	// highlight and off
+	
 	NSSegmentedControl *segmentedControl = [self createSegmentedControl];
 	
 	NSEvent *event = [NSEvent mouseEventWithType:NSLeftMouseDown
@@ -106,6 +108,24 @@
 	[segmentedControl mouseDown:event];
 	
 	segmentedControl = [self createSegmentedControl];
+	event = [NSEvent mouseEventWithType:NSLeftMouseDown
+							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 1) 
+						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
+	
+	[segmentedControl mouseDown:event];
+	
+	// highlight and on
+	segmentedControl = [self createSegmentedControl];
+	[segmentedControl setSelectedSegment:0];
+	
+	event = [NSEvent mouseEventWithType:NSLeftMouseDown
+							   location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 1) 
+						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
+	
+	[segmentedControl mouseDown:event];
+	
+	segmentedControl = [self createSegmentedControl];
+	[segmentedControl setSelectedSegment:2];
 	event = [NSEvent mouseEventWithType:NSLeftMouseDown
 							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 1) 
 						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];

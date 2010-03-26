@@ -21,9 +21,9 @@
 		private function creationCompleteHandler():void
 		{
 									var testContainer:Sprite = new Sprite();
-//									container.addDisplayObject(testContainer);
+									container.addDisplayObject(testContainer);
 									testContainer.x = 300;
-//									new Builder().build(testContainer);
+									new Builder().build(testContainer);
 
 			laf = new AquaLookAndFeel();
 			createDeferredContent();
