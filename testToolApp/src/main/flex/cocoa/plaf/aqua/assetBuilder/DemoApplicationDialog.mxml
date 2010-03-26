@@ -4,13 +4,30 @@
 
 	<fx:Script><![CDATA[
 		import cocoa.MenuItem;
+		import cocoa.pane.PaneItem;
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.WindowSkin;
+
+		import cocoa.resources.ResourceMetadata;
 
 		import org.flyti.util.ArrayList;
 
 		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", MenuItem.createSeparatorItem(), "Item 3"]);
 		private static const testData2:ArrayList = new ArrayList(new <Object>["Item 1", "Loooooooooooong Label", MenuItem.createSeparatorItem(), "Item 3"]);
+
+		[ResourceBundle("TestPane")]
+		private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
+			new PaneItem(new ResourceMetadata("a", "TestPane"), paneFactory("Pane A")),
+			new PaneItem(new ResourceMetadata("b", "TestPane"), paneFactory("Pane B")),
+			new PaneItem(new ResourceMetadata("c", "TestPane"), paneFactory("Pane C"))
+		]);
+
+		private static function paneFactory(buttonTitle:String):IFactory
+		{
+			var factory:ClassFactory = new ClassFactory(TestPane);
+			factory.properties = {buttonTitle: buttonTitle};
+			return factory;
+		}
 
 		override protected function skinAttachedHandler():void
 		{
@@ -35,5 +52,11 @@
 				<items>{testData2}</items>
 			</Menu>
 		</PopUpButton>
+
+		<TabView items="{tabViewPanes}"/>
+
+		<!--<ViewStack>-->
+
+		<!--</ViewStack>-->
 	</Container>
 </Dialog>

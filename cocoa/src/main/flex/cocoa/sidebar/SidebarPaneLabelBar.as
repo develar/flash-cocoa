@@ -5,8 +5,6 @@ import cocoa.SelectableDataGroup;
 import cocoa.pane.PaneItem;
 import cocoa.sidebar.events.MultipleSelectionChangeEvent;
 
-
-
 public class SidebarPaneLabelBar extends SelectableDataGroup
 {
 	private var proposedSelectedIndices:Vector.<int>;

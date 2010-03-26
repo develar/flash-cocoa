@@ -3,12 +3,12 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.LabelHelper;
 
-public class LabeledListItemRenderer extends AbstractItemRenderer
+public class LabeledItemRenderer extends AbstractItemRenderer
 {
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
 
-	public function LabeledListItemRenderer()
+	public function LabeledItemRenderer()
 	{
 		labelHelper = new LabelHelper(this);
 		mouseChildren = false;

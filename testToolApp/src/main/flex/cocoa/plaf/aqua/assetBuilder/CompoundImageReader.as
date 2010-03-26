@@ -25,6 +25,8 @@ internal final class CompoundImageReader
 
 	private var borders:Vector.<Border>;
 
+	private const sliceCalculator:SliceCalculator = new SliceCalculator();
+
 	public function CompoundImageReader(borders:Vector.<Border>)
 	{
 		this.borders = borders;
@@ -43,7 +45,7 @@ internal final class CompoundImageReader
 			var frameRectangle:Rectangle = getSliceFrameRectangle(row, 0);
 			assertSiblings(frameRectangle, row);
 
-			var sliceSize:Insets = calculateSliceSize(frameRectangle, rowInfo.top, false, false);
+			var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, rowInfo.top, false, false);
 			var bitmaps:Vector.<BitmapData> = slice3HGrid(frameRectangle, sliceSize, rowInfo);
 			Scale3HBitmapBorder(rowInfo.border).configure(sliceSize, bitmaps);
 
@@ -58,7 +60,7 @@ internal final class CompoundImageReader
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
 
-		var sliceSize:Insets = calculateSliceSize(frameRectangle, frameRectangle.top, false, false);
+		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, frameRectangle.top, false, false);
 		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
 		border.configure(sliceSize, bitmaps);
 
@@ -93,7 +95,7 @@ internal final class CompoundImageReader
 		itemRectangle.height = (itemHeight * 2) + 12 /* separator item */;
 		compoundBitmapData.fillRect(itemRectangle, 0);
 
-		var sliceSize:Insets = calculateSliceSize(frameRectangle, 0, true, true);
+		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, true, true);
 		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
 
 		var sliceRectangle:Rectangle = new Rectangle(frameRectangle.x, frameRectangle.y, sliceSize.left + 1, sliceSize.top + 1);
@@ -120,143 +122,100 @@ internal final class CompoundImageReader
 		position += 2;
 	}
 
+	/**
+	 * 3 (off, on, highlight) left, 3 middle, 3 right and 2 separator (off == highlight, on)
+	 * В отличие от прочих border, этот нам проще отрисовать самим по логике, — скин будет умным.
+	 */
+	public function readSegmentedControl(bitmapDataClass:Class, bitmapData2Class:Class):void
+	{
+		const offOffset:int = 0;
+		const onOffset:int = 1;
+		const highlightOffset:int = 2;
+
+		const leftIndex:int = 0;
+		const middleIndex:int = leftIndex + 3;
+		const rightIndex:int = middleIndex + 3;
+		const separatorIndex:int = rightIndex + 3;
+
+		var canvasBitmapData:BitmapData = compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
+
+		var segmentBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(3 + 3 + 3 + 2 /* highlight для separator равен off */, true);
+
+		var sourceRectangle:Rectangle = new Rectangle(0, 22, 60, 30);
+		compoundBitmapData = createBitmapData(sourceRectangle);
+		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
+
+		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
+
+		segmentBitmaps[leftIndex + onOffset] = readLeftSegment(frameRectangle, sliceSize);
+
+		var segmentRectangle:Rectangle = new Rectangle(frameRectangle.left + 16, frameRectangle.top, 1, frameRectangle.height);
+		segmentBitmaps[middleIndex + onOffset] = createBitmapData(segmentRectangle);
+		segmentRectangle.x += 1;
+		segmentBitmaps[separatorIndex + onOffset] = createBitmapData(segmentRectangle);
+		segmentRectangle.x += 1;
+		segmentBitmaps[middleIndex + offOffset] = createBitmapData(segmentRectangle);
+		segmentRectangle.x += 15;
+		segmentBitmaps[separatorIndex + offOffset] = createBitmapData(segmentRectangle);
+
+		segmentBitmaps[rightIndex + offOffset] = readRightSegment(frameRectangle, sliceSize);
+
+		// next row
+		compoundBitmapData = canvasBitmapData;
+		sourceRectangle.y += 30;
+		compoundBitmapData = createBitmapData(sourceRectangle);
+
+		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
+		segmentBitmaps[leftIndex + offOffset] = readLeftSegment(frameRectangle, sliceSize);
+
+		// next row
+		compoundBitmapData = canvasBitmapData;
+		sourceRectangle.y += 30;
+		compoundBitmapData = createBitmapData(sourceRectangle);
+
+		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
+		segmentBitmaps[rightIndex + onOffset] = readRightSegment(frameRectangle, sliceSize);
+
+		// next row, with first highlighted
+		compoundBitmapData = canvasBitmapData;
+		sourceRectangle.y += 30;
+		compoundBitmapData = createBitmapData(sourceRectangle);
+
+		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
+		segmentBitmaps[leftIndex + highlightOffset] = readLeftSegment(frameRectangle, sliceSize);
+
+		segmentRectangle.x = frameRectangle.left + 16;
+		segmentBitmaps[middleIndex + highlightOffset] = createBitmapData(segmentRectangle);
+
+		// second with last highlighted
+		canvasBitmapData = compoundBitmapData = BitmapAsset(new bitmapData2Class()).bitmapData;
+
+		sourceRectangle.y = 22 + (5 * 30);
+		compoundBitmapData = createBitmapData(sourceRectangle);
+
+		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
+		segmentBitmaps[rightIndex + highlightOffset] = readRightSegment(frameRectangle, sliceSize);
+
+		borders[position + 1] = Scale1HBitmapBorder.create(segmentBitmaps, frameRectangle.height, new Insets(10, NaN, 10, 4));
+	}
+
+	private function readLeftSegment(frameRectangle:Rectangle, sliceSize:Insets):BitmapData
+	{
+		var rectangle:Rectangle = new Rectangle(frameRectangle.left, frameRectangle.top, sliceSize.left, frameRectangle.height);
+		return createBitmapData(rectangle);
+	}
+
+	private function readRightSegment(frameRectangle:Rectangle, sliceSize:Insets):BitmapData
+	{
+		var rectangle:Rectangle = new Rectangle(frameRectangle.right - sliceSize.right, frameRectangle.top, sliceSize.right, frameRectangle.height);
+		return createBitmapData(rectangle);
+	}
+
 	private function createBitmapData(sourceRectangle:Rectangle):BitmapData
 	{
 		var bitmapData:BitmapData = new BitmapData(sourceRectangle.width, sourceRectangle.height, true, 0);
 		bitmapData.copyPixels(compoundBitmapData, sourceRectangle, sharedPoint, null, null, true);
 		return bitmapData;
-	}
-
-	private function calculateSliceSize(frameRectangle:Rectangle, top:int, strict:Boolean, allSide:Boolean):Insets
-	{
-		frameRectangle.y += top;
-
-		var pixels:Vector.<uint> = compoundBitmapData.getVector(frameRectangle);
-		pixels.fixed = true;
-		var width:int = frameRectangle.width;
-		var height:int = frameRectangle.height;
-
-		var sliceSize:Insets = new Insets(getUnrepeatableFromLeft(pixels, width, height, strict), allSide ? getUnrepeatableFromTop(pixels, width, height, strict) : 0,
-				getUnrepeatableFromRight(pixels, width, height, strict), allSide ? getUnrepeatableFromBottom(pixels, width, height, strict) : 0);
-
-		frameRectangle.y -= top;
-
-		if (sliceSize.width == frameRectangle.width || (allSide && sliceSize.height == frameRectangle.height))
-		{
-			throw new Error("can't find center area");
-		}
-
-		// мы не assertSiblings, так как 1) нам лениво 2) первый идет как up state — там и так всегда максимум отступа
-		return sliceSize;
-	}
-
-	private function getUnrepeatableFromLeft(pixels:Vector.<uint>, width:int, height:int, strict:Boolean):int
-	{
-		columnLoop : for (var column:int = 0, maxColumn:int = width - 2; column < maxColumn; column++)
-		{
-			for (var i:int = column, n:int = (width * height) - width + 1; i < n; i += width)
-			{
-				if (!equalColor(pixels[i], pixels[i + 1], strict))
-				{
-					continue columnLoop;
-				}
-			}
-
-			return column;
-		}
-
-		throw new Error("can't find center area");
-	}
-
-	private function getUnrepeatableFromRight(pixels:Vector.<uint>, width:int, height:int, strict:Boolean):int
-	{
-		columnLoop : for (var column:int = width - 1; column > 1; column--)
-		{
-			for (var i:int = column, n:int = (width * height) - width + 1; i < n; i += width)
-			{
-				if (!equalColor(pixels[i], pixels[i - 1], strict))
-				{
-					continue columnLoop;
-				}
-			}
-
-			return width - (column + 1);
-		}
-
-		throw new Error("can't find center area");
-	}
-
-	private function getUnrepeatableFromTop(pixels:Vector.<uint>, width:int, height:int, strict:Boolean):int
-	{
-		rowLoop : for (var row:int = 0, maxRow:int = height - 1; row < maxRow; row++)
-		{
-			for (var i:int = row * width, n:int = i + width; i < n; i++)
-			{
-				if (!equalColor(pixels[i], pixels[i + width], strict))
-				{
-					continue rowLoop;
-				}
-			}
-
-			return row;
-		}
-
-		throw new Error("can't find center area");
-	}
-
-	private function getUnrepeatableFromBottom(pixels:Vector.<uint>, width:int, height:int, strict:Boolean):int
-	{
-		rowLoop : for (var row:int = height - 1; row > 0; row--)
-		{
-			for (var i:int = row * width, n:int = i + width; i < n; i++)
-			{
-				if (!equalColor(pixels[i], pixels[i - width], strict))
-				{
-					continue rowLoop;
-				}
-			}
-
-			return height - (row + 1);
-		}
-
-		throw new Error("can't find center area");
-	}
-
-	/**
-	 * в силу непонятных причин какой-либо из компонент цвета может отличаться на единицу это другого — поэтому мы считаем отклонение на единицу компонента цвета нормальным
-	 */
-	private function equalColor(c1:uint, c2:uint, strict:Boolean):Boolean
-	{
-		if (c1 == c2)
-		{
-			return true;
-		}
-		else if (strict || (((c1 & 0xff000000) >>> 24) != ((c2 & 0xff000000) >>> 24)))
-		{
-			return false;
-		}
-		else
-		{
-			var rDiff:int = ((c1 & 0x00ff0000) >>> 16) - ((c2 & 0x00ff0000) >>> 16);
-			if (rDiff > 1 || rDiff < -1)
-			{
-				return false;
-			}
-
-			var gDiff:int = ((c1 & 0x0000FF00) >>> 8) - ((c2 & 0x0000FF00) >>> 8);
-			if (gDiff > 1 || gDiff < -1)
-			{
-				return false;
-			}
-			var bDiff:int = (c1 & 0x000000ff) - (c2 & 0x000000ff);
-			//noinspection RedundantIfStatementJS
-			if (bDiff > 1 || bDiff < -1)
-			{
-				return false;
-			}
-
-			return true;
-		}
 	}
 
 	private function slice3HGrid(frameRectangle:Rectangle, sliceSize:Insets, rowInfo:RowInfo):Vector.<BitmapData>

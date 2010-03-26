@@ -3,7 +3,7 @@ package cocoa.layout
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
-public class BarLayout extends LayoutBase
+public class SegmentedControlLayout extends LayoutBase
 {
 	private var _gap:int = 0;
 	/**

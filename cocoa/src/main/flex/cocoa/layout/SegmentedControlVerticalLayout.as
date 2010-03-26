@@ -12,7 +12,7 @@ import spark.components.supportClasses.GroupBase;
  *
  *  All children are set to the width of the parent.
  */
-public class BarVerticalLayout extends BarLayout
+public class SegmentedControlVerticalLayout extends SegmentedControlLayout
 {
 	override public function updateDisplayList(width:Number, height:Number):void
 	{

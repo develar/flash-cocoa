@@ -1,27 +1,20 @@
 package cocoa.plaf
 {
-import cocoa.Border;
 import cocoa.HighlightableItemRenderer;
-import cocoa.Icon;
 import cocoa.MenuItem;
 
 import flash.display.Graphics;
 
-public class MenuItemRenderer extends LabeledListItemRenderer implements HighlightableItemRenderer
+public class MenuItemRenderer extends LabeledItemRenderer implements HighlightableItemRenderer
 {
 	public function get labelLeftMargin():Number
 	{
 		return border.contentInsets.left;
 	}
 
-	protected function getBorder(key:String):Border
+	override public function get lafPrefix():String
 	{
-		return _laf.getBorder("MenuItem." + key);
-	}
-
-	protected function getIcon(key:String):Icon
-	{
-		return _laf.getIcon("MenuItem." + key);
+		return "MenuItem";
 	}
 
 	protected var menuItem:Object;

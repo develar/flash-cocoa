@@ -33,6 +33,12 @@ public class Builder
 	[Embed(source="/Window.bottomBar.application.png")]
 	private static var windowBottomBarApplicationClass:Class;
 
+	[Embed(source="/segmentedControl.png")]
+	private static var segmentedControlClass:Class;
+
+	[Embed(source="/segmentedControl2.png")]
+	private static var segmentedControl2Class:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
 	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(20, new FrameInsets(-2, 0, -2), new Insets(10, NaN, 10, 5)));
@@ -52,7 +58,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -61,6 +67,8 @@ public class Builder
 		compoundImageReader.read(buttonsClass, buttonRowsInfo);
 
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+
+		compoundImageReader.readSegmentedControl(segmentedControlClass, segmentedControl2Class);
 
 		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3HBitmapBorder.create(47, new FrameInsets(-33, 0, -33, -48), AbstractBorder.EMPTY_CONTENT_INSETS));
 

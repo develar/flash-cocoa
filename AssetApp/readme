@@ -2,6 +2,10 @@ screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resou
 
 screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/popUpMenu.png
 
+screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl.png
+screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl2.png
+screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl3.png
+
 or
 
 screencapture -ic

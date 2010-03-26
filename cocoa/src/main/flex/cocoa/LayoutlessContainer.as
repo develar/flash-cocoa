@@ -16,7 +16,7 @@ import spark.components.supportClasses.SkinnableComponent;
 
 public class LayoutlessContainer extends AbstractView implements ViewContainer, LookAndFeelProvider
 {
-	protected var _laf:LookAndFeel;
+	private var _laf:LookAndFeel;
 	public function get laf():LookAndFeel
 	{
 		return _laf;

@@ -53,12 +53,11 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];
-//		data["PushButton.border.texturedRounded"] = borders[BezelStyle.texturedRounded.ordinal];
 
 		data["PopUpButton"] = PushButtonSkin;
 		data["PopUpButton.border"] = borders[2 + BezelStyle.rounded.ordinal];
 		data["PopUpButton.menuController"] = new ClassFactory(PopUpMenuController);
-//		data["PopUpButton.openButton.skin"] = PopUpOpenButtonSkin;
+		
 		data["Menu"] = MenuSkin;
 		data["Menu.border"] = borders[3];
 		data["Menu.itemFactory"] = new ClassFactory(MenuItemRenderer);
@@ -70,8 +69,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["MenuItem.border.highlighted"] = borders[4];
 		data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
-
 		data["SliderNumericStepper"] = SliderNumericStepperSkin;
+
+		data["SegmentItem.border"] = borders[6];
 	}
 
 	private static function initAssets():void

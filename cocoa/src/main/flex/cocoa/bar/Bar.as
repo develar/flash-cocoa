@@ -24,13 +24,13 @@ use namespace ui;
 public class Bar extends AbstractComponent implements Injectable
 {
 	protected static const _skinParts:Dictionary = new Dictionary();
-	_skinParts.itemGroup = 0;
+	_skinParts.segmentedControl = 0;
 	override protected function get skinParts():Dictionary
 	{
 		return _skinParts;
 	}
 
-	ui var itemGroup:SelectableDataGroup;
+	ui var segmentedControl:SelectableDataGroup;
 
 	public function Bar()
 	{
@@ -71,9 +71,9 @@ public class Bar extends AbstractComponent implements Injectable
 		invalidateProperties();
 	}
 
-	ui function itemGroupAdded():void
+	ui function segmentedControlAdded():void
 	{
-		itemGroup.dataProvider = items;
+
 	}
 
 	override public function commitProperties():void
@@ -96,15 +96,12 @@ public class Bar extends AbstractComponent implements Injectable
 			item.localizedLabel = itemToLabel(item);
 		}
 
-		if (itemGroup != null)
-		{
-			itemGroup.dataProvider = items;
-		}
+		segmentedControl.dataProvider = items;
 	}
 
 	override protected function resourcesChanged():void
 	{
-		if (items == null || itemGroup == null)
+		if (items == null || segmentedControl == null)
 		{
 			return;
 		}
@@ -125,7 +122,7 @@ public class Bar extends AbstractComponent implements Injectable
 				}
 			}
 
-			var labelRenderer:IVisualElement = itemGroup.getElementAt(i);
+			var labelRenderer:IVisualElement = segmentedControl.getElementAt(i);
 			if (labelRenderer is IItemRenderer)
 			{
 				 IItemRenderer(labelRenderer).label = localizedLabel;

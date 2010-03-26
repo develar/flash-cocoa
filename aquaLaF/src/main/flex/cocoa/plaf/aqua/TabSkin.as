@@ -4,7 +4,7 @@ import cocoa.Insets;
 import cocoa.SingleSelectionDataGroup;
 import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
-import cocoa.layout.BarHorizontalLayout;
+import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.AbstractSkin;
 
 import mx.core.ClassFactory;
@@ -21,7 +21,7 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 
 	private static const CONTENT_INSETS:Insets = new Insets(16, 16 + 10, 16, 16);
 
-	private var itemGroup:SingleSelectionDataGroup;
+	private var segmentedControl:SingleSelectionDataGroup;
 	private var viewStack:ViewStack;
 
 	private var contentBorder:SpriteAsset;
@@ -44,16 +44,17 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 			component.uiPartAdded("viewStack", viewStack);
 		}
 
-		if (itemGroup == null)
+		if (segmentedControl == null)
 		{
-			itemGroup = new SingleSelectionDataGroup();
-			itemGroup.layout = new BarHorizontalLayout();
-			var factory:ClassFactory = new ClassFactory(TabLabelSkin);
-//			factory.properties = {"laf": laf};
-			itemGroup.itemRenderer = factory;
+			segmentedControl = new SingleSelectionDataGroup();
+			var layout:SegmentedControlHorizontalLayout = new SegmentedControlHorizontalLayout();
+			layout.gap = 1;
+			segmentedControl.layout = layout;
+			segmentedControl.laf = laf;
+			segmentedControl.itemRenderer = new ClassFactory(SegmentItemRenderer);
 
-			addChild(itemGroup);
-			component.uiPartAdded("itemGroup", itemGroup);
+			addChild(segmentedControl);
+			component.uiPartAdded("segmentedControl", segmentedControl);
 		}
 	}
 
@@ -77,8 +78,8 @@ public class TabSkin extends AbstractSkin implements AdvancedLayout
 		contentBorder.width = w;
 		contentBorder.height = h - contentBorder.y;
 
-		itemGroup.setLayoutBoundsSize(NaN, NaN);
-		itemGroup.x = Math.round((w - itemGroup.getExplicitOrMeasuredWidth()) / 2);
+		segmentedControl.setLayoutBoundsSize(NaN, NaN);
+		segmentedControl.x = Math.round((w - segmentedControl.getExplicitOrMeasuredWidth()) / 2);
 
 		viewStack.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
 	}

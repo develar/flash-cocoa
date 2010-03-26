@@ -28,4 +28,6 @@ enum
 - (id)createButton;
 - (id)createPopUpButton;
 
+- (id)createSegmentedControl;
+
 @end

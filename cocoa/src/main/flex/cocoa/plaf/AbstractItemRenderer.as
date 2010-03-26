@@ -1,6 +1,8 @@
 package cocoa.plaf
 {
 import cocoa.AbstractView;
+import cocoa.Border;
+import cocoa.Icon;
 
 import flash.text.engine.ElementFormat;
 
@@ -107,6 +109,22 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 	protected function getFont(key:String):ElementFormat
 	{
 		return _laf.getFont(key);
+	}
+
+
+	protected function getBorder(key:String):Border
+	{
+		return _laf.getBorder(lafPrefix + "." + key);
+	}
+
+	protected function getIcon(key:String):Icon
+	{
+		return _laf.getIcon(lafPrefix + "." + key);
+	}
+
+	public function get lafPrefix():String
+	{
+		throw new Error("abstract");
 	}
 }
 }

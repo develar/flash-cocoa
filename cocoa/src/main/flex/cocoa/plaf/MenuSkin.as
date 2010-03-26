@@ -64,7 +64,6 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 			IItemRenderer(renderer).label = (data is MenuItem && MenuItem(data).isSeparatorItem) ? null : itemToLabel(data);
 		}
 
-		// always set the data last
 		if ((renderer is IDataRenderer) && (renderer !== data))
 		{
 			IDataRenderer(renderer).data = data;

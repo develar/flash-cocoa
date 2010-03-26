@@ -12,7 +12,7 @@ import spark.components.supportClasses.GroupBase;
  *
  *  All children are set to the height of the parent.
  */
-public class BarHorizontalLayout extends BarLayout
+public class SegmentedControlHorizontalLayout extends SegmentedControlLayout
 {
 	override public function measure():void
 	{

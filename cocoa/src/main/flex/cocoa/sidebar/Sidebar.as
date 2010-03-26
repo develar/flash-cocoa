@@ -37,7 +37,7 @@ public class Sidebar extends Bar
 	private var pendingSelectedIndices:Vector.<int>;
 	public function set selectedIndices(value:Vector.<int>):void
 	{
-		if (itemGroup == null)
+		if (segmentedControl == null)
 		{
 			pendingSelectedIndices = value;
 		}
@@ -47,15 +47,13 @@ public class Sidebar extends Bar
 		}
 	}
 
-	override ui function itemGroupAdded():void
+	override ui function segmentedControlAdded():void
 	{
-		super.itemGroupAdded();
-
-		typedPaneLabelBar = SidebarPaneLabelBar(itemGroup);
+		typedPaneLabelBar = SidebarPaneLabelBar(segmentedControl);
 		typedPaneLabelBar.selectedIndices = pendingSelectedIndices;
 		pendingSelectedIndices = null;
 
-		itemGroup.addEventListener(MultipleSelectionChangeEvent.CHANGED, paneLabelBarSelectionChangeHandler);
+		segmentedControl.addEventListener(MultipleSelectionChangeEvent.CHANGED, paneLabelBarSelectionChangeHandler);
 	}
 
 	ui function paneGroupAdded():void

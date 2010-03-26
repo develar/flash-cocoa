@@ -1,6 +1,9 @@
 package cocoa
 {
 import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.AbstractItemRenderer;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
@@ -15,7 +18,7 @@ import spark.components.IItemRenderer;
 use namespace mx_internal;
 
 [Abstract]
-public class SelectableDataGroup extends DataGroup
+public class SelectableDataGroup extends DataGroup implements LookAndFeelProvider
 {
 	protected static const selectionChanged:uint = 1 << 0;
 	private static const mouseSelectionModeChanged:uint = 1 << 1;
@@ -27,6 +30,16 @@ public class SelectableDataGroup extends DataGroup
 		super();
 
 		mouseEnabled = false;
+	}
+
+	private var _laf:LookAndFeel;
+	public function get laf():LookAndFeel
+	{
+		return _laf;
+	}
+	public function set laf(value:LookAndFeel):void
+	{
+		_laf = value;
 	}
 
 	private var _iconFunction:Function;
@@ -101,6 +114,10 @@ public class SelectableDataGroup extends DataGroup
     {
 		super.updateRenderer(renderer, itemIndex, data);
 
+		if (renderer is AbstractItemRenderer && _laf != null)
+		{
+			AbstractItemRenderer(renderer).laf = _laf;
+		}
 		if (renderer is IconedItemRenderer)
 		{
 			IconedItemRenderer(renderer).icon = itemToIcon(data);

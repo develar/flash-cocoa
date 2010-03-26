@@ -15,7 +15,7 @@ public class SingleSelectionBar extends Bar
 	private var pendingSelectedIndex:int = 0;
 	public function set selectedIndex(value:int):void
 	{
-		if (itemGroup == null)
+		if (segmentedControl == null)
 		{
 			pendingSelectedIndex = value;
 		}
@@ -30,20 +30,18 @@ public class SingleSelectionBar extends Bar
 		return PaneItem(items.getItemAt(typedItemGroup == null ? pendingSelectedIndex : typedItemGroup.selectedIndex));
 	}
 
-	override ui function itemGroupAdded():void
+	override ui function segmentedControlAdded():void
 	{
-		super.itemGroupAdded();
-
-		typedItemGroup = SingleSelectionDataGroup(itemGroup);
+		typedItemGroup = SingleSelectionDataGroup(segmentedControl);
 		typedItemGroup.selectedIndex = pendingSelectedIndex;
 		pendingSelectedIndex = -1;
 
-		itemGroup.addEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
+		segmentedControl.addEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
 	}
 
 	ui function itemGroupRemoved():void
 	{
-		itemGroup.removeEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
+		segmentedControl.removeEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
 	}
 
 	protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void

@@ -1,10 +1,3 @@
-//
-//  UntitledAppDelegate.m
-//  Untitled
-//
-//  Created by Vladimir Krivosheev on 03.03.10.
-//
-
 #import "AssetAppDelegate.h"
 
 @implementation AssetAppDelegate
@@ -13,9 +6,9 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 		
-	NSRect frame = NSMakeRect(500, 500, BUTTON_WIDTH * 5, CONTROL_FRAME_HEIGHT * 10);
+	NSRect frame = NSMakeRect(500, 500, BUTTON_WIDTH * 5, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
-	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
+	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
 	[testWindow setHasShadow:NO];
 	[testWindow makeKeyAndOrderFront:NSApp];
@@ -63,9 +56,8 @@
 	
 	[popUpMenuButton setMenu:menu];
 	[popUpMenuButton setBordered:NO];
-	[popUpMenuButton performClick:popUpMenuButton];
-	
-	[NSTimer scheduledTimerWithTimeInterval:5 target:self selector: @selector(openMenu) userInfo:nil repeats: YES];
+	//[popUpMenuButton performClick:popUpMenuButton];
+	//[NSTimer scheduledTimerWithTimeInterval:5 target:self selector: @selector(openMenu) userInfo:nil repeats: YES];
 		
 	// Scroll View (List)
 	controlFrame.origin.x = 0;
@@ -77,6 +69,48 @@
 	[contentView addSubview:scrollView];
 	
 	[scrollView setBorderType:NSBezelBorder];
+	
+	// SegmentedControl
+	frame.origin.x = 100;
+	frame.size.height = CONTROL_FRAME_HEIGHT * 8;
+	NSWindow* sWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
+	[sWindow setOpaque:NO];
+	[sWindow setHasShadow:NO];
+	[sWindow makeKeyAndOrderFront:NSApp];
+	[sWindow setBackgroundColor:[NSColor clearColor]];
+	
+	controlFrame.origin.x = 0;
+	controlFrame.origin.y = frame.size.height - CONTROL_FRAME_HEIGHT;
+	controlFrame.size.width = 200;
+	
+	contentView = [sWindow contentView];
+	
+	[[self createSegmentedControl] setSelectedSegment:0];
+	[[self createSegmentedControl] setSelectedSegment:1];
+	[[self createSegmentedControl] setSelectedSegment:2];
+	
+	NSSegmentedControl *segmentedControl = [self createSegmentedControl];
+	
+	NSEvent *event = [NSEvent mouseEventWithType:NSLeftMouseDown
+							location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 1) 
+							modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
+	
+	[segmentedControl mouseDown:event];
+	
+	segmentedControl = [self createSegmentedControl];
+	
+	event = [NSEvent mouseEventWithType:NSLeftMouseDown
+							   location:NSMakePoint([segmentedControl frame].origin.x + 30, [segmentedControl frame].origin.y + 1) 
+						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
+	
+	[segmentedControl mouseDown:event];
+	
+	segmentedControl = [self createSegmentedControl];
+	event = [NSEvent mouseEventWithType:NSLeftMouseDown
+							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 1) 
+						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
+	
+	[segmentedControl mouseDown:event];
 }
 
 - (void)openMenu {
@@ -113,6 +147,16 @@
 	
 	controlFrame.origin.x += BUTTON_WIDTH;
 	return button;
+}
+
+- (id)createSegmentedControl {
+	NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] initWithFrame:controlFrame ];
+	[contentView addSubview:segmentedControl];
+	
+	[segmentedControl setSegmentCount:3];
+	
+	controlFrame.origin.y -= CONTROL_FRAME_HEIGHT;
+	return segmentedControl;
 }
 
 @end
