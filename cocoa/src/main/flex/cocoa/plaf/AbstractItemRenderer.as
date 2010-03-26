@@ -25,8 +25,9 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 	{
 		return _itemIndex;
 	}
+
 	public function set itemIndex(value:int):void
-	{ 
+	{
 		if (value != _itemIndex)
 		{
 			_itemIndex = value;
@@ -34,18 +35,25 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 		}
 	}
 
+	private var _dragging:Boolean = false;
 	public function get dragging():Boolean
 	{
-		return false;
+		return _dragging;
 	}
+
 	public function set dragging(value:Boolean):void
 	{
+		if (value != _dragging)
+		{
+			_dragging = value;
+		}
 	}
 
 	public function get label():String
 	{
 		return null;
 	}
+
 	public function set label(value:String):void
 	{
 	}
@@ -54,6 +62,7 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 	{
 		return (state & SELECTED) != 0;
 	}
+
 	public function set selected(value:Boolean):void
 	{
 		if (value == ((state & SELECTED) == 0))
@@ -90,6 +99,7 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 	{
 		return null;
 	}
+
 	public function set data(value:Object):void
 	{
 	}
