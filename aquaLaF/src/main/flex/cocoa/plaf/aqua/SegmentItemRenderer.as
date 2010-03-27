@@ -16,6 +16,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	private static const middleIndex:int = leftIndex + 4;
 	private static const rightIndex:int = middleIndex + 4;
 	private static const separatorIndex:int = rightIndex + 4;
+	private static const shadowIndex:int = separatorIndex + 2;
 
 	private static const offOffset:int = 0;
 	private static const onOffset:int = 1;
@@ -60,6 +61,8 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	 * Поэтому: всегда (за исключением последнего элемента) отрисовываем разделитель справа, а слева только если мы selected (нет разницы — highlighted или нет).
 	 * Так как мы добавляем элементы слева направо — самый левый имеет самый маленький индекс в display list,
 	 * то при отрисовке левого разделителя при selected Flash Player корректно отрисует его над старым разделителем (который отрисован предыдущим элементом).
+	 *
+	 * Но у нас есть полупрозрачные пиксели — при наложении получается плохо — поэтому background и separator по высоте меньше на 3 пикселя по высоте (снизу), мы отрисовываем их сами программно
 	 */
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
@@ -107,7 +110,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 			{
 				frameInsets.left = -1;
 				border.bitmapIndex = computedSepatatorIndex;
-				border.draw(null, g, 1, h);
+				border.draw(null, g, 1, h - 3);
 				frameInsets.left = 0;
 			}
 
@@ -122,8 +125,13 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 			}
 		}
 
+		frameInsets.top = h;
+		border.bitmapIndex = shadowIndex;
+		border.draw(null, g, isLast ? backgroundWidth : (backgroundWidth + 1), 0);
+		frameInsets.top = 0;
+
 		border.bitmapIndex = middleIndex + offset;
-		border.draw(null, g, backgroundWidth, h);
+		border.draw(null, g, backgroundWidth, h - 3);
 
 		if (isLast)
 		{
@@ -135,7 +143,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 		{
 			frameInsets.left = w;
 			border.bitmapIndex = computedSepatatorIndex;
-			border.draw(null, g, 1, h);
+			border.draw(null, g, 1, h - 3);
 		}
 	}
 }

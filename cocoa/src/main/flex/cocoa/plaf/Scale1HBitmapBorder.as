@@ -28,17 +28,11 @@ public final class Scale1HBitmapBorder extends AbstractControlBitmapBorder imple
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = _frameInsets.left;
-		sharedMatrix.ty = 0;
+		sharedMatrix.ty = _frameInsets.top;
 
 		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, true);
-		g.drawRect(_frameInsets.left, 0, w, h - _frameInsets.bottom);
+		g.drawRect(_frameInsets.left, _frameInsets.top, w, h - _frameInsets.bottom);
 		g.endFill();
-	}
-
-	public function drawSeries(g:Graphics, w:Number, h:Number):void
-	{
-		sharedMatrix.tx = frameInsets.left;
-		sharedMatrix.ty = 0;
 	}
 
 //	override public function readExternal(input:ByteArray):void

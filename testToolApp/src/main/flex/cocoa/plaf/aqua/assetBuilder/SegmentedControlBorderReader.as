@@ -10,6 +10,9 @@ import flash.geom.Rectangle;
 
 import mx.core.BitmapAsset;
 
+/**
+ * Информация по этому классу также есть в SegmentItemRenderer#updateDisplayList()
+ */
 public class SegmentedControlBorderReader
 {
 	private static const sharedPoint:Point = new Point(0, 0);
@@ -23,6 +26,7 @@ public class SegmentedControlBorderReader
 	private static const middleIndex:int = leftIndex + 4;
 	private static const rightIndex:int = middleIndex + 4;
 	private static const separatorIndex:int = rightIndex + 4;
+	private static const shadowIndex:int = separatorIndex + 2;
 
 	private var compoundBitmapData:BitmapData;
 
@@ -32,7 +36,7 @@ public class SegmentedControlBorderReader
 
 	private static const firstMiddleAbsoluteX:Number = 18;
 
-	private const segmentBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4 + 4 + 4 + 2 /* для separator off == highlight off, on == highlight on */, true);
+	private const segmentBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(shadowIndex + 1, true);
 
 	private const sliceCalculator:SliceCalculator = new SliceCalculator();
 
@@ -52,7 +56,13 @@ public class SegmentedControlBorderReader
 
 		segmentBitmaps[leftIndex + onOffset] = readLeftSegment(frameRectangle, sliceSize);
 
-		segmentRectangle = new Rectangle(firstMiddleAbsoluteX, frameRectangle.top, 1, frameRectangle.height);
+		segmentRectangle = new Rectangle(firstMiddleAbsoluteX, frameRectangle.bottom - 3, 1, 3);
+
+		segmentBitmaps[shadowIndex] = createBitmapData(segmentRectangle);
+
+		segmentRectangle.y = frameRectangle.top;
+		segmentRectangle.height = frameRectangle.height - 3;
+
 		segmentBitmaps[middleIndex + onOffset] = createBitmapData(segmentRectangle);
 		segmentRectangle.x += 1;
 		segmentBitmaps[separatorIndex + onOffset] = createBitmapData(segmentRectangle);
