@@ -7,6 +7,7 @@ import flash.display.BlendMode;
 import flash.display.GradientType;
 import flash.display.Sprite;
 import flash.geom.Matrix;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import mx.core.UIComponent;
@@ -99,6 +100,11 @@ public class ImageView extends UIComponent
 		}
 	}
 
+	public function get horizontalAlign():String
+	{
+		return _horizontalAlign;
+	}
+
 	private var _showReflection:Boolean;
 	public function get showReflection():Boolean
 	{
@@ -138,22 +144,30 @@ public class ImageView extends UIComponent
 	}
 
 
-
-	public function get horizontalAlign():String
+	public function getImagePositionAtBounds(bounds:Rectangle):Point
 	{
-		return _horizontalAlign;
+		if(bounds != null && _bitmapData != null)
+		{
+			var measuredRect:Rectangle = createFilledRect(bounds);
+			return new Point(measuredRect.x, measuredRect.y);
+		}
+		else
+		{
+			return null;
+		}
 	}
+
 
 	override protected function measure():void
 	{
 		//no bitmapData size considered without predefined boundsRect
 		if (_boundsRect != null && _bitmapData != null)
 		{
-			var filledRect:Rectangle = createFilledRect(_boundsRect);
-			measuredWidth = filledRect.width;
-			measuredMinWidth = filledRect.width;
-			measuredHeight = filledRect.height;
-			measuredMinHeight = filledRect.height;
+			var measuredRect:Rectangle = createFilledRect(_boundsRect);
+			measuredWidth = measuredRect.width;
+			measuredMinWidth = measuredRect.width;
+			measuredHeight = measuredRect.height;
+			measuredMinHeight = measuredRect.height;
 			return;
 		}
 		super.measure();
