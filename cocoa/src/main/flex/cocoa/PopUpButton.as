@@ -19,10 +19,6 @@ public class PopUpButton extends AbstractControl implements Button
 
 	private var menuController:PopUpMenuController;
 
-	public function PopUpButton()
-	{
-	}
-
 	private var _state:int = ButtonState.off;
 	public function get state():int
 	{
@@ -35,6 +31,10 @@ public class PopUpButton extends AbstractControl implements Button
 		if (value != _menu)
 		{
 			_menu = value;
+			if (menuController != null)
+			{
+				menuController.menu = _menu;
+			}
 			labelChanged = true;
 			invalidateProperties();
 		}

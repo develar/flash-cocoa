@@ -17,6 +17,7 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
+import org.flyti.aqua.ListSkin;
 import org.flyti.aqua.SourceListSkin;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel
@@ -50,6 +51,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Window.bottomBar.application"] = borders[5];
 
 		data["SourceListView"] = SourceListSkin;
+		data["ListView"] = ListSkin;
 		data["TabView"] = TabSkin;
 
 		data["PushButton"] = PushButtonSkin;

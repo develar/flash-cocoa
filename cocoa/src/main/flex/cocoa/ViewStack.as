@@ -3,10 +3,11 @@ package cocoa
 import cocoa.layout.AdvancedLayout;
 
 import mx.core.ILayoutElement;
+import mx.core.IUIComponent;
 
 public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 {
-	private var currentView:View;
+	private var currentView:IUIComponent;
 
 	public function show(viewable:Viewable):void
 	{
@@ -26,7 +27,7 @@ public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 		}
 		else
 		{
-			currentView = View(viewable);
+			currentView = IUIComponent(viewable);
 			if (currentView.parent == null)
 			{
 				addSubview(viewable);
@@ -45,9 +46,9 @@ public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 	override protected function measure():void
 	{
 		measuredMinWidth = currentView.minWidth;
-        measuredMinHeight = currentView.minHeight;
-        measuredWidth = currentView.getExplicitOrMeasuredWidth();
-        measuredHeight = currentView.getExplicitOrMeasuredHeight();
+		measuredMinHeight = currentView.minHeight;
+		measuredWidth = currentView.getExplicitOrMeasuredWidth();
+		measuredHeight = currentView.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

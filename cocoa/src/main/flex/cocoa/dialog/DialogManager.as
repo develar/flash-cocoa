@@ -65,6 +65,7 @@ public class DialogManager
 
 		//		skin.addEventListener(ResizeEvent.RESIZE, dialogCreationCompleteHandler);
 		PopUpManager.addPopUp(skin, DisplayObject(FlexGlobals.topLevelApplication), modal);
+		PopUpManager.centerPopUp(skin);
 		skin.setFocus();
 	}
 

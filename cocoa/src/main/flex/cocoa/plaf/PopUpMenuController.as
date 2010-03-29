@@ -25,15 +25,20 @@ public class PopUpMenuController extends ListController
 	protected static const sharedPoint:Point = new Point();
 	
 	protected var popUpButton:PopUpButton;
-	protected var menu:Menu;
 	private var laf:LookAndFeel;
 
 	private var mouseDownTime:int = -1;
 
+	protected var _menu:Menu;
+	public function set menu(value:Menu):void
+	{
+		_menu = value;
+	}
+
 	public function initialize(popUpButton:PopUpButton, menu:Menu, laf:LookAndFeel):void
 	{
 		this.popUpButton = popUpButton;
-		this.menu = menu;
+		_menu = menu;
 		this.laf = laf;
 		addHandlers();
 
@@ -59,7 +64,7 @@ public class PopUpMenuController extends ListController
 		{
 			case Keyboard.ESCAPE:
 			{
-				if (menu.skin != null && DisplayObject(menu.skin).parent != null)
+				if (_menu.skin != null && DisplayObject(_menu.skin).parent != null)
 				{
 					event.preventDefault();
 					close();
@@ -82,19 +87,13 @@ public class PopUpMenuController extends ListController
 	private function mouseDownHandler(event:MouseEvent):void
 	{
 		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
-		var menuSkin:Skin = menu.skin;
+		var menuSkin:Skin = _menu.skin;
 		if (menuSkin == null)
 		{
-			menuSkin = menu.createView(laf);
+			menuSkin = _menu.createView(laf);
 		}
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		setPopUpPosition();
-
-		itemGroup = menu.itemGroup;
-		super.addHandlers();
-
-		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
 
 		mouseDownTime = getTimer();
 	}
@@ -104,7 +103,7 @@ public class PopUpMenuController extends ListController
 		var stage:Stage = DisplayObject(popUpButton.skin).stage;
 		stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 		stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
-		PopUpManager.removePopUp(menu.skin);
+		PopUpManager.removePopUp(_menu.skin);
 	}
 
 	protected function setPopUpPosition():void
@@ -115,7 +114,7 @@ public class PopUpMenuController extends ListController
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
 		// проверка на border (как в Cocoa — можно кликнуть на border, и при этом и меню не будет скрыто, и выделенный item не изменится)
-		if (!menu.skin.hitTestPoint(event.stageX, event.stageY))
+		if (!_menu.skin.hitTestPoint(event.stageX, event.stageY))
 		{
 			// для pop up button работает такое же правило щелчка, как и для menu border
 			if (!popUpButton.skin.hitTestPoint(event.stageX, event.stageY))
@@ -123,7 +122,7 @@ public class PopUpMenuController extends ListController
 				mouseDownTime = -1;
 			}
 		}
-		else if (event.target != menu.skin && event.target != itemGroup)
+		else if (event.target != _menu.skin && event.target != itemGroup)
 		{
 			popUpButton.selectedIndex = IItemRenderer(event.target).itemIndex;
 		}
@@ -144,7 +143,7 @@ public class PopUpMenuController extends ListController
 
 	private function stageMouseDownHandler(event:MouseEvent):void
 	{
-		if (!menu.skin.hitTestPoint(event.stageX, event.stageY))
+		if (!_menu.skin.hitTestPoint(event.stageX, event.stageY))
 		{
 			close();
 		}
