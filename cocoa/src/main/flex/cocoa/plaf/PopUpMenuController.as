@@ -87,11 +87,20 @@ public class PopUpMenuController extends ListController
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
+		if (!popUpButton.skin.hitTestPoint(event.stageX, event.stageY))
+		{
+			return;
+		}
+		
 		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
 		var menuSkin:Skin = _menu.skin;
 		if (menuSkin == null)
 		{
 			menuSkin = _menu.createView(laf);
+		}
+		else
+		{
+			assert(DisplayObject(menuSkin).parent == null);
 		}
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		setPopUpPosition();
@@ -151,9 +160,11 @@ public class PopUpMenuController extends ListController
 		}
 	}
 
+	// данный обработчик будет вызван и в первый раз после mouseDownHandler — событие пойдет вниз до stage —
+	// а мы не может ни preventDefault, ни stopPropagation — так как на них завязан FocusManager, поэтому мы делаем проверку на mouseDownTime
 	private function stageMouseDownHandler(event:MouseEvent):void
 	{
-		if (!_menu.skin.hitTestPoint(event.stageX, event.stageY))
+		if (mouseDownTime == -1 && !_menu.skin.hitTestPoint(event.stageX, event.stageY))
 		{
 			close();
 		}
