@@ -1,5 +1,6 @@
 package cocoa.plaf
 {
+import cocoa.HighlightableItemRenderer;
 import cocoa.Menu;
 import cocoa.PopUpButton;
 import cocoa.ui;
@@ -102,6 +103,9 @@ public class PopUpMenuController extends ListController
 		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
 
 		mouseDownTime = getTimer();
+
+		highlightedRenderer = HighlightableItemRenderer(itemGroup.getElementAt(_menu.selectedIndex));
+		highlightedRenderer.highlighted = true;
 	}
 
 	protected function close():void
