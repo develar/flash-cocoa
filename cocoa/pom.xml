@@ -62,7 +62,7 @@
 								<class>**.Panel</class>
 								<class>**.MXMLSkin</class>
 								<class>**.AbstractSkin</class>
-								<class>**.*Button</class>
+								<class>**.*?Button</class>
 								<class>**.*ApplicationImpl</class>
 								<class>**.ViewStack</class>
 								<class>**.*Group</class>

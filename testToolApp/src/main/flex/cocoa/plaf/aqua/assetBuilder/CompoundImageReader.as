@@ -21,7 +21,7 @@ internal final class CompoundImageReader
 	private var rowsInfo:Vector.<RowInfo>;
 	private var compoundBitmapData:BitmapData;
 
-	private var position:int = 0;
+	public var position:int = 0;
 
 	private var borders:Vector.<Border>;
 
@@ -95,7 +95,18 @@ internal final class CompoundImageReader
 		itemRectangle.height = (itemHeight * 2) + 12 /* separator item */;
 		compoundBitmapData.fillRect(itemRectangle, 0);
 
-		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, true, true);
+		listBorder.configure(parseScale9Grid(frameRectangle));
+		borders[position] = listBorder;
+
+		position += 2;
+	}
+
+	public function parseScale9Grid(frameRectangle:Rectangle, sliceSize:Insets = null):Vector.<BitmapData>
+	{
+		if (sliceSize == null)
+		{
+			sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, true, true);
+		}
 		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
 
 		var sliceRectangle:Rectangle = new Rectangle(frameRectangle.x, frameRectangle.y, sliceSize.left + 1, sliceSize.top + 1);
@@ -116,10 +127,7 @@ internal final class CompoundImageReader
 		sliceRectangle.width = sliceSize.right;
 		bitmaps[3] = createBitmapData(sliceRectangle);
 
-		listBorder.configure(bitmaps);
-		borders[position] = listBorder;
-
-		position += 2;
+		return bitmaps;
 	}
 
 	private function createBitmapData(sourceRectangle:Rectangle):BitmapData

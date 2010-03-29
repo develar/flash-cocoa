@@ -7,5 +7,15 @@ public class AbstractControl extends AbstractComponent implements Control
 	{
 		_action = value;
 	}
+
+	public function get objectValue():Object
+	{
+		throw new Error("abstract");
+	}
+
+	public function set objectValue(value:Object):void
+	{
+		throw new Error("abstract");
+	}
 }
 }

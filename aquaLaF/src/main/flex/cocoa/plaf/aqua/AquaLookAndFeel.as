@@ -43,12 +43,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["ViewFont"] = AquaFonts.VIEW_FONT;
 		data["ViewFont.highlighted"] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
 
+		data["ImageView.border"] = borders[3];
+
 		data["Box"] = BoxSkin;
 
 		data["Dialog"] = WindowSkin;
 		data["HUDWindow"] = HUDWindowSkin;
 		data["Window.border"] = new WindowBorder();
-		data["Window.bottomBar.application"] = borders[5];
+		data["Window.bottomBar.application"] = borders[6];
 
 		data["SourceListView"] = SourceListSkin;
 		data["ListView"] = ListSkin;
@@ -62,20 +64,20 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["PopUpButton.menuController"] = new ClassFactory(PopUpMenuController);
 		
 		data["Menu"] = MenuSkin;
-		data["Menu.border"] = borders[3];
+		data["Menu.border"] = borders[4];
 		data["Menu.itemFactory"] = new ClassFactory(MenuItemRenderer);
 
 		data["MenuItem.onStateIcon"] = icons[0];
 		data["MenuItem.onStateIcon.highlighted"] = icons[1];
 
-		data["MenuItem.border"] = new MenuItemBorder(borders[4].contentInsets);
-		data["MenuItem.border.highlighted"] = borders[4];
+		data["MenuItem.border"] = new MenuItemBorder(borders[5].contentInsets);
+		data["MenuItem.border.highlighted"] = borders[5];
 		data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
 		data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
-		data["SegmentItem.border"] = borders[6];
-		Scale1HBitmapBorder(borders[6]).frameInsets = new FrameInsets(0, 0, 0, -3);
+		data["SegmentItem.border"] = borders[7];
+		Scale1HBitmapBorder(borders[7]).frameInsets = new FrameInsets(0, 0, 0, -3);
 	}
 
 	private static function initAssets():void

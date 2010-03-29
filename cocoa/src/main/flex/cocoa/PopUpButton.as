@@ -90,5 +90,15 @@ public class PopUpButton extends AbstractControl implements Button
 	{
 		return "PopUpButton";
 	}
+
+	override public function get objectValue():Object
+	{
+		return selectedItem;
+	}
+
+	override public function set objectValue(value:Object):void
+	{
+		
+	}
 }
 }

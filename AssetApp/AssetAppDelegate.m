@@ -70,6 +70,19 @@
 	
 	[scrollView setBorderType:NSBezelBorder];
 	
+	// Image View (NSImageView or, IB Image Well)
+	controlFrame.origin.x = 0;
+	controlFrame.origin.y -= 50 + 10;
+	controlFrame.size.width = 50;
+	controlFrame.size.height = 50;
+	
+	NSImageView *imageView = [[NSImageView alloc] initWithFrame:controlFrame];
+	[imageView setImageFrameStyle:NSImageFrameGrayBezel];
+	[imageView setEditable:YES];
+	[contentView addSubview:imageView];
+	
+	return;
+	
 	// SegmentedControl
 	frame.origin.x = 100;
 	frame.size.height = CONTROL_FRAME_HEIGHT * 8;

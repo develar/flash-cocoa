@@ -24,12 +24,14 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 		return border;
 	}
 
-	public function configure(bitmaps:Vector.<BitmapData>):void
+	public function configure(bitmaps:Vector.<BitmapData>):Scale9BitmapBorder
 	{
 		this.bitmaps = bitmaps;
 
 		rightSliceInnerWidth = bitmaps[1].width + _frameInsets.right;
 		bottomSliceInnerHeight = bitmaps[2].height + _frameInsets.bottom;
+
+		return this;
 	}
 
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void

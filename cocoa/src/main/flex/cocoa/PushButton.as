@@ -30,5 +30,10 @@ public class PushButton extends AbstractButton
 
 		mySkin.label = _label;
 	}
+
+	override public function get objectValue():Object
+	{
+		return label;
+	}
 }
 }
