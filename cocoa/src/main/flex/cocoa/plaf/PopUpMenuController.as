@@ -95,6 +95,12 @@ public class PopUpMenuController extends ListController
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		setPopUpPosition();
 
+		itemGroup = _menu.itemGroup;
+		super.addHandlers();
+
+		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
+
 		mouseDownTime = getTimer();
 	}
 

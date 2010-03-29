@@ -712,9 +712,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
+	/**
+	 * This method allows access to the Player's native implementation of addChildAt(), which can be useful
+	 * since components can override addChildAt() and thereby hide the native implementation.
+	 */
 	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
 	{
-		$addChildAt(displayObject, index == -1 ? numChildren : index);
+		super.addChildAt(displayObject, index == -1 ? numChildren : index);
 	}
 
 	public final function removeDisplayObject(child:DisplayObject):void
@@ -4911,7 +4915,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		// UIComponent registers an addedHandler() in its constructor,
 		// which makes it runs before any other "added" handlers except
 		// capture-phase ones; it sets up the child's styles.
-		$addChildAt(child, index);
+		addDisplayObject(child, index);
 
 		// Do anything that needs to be done after the child is added
 		// and after all "added" handlers have executed.
@@ -4940,7 +4944,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 		addingChild(child);
 
-		$addChildAt(child, index);
+		super.addChildAt(child, index);
 
 		childAdded(child);
 
@@ -4978,19 +4982,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//  Methods: Access to overridden methods of base classes
 	//
 	//--------------------------------------------------------------------------
-
-	/**
-	 *  @private
-	 *  This method allows access to the Player's native implementation
-	 *  of addChildAt(), which can be useful since components
-	 *  can override addChildAt() and thereby hide the native implementation.
-	 *  Note that this "base method" is final and cannot be overridden,
-	 *  so you can count on it to reflect what is happening at the player level.
-	 */
-	private function $addChildAt(child:DisplayObject, index:int):DisplayObject
-	{
-		return super.addChildAt(child, index);
-	}
 
 	/**
 	 *  @private
@@ -5169,16 +5160,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	mx_internal function childAdded(child:DisplayObject):void
 	{
-		if (child is UIComponent)
-		{
-			if (!UIComponent(child).initialized)
-			{
-				UIComponent(child).initialize();
-			}
-		}
-		else if (child is IUIComponent)
+		if (child is IUIComponent)
 		{
 			IUIComponent(child).initialize();
+		}
+		else if (child is UIComponent && !UIComponent(child).initialized)
+		{
+			UIComponent(child).initialize();
 		}
 	}
 
@@ -7306,115 +7294,14 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return false;
 	}
 
-	/**
-	 *  @private
-	 *
-	 *  Get the bounds of this object that are visible to the user
-	 *  on the screen.
-	 *
-	 *  @param targetParent The parent to stop at when calculating the visible
-	 *  bounds. If null, this object's system manager will be used as
-	 *  the parent.
-	 *
-	 *  @return a <code>Rectangle</code> including the visible portion of the this
-	 *  object. The rectangle is in global coordinates.
-	 */
-	public function getVisibleRect(targetParent:DisplayObject = null):Rectangle
-	{
-		if (!targetParent)
-		{
-			targetParent = DisplayObject(systemManager);
-		}
-
-		var thisParent:DisplayObject = $parent ? $parent : parent;
-
-		//  If the object is not on the display list then it is not visible.
-		if (!thisParent)
-		{
-			return new Rectangle();
-		}
-
-		var pt:Point = new Point(x, y);
-		pt = thisParent.localToGlobal(pt);
-
-		// bounds of this object to return. Keep in global coordinates
-		// until the end and set back to targetParent coordinates.
-		var bounds:Rectangle = new Rectangle(pt.x, pt.y, width, height);
-		var current:DisplayObject = this;
-		var currentRect:Rectangle = new Rectangle();
-
-		do
-		{
-			if (current is UIComponent)
-			{
-				if (UIComponent(current).$parent)
-				{
-					current = UIComponent(current).$parent;
-				}
-				else
-				{
-					current = UIComponent(current).parent;
-				}
-			}
-			else
-			{
-				current = current.parent;
-			}
-
-			if (current && current.scrollRect)
-			{
-				// clip the bounds by the scroll rect
-				currentRect = current.scrollRect.clone();
-				pt = current.localToGlobal(currentRect.topLeft);
-				currentRect.x = pt.x;
-				currentRect.y = pt.y;
-				bounds = bounds.intersection(currentRect);
-			}
-		}
-		while (current && current != targetParent);
-
-		return bounds;
-	}
-
 	//--------------------------------------------------------------------------
 	//
 	//  Diagnostics
 	//
 	//--------------------------------------------------------------------------
 
-	mx_internal static var dispatchEventHook:Function;
-
-	/**
-	 *  Dispatches an event into the event flow.
-	 *  The event target is the EventDispatcher object upon which
-	 *  the <code>dispatchEvent()</code> method is called.
-	 *
-	 *  @param event The Event object that is dispatched into the event flow.
-	 *  If the event is being redispatched, a clone of the event is created automatically.
-	 *  After an event is dispatched, its <code>target</code> property cannot be changed,
-	 *  so you must create a new copy of the event for redispatching to work.
-	 *
-	 *  @return A value of <code>true</code> if the event was successfully dispatched.
-	 *  A value of <code>false</code> indicates failure or that
-	 *  the <code>preventDefault()</code> method was called on the event.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	override public function dispatchEvent(event:Event):Boolean
-	{
-		if (dispatchEventHook != null)
-		{
-			dispatchEventHook(event, this);
-		}
-
-		return super.dispatchEvent(event);
-	}
-
-	private static var fakeMouseX:QName = new QName(mx_internal, "_mouseX");
-	private static var fakeMouseY:QName = new QName(mx_internal, "_mouseY");
+	private static const fakeMouseX:QName = new QName(mx_internal, "_mouseX");
+	private static const fakeMouseY:QName = new QName(mx_internal, "_mouseY");
 
 	/**
 	 *  @private
@@ -7498,10 +7385,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		_transform = value;
 	}
 
-	/**
-	 * @private
-	 * Documentation is not currently available
-	 */
 	mx_internal function get $transform():flash.geom.Transform
 	{
 		return super.transform;
@@ -7578,14 +7461,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	/**
-	 *  @copy mx.core.IVisualElement#postLayoutTransformOffsets
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function get postLayoutTransformOffsets():TransformOffsets
 	{
 		return (_layoutFeatures != null) ? _layoutFeatures.postLayoutTransformOffsets : null;
@@ -7648,14 +7523,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _maintainProjectionCenter;
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function setLayoutMatrix(value:Matrix, invalidateLayout:Boolean):void
 	{
 		var previousMatrix:Matrix = _layoutFeatures ? _layoutFeatures.layoutMatrix : super.transform.matrix;
@@ -7700,14 +7567,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function setLayoutMatrix3D(value:Matrix3D, invalidateLayout:Boolean):void
 	{
 		// Early exit if possible. We don't want to invalidate unnecessarily.
@@ -7744,14 +7603,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	private static var xformPt:Point;
 
-	/**
-	 *  @copy mx.core.ILayoutElement#transformAround()
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function transformAround(transformCenter:Vector3D, scale:Vector3D = null, rotation:Vector3D = null, translation:Vector3D = null, postLayoutScale:Vector3D = null, postLayoutRotation:Vector3D = null, postLayoutTranslation:Vector3D = null, invalidateLayout:Boolean = true):void
 	{
 		// Make sure that no transform setters will trigger parent invalidation.
@@ -7948,14 +7799,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//  depth
 	//----------------------------------
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function get depth():Number
 	{
 		return (_layoutFeatures == null) ? 0 : _layoutFeatures.depth;
@@ -7980,26 +7823,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		{
 			UIComponent(parent).invalidateLayering();
 		}
-	}
-
-	/**
-	 *  Called by a component's items to indicate that their <code>depth</code>
-	 *  property has changed. Note that while this function is defined on
-	 *  <code>UIComponent</code>, it is up to subclasses to implement support
-	 *  for complex layering.
-	 *
-	 *  By default, only <code>Group</code> and <code>DataGroup</code> support
-	 *  arbitrary layering of their children.
-	 *
-	 *  @see #depth
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.4
-	 *  @productversion Flex 4
-	 */
-	public function invalidateLayering():void
-	{
 	}
 
 	/**
@@ -8060,197 +7883,76 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//
 	//--------------------------------------------------------------------------
 
-
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getPreferredBoundsWidth(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getPreferredBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getPreferredBoundsHeight(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getPreferredBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getMinBoundsWidth(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getMinBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getMinBoundsHeight(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getMinBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getMaxBoundsWidth(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getMaxBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getMaxBoundsHeight(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getMaxBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getBoundsXAtSize(width:Number, height:Number, postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getBoundsXAtSize(this, width, height, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getBoundsYAtSize(width:Number, height:Number, postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getBoundsYAtSize(this, width, height, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getLayoutBoundsWidth(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getLayoutBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getLayoutBoundsHeight(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getLayoutBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getLayoutBoundsX(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getLayoutBoundsX(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getLayoutBoundsY(postLayoutTransform:Boolean = true):Number
 	{
 		return LayoutElementUIComponentUtils.getLayoutBoundsY(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function setLayoutBoundsPosition(x:Number, y:Number, postLayoutTransform:Boolean = true):void
 	{
 		LayoutElementUIComponentUtils.setLayoutBoundsPosition(this, x, y, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void
 	{
 		LayoutElementUIComponentUtils.setLayoutBoundsSize(this, width, height, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getLayoutMatrix():Matrix
 	{
 		if (_layoutFeatures != null || super.transform.matrix == null)
@@ -8283,40 +7985,16 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function get hasLayoutMatrix3D():Boolean
 	{
 		return _layoutFeatures ? _layoutFeatures.layoutIs3D : false;
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function get is3D():Boolean
 	{
 		return _layoutFeatures ? _layoutFeatures.is3D : false;
 	}
 
-	/**
-	 *  @inheritDoc
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function getLayoutMatrix3D():Matrix3D
 	{
 		if (_layoutFeatures == null)

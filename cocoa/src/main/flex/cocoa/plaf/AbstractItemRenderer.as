@@ -15,6 +15,7 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 	protected static const SELECTED:uint = 1 << 0;
 	protected static const SHOWS_CARET:uint = 1 << 1;
 	protected static const HIGHLIGHTED:uint = 1 << 3;
+	protected static const DRAGGING:uint = 1 << 4;
 
 	protected var _laf:LookAndFeel;
 	public function set laf(value:LookAndFeel):void
@@ -37,17 +38,16 @@ public class AbstractItemRenderer extends AbstractView implements IItemRenderer
 		}
 	}
 
-	private var _dragging:Boolean = false;
 	public function get dragging():Boolean
 	{
-		return _dragging;
+		return (state & DRAGGING) == 0;
 	}
 
 	public function set dragging(value:Boolean):void
 	{
-		if (value != _dragging)
+		if (value == ((state & DRAGGING) == 0))
 		{
-			_dragging = value;
+			value ? state |= DRAGGING : state ^= DRAGGING;
 		}
 	}
 

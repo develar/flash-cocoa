@@ -35,6 +35,9 @@ public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 		}
 
 		currentView.visible = true;
+
+		invalidateSize();
+		invalidateDisplayList();
 	}
 
 	public function hide():void

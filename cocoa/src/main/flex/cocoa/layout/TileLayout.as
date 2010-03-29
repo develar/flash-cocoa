@@ -92,7 +92,7 @@ import spark.layouts.supportClasses.LayoutBase;
  *  @playerversion AIR 1.5
  *  @productversion Flex 4
  */
-public class TileLayout extends LayoutBase
+public class TileLayout extends LayoutBase implements VirtualLayout
 {
 	private var _firstIndexInView:int;
 	public function get firstIndexInView():int
