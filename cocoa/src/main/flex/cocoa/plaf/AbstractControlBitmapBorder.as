@@ -16,8 +16,6 @@ internal class AbstractControlBitmapBorder extends AbstractBitmapBorder
 
 		_layoutHeight = input.readUnsignedByte();
 		_contentInsets = readInsets(input);
-
-
 	}
 
 	override public function writeExternal(output:ByteArray):void

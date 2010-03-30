@@ -43,6 +43,10 @@ public class Menu extends AbstractComponent
 	{
 		return _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
 	}
+	public function set selectedItem(value:Object):void
+	{
+		selectedIndex = _items.getItemIndex(value);
+	}
 
 	private var _labelFunction:Function;
 	public function get labelFunction():Function

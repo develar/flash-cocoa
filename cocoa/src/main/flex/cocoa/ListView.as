@@ -20,5 +20,15 @@ public class ListView extends List implements Viewable, Control
 
 		return result;
 	}
+
+	public function get objectValue():Object
+	{
+		return selectedItem;
+	}
+
+	public function set objectValue(value:Object):void
+	{
+		selectedItem = value;
+	}
 }
 }

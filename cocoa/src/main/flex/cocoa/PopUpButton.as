@@ -98,7 +98,7 @@ public class PopUpButton extends AbstractControl implements Button
 
 	override public function set objectValue(value:Object):void
 	{
-		
+		_menu.selectedItem = value;
 	}
 }
 }
