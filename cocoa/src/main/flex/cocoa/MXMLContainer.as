@@ -1,11 +1,13 @@
 package cocoa
 {
 import cocoa.layout.AdvancedLayout;
+import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.LookAndFeel;
 
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
 
 import mx.core.IVisualElement;
@@ -13,7 +15,6 @@ import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
-
 
 import spark.components.Group;
 import spark.components.supportClasses.GroupBase;
@@ -238,6 +239,82 @@ public class MXMLContainer extends Group implements ViewContainer
 	public final function removeDisplayObject(displayObject:DisplayObject):void
 	{
 		$removeChild(displayObject);
+	}
+
+	public function getSubviewAt(index:int):View
+	{
+		return View(getElementAt(index));
+	}
+
+	public function get numSubviews():int
+	{
+		return numElements;
+	}
+
+	protected var _layoutMetrics:LayoutMetrics;
+
+	// disable unwanted legacy
+	override public function regenerateStyleCache(recursive:Boolean):void
+	{
+
+	}
+
+	override public function styleChanged(styleProp:String):void
+    {
+
+	}
+
+	override protected function resourcesChanged():void
+    {
+
+	}
+
+	override public function get layoutDirection():String
+    {
+		return AbstractView.LAYOUT_DIRECTION_LTR;
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+    {
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+    {
+		return true;
+	}
+
+	override public function getConstraintValue(constraintName:String):*
+    {
+		if (_layoutMetrics == null)
+		{
+			return undefined;
+		}
+		else
+		{
+			var value:Number = _layoutMetrics[constraintName];
+			return isNaN(value) ? undefined : value;
+		}
+	}
+
+	override public function setConstraintValue(constraintName:String, value:*):void
+    {
+		if (_layoutMetrics == null)
+		{
+			_layoutMetrics = new LayoutMetrics();
+		}
+
+		_layoutMetrics[constraintName] = value;
+	}
+
+	override public function parentChanged(p:DisplayObjectContainer):void
+	{
+		super.parentChanged(p);
+
+		if (p != null)
+		{
+			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+		}
 	}
 }
 }

@@ -54,7 +54,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["SourceListView"] = SourceListSkin;
 		data["ListView"] = ListViewSkin;
+
 		data["TabView"] = TabViewSkin;
+		data["TabView.borderless"] = BorderlessTabViewSkin;
 
 		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];

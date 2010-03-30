@@ -6,5 +6,12 @@ public interface ViewContainer extends View
 	function removeSubview(view:Viewable):void;
 
 	function getSubviewIndex(view:Viewable):int;
+
+	function getSubviewAt(index:int):View;
+
+	function get numSubviews():int;
+
+	function set measuredWidth(value:Number):void;
+	function set measuredHeight(value:Number):void;
 }
 }

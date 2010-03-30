@@ -85,5 +85,15 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 	{
 		return getChildIndex(DisplayObject(view is Component ? Component(view).skin : view));
 	}
+
+	public function getSubviewAt(index:int):View
+	{
+		return View(getChildAt(index));
+	}
+
+	public function get numSubviews():int
+	{
+		return numChildren;
+	}
 }
 }

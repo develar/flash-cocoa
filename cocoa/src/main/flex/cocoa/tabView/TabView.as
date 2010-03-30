@@ -7,6 +7,8 @@ import cocoa.Viewable;
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
 import cocoa.ui;
 
 import flash.utils.Dictionary;
@@ -17,6 +19,9 @@ use namespace ui;
 
 public class TabView extends SingleSelectionBar
 {
+	public static const DEFAULT:int = 0;
+	public static const BORDERLESS:int = 1;
+
 	protected static const _skinParts:Dictionary = new Dictionary();
 	_cl(_skinParts, Bar._skinParts);
 	_skinParts.viewStack = HANDLER_NOT_EXISTS;
@@ -81,6 +86,21 @@ public class TabView extends SingleSelectionBar
 	override public function get lafPrefix():String
 	{
 		return "TabView";
+	}
+
+	private var _style:int = DEFAULT;
+	public function set style(value:int):void
+	{
+		_style = value;
+	}
+
+	override public function createView(laf:LookAndFeel):Skin
+	{
+		if (_skinClass == null)
+		{
+			_skinClass = laf.getUI(_style == DEFAULT ? lafPrefix : (lafPrefix + ".borderless"));
+		}
+		return super.createView(laf);
 	}
 }
 }

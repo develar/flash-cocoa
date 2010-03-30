@@ -699,6 +699,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
 
 	protected var _layoutMetrics:LayoutMetrics = EMPTY_LAYOUT_METRICS;
+	public function get layoutMetrics():LayoutMetrics
+	{
+		return _layoutMetrics;
+	}
 	public function set layoutMetrics(value:LayoutMetrics):void
 	{
 		_layoutMetrics = value;

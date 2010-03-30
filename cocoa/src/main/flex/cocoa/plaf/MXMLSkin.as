@@ -24,7 +24,6 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 		return _component;
 	}
 
-	private var _layoutMetrics:LayoutMetrics;
 	public function set layoutMetrics(value:LayoutMetrics):void
 	{
 		_layoutMetrics = value;

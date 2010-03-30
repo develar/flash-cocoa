@@ -1,7 +1,5 @@
 package cocoa.plaf.aqua
 {
-import cocoa.layout.TileLayout;
-
 import flash.display.CapsStyle;
 import flash.display.Graphics;
 import flash.display.LineScaleMode;
@@ -9,10 +7,7 @@ import flash.display.LineScaleMode;
 import mx.core.UIComponent;
 
 import spark.components.DataGroup;
-import spark.components.List;
 import spark.components.Scroller;
-import spark.layouts.VerticalLayout;
-import spark.layouts.supportClasses.LayoutBase;
 
 public class ListViewSkin extends UIComponent
 {
@@ -35,8 +30,10 @@ public class ListViewSkin extends UIComponent
 			dataGroup = new DataGroup();
 			scroller.viewport = dataGroup;
 
-			var layout:LayoutBase = List(owner).layout;
-			scroller.minViewportInset = (layout is TileLayout ? TileLayout(layout).horizontalGap : VerticalLayout(layout).gap) / 2;
+			scroller.move(STROKE_THICKNESS, STROKE_THICKNESS);
+
+			//var layout:LayoutBase = List(owner).layout;
+			//scroller.minViewportInset = (layout is TileLayout ? TileLayout(layout).horizontalGap : VerticalLayout(layout).gap) / 2;
 
 			addChild(scroller);
 		}
@@ -55,8 +52,7 @@ public class ListViewSkin extends UIComponent
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		scroller.setLayoutBoundsPosition(STROKE_THICKNESS, STROKE_THICKNESS);
-		scroller.setLayoutBoundsSize(w - (STROKE_THICKNESS * 2), h - (STROKE_THICKNESS * 2));
+		scroller.setActualSize(w - (STROKE_THICKNESS * 2), h - (STROKE_THICKNESS * 2));
 
 		var g:Graphics = graphics;
 		g.clear();

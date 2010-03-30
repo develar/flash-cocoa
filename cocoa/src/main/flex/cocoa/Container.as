@@ -11,6 +11,8 @@ import com.asfusion.mate.events.InjectorEvent;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
+import flash.errors.IllegalOperationError;
+
 import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IVisualElement;
@@ -301,11 +303,31 @@ public class Container extends GroupBase implements ViewContainer
 		$removeChild(child);
 	}
 
+	public function getSubviewAt(index:int):View
+	{
+		return View(getElementAt(index));
+	}
+
+	private var _layoutMetrics:LayoutMetrics;
+	public function get layoutMetrics():LayoutMetrics
+	{
+		return _layoutMetrics;
+	}
+	public function set layoutMetrics(value:LayoutMetrics):void
+	{
+		throw new IllegalOperationError();
+	}
+
+	public function get numSubviews():int
+	{
+		return numElements;
+	}
+
 	// disable unwanted legacy
-//	override public function regenerateStyleCache(recursive:Boolean):void
-//	{
-//
-//	}
+	override public function regenerateStyleCache(recursive:Boolean):void
+	{
+
+	}
 
 	override public function styleChanged(styleProp:String):void
     {
@@ -332,29 +354,27 @@ public class Container extends GroupBase implements ViewContainer
 		return true;
 	}
 
-	private var layoutMetrics:LayoutMetrics;
-
 	override public function getConstraintValue(constraintName:String):*
     {
-		if (layoutMetrics == null)
+		if (_layoutMetrics == null)
 		{
 			return undefined;
 		}
 		else
 		{
-			var value:Number = layoutMetrics[constraintName];
+			var value:Number = _layoutMetrics[constraintName];
 			return isNaN(value) ? undefined : value;
 		}
 	}
 
 	override public function setConstraintValue(constraintName:String, value:*):void
     {
-		if (layoutMetrics == null)
+		if (_layoutMetrics == null)
 		{
-			layoutMetrics = new LayoutMetrics();
+			_layoutMetrics = new LayoutMetrics();
 		}
 
-		layoutMetrics[constraintName] = value;
+		_layoutMetrics[constraintName] = value;
 	}
 
 	override public function parentChanged(p:DisplayObjectContainer):void

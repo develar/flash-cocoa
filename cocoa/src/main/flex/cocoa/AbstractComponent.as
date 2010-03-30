@@ -22,7 +22,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 
 	protected var resourceManager:ResourceManager;
 
-	private var _skinClass:Class;
+	protected var _skinClass:Class;
 	public function set skinClass(value:Class):void
 	{
 		_skinClass = value;
