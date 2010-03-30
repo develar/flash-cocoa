@@ -25,7 +25,7 @@ public class Menu extends AbstractComponent
 	private var pendingSelectedIndex:int = 0;
 	public function get selectedIndex():int
 	{
-		return itemGroup.selectedIndex;
+		return itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex;
 	}
 	public function set selectedIndex(value:int):void
 	{

@@ -39,6 +39,11 @@ public class Tab extends Container
 			active = value;
 			invalidateActiveState();
 		}
+		else if (value && !active)
+		{
+			active = true;
+			invalidateActiveState();
+		}
 	}
 }
 }
