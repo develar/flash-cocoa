@@ -6170,7 +6170,15 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		{
 			_layoutMetrics = new LayoutMetrics();
 		}
+		else if (_layoutMetrics.right == value)
+		{
+			return;
+		}
+
 		_layoutMetrics.right = Number(value);
+		invalidateSize();
+		invalidateParentSizeAndDisplayList();
+		invalidateDisplayList();
 	}
 
 	public function get top():Object
