@@ -17,7 +17,6 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
-import org.flyti.aqua.ListSkin;
 import org.flyti.aqua.SourceListSkin;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel
@@ -39,6 +38,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont"] = AquaFonts.SYSTEM_FONT;
 		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
 		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
+		data["SmallSystemFont.emphasized"] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
 
 		data["ViewFont"] = AquaFonts.VIEW_FONT;
 		data["ViewFont.highlighted"] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
@@ -53,8 +53,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Window.bottomBar.application"] = borders[6];
 
 		data["SourceListView"] = SourceListSkin;
-		data["ListView"] = ListSkin;
-		data["TabView"] = TabSkin;
+		data["ListView"] = ListViewSkin;
+		data["TabView"] = TabViewSkin;
 
 		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];
@@ -141,6 +141,7 @@ import cocoa.plaf.aqua.BezelStyle;
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
+import flash.text.engine.FontWeight;
 
 final class WindowFrameLookAndFeel extends AbstractLookAndFeel
 {
@@ -170,6 +171,8 @@ final class AquaFonts
 
 	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = SYSTEM_FONT.clone();
 	SYSTEM_FONT_HIGHLIGHTED.color = 0xffffff;
+
+	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(new FontDescription("Lucida Grande, Segoe UI", FontWeight.BOLD), 11);
 
 	public static const VIEW_FONT_HIGHLIGHTED:ElementFormat = VIEW_FONT.clone();
 	VIEW_FONT_HIGHLIGHTED.color = 0xffffff;

@@ -14,7 +14,7 @@ import mx.core.mx_internal;
 
 use namespace mx_internal;
 
-public class TabSkin extends AbstractSkin implements AdvancedLayout
+public class TabViewSkin extends AbstractSkin implements AdvancedLayout
 {
 	[Embed(source="/GroupBox.png", scaleGridTop="7", scaleGridBottom="11", scaleGridLeft="7", scaleGridRight="13")]
 	private static const contentBorderClass:Class;

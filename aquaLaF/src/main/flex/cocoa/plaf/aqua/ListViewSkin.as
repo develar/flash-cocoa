@@ -1,12 +1,12 @@
-package org.flyti.aqua
+package cocoa.plaf.aqua
 {
+import cocoa.layout.TileLayout;
+
 import flash.display.CapsStyle;
 import flash.display.Graphics;
 import flash.display.LineScaleMode;
 
 import mx.core.UIComponent;
-
-import cocoa.layout.TileLayout;
 
 import spark.components.DataGroup;
 import spark.components.List;
@@ -14,7 +14,7 @@ import spark.components.Scroller;
 import spark.layouts.VerticalLayout;
 import spark.layouts.supportClasses.LayoutBase;
 
-public class ListSkin extends UIComponent
+public class ListViewSkin extends UIComponent
 {
 	private static const STROKE_THICKNESS:Number = 1;
 
