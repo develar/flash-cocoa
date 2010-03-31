@@ -6,7 +6,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 		
-	NSRect frame = NSMakeRect(500, 500, BUTTON_WIDTH * 5, CONTROL_FRAME_HEIGHT * 13);
+	NSRect frame = NSMakeRect(500, 500, 600, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
 	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
@@ -61,15 +61,18 @@
 		
 	// Scroll View (List)
 	controlFrame.origin.x = 0;
-	controlFrame.origin.y -= 3;
-	controlFrame.size.width = 3;
-	controlFrame.size.height = 3;
+	controlFrame.origin.y -= 150;
+	controlFrame.size.width = 150;
+	controlFrame.size.height = 150;
 	
-	NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:controlFrame];
-	[contentView addSubview:scrollView];
+	[self createScrollView];
+	NSScrollView *scrollView = [self createScrollView];
+	[[scrollView horizontalScroller] highlight:YES];
+	[[scrollView verticalScroller] highlight:YES];
 	
-	[scrollView setBorderType:NSBezelBorder];
-	
+	scrollView = [self createScrollView];
+	[[scrollView documentView] setFrame:NSMakeRect(0, 0, 4, 4)];
+
 	// Image View (NSImageView or, IB Image Well)
 	controlFrame.origin.x = 0;
 	controlFrame.origin.y -= 50 + 10;
@@ -80,6 +83,11 @@
 	[imageView setImageFrameStyle:NSImageFrameGrayBezel];
 	[imageView setEditable:YES];
 	[contentView addSubview:imageView];
+	
+	// Scroll bars
+//	NSScroller scroller 
+	
+//	NSScroll
 	
 	return;
 	
@@ -180,6 +188,22 @@
 	
 	controlFrame.origin.x += BUTTON_WIDTH;
 	return button;
+}
+
+-(id)createScrollView {
+	NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:controlFrame];
+	[scrollView setBorderType:NSNoBorder];
+	[scrollView setHasVerticalScroller:YES];
+	[scrollView setHasHorizontalScroller:YES];
+	
+	NSView *bigView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 300, 300)];
+	[scrollView setDocumentView:bigView];
+	[[scrollView documentView] scrollPoint:NSMakePoint(75, 75)];
+	
+	[contentView addSubview:scrollView];
+	
+	controlFrame.origin.x += 200;
+	return scrollView;
 }
 
 - (id)createSegmentedControl {

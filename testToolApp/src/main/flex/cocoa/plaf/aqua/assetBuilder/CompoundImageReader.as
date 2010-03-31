@@ -4,7 +4,7 @@ import cocoa.Border;
 import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
-import cocoa.plaf.Scale1HBitmapBorder;
+import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 
@@ -27,6 +27,8 @@ internal final class CompoundImageReader
 
 	private const sliceCalculator:SliceCalculator = new SliceCalculator();
 
+	private var assetsBitmapData:BitmapData;
+
 	public function CompoundImageReader(borders:Vector.<Border>)
 	{
 		this.borders = borders;
@@ -36,7 +38,7 @@ internal final class CompoundImageReader
 	{
 		this.rowsInfo = rowsInfo;
 
-		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
+		assetsBitmapData = compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 
 		var rowCount:int = rowsInfo.length;
 		for (var row:int = 0; row < rowCount; row++)
@@ -67,6 +69,13 @@ internal final class CompoundImageReader
 		borders[position++] = border;
 	}
 
+	public function readScrollbar():void
+	{
+		compoundBitmapData = assetsBitmapData;
+
+
+	}
+
 	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
@@ -77,7 +86,7 @@ internal final class CompoundImageReader
 		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
 		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(1, true);
 		itemBitmaps[0] = createBitmapData(itemRectangle);
-		borders[position + 1] = Scale1HBitmapBorder.create(itemBitmaps, itemHeight, new Insets(21, NaN, 21, 5));
+		borders[position + 1] = Scale1BitmapBorder.create(itemBitmaps, itemHeight, new Insets(21, NaN, 21, 5));
 
 		// checkmarks
 		itemRectangle.x += 5;
