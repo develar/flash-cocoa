@@ -20,10 +20,9 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 	private var sliceHeight:Number;
 	private var sliceSizes:Insets;
 
-	public static function create(layoutHeight:Number, frameInsets:FrameInsets, contentInsets:Insets):Scale3HBitmapBorder
+	public static function create(frameInsets:FrameInsets, contentInsets:Insets):Scale3HBitmapBorder
 	{
 		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
-		border._layoutHeight = layoutHeight;
 		border._frameInsets = frameInsets;
 		border._contentInsets = contentInsets;
 		return border;
@@ -32,10 +31,10 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 	public function configure(sliceSizes:Insets, bitmaps:Vector.<BitmapData>):void
 	{
 		this.sliceSizes = sliceSizes;
-		this.sliceHeight = sliceHeight;
 		this.bitmaps = bitmaps;
 
 		sliceHeight = bitmaps[0].height;
+		_layoutHeight = sliceHeight + _frameInsets.top + _frameInsets.bottom;
 	}
 
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
@@ -59,9 +58,10 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		super.readExternal(input);
 		
 		sliceSizes = readInsets(input);
-		_frameInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte());
+		_frameInsets = readFrameInsets(input);
 
 		sliceHeight = bitmaps[0].height;
+		_layoutHeight = sliceHeight + _frameInsets.top + _frameInsets.bottom;
 	}
 
 	override public function writeExternal(output:ByteArray):void
@@ -70,9 +70,7 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		super.writeExternal(output);
 		writeInsets(output, sliceSizes);
 
-		output.writeByte(_frameInsets.left);
-		output.writeByte(_frameInsets.top);
-		output.writeByte(_frameInsets.right);
+		writeFrameInsets(output, _frameInsets);
 	}
 }
 }

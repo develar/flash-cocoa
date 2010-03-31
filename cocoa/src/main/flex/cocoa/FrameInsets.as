@@ -1,9 +1,5 @@
 package cocoa
 {
-/**
- * bottom не нужен, так как мы рисуем сверху вниз — как получилось, так и получилось.
- * Но таки иногда он нужен для определенных расчетов — Scale9BitmapBorder. 
- */
 public final class FrameInsets
 {
 	public var left:Number;

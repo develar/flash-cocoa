@@ -386,5 +386,10 @@ public class Container extends GroupBase implements ViewContainer
 			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
 		}
 	}
+
+	override public function getStyle(styleProp:String):*
+	{
+		return super.getStyle(styleProp);
+	}
 }
 }

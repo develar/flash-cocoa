@@ -8,7 +8,7 @@ import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.BoxSkin;
 import cocoa.plaf.MenuSkin;
-import cocoa.plaf.Scale1HBitmapBorder;
+import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.SliderNumericStepperSkin;
@@ -79,7 +79,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
 		data["SegmentItem.border"] = borders[7];
-		Scale1HBitmapBorder(borders[7]).frameInsets = new FrameInsets(0, 0, 0, -3);
+		Scale1BitmapBorder(borders[7]).frameInsets = new FrameInsets(0, 0, 0, -3);
 	}
 
 	private static function initAssets():void
@@ -100,7 +100,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 			switch (data.readUnsignedByte())
 			{
 				case 0: border = new Scale3HBitmapBorder(); break;
-				case 1: border = new Scale1HBitmapBorder(); break;
+				case 1: border = new Scale1BitmapBorder(); break;
 				case 2: border = new Scale9BitmapBorder(); break;
 			}
 			border.readExternal(data);

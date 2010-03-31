@@ -12,6 +12,11 @@ public class AbstractBorder implements Border
 		return NaN;
 	}
 
+	public function get layoutWidth():Number
+	{
+		return NaN;
+	}
+
 	protected var _frameInsets:FrameInsets = EMPTY_FRAME_INSETS;
 	public function get frameInsets():FrameInsets
 	{

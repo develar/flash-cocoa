@@ -24,6 +24,7 @@ public interface Border
 	 * border может определять высоту — практически все кнопки в Aqua имеют фиксированную высоту
 	 */
 	function get layoutHeight():Number;
+	function get layoutWidth():Number;
 
 	/**
 	 * View для добавления детей

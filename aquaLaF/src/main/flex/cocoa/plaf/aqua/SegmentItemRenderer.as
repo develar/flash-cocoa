@@ -3,7 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.FrameInsets;
 import cocoa.plaf.LabeledItemRenderer;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Scale1HBitmapBorder;
+import cocoa.plaf.Scale1BitmapBorder;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
@@ -67,7 +67,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
 		var frameInsets:FrameInsets = border.frameInsets;
-		var border:Scale1HBitmapBorder = Scale1HBitmapBorder(this.border);
+		var border:Scale1BitmapBorder = Scale1BitmapBorder(this.border);
 
 		var isLast:Boolean = false;
 		const isFirst:Boolean = itemIndex == 0;

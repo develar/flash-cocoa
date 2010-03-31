@@ -8,11 +8,16 @@ import cocoa.plaf.Skin;
 import flash.display.DisplayObjectContainer;
 
 import mx.core.IVisualElement;
+import mx.core.mx_internal;
 
 import spark.components.List;
 
+use namespace mx_internal;
+
 public class ListView extends List implements Viewable, Control
 {
+	private var skinClass:Class;
+
 	protected var _action:Function;
 	public function set action(value:Function):void
 	{
@@ -57,7 +62,7 @@ public class ListView extends List implements Viewable, Control
 			}
 		}
 
-		setStyle("skinClass", laf.getUI("ListView"));
+		skinClass = laf.getUI("ListView");
 		super.createChildren();
 	}
 
@@ -79,6 +84,53 @@ public class ListView extends List implements Viewable, Control
 		}
 
 		super.updateRenderer(renderer, itemIndex, data);
+	}
+
+	// disable unwanted legacy
+	override public function regenerateStyleCache(recursive:Boolean):void
+	{
+
+	}
+
+	override public function styleChanged(styleProp:String):void
+    {
+
+	}
+
+	override protected function resourcesChanged():void
+    {
+
+	}
+
+	override public function get layoutDirection():String
+    {
+		return AbstractView.LAYOUT_DIRECTION_LTR;
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+    {
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+    {
+		return true;
+	}
+
+	override public function getStyle(styleProp:String):*
+	{
+		if (styleProp == "skinClass")
+		{
+			return skinClass;
+		}
+		else if (styleProp == "layoutDirection")
+		{
+			return layoutDirection;
+		}
+		else
+		{
+			return undefined;
+		}
 	}
 }
 }

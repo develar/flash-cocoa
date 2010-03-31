@@ -1,6 +1,10 @@
 package cocoa.plaf
 {
+import cocoa.FrameInsets;
+
 import flash.utils.ByteArray;
+import flash.utils.IDataInput;
+import flash.utils.IDataOutput;
 
 internal class AbstractControlBitmapBorder extends AbstractBitmapBorder
 {
@@ -14,7 +18,6 @@ internal class AbstractControlBitmapBorder extends AbstractBitmapBorder
 	{
 		super.readExternal(input);
 
-		_layoutHeight = input.readUnsignedByte();
 		_contentInsets = readInsets(input);
 	}
 
@@ -22,8 +25,20 @@ internal class AbstractControlBitmapBorder extends AbstractBitmapBorder
 	{
 		super.writeExternal(output);
 
-		output.writeByte(_layoutHeight);
 		writeInsets(output, _contentInsets);
+	}
+
+	protected final function readFrameInsets(input:IDataInput):FrameInsets
+	{
+		return new FrameInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
+	}
+
+	protected final function writeFrameInsets(output:IDataOutput, insets:FrameInsets):void
+	{
+		output.writeByte(insets.left);
+		output.writeByte(insets.top);
+		output.writeByte(insets.right);
+		output.writeByte(insets.bottom);
 	}
 }
 }
