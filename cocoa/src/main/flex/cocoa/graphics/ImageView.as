@@ -199,7 +199,7 @@ public class ImageView extends AbstractView
 		var imageHeight:Number;
 		var imageX:Number;
 		var imageY:Number;
-		if (_fillType == BitmapFillType.SCALE_TO_FIT)
+		if (_fillType == BitmapFillType.SCALE_TO_FIT || _fillType == BitmapFillType.IMAGE_PREVIEW)
 		{
 			imageWidth = scaledImageRect.width;
 			imageHeight = scaledImageRect.height;
@@ -261,10 +261,17 @@ public class ImageView extends AbstractView
 			return null;
 		}
 
-		imageFrame = new Rectangle();
-		if (_fillType == BitmapFillType.SCALE_TO_FIT)
+		if (_fillType == BitmapFillType.SCALE_TO_FIT || _fillType == BitmapFillType.IMAGE_PREVIEW )
 		{
-			imageFrame = RatioUtil.scaleToFit(_bitmapData.rect, bounds);
+			if(_fillType == BitmapFillType.IMAGE_PREVIEW &&
+					_bitmapData.rect.width <= bounds.width && _bitmapData.rect.height <= bounds.height)
+			{
+				imageFrame = _bitmapData.rect.clone();
+			}
+			else
+			{
+				imageFrame = RatioUtil.scaleToFit(_bitmapData.rect, bounds);
+			}
 
 			if (imageFrame.height < bounds.height && _verticalAlign != VerticalAlign.TOP)
 			{
@@ -277,7 +284,8 @@ public class ImageView extends AbstractView
 					imageFrame.y += (bounds.height - imageFrame.height);
 				}
 			}
-			else if (imageFrame.width < bounds.width && _horizontalAlign != HorizontalAlign.LEFT)
+
+			if (imageFrame.width < bounds.width && _horizontalAlign != HorizontalAlign.LEFT)
 			{
 				if (_horizontalAlign == HorizontalAlign.CENTER)
 				{
