@@ -1,6 +1,5 @@
 package cocoa.plaf.aqua
 {
-import cocoa.AbstractBorder;
 import cocoa.Insets;
 import cocoa.SingleSelectionDataGroup;
 import cocoa.ViewStack;
@@ -24,7 +23,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 
 	protected function get contentInsets():Insets
 	{
-		return AbstractBorder.EMPTY_CONTENT_INSETS;
+		throw new Error("abstract");
 	}
 
 	override protected function createChildren():void

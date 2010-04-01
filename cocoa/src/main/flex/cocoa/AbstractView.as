@@ -4896,7 +4896,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	override public function addChild(child:DisplayObject):DisplayObject
 	{
 		var formerParent:DisplayObjectContainer = child.parent;
-		if (formerParent && !(formerParent is Loader))
+		if (formerParent != null && !(formerParent is Loader))
 		{
 			formerParent.removeChild(child);
 		}

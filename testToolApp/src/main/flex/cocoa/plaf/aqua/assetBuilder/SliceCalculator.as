@@ -12,15 +12,44 @@ public class SliceCalculator
 
 	private var pixels:Vector.<uint>;
 
+	public function calculateFromTop(bitmapData:BitmapData, sourceRectangle:Rectangle):Number
+	{
+		init(bitmapData, sourceRectangle);
+
+		var result:Number = getUnrepeatableFromTop(true);
+		if (result == sourceRectangle.height)
+		{
+			throw new Error("can't find");
+		}
+		return result;
+	}
+
+	public function calculateFromLeft(bitmapData:BitmapData, sourceRectangle:Rectangle):Number
+	{
+		init(bitmapData, sourceRectangle);
+
+		var result:Number = getUnrepeatableFromLeft(true);
+		if (result == sourceRectangle.width)
+		{
+			throw new Error("can't find");
+		}
+		return result;
+	}
+
+	private function init(bitmapData:BitmapData, sourceRectangle:Rectangle):void
+	{
+		width = sourceRectangle.width;
+		height = sourceRectangle.height;
+
+		pixels = bitmapData.getVector(sourceRectangle);
+		pixels.fixed = true;
+	}
+
 	public function calculate(bitmapData:BitmapData, frameRectangle:Rectangle, top:int, strict:Boolean = false, allSide:Boolean = false):Insets
 	{
 		frameRectangle.y += top;
 
-		width = frameRectangle.width;
-		height = frameRectangle.height;
-
-		pixels = bitmapData.getVector(frameRectangle);
-		pixels.fixed = true;
+		init(bitmapData, frameRectangle);
 
 		var sliceSize:Insets = new Insets(getUnrepeatableFromLeft(strict), allSide ? getUnrepeatableFromTop(strict) : 0, getUnrepeatableFromRight(strict), allSide ? getUnrepeatableFromBottom(strict) : 0);
 

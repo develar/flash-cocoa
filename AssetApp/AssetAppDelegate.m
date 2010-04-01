@@ -1,4 +1,5 @@
 #import "AssetAppDelegate.h"
+#import "CustomScroller.h"
 
 @implementation AssetAppDelegate
 
@@ -6,7 +7,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 		
-	NSRect frame = NSMakeRect(500, 500, 600, CONTROL_FRAME_HEIGHT * 13);
+	NSRect frame = NSMakeRect(500, 500, 530, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
 	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
@@ -61,17 +62,45 @@
 		
 	// Scroll View (List)
 	controlFrame.origin.x = 0;
-	controlFrame.origin.y -= 150;
-	controlFrame.size.width = 150;
-	controlFrame.size.height = 150;
+	controlFrame.origin.y -= 120;
+	controlFrame.size.width = 120;
+	controlFrame.size.height = 120;
 	
 	[self createScrollView];
+		
 	NSScrollView *scrollView = [self createScrollView];
-	[[scrollView horizontalScroller] highlight:YES];
-	[[scrollView verticalScroller] highlight:YES];
+	[[scrollView documentView] setFrame:NSMakeRect(0, 0, 4, 4)];
 	
 	scrollView = [self createScrollView];
-	[[scrollView documentView] setFrame:NSMakeRect(0, 0, 4, 4)];
+	
+	CustomScroller *scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 1, 0)];
+	[scroller setEnabled:YES];
+	[scroller setKnobProportion:0.1];
+	[scroller setDoubleValue:0.5];
+	[scrollView setHorizontalScroller:scroller];
+	
+	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 0, 1)];
+	[scroller setEnabled:YES];
+	[scroller setKnobProportion:0.1];
+	[scroller setDoubleValue:0.5];
+	[scrollView setVerticalScroller:scroller];
+	
+	
+	scrollView = [self createScrollView];
+	
+	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 1, 0)];
+	scroller.highlightArrowId = YES;
+	[scroller setEnabled:YES];
+	[scroller setKnobProportion:0.1];
+	[scroller setDoubleValue:0.5];
+	[scrollView setHorizontalScroller:scroller];
+	
+	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 0, 1)];
+	scroller.highlightArrowId = YES;
+	[scroller setEnabled:YES];
+	[scroller setKnobProportion:0.1];
+	[scroller setDoubleValue:0.5];
+	[scrollView setVerticalScroller:scroller];
 
 	// Image View (NSImageView or, IB Image Well)
 	controlFrame.origin.x = 0;
@@ -83,9 +112,6 @@
 	[imageView setImageFrameStyle:NSImageFrameGrayBezel];
 	[imageView setEditable:YES];
 	[contentView addSubview:imageView];
-	
-	// Scroll bars
-//	NSScroller scroller 
 	
 //	NSScroll
 	
@@ -192,22 +218,25 @@
 
 -(id)createScrollView {
 	NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:controlFrame];
+	
+	[scrollView setDrawsBackground:NO];
+	
 	[scrollView setBorderType:NSNoBorder];
 	[scrollView setHasVerticalScroller:YES];
 	[scrollView setHasHorizontalScroller:YES];
 	
 	NSView *bigView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 300, 300)];
 	[scrollView setDocumentView:bigView];
-	[[scrollView documentView] scrollPoint:NSMakePoint(75, 75)];
+	[[scrollView documentView] scrollPoint:NSMakePoint(100, 100)];
 	
 	[contentView addSubview:scrollView];
 	
-	controlFrame.origin.x += 200;
+	controlFrame.origin.x += 130;
 	return scrollView;
 }
 
 - (id)createSegmentedControl {
-	NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] initWithFrame:controlFrame ];
+	NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] initWithFrame:controlFrame];
 	[contentView addSubview:segmentedControl];
 	
 	[segmentedControl setSegmentCount:3];

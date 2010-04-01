@@ -26,7 +26,7 @@ import flash.utils.ByteArray;
 public class Builder
 {
 	[Embed(source="/assets.png")]
-	private static var buttonsClass:Class;
+	private static var assetsClass:Class;
 
 	[Embed(source="/popUpMenu.png")]
 	private static var popUpMenuClass:Class;
@@ -65,19 +65,19 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 1 /* scrollbars */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
-		compoundImageReader.read(buttonsClass, buttonRowsInfo);
+		compoundImageReader.read(assetsClass, buttonRowsInfo);
 		// image view bezel border (imagewell border)
 		borders[compoundImageReader.position++] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
 
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
-		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3HBitmapBorder.create(new FrameInsets(-33, 0, -33, -48), AbstractBorder.EMPTY_CONTENT_INSETS));
+		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3HBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
 
 		compoundImageReader.readScrollbar();

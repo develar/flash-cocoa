@@ -7,9 +7,6 @@ screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resou
 screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl3.png
 screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl4.png
 
-screencapture -iT4 ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/Scroller.h.IncrementButton.highlighted.png
-screencapture -iT4 ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/Scroller.v.IncrementButton.highlighted.png
-
 or
 
 screencapture -ic

@@ -17,17 +17,21 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 		return _layoutWidth;
 	}
 
-	public static function create(bitmaps:Vector.<BitmapData>, layoutHeight:Number, contentInsets:Insets, frameInsets:FrameInsets = null, layoutWidth:Number = NaN):Scale1BitmapBorder
+	public static function create(bitmaps:Vector.<BitmapData>, contentInsets:Insets = null, frameInsets:FrameInsets = null):Scale1BitmapBorder
 	{
 		var border:Scale1BitmapBorder = new Scale1BitmapBorder();
 		border.bitmaps = bitmaps;
-		border._layoutHeight = layoutHeight;
-		border._layoutWidth = layoutWidth;
-		border._contentInsets = contentInsets;
+		if (contentInsets != null)
+		{
+			border._contentInsets = contentInsets;
+		}
 		if (frameInsets != null)
 		{
 			border._frameInsets = frameInsets;
 		}
+
+		border._layoutHeight = bitmaps[0].height + border._frameInsets.top + border._frameInsets.bottom;
+		border._layoutWidth = bitmaps[0].width + border._frameInsets.left + border._frameInsets.right;
 		return border;
 	}
 

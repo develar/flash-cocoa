@@ -20,11 +20,14 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 	private var sliceHeight:Number;
 	private var sliceSizes:Insets;
 
-	public static function create(frameInsets:FrameInsets, contentInsets:Insets):Scale3HBitmapBorder
+	public static function create(frameInsets:FrameInsets, contentInsets:Insets = null):Scale3HBitmapBorder
 	{
 		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
 		border._frameInsets = frameInsets;
-		border._contentInsets = contentInsets;
+		if (contentInsets != null)
+		{
+			border._contentInsets = contentInsets;
+		}
 		return border;
 	}
 

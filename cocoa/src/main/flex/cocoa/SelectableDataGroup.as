@@ -1,24 +1,21 @@
 package cocoa
 {
-import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.AbstractItemRenderer;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
-import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 
 import mx.core.IFlexDisplayObject;
 import mx.core.IVisualElement;
 import mx.core.mx_internal;
 
-import spark.components.DataGroup;
 import spark.components.IItemRenderer;
 
 use namespace mx_internal;
 
 [Abstract]
-public class SelectableDataGroup extends DataGroup implements LookAndFeelProvider
+public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelProvider
 {
 	protected static const selectionChanged:uint = 1 << 0;
 	private static const mouseSelectionModeChanged:uint = 1 << 1;
@@ -127,72 +124,6 @@ public class SelectableDataGroup extends DataGroup implements LookAndFeelProvide
 	public function itemToIcon(item:Object):IFlexDisplayObject
     {
 		return _iconFunction(item);
-	}
-
-	// disable unwanted legacy
-	override public function regenerateStyleCache(recursive:Boolean):void
-	{
-
-	}
-
-	override public function styleChanged(styleProp:String):void
-    {
-
-	}
-
-	override protected function resourcesChanged():void
-    {
-
-	}
-
-	override public function get layoutDirection():String
-    {
-		return AbstractView.LAYOUT_DIRECTION_LTR;
-	}
-
-	override public function registerEffects(effects:Array /* of String */):void
-    {
-
-	}
-
-	override mx_internal function initThemeColor():Boolean
-    {
-		return true;
-	}
-
-	private var layoutMetrics:LayoutMetrics;
-
-	override public function getConstraintValue(constraintName:String):*
-    {
-		if (layoutMetrics == null)
-		{
-			return undefined;
-		}
-		else
-		{
-			var value:Number = layoutMetrics[constraintName];
-			return isNaN(value) ? undefined : value;
-		}
-	}
-
-	override public function setConstraintValue(constraintName:String, value:*):void
-    {
-		if (layoutMetrics == null)
-		{
-			layoutMetrics = new LayoutMetrics();
-		}
-
-		layoutMetrics[constraintName] = value;
-	}
-
-	override public function parentChanged(p:DisplayObjectContainer):void
-	{
-		super.parentChanged(p);
-
-		if (p != null)
-		{
-			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
-		}
 	}
 }
 }

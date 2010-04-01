@@ -69,11 +69,29 @@ internal final class CompoundImageReader
 		borders[position++] = border;
 	}
 
+	/**
+	 * 2 (v and h) track
+	 */
 	public function readScrollbar():void
 	{
 		compoundBitmapData = assetsBitmapData;
 
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(2, true);
 
+		// v track
+		var itemRectangle:Rectangle = new Rectangle(105, 192, 15, 25);
+		itemRectangle.height = sliceCalculator.calculateFromTop(compoundBitmapData, itemRectangle) + 1;
+		bitmaps[0] = createBitmapData(itemRectangle);
+
+		// h track
+		itemRectangle.x = 0;
+		itemRectangle.y += 105;
+		itemRectangle.width = 25;
+		itemRectangle.height = 15;
+		itemRectangle.width = sliceCalculator.calculateFromLeft(compoundBitmapData, itemRectangle) + 1;
+		bitmaps[1] = createBitmapData(itemRectangle);
+
+		borders[position++] = Scale1BitmapBorder.create(bitmaps);
 	}
 
 	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
@@ -86,7 +104,7 @@ internal final class CompoundImageReader
 		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
 		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(1, true);
 		itemBitmaps[0] = createBitmapData(itemRectangle);
-		borders[position + 1] = Scale1BitmapBorder.create(itemBitmaps, itemHeight, new Insets(21, NaN, 21, 5));
+		borders[position + 1] = Scale1BitmapBorder.create(itemBitmaps, new Insets(21, NaN, 21, 5));
 
 		// checkmarks
 		itemRectangle.x += 5;

@@ -18,14 +18,25 @@ internal class AbstractControlBitmapBorder extends AbstractBitmapBorder
 	{
 		super.readExternal(input);
 
-		_contentInsets = readInsets(input);
+		if (input.readByte() == 1)
+		{
+			_contentInsets = readInsets(input);
+		}
 	}
 
 	override public function writeExternal(output:ByteArray):void
 	{
 		super.writeExternal(output);
 
-		writeInsets(output, _contentInsets);
+		if (_contentInsets == EMPTY_CONTENT_INSETS)
+		{
+			output.writeByte(0);
+		}
+		else
+		{
+			output.writeByte(1);
+			writeInsets(output, _contentInsets);
+		}
 	}
 
 	protected final function readFrameInsets(input:IDataInput):FrameInsets

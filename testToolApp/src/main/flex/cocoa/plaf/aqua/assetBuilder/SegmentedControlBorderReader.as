@@ -92,7 +92,7 @@ public class SegmentedControlBorderReader
 		readHighlightedSegments(canvasBitmapData, BitmapAsset(new bitmapData2Class()).bitmapData, 3, 5, highlightOffOffset);
 		readHighlightedSegments(BitmapAsset(new bitmapData3Class()).bitmapData, BitmapAsset(new bitmapData4Class()).bitmapData, 6, 7, highlightOnOffset);
 
-		return Scale1BitmapBorder.create(segmentBitmaps, frameRectangle.height - 3, new Insets(10, NaN, 10, 4));
+		return Scale1BitmapBorder.create(segmentBitmaps, new Insets(10, NaN, 10, 4));
 	}
 
 	// firstMultiplier/lastMultiplier — число controls над разбираемым

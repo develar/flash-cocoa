@@ -5,7 +5,7 @@ import flash.display.Graphics;
 public class AbstractBorder implements Border
 {
 	protected static const EMPTY_FRAME_INSETS:FrameInsets = new FrameInsets();
-	public static const EMPTY_CONTENT_INSETS:Insets = new Insets();
+	protected static const EMPTY_CONTENT_INSETS:Insets = new Insets();
 
 	public function get layoutHeight():Number
 	{
