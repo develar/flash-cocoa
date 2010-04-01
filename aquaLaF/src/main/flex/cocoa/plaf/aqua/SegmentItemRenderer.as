@@ -47,6 +47,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	{
 		super.measure();
 
+		measuredMinHeight = measuredHeight = 20;
 		// первый и последний сегмент имеет ширину большую на 1px чем остальные
 		var numberOfItems:int = DataGroup(parent).dataProvider.length;
 		if (itemIndex == 0 || itemIndex == (numberOfItems - 1))

@@ -9,6 +9,11 @@ import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
 
+/**
+ * Повторение в beginBitmapFill отключено. Данный border не предназначен для повторения фрагмента большего чем 1px —
+ * то есть в первую очередь используется для, к примеру — отображения 5px уникального неповторимого изображения и повторяемого шириной (или высотой в зависимости от ориентации) 1px
+ * ("If false, the bitmap image does not repeat, and the edges of the bitmap are used for any fill area that extends beyond the bitmap.")
+ */
 public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implements Border
 {
 	private var _layoutWidth:Number;
@@ -40,7 +45,7 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 		sharedMatrix.tx = _frameInsets.left;
 		sharedMatrix.ty = _frameInsets.top;
 
-		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, true);
+		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
 		g.drawRect(_frameInsets.left, _frameInsets.top, w, h - _frameInsets.bottom);
 		g.endFill();
 	}
