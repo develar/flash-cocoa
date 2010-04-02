@@ -11,7 +11,7 @@ import flash.utils.ByteArray;
 /**
  * Тот же трюк, что и в Scale3HBitmapBorder — отрисовка scale9Grid требует всего 4, а не 9 кусочков
  */
-public final class Scale9BitmapBorder extends AbstractBitmapBorder
+public final class Scale9BitmapBorder extends AbstractMultipleBitmapBorder
 {
 	private var rightSliceInnerWidth:int;
 	private var bottomSliceInnerHeight:int;
@@ -73,8 +73,7 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 	{
 		super.readExternal(input);
 
-		_contentInsets = readInsets(input);
-		_frameInsets = new FrameInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte());
+		_frameInsets = readFrameInsets(input);
 
 		rightSliceInnerWidth = bitmaps[1].width + _frameInsets.right;
 		bottomSliceInnerHeight = bitmaps[2].height + _frameInsets.bottom;
@@ -86,12 +85,7 @@ public final class Scale9BitmapBorder extends AbstractBitmapBorder
 
 		super.writeExternal(output);
 
-		writeInsets(output, _contentInsets);
-
-		output.writeByte(_frameInsets.left);
-		output.writeByte(_frameInsets.top);
-		output.writeByte(_frameInsets.right);
-		output.writeByte(_frameInsets.bottom);
+		writeFrameInsets(output, _frameInsets);
 	}
 }
 }

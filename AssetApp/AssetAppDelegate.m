@@ -7,7 +7,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 		
-	NSRect frame = NSMakeRect(500, 500, 530, CONTROL_FRAME_HEIGHT * 13);
+	NSRect frame = NSMakeRect(500, 500, 1030, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
 	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
@@ -99,6 +99,27 @@
 	scroller.highlightArrowId = YES;
 	[scroller setEnabled:YES];
 	[scroller setKnobProportion:0.1];
+	[scroller setDoubleValue:0.5];
+	[scrollView setVerticalScroller:scroller];
+	
+	
+	
+	scrollView = [self createScrollView];
+	[scrollView setFrame:NSMakeRect(controlFrame.origin.x - 130, controlFrame.origin.y, 250, 250)];
+	
+	[[scrollView documentView] setFrame:NSMakeRect(0, 0, 500, 500)];
+	
+	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 1, 0)];
+	scroller.highlightArrowId = YES;
+	[scroller setEnabled:YES];
+	[scroller setKnobProportion:0.8];
+	[scroller setDoubleValue:0.5];
+	[scrollView setHorizontalScroller:scroller];
+	
+	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 0, 1)];
+	scroller.highlightArrowId = YES;
+	[scroller setEnabled:YES];
+	[scroller setKnobProportion:0.6];
 	[scroller setDoubleValue:0.5];
 	[scrollView setVerticalScroller:scroller];
 

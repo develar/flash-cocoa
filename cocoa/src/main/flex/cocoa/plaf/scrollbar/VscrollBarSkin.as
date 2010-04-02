@@ -50,19 +50,19 @@ public class VscrollBarSkin extends LightFlexUIComponent
 		}
 
 		track = new Button();
-		track.border = laf.getBorder("Scrollbar.track");
+		track.border = laf.getBorder("Scrollbar.track.v");
 		addChild(track);
 
 		thumb = new Button();
-		thumb.border = laf.getBorder("Scrollbar.track");
+		thumb.border = laf.getBorder("Scrollbar.track.v");
 		addChild(thumb);
 
 		decrementButton = new Button();
-		decrementButton.border = laf.getBorder("Scrollbar.track");
+		decrementButton.border = laf.getBorder("Scrollbar.decrementButton.v");
 		addChild(decrementButton);
 
 		incrementButton = new Button();
-		incrementButton.border = laf.getBorder("Scrollbar.track");
+		incrementButton.border = laf.getBorder("Scrollbar.incrementButton.v");
 		addChild(incrementButton);
 
 		VScrollBar(parent).uiPartAdded("track", track);

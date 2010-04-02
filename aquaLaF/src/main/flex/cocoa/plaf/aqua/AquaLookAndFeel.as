@@ -26,6 +26,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 	private static var borders:Vector.<Border>;
 	private static var icons:Vector.<Icon>;
 
+	private static const scrollbarBorderPosition:int = 8;
+
 	public function AquaLookAndFeel()
 	{
 		initialize();
@@ -81,7 +83,20 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SegmentItem.border"] = borders[7];
 		Scale1BitmapBorder(borders[7]).frameInsets = new FrameInsets(0, 0, 0, -3);
 
-		data["Scrollbar.track"] = borders[8];
+		data["Scrollbar.track.v"] = borders[scrollbarBorderPosition];
+		data["Scrollbar.track.h"] = borders[scrollbarBorderPosition + 1];
+
+		data["Scrollbar.decrementButton.h"] = borders[scrollbarBorderPosition + 2];
+		data["Scrollbar.decrementButton.h.highlighted"] = borders[scrollbarBorderPosition + 3];
+
+		data["Scrollbar.incrementButton.h"] = borders[scrollbarBorderPosition + 4];
+		data["Scrollbar.incrementButton.h.highlighted"] = borders[scrollbarBorderPosition + 5];
+
+		data["Scrollbar.decrementButton.v"] = borders[scrollbarBorderPosition + 6];
+		data["Scrollbar.decrementButton.v.highlighted"] = borders[scrollbarBorderPosition + 7];
+
+		data["Scrollbar.incrementButton.v"] = borders[scrollbarBorderPosition + 8];
+		data["Scrollbar.incrementButton.v.highlighted"] = borders[scrollbarBorderPosition + 9];
 	}
 
 	private static function initAssets():void

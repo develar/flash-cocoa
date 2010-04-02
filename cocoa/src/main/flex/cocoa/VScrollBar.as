@@ -9,5 +9,16 @@ public class VScrollBar extends spark.components.VScrollBar
 		this[id] = instance;
 		partAdded(id, instance);
 	}
+
+	override public function getStyle(styleProp:String):*
+	{
+		switch (styleProp)
+		{
+			case "repeatDelay": return 500;
+			case "repeatInterval": return 35;
+		}
+
+		return undefined;
+	}
 }
 }

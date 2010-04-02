@@ -1,14 +1,15 @@
 package cocoa.plaf.aqua.assetBuilder
 {
-import cocoa.AbstractBorder;
 import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.TextInsets;
 import cocoa.plaf.AbstractBitmapBorder;
+import cocoa.plaf.AbstractMultipleBitmapBorder;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
+import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
@@ -65,7 +66,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 1 /* scrollbars */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 10 /* scrollbars */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -108,19 +109,45 @@ public class Builder
 		var x:int = 100;
 		var y:int = 100;
 
-		var n:int = data.readUnsignedByte();
-		while (--n > -1)
-		{
-			var border:AbstractBitmapBorder;
-			switch (data.readUnsignedByte())
-			{
-				case 0: border = new Scale3HBitmapBorder(); break;
-				case 1: border = new Scale1BitmapBorder(); break;
-				case 2: border = new Scale9BitmapBorder(); break;
-			}
-			border.readExternal(data);
+		var pendingBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>();
 
-			for each (var bitmapData:BitmapData in border.getBitmaps())
+		var n:int = data.readUnsignedByte();
+		while (--n > -1 || (n == -1 && pendingBitmaps.length > 0))
+		{
+			var bitmaps:Vector.<BitmapData>;
+			if (n != -1)
+			{
+				var border:AbstractBitmapBorder;
+				switch (data.readUnsignedByte())
+				{
+					case 0: border = new Scale3HBitmapBorder(); break;
+					case 1: border = new Scale1BitmapBorder(); break;
+					case 2: border = new Scale9BitmapBorder(); break;
+					case 3: border = new OneBitmapBorder(); break;
+				}
+				border.readExternal(data);
+
+				if (border is AbstractMultipleBitmapBorder)
+				{
+					bitmaps = AbstractMultipleBitmapBorder(border).getBitmaps();
+					if (pendingBitmaps.length > 0)
+					{
+						bitmaps = pendingBitmaps.concat(bitmaps);
+						pendingBitmaps.length = 0;
+					}
+				}
+				else
+				{
+					pendingBitmaps.push(OneBitmapBorder(border).getBitmap());
+					continue;
+				}
+			}
+			else
+			{
+				bitmaps = pendingBitmaps;
+			}
+
+			for each (var bitmapData:BitmapData in bitmaps)
 			{
 				var bitmap:Bitmap = new Bitmap(bitmapData);
 				bitmap.x = x;

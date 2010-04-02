@@ -1,9 +1,11 @@
 package cocoa.plaf.aqua.assetBuilder
 {
 import cocoa.Border;
+import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
@@ -70,28 +72,78 @@ internal final class CompoundImageReader
 	}
 
 	/**
-	 * 2 (v and h) track
+	 * 2 (v and h) track, 2 h decrement button (normal and highlighted)
 	 */
 	public function readScrollbar():void
 	{
 		compoundBitmapData = assetsBitmapData;
 
-		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(2, true);
+		const scrollViewWidth:Number = 120;
+		const scrollViewRightPadding:Number = 10;
+		const scrollViewWidthWithPaddings:Number = scrollViewWidth + scrollViewRightPadding;
+
+		const thickness:Number = 15;
+
+		const incrementArrowLocalPosition:Number = 89;
+		const incrementHArrowWidth:Number = 16;
+
+		const vArrowLocalX:Number = scrollViewWidth - thickness;
+
+		const decrementArrowLocalPosition:Number = 61;
+
+		const scrollViewAbsoluteY:Number = 192;
 
 		// v track
-		var itemRectangle:Rectangle = new Rectangle(105, 192, 15, 25);
+		var itemRectangle:Rectangle = new Rectangle(vArrowLocalX, scrollViewAbsoluteY, thickness, 25);
 		itemRectangle.height = sliceCalculator.calculateFromTop(compoundBitmapData, itemRectangle) + 1;
-		bitmaps[0] = createBitmapData(itemRectangle);
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
 
 		// h track
 		itemRectangle.x = 0;
 		itemRectangle.y += 105;
 		itemRectangle.width = 25;
-		itemRectangle.height = 15;
+		itemRectangle.height = thickness;
 		itemRectangle.width = sliceCalculator.calculateFromLeft(compoundBitmapData, itemRectangle) + 1;
-		bitmaps[1] = createBitmapData(itemRectangle);
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
 
-		borders[position++] = Scale1BitmapBorder.create(bitmaps);
+		// h d button, normal
+		itemRectangle.x = decrementArrowLocalPosition;
+		itemRectangle.width = 28;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		// h d button, highlighted
+		itemRectangle.x = 321;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+
+		// h i button, normal
+		itemRectangle.x = incrementArrowLocalPosition;
+		itemRectangle.width = incrementHArrowWidth;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		// h i button, highlighted
+		itemRectangle.width += 1;
+		itemRectangle.x = (scrollViewWidthWithPaddings * 3) + incrementArrowLocalPosition - 1;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(-1));
+
+		// v d button, normal
+		itemRectangle.x = vArrowLocalX;
+		itemRectangle.y = scrollViewAbsoluteY + decrementArrowLocalPosition;
+		itemRectangle.width = thickness;
+		itemRectangle.height = 28;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		// v d button, highlighted
+		itemRectangle.x = (scrollViewWidthWithPaddings * 2) + vArrowLocalX;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+
+		// v i button, normal
+		itemRectangle.x = vArrowLocalX;
+		itemRectangle.y = scrollViewAbsoluteY + incrementArrowLocalPosition;
+		itemRectangle.width = thickness;
+		itemRectangle.height = 16;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		// v i button, highlighted
+		itemRectangle.y -= 1;
+		itemRectangle.height += 1;
+		itemRectangle.x = (scrollViewWidthWithPaddings * 3) + vArrowLocalX;
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -1));
 	}
 
 	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
@@ -99,12 +151,11 @@ internal final class CompoundImageReader
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
 
+		// item background
 		const firstItemY:Number = -listBorder.frameInsets.top + listBorder.contentInsets.top + frameRectangle.top;
 		const itemX:Number = -listBorder.frameInsets.left + listBorder.contentInsets.left + frameRectangle.x;
 		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
-		var itemBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(1, true);
-		itemBitmaps[0] = createBitmapData(itemRectangle);
-		borders[position + 1] = Scale1BitmapBorder.create(itemBitmaps, new Insets(21, NaN, 21, 5));
+		borders[position + 1] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(21, NaN, 21, 5));
 
 		// checkmarks
 		itemRectangle.x += 5;
