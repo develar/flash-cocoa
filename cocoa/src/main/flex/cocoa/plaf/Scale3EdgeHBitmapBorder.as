@@ -4,9 +4,7 @@ import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.View;
 
-import flash.display.BitmapData;
 import flash.display.Graphics;
-import flash.utils.ByteArray;
 
 /**
  * Фиксированная высота, произвольная ширина — масштабируется только по горизонтали.
@@ -21,16 +19,6 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder
 		var border:Scale3EdgeHBitmapBorder = new Scale3EdgeHBitmapBorder();
 		border.init(frameInsets, contentInsets);
 		return border;
-	}
-
-	public function configure(bitmaps:Vector.<BitmapData>):void
-	{
-		this.bitmaps = bitmaps;
-
-		lastSize = bitmaps[1].width;
-
-		size = bitmaps[0].height;
-		_layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
 	}
 
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
@@ -49,13 +37,16 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder
 		g.endFill();
 	}
 
-	override public function readExternal(input:ByteArray):void
+	override protected function initTransient():void
 	{
-		super.readExternal(input);
-
-		lastSize = bitmaps[1].width;
 		size = bitmaps[0].height;
+		lastSize = bitmaps[1].width;
 		_layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
+	}
+	
+	override protected function get serialTypeId():int
+	{
+		return 0;
 	}
 }
 }

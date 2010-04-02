@@ -25,10 +25,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
     private var verticalScrollBar:VScrollBar;
 
 	/**
-     *  @private
-     *  SDT - Scrollbar Display Threshold.  If the content size exceeds the
-     *  viewport's size by SDT, then we show a scrollbar.  For example, if the
-     *  contentWidth >= viewport width + SDT, show the horizontal scrollbar.
+     *  SDT - Scrollbar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
+	 * For example, if the contentWidth >= viewport width + SDT, show the horizontal scrollbar.
      */
     private static const SDT:Number = 1.0;
 
@@ -147,10 +145,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 
 	private function hsbRequiredHeight():Number
 	{
-        var minViewportInset:Number = 0;
-        var hsb:ScrollBarBase = horizontalScrollBar;
-        var sy:Number = (hsbVisible) ? 1 : hsbScaleY;
-        return Math.max(minViewportInset, hsb.getPreferredBoundsHeight(hsbVisible) * sy);
+        return Math.max(minViewportInset, horizontalScrollBar.getPreferredBoundsHeight(hsbVisible) * (hsbVisible ? 1 : hsbScaleY));
     }
 
 	private function get vsbVisible():Boolean
@@ -160,10 +155,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 
 	 private function vsbRequiredWidth():Number
     {
-        var minViewportInset:Number = minViewportInset;
-        var vsb:ScrollBarBase = verticalScrollBar;
-        var sx:Number = (vsbVisible) ? 1 : vsbScaleX;
-        return Math.max(minViewportInset, vsb.getPreferredBoundsWidth(vsbVisible) * sx);
+        return Math.max(minViewportInset, verticalScrollBar.getPreferredBoundsWidth(vsbVisible) * (vsbVisible ? 1 : vsbScaleX));
     }
 
 	private var minViewportInset:Number = 0;
@@ -192,12 +184,23 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 			switch (_horizontalScrollbarPolicy)
 			{
 				case ScrollbarPolicy.ON:
-					if (hsb) showHSB = true;
-					break;
+				{
+					if (hsb)
+					{
+						showHSB = true;
+					}
+				}
+				break;
+
 				case ScrollbarPolicy.AUTO:
-					if (hsb) showHSB = hsb.visible;
+				{
+					if (hsb)
+					{
+						showHSB = hsb.visible;
+					}
 					hAuto = true;
-					break;
+				}
+				break;
 			}
 		}
 
@@ -205,16 +208,29 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		var showVSB:Boolean = false;
 		var vAuto:Boolean = false;
 		if (measuredSizeIncludesScrollBars)
+		{
 			switch (_verticalScrollbarPolicy)
 			{
 				case ScrollbarPolicy.ON:
-					if (vsb) showVSB = true;
-					break;
+				{
+					if (vsb)
+					{
+						showVSB = true;
+					}
+				}
+				break;
+
 				case ScrollbarPolicy.AUTO:
-					if (vsb) showVSB = vsb.visible;
+				{
+					if (vsb)
+					{
+						showVSB = vsb.visible;
+					}
 					vAuto = true;
-					break;
+				}
+				break;
 			}
+		}
 
 		measuredH += (showHSB) ? hsbRequiredHeight() : minViewportInset;
 		measuredW += (showVSB) ? vsbRequiredWidth() : minViewportInset;
@@ -228,7 +244,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		// by at least SDT.
 
 		var viewport:IViewport = _documentView;
-		if (viewport)
+		if (viewport != null)
 		{
 			if (measuredSizeIncludesScrollBars)
 			{
@@ -239,18 +255,26 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 				var viewportW:Number = viewport.getLayoutBoundsWidth();  // "current" size
 				var currentSizeNoHSB:Boolean = !isNaN(viewportW) && ((viewportW + SDT) > viewportContentW);
 				if (hAuto && !showHSB && ((viewportPreferredW + SDT) <= viewportContentW) && currentSizeNoHSB)
+				{
 					measuredW += viewportW;
+				}
 				else
+				{
 					measuredW += Math.max(viewportPreferredW, (showHSB) ? hsb.getMinBoundsWidth() : 0);
+				}
 
 				var viewportPreferredH:Number = viewport.getPreferredBoundsHeight();
 				var viewportContentH:Number = contentSize.y;
 				var viewportH:Number = viewport.getLayoutBoundsHeight();  // "current" size
 				var currentSizeNoVSB:Boolean = !isNaN(viewportH) && ((viewportH + SDT) > viewportContentH);
 				if (vAuto && !showVSB && ((viewportPreferredH + SDT) <= viewportContentH) && currentSizeNoVSB)
+				{
 					measuredH += viewportH;
+				}
 				else
+				{
 					measuredH += Math.max(viewportPreferredH, (showVSB) ? vsb.getMinBoundsHeight() : 0);
+				}
 			}
 			else
 			{
@@ -270,10 +294,14 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		var explicitViewportH:Number = viewportUIC ? viewportUIC.explicitHeight : NaN;
 
 		if (!isNaN(explicitViewportW))
+		{
 			minW += explicitViewportW;
+		}
 
 		if (!isNaN(explicitViewportH))
+		{
 			minH += explicitViewportH;
+		}
 
 		measuredWidth = Math.ceil(measuredW);
 		measuredHeight = Math.ceil(measuredH);

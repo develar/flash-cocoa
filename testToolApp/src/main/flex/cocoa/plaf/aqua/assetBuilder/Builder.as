@@ -12,6 +12,8 @@ import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3EdgeHBitmapBorder;
+import cocoa.plaf.Scale3HBitmapBorder;
+import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.util.FileUtil;
@@ -66,7 +68,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 10 /* scrollbars */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 11 /* scrollbars */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -124,6 +126,8 @@ public class Builder
 					case 1: border = new Scale1BitmapBorder(); break;
 					case 2: border = new Scale9BitmapBorder(); break;
 					case 3: border = new OneBitmapBorder(); break;
+					case 4: border = new Scale3HBitmapBorder(); break;
+					case 5: border = new Scale3VBitmapBorder(); break;
 				}
 				border.readExternal(data);
 

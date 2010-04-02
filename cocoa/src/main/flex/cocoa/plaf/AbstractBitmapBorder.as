@@ -10,7 +10,7 @@ import flash.utils.ByteArray;
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
 
-internal class AbstractBitmapBorder extends AbstractBorder implements ExternalizableResource
+public class AbstractBitmapBorder extends AbstractBorder implements ExternalizableResource
 {
 	protected static const sharedMatrix:Matrix = new Matrix();
 

@@ -8,8 +8,11 @@ import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.BoxSkin;
 import cocoa.plaf.MenuSkin;
+import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3EdgeHBitmapBorder;
+import cocoa.plaf.Scale3HBitmapBorder;
+import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.SliderNumericStepperSkin;
 
@@ -97,6 +100,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["Scrollbar.incrementButton.v"] = borders[scrollbarBorderPosition + 8];
 		data["Scrollbar.incrementButton.v.highlighted"] = borders[scrollbarBorderPosition + 9];
+
+		data["Scrollbar.thumb.v"] = borders[scrollbarBorderPosition + 10];
 	}
 
 	private static function initAssets():void
@@ -119,6 +124,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 				case 0: border = new Scale3EdgeHBitmapBorder(); break;
 				case 1: border = new Scale1BitmapBorder(); break;
 				case 2: border = new Scale9BitmapBorder(); break;
+				case 3: border = new OneBitmapBorder(); break;
+				case 4: border = new Scale3HBitmapBorder(); break;
+				case 5: border = new Scale3VBitmapBorder(); break;
 			}
 			border.readExternal(data);
 			borders[i] = border;

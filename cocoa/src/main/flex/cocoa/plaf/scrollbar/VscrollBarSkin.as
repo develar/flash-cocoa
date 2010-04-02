@@ -47,10 +47,6 @@ public class VscrollBarSkin extends LightFlexUIComponent
 		track.border = laf.getBorder("Scrollbar.track.v");
 		addChild(track);
 
-		thumb = new Button();
-		thumb.border = laf.getBorder("Scrollbar.track.v");
-		addChild(thumb);
-
 		decrementButton = new Button();
 		decrementButton.border = laf.getBorder("Scrollbar.decrementButton.v");
 		addChild(decrementButton);
@@ -58,6 +54,10 @@ public class VscrollBarSkin extends LightFlexUIComponent
 		incrementButton = new Button();
 		incrementButton.border = laf.getBorder("Scrollbar.incrementButton.v");
 		addChild(incrementButton);
+
+		thumb = new Button();
+		thumb.border = laf.getBorder("Scrollbar.thumb.v");
+		addChild(thumb);
 
 		VScrollBar(parent).uiPartAdded("track", track);
 		VScrollBar(parent).uiPartAdded("thumb", thumb);
@@ -67,8 +67,8 @@ public class VscrollBarSkin extends LightFlexUIComponent
 
 	override protected function measure():void
 	{
-		measuredWidth = 15;
-		
+		measuredMinWidth = measuredWidth = 15;
+		measuredMinHeight = measuredHeight = thumb.getExplicitOrMeasuredHeight() + decrementButton.getExplicitOrMeasuredHeight() + incrementButton.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

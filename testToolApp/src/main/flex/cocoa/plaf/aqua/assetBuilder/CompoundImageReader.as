@@ -7,6 +7,7 @@ import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale3EdgeHBitmapBorder;
+import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 
 import flash.display.BitmapData;
@@ -146,9 +147,22 @@ internal final class CompoundImageReader
 		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -1));
 
 		// v thumb
-		itemRectangle.x = (scrollViewWidthWithPaddings * 4) + 250 + vArrowLocalX;
+		itemRectangle.x = (scrollViewWidthWithPaddings * 4) + 235;
 		itemRectangle.y = 107;
-		itemRectangle.height = 120;
+		itemRectangle.height = 10 + 3;
+//		itemRectangle.height = 120;
+
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(3, true);
+		bitmaps[0] = createBitmapData(itemRectangle);
+
+		itemRectangle.y = 198;
+		itemRectangle.height = 16;
+		bitmaps[1] = createBitmapData(itemRectangle);
+
+		itemRectangle.y += itemRectangle.height;
+		itemRectangle.height = 10 + 3;
+		bitmaps[2] = createBitmapData(itemRectangle);
+		borders[position++] = Scale3VBitmapBorder.create(new FrameInsets(0, -3, 0, -3)).configure(bitmaps);
 	}
 
 	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
