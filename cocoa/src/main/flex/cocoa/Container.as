@@ -11,8 +11,6 @@ import com.asfusion.mate.events.InjectorEvent;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
-import flash.errors.IllegalOperationError;
-
 import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IVisualElement;
@@ -20,7 +18,6 @@ import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
-
 
 import spark.components.supportClasses.GroupBase;
 import spark.components.supportClasses.SkinnableComponent;
@@ -33,7 +30,7 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class Container extends GroupBase implements ViewContainer
+public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider
 {
 	private var createChildrenCalled:Boolean;
 	private var subviewsChanged:Boolean;
@@ -82,17 +79,17 @@ public class Container extends GroupBase implements ViewContainer
 
 	override protected function createChildren():void
 	{
-		var p:DisplayObjectContainer = parent;
-		while (p != null)
+		if (_laf == null)
 		{
-			if (p is LookAndFeelProvider)
+			var p:DisplayObjectContainer = parent;
+			while (p != null)
 			{
-				_laf = LookAndFeelProvider(p).laf;
-				break;
-			}
-			else
-			{
-				if (p is Skin && Skin(p).component is LookAndFeelProvider)
+				if (p is LookAndFeelProvider)
+				{
+					_laf = LookAndFeelProvider(p).laf;
+					break;
+				}
+				else if (p is Skin && Skin(p).component is LookAndFeelProvider)
 				{
 					_laf = LookAndFeelProvider(Skin(p).component).laf;
 					break;
@@ -136,7 +133,7 @@ public class Container extends GroupBase implements ViewContainer
 		if (view is Component)
 		{
 			var component:Component = Component(view);
-			view = component.skin == null ? component.createView(laf) : component.skin;
+			view = component.skin == null ? component.createView(_laf) : component.skin;
 		}
 		else if (view is Injectable || view is SkinnableComponent || (view is GroupBase && GroupBase(view).id != null))
 		{
@@ -308,15 +305,7 @@ public class Container extends GroupBase implements ViewContainer
 		return View(getElementAt(index));
 	}
 
-	private var _layoutMetrics:LayoutMetrics;
-	public function get layoutMetrics():LayoutMetrics
-	{
-		return _layoutMetrics;
-	}
-	public function set layoutMetrics(value:LayoutMetrics):void
-	{
-		throw new IllegalOperationError();
-	}
+	private var layoutMetrics:LayoutMetrics;
 
 	public function get numSubviews():int
 	{
@@ -356,25 +345,25 @@ public class Container extends GroupBase implements ViewContainer
 
 	override public function getConstraintValue(constraintName:String):*
     {
-		if (_layoutMetrics == null)
+		if (layoutMetrics == null)
 		{
 			return undefined;
 		}
 		else
 		{
-			var value:Number = _layoutMetrics[constraintName];
+			var value:Number = layoutMetrics[constraintName];
 			return isNaN(value) ? undefined : value;
 		}
 	}
 
 	override public function setConstraintValue(constraintName:String, value:*):void
     {
-		if (_layoutMetrics == null)
+		if (layoutMetrics == null)
 		{
-			_layoutMetrics = new LayoutMetrics();
+			layoutMetrics = new LayoutMetrics();
 		}
 
-		_layoutMetrics[constraintName] = value;
+		layoutMetrics[constraintName] = value;
 	}
 
 	override public function parentChanged(p:DisplayObjectContainer):void

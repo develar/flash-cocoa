@@ -7,7 +7,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 		
-	NSRect frame = NSMakeRect(500, 500, 1030, CONTROL_FRAME_HEIGHT * 13);
+	NSRect frame = NSMakeRect(500, 500, 800, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
 	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];

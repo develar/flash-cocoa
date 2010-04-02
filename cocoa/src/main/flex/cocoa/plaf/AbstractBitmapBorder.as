@@ -10,7 +10,7 @@ import flash.utils.ByteArray;
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
 
-public class AbstractBitmapBorder extends AbstractBorder implements ExternalizableResource
+internal class AbstractBitmapBorder extends AbstractBorder implements ExternalizableResource
 {
 	protected static const sharedMatrix:Matrix = new Matrix();
 
@@ -67,12 +67,12 @@ public class AbstractBitmapBorder extends AbstractBorder implements Externalizab
 		}
 	}
 
-	protected final function writeFrameInsets(output:IDataOutput, insets:FrameInsets):void
+	protected final function writeFrameInsets(output:IDataOutput):void
 	{
-		output.writeByte(insets.left);
-		output.writeByte(insets.top);
-		output.writeByte(insets.right);
-		output.writeByte(insets.bottom);
+		output.writeByte(_frameInsets.left);
+		output.writeByte(_frameInsets.top);
+		output.writeByte(_frameInsets.right);
+		output.writeByte(_frameInsets.bottom);
 	}
 
 	protected final function lazyWriteFrameInsets(output:IDataOutput):void
@@ -84,7 +84,7 @@ public class AbstractBitmapBorder extends AbstractBorder implements Externalizab
 		else
 		{
 			output.writeByte(1);
-			writeFrameInsets(output, _frameInsets);
+			writeFrameInsets(output);
 		}
 	}
 }

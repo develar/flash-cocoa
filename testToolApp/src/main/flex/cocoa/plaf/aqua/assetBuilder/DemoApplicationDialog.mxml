@@ -12,8 +12,6 @@
 
 		import org.flyti.util.ArrayList;
 
-		import spark.skins.spark.DefaultItemRenderer;
-
 		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", MenuItem.createSeparatorItem(), "Item 3"]);
 		private static const testData2:ArrayList = new ArrayList(new <Object>["Item 1", "Loooooooooooong Label", MenuItem.createSeparatorItem(), "Item 3"]);
 		private static const listData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8"]);

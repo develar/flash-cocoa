@@ -6,7 +6,6 @@ import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.OneBitmapBorder;
-import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 
@@ -51,7 +50,7 @@ internal final class CompoundImageReader
 
 			var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, rowInfo.top, false, false);
 			var bitmaps:Vector.<BitmapData> = slice3HGrid(frameRectangle, sliceSize, rowInfo);
-			Scale3HBitmapBorder(rowInfo.border).configure(sliceSize, bitmaps);
+			Scale3HBitmapBorder(rowInfo.border).configure(bitmaps);
 
 			borders[position + row] = rowInfo.border;
 		}
@@ -66,13 +65,14 @@ internal final class CompoundImageReader
 
 		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, frameRectangle.top, false, false);
 		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
-		border.configure(sliceSize, bitmaps);
+		border.configure(bitmaps);
 
 		borders[position++] = border;
 	}
 
 	/**
-	 * 2 (v and h) track, 2 h decrement button (normal and highlighted)
+	 * 2 (v and h) track, 4 h/v decrement button (normal and highlighted), 4 h/v increment button (normal and highlighted),
+	 * v/h thumb
 	 */
 	public function readScrollbar():void
 	{
@@ -144,6 +144,11 @@ internal final class CompoundImageReader
 		itemRectangle.height += 1;
 		itemRectangle.x = (scrollViewWidthWithPaddings * 3) + vArrowLocalX;
 		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -1));
+
+		// v thumb
+		itemRectangle.x = (scrollViewWidthWithPaddings * 4) + 250 + vArrowLocalX;
+		itemRectangle.y = 107;
+		itemRectangle.height = 120;
 	}
 
 	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void

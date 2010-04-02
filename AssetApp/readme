@@ -10,3 +10,5 @@ screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resou
 or
 
 screencapture -ic
+
+Чтобы четко понять границы волны на scrollbar thumb — Image -> Posterize в Pixelmator.

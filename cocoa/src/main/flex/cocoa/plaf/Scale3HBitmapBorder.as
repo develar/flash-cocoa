@@ -1,6 +1,5 @@
 package cocoa.plaf
 {
-import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.View;
@@ -15,29 +14,23 @@ import flash.utils.ByteArray;
  * Реализовано как две bitmap, где 1 это склееный left и center — ширина center равна 1px — мы используем "the bitmap image does not repeat, and the edges of the bitmap are used for any fill area that extends beyond the bitmap"
  * (это позволяет нам сократить количество bitmapData, количество вызовов на отрисовку и в целом немного упростить код (в частности, для тех случаев, когда left width == 0)).
  */
-public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder implements Border
+public class Scale3HBitmapBorder extends AbstractScale3BitmapBorder
 {
-	private var sliceHeight:Number;
-	private var sliceSizes:Insets;
-
 	public static function create(frameInsets:FrameInsets, contentInsets:Insets = null):Scale3HBitmapBorder
 	{
 		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
-		border._frameInsets = frameInsets;
-		if (contentInsets != null)
-		{
-			border._contentInsets = contentInsets;
-		}
+		border.init(frameInsets, contentInsets);
 		return border;
 	}
 
-	public function configure(sliceSizes:Insets, bitmaps:Vector.<BitmapData>):void
+	public function configure(bitmaps:Vector.<BitmapData>):void
 	{
-		this.sliceSizes = sliceSizes;
 		this.bitmaps = bitmaps;
 
-		sliceHeight = bitmaps[0].height;
-		_layoutHeight = sliceHeight + _frameInsets.top + _frameInsets.bottom;
+		lastSize = bitmaps[1].width;
+
+		size = bitmaps[0].height;
+		_layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
 	}
 
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
@@ -45,35 +38,24 @@ public final class Scale3HBitmapBorder extends AbstractControlBitmapBorder imple
 		sharedMatrix.tx = _frameInsets.left;
 		sharedMatrix.ty = _frameInsets.top;
 
-		var rightSliceX:Number = w - sliceSizes.right - _frameInsets.right;
+		var rightSliceX:Number = w - lastSize - _frameInsets.right;
 		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
-		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _frameInsets.left, sliceHeight);
+		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _frameInsets.left, size);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
 		g.beginBitmapFill(bitmaps[_bitmapIndex + 1], sharedMatrix, false);
-		g.drawRect(rightSliceX, sharedMatrix.ty, sliceSizes.right, sliceHeight);
+		g.drawRect(rightSliceX, sharedMatrix.ty, lastSize, size);
 		g.endFill();
 	}
 
 	override public function readExternal(input:ByteArray):void
 	{
 		super.readExternal(input);
-		
-		sliceSizes = readInsets(input);
-		_frameInsets = readFrameInsets(input);
 
-		sliceHeight = bitmaps[0].height;
-		_layoutHeight = sliceHeight + _frameInsets.top + _frameInsets.bottom;
-	}
-
-	override public function writeExternal(output:ByteArray):void
-	{
-		output.writeByte(0);
-		super.writeExternal(output);
-		writeInsets(output, sliceSizes);
-
-		writeFrameInsets(output, _frameInsets);
+		lastSize = bitmaps[1].width;
+		size = bitmaps[0].height;
+		_layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
 	}
 }
 }

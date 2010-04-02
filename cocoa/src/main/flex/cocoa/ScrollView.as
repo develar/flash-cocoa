@@ -1,7 +1,5 @@
 package cocoa
 {
-import cocoa.plaf.scrollbar.VscrollBarSkin;
-
 import flash.display.DisplayObject;
 import flash.geom.Point;
 
@@ -75,7 +73,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		if (_verticalScrollbarPolicy == ScrollbarPolicy.ON)
 		{
 			verticalScrollBar = new VScrollBar();
-			verticalScrollBar.setStyle("skinClass", VscrollBarSkin);
+//			verticalScrollBar.setStyle("skinClass", VscrollBarSkin);
 //			verticalScrollBar.setStyle("skinClass", VscrollBarSkin);
 			addChild(verticalScrollBar);
 		}

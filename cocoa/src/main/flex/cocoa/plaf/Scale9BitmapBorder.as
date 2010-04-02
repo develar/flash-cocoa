@@ -85,7 +85,7 @@ public final class Scale9BitmapBorder extends AbstractMultipleBitmapBorder
 
 		super.writeExternal(output);
 
-		writeFrameInsets(output, _frameInsets);
+		writeFrameInsets(output);
 	}
 }
 }

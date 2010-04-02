@@ -1,11 +1,9 @@
 package cocoa.plaf
 {
-import cocoa.AbstractBorder;
-
 import flash.display.BitmapData;
 import flash.utils.ByteArray;
 
-public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder
+internal class AbstractMultipleBitmapBorder extends AbstractBitmapBorder
 {
 	protected var bitmaps:Vector.<BitmapData>;
 

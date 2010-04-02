@@ -1,7 +1,6 @@
 package cocoa.plaf.scrollbar
 {
 import cocoa.LightFlexUIComponent;
-
 import cocoa.VScrollBar;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
@@ -15,11 +14,6 @@ public class VscrollBarSkin extends LightFlexUIComponent
 	protected var thumb:Button;
 	protected var decrementButton:Button;
 	protected var incrementButton:Button;
-
-	public function VscrollBarSkin()
-	{
-
-	}
 
 	override protected function createChildren():void
 	{

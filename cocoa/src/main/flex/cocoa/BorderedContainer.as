@@ -1,12 +1,10 @@
 package cocoa
 {
-import cocoa.plaf.LookAndFeelProvider;
-
 import flash.display.Graphics;
 
 import spark.components.ResizeMode;
 
-public class BorderedContainer extends Container implements ViewContainer, LookAndFeelProvider
+public class BorderedContainer extends Container implements ViewContainer
 {
 	private var _border:Border;
 	public function get border():Border
