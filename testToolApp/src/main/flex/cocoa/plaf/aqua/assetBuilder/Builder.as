@@ -11,7 +11,7 @@ import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
-import cocoa.plaf.Scale3HBitmapBorder;
+import cocoa.plaf.Scale3EdgeHBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.util.FileUtil;
@@ -49,11 +49,11 @@ public class Builder
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
-	buttonRowsInfo[0] = new RowInfo(Scale3HBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)));
+	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)));
 	// textured rounded push button
-	buttonRowsInfo[1] = new RowInfo(Scale3HBitmapBorder.create(new FrameInsets(0, -1, 0, 0), new Insets(10, NaN, 10, 6)));
+	buttonRowsInfo[1] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(0, -1, 0, 0), new Insets(10, NaN, 10, 6)));
 	// rounded pop up button
-	buttonRowsInfo[2] = new RowInfo(Scale3HBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
+	buttonRowsInfo[2] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
 	{
@@ -78,7 +78,7 @@ public class Builder
 
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
-		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3HBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
+		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
 
 		compoundImageReader.readScrollbar();
@@ -120,7 +120,7 @@ public class Builder
 				var border:AbstractBitmapBorder;
 				switch (data.readUnsignedByte())
 				{
-					case 0: border = new Scale3HBitmapBorder(); break;
+					case 0: border = new Scale3EdgeHBitmapBorder(); break;
 					case 1: border = new Scale1BitmapBorder(); break;
 					case 2: border = new Scale9BitmapBorder(); break;
 					case 3: border = new OneBitmapBorder(); break;

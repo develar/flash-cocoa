@@ -6,7 +6,7 @@ import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.OneBitmapBorder;
-import cocoa.plaf.Scale3HBitmapBorder;
+import cocoa.plaf.Scale3EdgeHBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 
 import flash.display.BitmapData;
@@ -50,7 +50,7 @@ internal final class CompoundImageReader
 
 			var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, rowInfo.top, false, false);
 			var bitmaps:Vector.<BitmapData> = slice3HGrid(frameRectangle, sliceSize, rowInfo);
-			Scale3HBitmapBorder(rowInfo.border).configure(bitmaps);
+			Scale3EdgeHBitmapBorder(rowInfo.border).configure(bitmaps);
 
 			borders[position + row] = rowInfo.border;
 		}
@@ -58,7 +58,7 @@ internal final class CompoundImageReader
 		position += rowsInfo.length;
 	}
 
-	public function readScale3(bitmapDataClass:Class, border:Scale3HBitmapBorder):void
+	public function readScale3(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);

@@ -14,11 +14,11 @@ import flash.utils.ByteArray;
  * Реализовано как две bitmap, где 1 это склееный left и center — ширина center равна 1px — мы используем "the bitmap image does not repeat, and the edges of the bitmap are used for any fill area that extends beyond the bitmap"
  * (это позволяет нам сократить количество bitmapData, количество вызовов на отрисовку и в целом немного упростить код (в частности, для тех случаев, когда left width == 0)).
  */
-public class Scale3HBitmapBorder extends AbstractScale3BitmapBorder
+public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder
 {
-	public static function create(frameInsets:FrameInsets, contentInsets:Insets = null):Scale3HBitmapBorder
+	public static function create(frameInsets:FrameInsets, contentInsets:Insets = null):Scale3EdgeHBitmapBorder
 	{
-		var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
+		var border:Scale3EdgeHBitmapBorder = new Scale3EdgeHBitmapBorder();
 		border.init(frameInsets, contentInsets);
 		return border;
 	}
