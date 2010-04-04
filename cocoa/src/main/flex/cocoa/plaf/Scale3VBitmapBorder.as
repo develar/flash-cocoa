@@ -56,7 +56,7 @@ public class Scale3VBitmapBorder extends AbstractScale3BitmapBorder
 		lastSize = bitmaps[2].height;
 
 		_layoutWidth = size + _frameInsets.left + _frameInsets.right;
-		_layoutHeight = firstSize + lastSize + _frameInsets.left + _frameInsets.right;
+		_layoutHeight = firstSize + lastSize + _frameInsets.top + _frameInsets.bottom;
 	}
 }
 }

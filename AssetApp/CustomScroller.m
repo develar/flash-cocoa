@@ -26,10 +26,6 @@ BOOL highlightArrowId;
     [path fill];
 }
 
-//- (void)drawRect:(NSRect)dirtyRect {
-//	
-//}
-
 - (BOOL)isOpaque {
 	return NO;
 }

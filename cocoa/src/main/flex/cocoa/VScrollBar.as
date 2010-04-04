@@ -28,6 +28,35 @@ public class VScrollBar extends spark.components.VScrollBar
 		return undefined;
 	}
 
+	override protected function updateSkinDisplayList():void
+	{
+		if (track == null || thumb == null)
+		{
+			return;
+		}
+
+		var trackSize:Number = track.getLayoutBoundsHeight();
+		if (trackSize == 0)
+		{
+			return;
+		}
+		var range:Number = maximum - minimum;
+
+		var thumbTopPadding:Number = Bordered(track).border.contentInsets.top;
+		trackSize -= thumbTopPadding;
+
+		var thumbPosTrackY:Number = thumbTopPadding;
+		var thumbSize:Number = 0;
+		if (range > 0)
+		{
+			thumbSize = Math.max(thumb.minHeight, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));
+			thumbPosTrackY = ((value - minimum) * ((trackSize - thumbSize) / range)) + thumbTopPadding;
+		}
+
+		thumb.setLayoutBoundsSize(NaN, thumbSize);
+		thumb.setLayoutBoundsPosition(0, Math.round(thumbPosTrackY));
+	}
+
 	// disable unwanted legacy
 	override public function regenerateStyleCache(recursive:Boolean):void
 	{

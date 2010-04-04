@@ -1,19 +1,27 @@
 package cocoa.plaf.scrollbar
 {
 import cocoa.Border;
+import cocoa.Bordered;
 
 import flash.display.Graphics;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
 import mx.core.UIComponent;
 
 import spark.components.Button;
 
-internal final class Button extends spark.components.Button
+internal class AbstractButton extends Button implements Bordered
 {
-	protected var _border:Border;
+	private var _border:Border;
+	public function get border():Border
+	{
+		return _border;
+	}
 	public function set border(value:Border):void
 	{
 		_border = value;
+		minHeight = _border.layoutHeight;
 	}
 
 	override public function getStyle(styleProp:String):*
@@ -39,7 +47,7 @@ internal final class Button extends spark.components.Button
 		g.clear();
 		_border.draw(null, g, w, h);
 	}
-
+	
 	override protected function attachSkin():void
     {
 
@@ -61,6 +69,15 @@ internal final class Button extends spark.components.Button
 
 	override public function invalidateSkinState():void
 	{
+	}
+
+	override protected function mouseEventHandler(event:Event):void
+	{
+		var mouseEvent:MouseEvent = MouseEvent(event);
+		if (!(mouseEvent.localX < 0 || mouseEvent.localY < 0 || mouseEvent.localX > width || mouseEvent.localY > height))
+		{
+			super.mouseEventHandler(event);
+		}
 	}
 }
 }

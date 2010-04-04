@@ -10,16 +10,15 @@ import flash.display.DisplayObjectContainer;
 
 public class VscrollBarSkin extends LightFlexUIComponent
 {
-	protected var track:Button;
-	protected var thumb:Button;
-	protected var decrementButton:Button;
-	protected var incrementButton:Button;
+	protected var track:AbstractButton;
+	protected var thumb:AbstractButton;
+	protected var decrementButton:AbstractButton;
+	protected var incrementButton:AbstractButton;
 
 	override protected function createChildren():void
 	{
 		super.createChildren();
 
-		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
 		var laf:LookAndFeel;
 		var p:DisplayObjectContainer = parent;
 		while (p != null)
@@ -43,19 +42,19 @@ public class VscrollBarSkin extends LightFlexUIComponent
 			}
 		}
 
-		track = new Button();
+		track = new TrackOrThumbButton();
 		track.border = laf.getBorder("Scrollbar.track.v");
 		addChild(track);
 
-		decrementButton = new Button();
+		decrementButton = new ArrowButton();
 		decrementButton.border = laf.getBorder("Scrollbar.decrementButton.v");
 		addChild(decrementButton);
 
-		incrementButton = new Button();
+		incrementButton = new ArrowButton();
 		incrementButton.border = laf.getBorder("Scrollbar.incrementButton.v");
 		addChild(incrementButton);
 
-		thumb = new Button();
+		thumb = new TrackOrThumbButton();
 		thumb.border = laf.getBorder("Scrollbar.thumb.v");
 		addChild(thumb);
 
@@ -75,10 +74,9 @@ public class VscrollBarSkin extends LightFlexUIComponent
 	{
 		var incrementButtonHeight:Number = incrementButton.getPreferredBoundsHeight();
 		var decrementButtonY:Number = h - decrementButton.getPreferredBoundsHeight() - incrementButtonHeight;
+//		var decrementButtonY:Number = h - 17 - incrementButtonHeight;
 
 		track.setLayoutBoundsSize(NaN, decrementButtonY);
-
-		thumb.setLayoutBoundsSize(NaN, NaN);
 
 		decrementButton.setLayoutBoundsSize(NaN, NaN);
 		incrementButton.setLayoutBoundsSize(NaN, NaN);

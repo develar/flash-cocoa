@@ -97,7 +97,7 @@ internal final class CompoundImageReader
 		// v track
 		var itemRectangle:Rectangle = new Rectangle(vArrowLocalX, scrollViewAbsoluteY, thickness, 25);
 		itemRectangle.height = sliceCalculator.calculateFromTop(compoundBitmapData, itemRectangle) + 1;
-		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(0, 7));
 
 		// h track
 		itemRectangle.x = 0;
@@ -105,7 +105,7 @@ internal final class CompoundImageReader
 		itemRectangle.width = 25;
 		itemRectangle.height = thickness;
 		itemRectangle.width = sliceCalculator.calculateFromLeft(compoundBitmapData, itemRectangle) + 1;
-		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(7));
 
 		// h d button, normal
 		itemRectangle.x = decrementArrowLocalPosition;
@@ -129,10 +129,10 @@ internal final class CompoundImageReader
 		itemRectangle.y = scrollViewAbsoluteY + decrementArrowLocalPosition;
 		itemRectangle.width = thickness;
 		itemRectangle.height = 28;
-		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -11));
 		// v d button, highlighted
 		itemRectangle.x = (scrollViewWidthWithPaddings * 2) + vArrowLocalX;
-		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
+		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -11)); // todo serialize frameinsets as one, not twice
 
 		// v i button, normal
 		itemRectangle.x = vArrowLocalX;

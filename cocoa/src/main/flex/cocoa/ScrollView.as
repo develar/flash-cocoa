@@ -18,6 +18,9 @@ import spark.core.IViewport;
  * http://developer.apple.com/mac/library/documentation/cocoa/Conceptual/NSScrollViewGuide/Articles/Basics.html
  *
  * Терминология частей полосы прокрутки как во Flex/Swing, а не как в Cocoa
+ *
+ * При скиновании может потребоваться чтобы thumb гулял не на всем track — как в Cocoa для вертикальной полосы прокрутки отступ сверху 7px —
+ * для этого установите у track border соответствующий contentInsets.
  */
 public class ScrollView extends AbstractView implements IFocusManagerComponent
 {
