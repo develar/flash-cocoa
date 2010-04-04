@@ -88,6 +88,9 @@
 
 								<class>cocoa.graphics.*</class>
 							</includes>
+							<excludes>
+								<class>cocoa.plaf.scrollbar.*</class>
+							</excludes>
 							<names>
 								<class>
 									<name>MXMLSkin</name>

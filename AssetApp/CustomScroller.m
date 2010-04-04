@@ -30,7 +30,4 @@ BOOL highlightArrowId;
 	return NO;
 }
 
-//- (void)drawParts {
-//}
-
 @end

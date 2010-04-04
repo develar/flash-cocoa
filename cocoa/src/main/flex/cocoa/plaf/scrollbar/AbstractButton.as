@@ -13,15 +13,10 @@ import spark.components.Button;
 
 internal class AbstractButton extends Button implements Bordered
 {
-	private var _border:Border;
+	protected var _border:Border;
 	public function get border():Border
 	{
 		return _border;
-	}
-	public function set border(value:Border):void
-	{
-		_border = value;
-		minHeight = _border.layoutHeight;
 	}
 
 	override public function getStyle(styleProp:String):*
@@ -69,15 +64,6 @@ internal class AbstractButton extends Button implements Bordered
 
 	override public function invalidateSkinState():void
 	{
-	}
-
-	override protected function mouseEventHandler(event:Event):void
-	{
-		var mouseEvent:MouseEvent = MouseEvent(event);
-		if (!(mouseEvent.localX < 0 || mouseEvent.localY < 0 || mouseEvent.localX > width || mouseEvent.localY > height))
-		{
-			super.mouseEventHandler(event);
-		}
 	}
 }
 }

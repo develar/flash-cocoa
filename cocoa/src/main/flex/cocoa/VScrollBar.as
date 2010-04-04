@@ -2,6 +2,8 @@ package cocoa
 {
 import cocoa.plaf.scrollbar.VscrollBarSkin;
 
+import flash.events.MouseEvent;
+
 import mx.core.mx_internal;
 
 import spark.components.VScrollBar;
@@ -26,6 +28,19 @@ public class VScrollBar extends spark.components.VScrollBar
 		}
 
 		return undefined;
+	}
+
+	public final function _trackMouseDownHandler(event:MouseEvent):void
+	{
+		super.track_mouseDownHandler(event);
+	}
+
+	override protected function track_mouseDownHandler(event:MouseEvent):void
+	{
+		if (event.localY >= Bordered(track).border.contentInsets.top)
+		{
+			super.track_mouseDownHandler(event);
+		}
 	}
 
 	override protected function updateSkinDisplayList():void

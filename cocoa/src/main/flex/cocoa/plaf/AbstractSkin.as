@@ -95,7 +95,7 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 			}
 
 			var local:Point = globalToLocal(sharedPoint);
-			return local.x >= 0 && local.x <= width && local.y >= 0 && local.y <= height;
+			return local.x >= 0 && local.y >= 0 && local.x <= width && local.y <= height;
 		}
 	}
 }

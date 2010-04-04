@@ -10,10 +10,10 @@ import flash.display.DisplayObjectContainer;
 
 public class VscrollBarSkin extends LightFlexUIComponent
 {
-	protected var track:AbstractButton;
-	protected var thumb:AbstractButton;
-	protected var decrementButton:AbstractButton;
-	protected var incrementButton:AbstractButton;
+	protected var track:TrackOrThumbButton;
+	protected var thumb:TrackOrThumbButton;
+	protected var decrementButton:ArrowButton;
+	protected var incrementButton:ArrowButton;
 
 	override protected function createChildren():void
 	{
@@ -47,11 +47,11 @@ public class VscrollBarSkin extends LightFlexUIComponent
 		addChild(track);
 
 		decrementButton = new ArrowButton();
-		decrementButton.border = laf.getBorder("Scrollbar.decrementButton.v");
+		decrementButton.attach(laf, "Scrollbar.decrementButton.v");
 		addChild(decrementButton);
 
 		incrementButton = new ArrowButton();
-		incrementButton.border = laf.getBorder("Scrollbar.incrementButton.v");
+		incrementButton.attach(laf, "Scrollbar.incrementButton.v");
 		addChild(incrementButton);
 
 		thumb = new TrackOrThumbButton();
