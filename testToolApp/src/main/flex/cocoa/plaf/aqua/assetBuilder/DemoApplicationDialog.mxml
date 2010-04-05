@@ -15,6 +15,7 @@
 		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", MenuItem.createSeparatorItem(), "Item 3"]);
 		private static const testData2:ArrayList = new ArrayList(new <Object>["Item 1", "Loooooooooooong Label", MenuItem.createSeparatorItem(), "Item 3"]);
 		private static const listData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8"]);
+		private static const shortListData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 3 Looooooooong"]);
 
 		[ResourceBundle("TestPane")]
 		private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
@@ -35,6 +36,12 @@
 			WindowSkin(skin).bottomBarStyle = BottomBarStyle.application;
 			super.skinAttachedHandler();
 		}
+
+		private function changeListDataProvder():void
+		{
+			listView.dataProvider = (listView.dataProvider == listData) ?  shortListData : listData;
+		}
+
 		]]></fx:Script>
 
 	<Container>
@@ -58,7 +65,8 @@
 
 		<TabView items="{tabViewPanes}"/>
 
-		<ListView dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">
+		<PushButton label="Change List Data Provider" action="changeListDataProvder"/>
+		<ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">
 			<layout>
 				<TileLayout rowHeight="25"/>
 			</layout>

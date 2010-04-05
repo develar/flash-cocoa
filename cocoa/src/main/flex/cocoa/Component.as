@@ -5,7 +5,7 @@ import cocoa.plaf.Skin;
 
 import flash.events.IEventDispatcher;
 
-public interface Component extends Viewable, IEventDispatcher
+public interface Component extends Viewable, IEventDispatcher, UIPartController
 {
 	function get lafPrefix():String;
 	function get skin():Skin;
@@ -19,8 +19,6 @@ public interface Component extends Viewable, IEventDispatcher
 	
 	function createView(laf:LookAndFeel):Skin;
 
-	function uiPartAdded(id:String, instance:Object):void;
-	
 	function commitProperties():void;
 }
 }

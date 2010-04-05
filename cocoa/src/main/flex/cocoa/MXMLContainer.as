@@ -254,35 +254,7 @@ public class MXMLContainer extends Group implements ViewContainer
 	protected var _layoutMetrics:LayoutMetrics;
 
 	// disable unwanted legacy
-	override public function regenerateStyleCache(recursive:Boolean):void
-	{
-
-	}
-
-	override public function styleChanged(styleProp:String):void
-    {
-
-	}
-
-	override protected function resourcesChanged():void
-    {
-
-	}
-
-	override public function get layoutDirection():String
-    {
-		return AbstractView.LAYOUT_DIRECTION_LTR;
-	}
-
-	override public function registerEffects(effects:Array /* of String */):void
-    {
-
-	}
-
-	override mx_internal function initThemeColor():Boolean
-    {
-		return true;
-	}
+	include "../../unwantedLegacy.as";
 
 	override public function getConstraintValue(constraintName:String):*
     {

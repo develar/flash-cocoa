@@ -102,26 +102,31 @@
 	[scroller setDoubleValue:0.5];
 	[scrollView setVerticalScroller:scroller];
 	
+	// for thumb
+	scrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(controlFrame.origin.x, controlFrame.origin.y, 127, 127)];
 	
-	
-	scrollView = [self createScrollView];
-	[scrollView setFrame:NSMakeRect(controlFrame.origin.x - 130, controlFrame.origin.y, 250, 250)];
-	
-	[[scrollView documentView] setFrame:NSMakeRect(0, 0, 500, 500)];
+	[scrollView setDrawsBackground:NO];
+	[scrollView setBorderType:NSNoBorder];
+	[scrollView setHasVerticalScroller:YES];
+	[scrollView setHasHorizontalScroller:YES];
+	[scrollView setDocumentView:[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 127 - 15 + 0.01, 127 - 15 + 0.01)]];
 	
 	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 1, 0)];
-	scroller.highlightArrowId = YES;
+	scroller.hasArrow = NO;
 	[scroller setEnabled:YES];
-	[scroller setKnobProportion:0.8];
-	[scroller setDoubleValue:0.5];
+	[scroller setKnobProportion:1];
+	[scroller setDoubleValue:1];
 	[scrollView setHorizontalScroller:scroller];
 	
 	scroller = [[CustomScroller alloc] initWithFrame:NSMakeRect(0, 0, 0, 1)];
-	scroller.highlightArrowId = YES;
+	scroller.hasArrow = NO;
 	[scroller setEnabled:YES];
-	[scroller setKnobProportion:0.6];
-	[scroller setDoubleValue:0.5];
+	[scroller setKnobProportion:1];
+	[scroller setDoubleValue:1];
 	[scrollView setVerticalScroller:scroller];
+	
+	[contentView addSubview:scrollView];
+	
 
 	// Image View (NSImageView or, IB Image Well)
 	controlFrame.origin.x = 0;

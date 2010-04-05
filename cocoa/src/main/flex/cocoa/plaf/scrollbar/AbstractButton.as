@@ -4,12 +4,13 @@ import cocoa.Border;
 import cocoa.Bordered;
 
 import flash.display.Graphics;
-import flash.events.Event;
-import flash.events.MouseEvent;
 
+import mx.core.mx_internal;
 import mx.core.UIComponent;
 
 import spark.components.Button;
+
+use namespace mx_internal;
 
 internal class AbstractButton extends Button implements Bordered
 {
@@ -32,7 +33,10 @@ internal class AbstractButton extends Button implements Bordered
 
 	override protected function measure():void
 	{
-		measuredMinWidth = measuredWidth = _border.layoutWidth;
+		if (!isNaN(_border.layoutWidth))
+		{
+			measuredMinWidth = measuredWidth = _border.layoutWidth;
+		}
 		measuredMinHeight = measuredHeight = _border.layoutHeight;
 	}
 
@@ -65,5 +69,8 @@ internal class AbstractButton extends Button implements Bordered
 	override public function invalidateSkinState():void
 	{
 	}
+
+	// disable unwanted legacy
+	include "../../../../unwantedLegacy.as";
 }
 }

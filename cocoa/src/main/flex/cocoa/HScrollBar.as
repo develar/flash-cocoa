@@ -1,16 +1,16 @@
 package cocoa
 {
-import cocoa.plaf.scrollbar.VScrollBarSkin;
+import cocoa.plaf.scrollbar.HScrollBarSkin;
 
 import flash.events.MouseEvent;
 
 import mx.core.mx_internal;
 
-import spark.components.VScrollBar;
+import spark.components.HScrollBar;
 
 use namespace mx_internal;
 
-public class VScrollBar extends spark.components.VScrollBar implements UIPartController
+public class HScrollBar extends spark.components.HScrollBar implements UIPartController
 {
 	public function uiPartAdded(id:String, instance:Object):void
 	{
@@ -24,7 +24,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 		{
 			case "repeatDelay": return 500;
 			case "repeatInterval": return 35;
-			case "skinClass": return VScrollBarSkin;
+			case "skinClass": return HScrollBarSkin;
 		}
 
 		return undefined;
@@ -37,7 +37,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 
 	override protected function track_mouseDownHandler(event:MouseEvent):void
 	{
-		if (event.localY >= Bordered(track).border.contentInsets.top)
+		if (event.localX >= Bordered(track).border.contentInsets.left)
 		{
 			super.track_mouseDownHandler(event);
 		}
@@ -56,8 +56,8 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 			skin.invalidateDisplayList();
 			return;
 		}
-
-		var trackSize:Number = track.getLayoutBoundsHeight();
+		
+		var trackSize:Number = track.getLayoutBoundsWidth();
 		if (trackSize == 0)
 		{
 			return;
@@ -68,12 +68,12 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 			skin.invalidateDisplayList();
 		}
 
-		var thumbTopPadding:Number = Bordered(track).border.contentInsets.top;
-		trackSize -= thumbTopPadding;
+		var thumbleftPadding:Number = Bordered(track).border.contentInsets.left;
+		trackSize -= thumbleftPadding;
 
-		var thumbSize:Number = Math.max(thumb.minHeight, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));
-		thumb.setLayoutBoundsSize(NaN, thumbSize);
-		thumb.setLayoutBoundsPosition(0, Math.round(((value - minimum) * ((trackSize - thumbSize) / range)) + thumbTopPadding));
+		var thumbSize:Number = Math.max(thumb.minWidth, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));
+		thumb.setLayoutBoundsSize(thumbSize, NaN);
+		thumb.setLayoutBoundsPosition(Math.round(((value - minimum) * ((trackSize - thumbSize) / range)) + thumbleftPadding), 0);
 	}
 
 	// disable unwanted legacy

@@ -26,13 +26,6 @@ public class ListViewSkin extends LightFlexUIComponent
 			scrollView.documentView = dataGroup;
 
 			scrollView.move(STROKE_THICKNESS, STROKE_THICKNESS);
-//			scrollView.verticalScrollbarPolicy = ScrollbarPolicy.ON;
-//			scroller.setStyle("verticalScrollPolicy", ScrollPolicy.AUTO);
-//			scroller.setStyle("horizontalScrollPolicy", ScrollPolicy.AUTO);
-//			scroller.setStyle("layoutDirection", AbstractView.LAYOUT_DIRECTION_LTR);
-
-			//var layout:LayoutBase = List(owner).layout;
-			//scroller.minViewportInset = (layout is TileLayout ? TileLayout(layout).horizontalGap : VerticalLayout(layout).gap) / 2;
 
 			addChild(scrollView);
 		}

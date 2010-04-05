@@ -8,7 +8,6 @@ import mx.events.PropertyChangeEvent;
 import mx.managers.IFocusManagerComponent;
 import mx.utils.MatrixUtil;
 
-import spark.components.HScrollBar;
 import spark.components.supportClasses.GroupBase;
 import spark.components.supportClasses.ScrollBarBase;
 import spark.core.IViewport;
@@ -74,8 +73,6 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		if (_verticalScrollbarPolicy == ScrollbarPolicy.ON)
 		{
 			verticalScrollBar = new VScrollBar();
-//			verticalScrollBar.setStyle("skinClass", VscrollBarSkin);
-//			verticalScrollBar.setStyle("skinClass", VscrollBarSkin);
 			addChild(verticalScrollBar);
 		}
 
@@ -136,7 +133,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 
 	private function get hsbVisible():Boolean
 	{
-		var hsb:ScrollBarBase = horizontalScrollBar;
+		var hsb:HScrollBar = horizontalScrollBar;
 		return hsb && hsb.visible;
 	}
 

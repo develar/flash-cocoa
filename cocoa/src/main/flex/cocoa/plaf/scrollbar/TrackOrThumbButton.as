@@ -11,6 +11,7 @@ internal final class TrackOrThumbButton extends AbstractButton
 	{
 		_border = value;
 		minHeight = _border.layoutHeight;
+		minWidth = _border.layoutWidth;
 	}
 
 	override protected function addHandlers():void

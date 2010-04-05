@@ -25,7 +25,10 @@ internal final class ArrowButton extends AbstractButton
 		var mouseEvent:MouseEvent = MouseEvent(event);
 		if (event.type == MouseEvent.ROLL_OUT || event.type == MouseEvent.ROLL_OVER)
 		{
-			super.mouseEventHandler(event);
+			if (mouseCaptured)
+			{
+				super.mouseEventHandler(event);
+			}
 		}
 		else if (mouseEvent.localX >= 0 && mouseEvent.localX <= width)
 		{
@@ -44,7 +47,6 @@ internal final class ArrowButton extends AbstractButton
 	{
 		if (laf != null)
 		{
-			trace(mouseCaptured, hovered);
 			_border = laf.getBorder((mouseCaptured && hovered) ? (styleKey + ".highlighted") : styleKey);
 			invalidateDisplayList();
 		}

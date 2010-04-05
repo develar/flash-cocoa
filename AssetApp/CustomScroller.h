@@ -11,8 +11,10 @@
 
 @interface CustomScroller : NSScroller {
 	BOOL highlightArrowId;
+	BOOL hasArrow;
 }
 
 @property (assign) BOOL highlightArrowId;
+@property (assign) BOOL hasArrow;
 
 @end

@@ -87,36 +87,8 @@ public class ListView extends List implements Viewable, Control
 	}
 
 	// disable unwanted legacy
-	override public function regenerateStyleCache(recursive:Boolean):void
-	{
-
-	}
-
-	override public function styleChanged(styleProp:String):void
-    {
-
-	}
-
-	override protected function resourcesChanged():void
-    {
-
-	}
-
-	override public function get layoutDirection():String
-    {
-		return AbstractView.LAYOUT_DIRECTION_LTR;
-	}
-
-	override public function registerEffects(effects:Array /* of String */):void
-    {
-
-	}
-
-	override mx_internal function initThemeColor():Boolean
-    {
-		return true;
-	}
-
+	include "../../unwantedLegacy.as";
+	
 	override public function getStyle(styleProp:String):*
 	{
 		if (styleProp == "skinClass")

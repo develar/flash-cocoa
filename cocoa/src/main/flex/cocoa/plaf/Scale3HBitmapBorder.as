@@ -49,7 +49,14 @@ public class Scale3HBitmapBorder extends AbstractScale3BitmapBorder
 		firstSize = bitmaps[0].width;
 		lastSize = bitmaps[2].width;
 
+		_layoutWidth = size + _frameInsets.left + _frameInsets.right;
 		_layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
+	}
+
+	private var _layoutWidth:Number;
+	override public function get layoutWidth():Number
+	{
+		return _layoutWidth;
 	}
 }
 }

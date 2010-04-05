@@ -2,7 +2,6 @@ package cocoa.plaf
 {
 import cocoa.FrameInsets;
 import cocoa.Insets;
-
 import cocoa.View;
 
 import flash.display.BitmapData;

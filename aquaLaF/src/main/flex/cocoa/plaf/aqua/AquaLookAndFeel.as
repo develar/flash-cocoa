@@ -102,6 +102,10 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Scrollbar.incrementButton.v.highlighted"] = borders[scrollbarBorderPosition + 9];
 
 		data["Scrollbar.thumb.v"] = borders[scrollbarBorderPosition + 10];
+		data["Scrollbar.thumb.h"] = borders[scrollbarBorderPosition + 11];
+
+		data["Scrollbar.track.v.off"] = borders[scrollbarBorderPosition + 12];
+		data["Scrollbar.track.h.off"] = borders[scrollbarBorderPosition + 13];
 	}
 
 	private static function initAssets():void
