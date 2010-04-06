@@ -21,6 +21,7 @@ public class HScrollBarSkin extends AbstractScrollBarSkin
 
 		if (isOff == track.visible)
 		{
+			graphics.clear();
 			track.visible = !isOff;
 			thumb.visible = !isOff;
 			decrementButton.visible = !isOff;
@@ -29,7 +30,6 @@ public class HScrollBarSkin extends AbstractScrollBarSkin
 
 		if (isOff)
 		{
-			graphics.clear();
 			offBorder.draw(null, graphics, w, h);
 		}
 		else
