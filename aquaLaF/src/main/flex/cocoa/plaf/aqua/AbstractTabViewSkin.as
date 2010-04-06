@@ -43,6 +43,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 			segmentedControl = new SingleSelectionDataGroup();
 			var layout:SegmentedControlHorizontalLayout = new SegmentedControlHorizontalLayout();
 			layout.gap = 1;
+			layout.useGapForEdge = true;
 			segmentedControl.layout = layout;
 			segmentedControl.laf = laf;
 			segmentedControl.itemRenderer = new ClassFactory(SegmentItemRenderer);

@@ -44,8 +44,8 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder
 	{
 		super.readExternal(input);
 
-		initTransient();
 		_frameInsets = readFrameInsets(input);
+		initTransient();
 	}
 
 	override public function writeExternal(output:ByteArray):void

@@ -14,6 +14,18 @@ import spark.components.supportClasses.GroupBase;
  */
 public class SegmentedControlHorizontalLayout extends SegmentedControlLayout
 {
+	private var _itemWidth:Number;
+	public function set itemWidth(value:Number):void
+	{
+		_itemWidth = value;
+	}
+
+	private var _useGapForEdge:Boolean;
+	public function set useGapForEdge(value:Boolean):void
+	{
+		_useGapForEdge = value;
+	}
+
 	override public function measure():void
 	{
 		var layoutTarget:GroupBase = target;
@@ -31,19 +43,20 @@ public class SegmentedControlHorizontalLayout extends SegmentedControlLayout
 			width += layoutElement.getPreferredBoundsWidth() + gap;
 		}
 
-		if (n > 0)
+		width -= gap;
+		if (_useGapForEdge)
 		{
-			width -= gap;
+			width += gap * 2;
 		}
 
 		layoutTarget.measuredWidth = width;
 		layoutTarget.measuredHeight = n > 0 ? layoutTarget.getElementAt(0).getPreferredBoundsHeight() : 0;
 	}
 
-	override public function updateDisplayList(width:Number, height:Number):void
+	override public function updateDisplayList(w:Number, h:Number):void
 	{
 		var layoutTarget:GroupBase = target;
-		var x:Number = 0;
+		var x:Number = _useGapForEdge ? gap : 0;
 		for (var i:int = 0, n:int = layoutTarget.numElements; i < n; i++)
 		{
 			var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
@@ -52,7 +65,15 @@ public class SegmentedControlHorizontalLayout extends SegmentedControlLayout
 				continue;
 			}
 
-			layoutElement.setLayoutBoundsSize(NaN, height);
+			if (i == 0 && !isNaN(_itemWidth))
+			{
+				layoutElement.setLayoutBoundsSize(_itemWidth + (w - (_itemWidth * n) - (gap * (n + 1))), h);
+			}
+			else
+			{
+				layoutElement.setLayoutBoundsSize(_itemWidth, h);
+			}
+
 			layoutElement.setLayoutBoundsPosition(x, 0);
 
 			x += layoutElement.getLayoutBoundsWidth() + gap;

@@ -1,6 +1,7 @@
 package cocoa
 {
 import cocoa.plaf.AbstractItemRenderer;
+import cocoa.plaf.ListViewSkin;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
@@ -76,6 +77,26 @@ public class ListView extends List implements Viewable, Control
 		selectedItem = value;
 	}
 
+	private var _verticalScrollbarPolicy:int = ScrollbarPolicy.AUTO;
+	public function set verticalScrollbarPolicy(value:uint):void
+	{
+		_verticalScrollbarPolicy = value;
+		if (skin != null)
+		{
+			ListViewSkin(skin).verticalScrollbarPolicy = _verticalScrollbarPolicy;
+		}
+	}
+
+	private var _horizontalScrollbarPolicy:int = ScrollbarPolicy.AUTO;
+	public function set horizontalScrollbarPolicy(value:uint):void
+	{
+		_horizontalScrollbarPolicy = value;
+		if (skin != null)
+		{
+			ListViewSkin(skin).horizontalScrollbarPolicy = _horizontalScrollbarPolicy;
+		}
+	}
+
 	public override function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void
 	{
 		if (renderer is AbstractItemRenderer)
@@ -103,6 +124,14 @@ public class ListView extends List implements Viewable, Control
 		{
 			return undefined;
 		}
+	}
+
+	override protected function attachSkin():void
+	{
+		super.attachSkin();
+
+		ListViewSkin(skin).verticalScrollbarPolicy = _verticalScrollbarPolicy;
+		ListViewSkin(skin).horizontalScrollbarPolicy = _horizontalScrollbarPolicy;
 	}
 }
 }

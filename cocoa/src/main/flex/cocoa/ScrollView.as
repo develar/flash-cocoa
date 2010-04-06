@@ -50,16 +50,26 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		}
 	}
 
-	private var _verticalScrollbarPolicy:int = ScrollbarPolicy.ON;
+	private var _verticalScrollbarPolicy:int = ScrollbarPolicy.AUTO;
 	public function set verticalScrollbarPolicy(value:uint):void
 	{
 		_verticalScrollbarPolicy = value;
+
+		if (verticalScrollBar != null)
+		{
+			verticalScrollBar.visible = _verticalScrollbarPolicy != ScrollbarPolicy.OFF;
+		}
 	}
 
-	private var _horizontalScrollbarPolicy:int = ScrollbarPolicy.ON;
+	private var _horizontalScrollbarPolicy:int = ScrollbarPolicy.AUTO;
 	public function set horizontalScrollbarPolicy(value:uint):void
 	{
 		_horizontalScrollbarPolicy = value;
+
+		if (horizontalScrollBar != null)
+		{
+			horizontalScrollBar.visible = _horizontalScrollbarPolicy != ScrollbarPolicy.OFF;
+		}
 	}
 
 	public function drawFocus(isFocused:Boolean):void
@@ -70,13 +80,13 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 	{
 		super.createChildren();
 
-		if (_verticalScrollbarPolicy == ScrollbarPolicy.ON)
+		if (_verticalScrollbarPolicy != ScrollbarPolicy.OFF)
 		{
 			verticalScrollBar = new VScrollBar();
 			addChild(verticalScrollBar);
 		}
 
-		if (_horizontalScrollbarPolicy == ScrollbarPolicy.ON)
+		if (_horizontalScrollbarPolicy != ScrollbarPolicy.OFF)
 		{
 			horizontalScrollBar = new HScrollBar();
 			addChild(horizontalScrollBar);

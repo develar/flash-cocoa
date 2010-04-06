@@ -108,6 +108,18 @@ public class LabelHelper
 		textLine.x = contentInsets.left;
 		textLine.y = h - contentInsets.bottom;
 	}
+
+	public function moveToCenterByInsets(w:Number, h:Number, contentInsets:Insets, frameInsets:FrameInsets):void
+	{
+		if (textLine == null)
+		{
+			return;
+		}
+
+		// прибавление frameInsets.top нужно, так как если real bounds y полученный в результате отрисовки не будет 0, то и текст будет отпозиционирован согласно такому parent y
+		textLine.x = (w - textLine.textWidth) * 0.5;
+		textLine.y = h - contentInsets.bottom + frameInsets.top;
+	}
 	
 	public function moveByInsets(h:Number, contentInsets:Insets, frameInsets:FrameInsets):void
 	{
@@ -116,7 +128,7 @@ public class LabelHelper
 			return;
 		}
 
-		// прибавление frameInsets.top нужно, так как если real bounds y полученный в результате отрисовки не будет 0, но и текст будет отпозиционирован согласно такому parent y
+		// прибавление frameInsets.top нужно, так как если real bounds y полученный в результате отрисовки не будет 0, то и текст будет отпозиционирован согласно такому parent y
 		textLine.x = contentInsets.left + frameInsets.left;
 		textLine.y = h - contentInsets.bottom + frameInsets.top;
 	}

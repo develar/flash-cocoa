@@ -3,12 +3,13 @@ package cocoa.plaf.aqua
 import cocoa.FlexDataGroup;
 import cocoa.LightFlexUIComponent;
 import cocoa.ScrollView;
+import cocoa.plaf.ListViewSkin;
 
 import flash.display.CapsStyle;
 import flash.display.Graphics;
 import flash.display.LineScaleMode;
 
-public class ListViewSkin extends LightFlexUIComponent
+public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.ListViewSkin
 {
 	private static const STROKE_THICKNESS:Number = 1;
 
@@ -29,6 +30,16 @@ public class ListViewSkin extends LightFlexUIComponent
 
 			addChild(scrollView);
 		}
+	}
+
+	public function set verticalScrollbarPolicy(value:uint):void
+	{
+		scrollView.verticalScrollbarPolicy = value;
+	}
+
+	public function set horizontalScrollbarPolicy(value:uint):void
+	{
+		scrollView.horizontalScrollbarPolicy = value;
 	}
 
 	override protected function measure():void

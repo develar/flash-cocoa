@@ -48,13 +48,6 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 		super.measure();
 
 		measuredMinHeight = measuredHeight = 20;
-		// первый и последний сегмент имеет ширину большую на 1px чем остальные
-		var numberOfItems:int = DataGroup(parent).dataProvider.length;
-		if (itemIndex == 0 || itemIndex == (numberOfItems - 1))
-		{
-			measuredMinWidth += 1;
-			measuredWidth += 1;
-		}
 	}
 
 	/**
@@ -74,18 +67,18 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 		const isFirst:Boolean = itemIndex == 0;
 		if (isFirst)
 		{
-			frameInsets.left = -1;
+			frameInsets.left = -2;
 			frameInsets.right = 0;
 		}
 		else
 		{
 			frameInsets.left = 0;
 			isLast = itemIndex == (DataGroup(parent).dataProvider.length - 1);
-			frameInsets.right = isLast ? -1 : 0;
+			frameInsets.right = isLast ? -2 : 0;
 		}
 
 		labelHelper.validate();
-		labelHelper.moveByInsets(h, border.contentInsets, frameInsets);
+		labelHelper.moveToCenterByInsets(w, h, border.contentInsets, frameInsets);
 
 		var g:Graphics = graphics;
 		g.clear();
