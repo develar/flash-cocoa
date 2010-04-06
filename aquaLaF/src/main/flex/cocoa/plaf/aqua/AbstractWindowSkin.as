@@ -12,6 +12,10 @@ import cocoa.plaf.WindowSkin;
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 
+import flash.events.MouseEvent;
+
+import flash.text.engine.TextLine;
+
 import mx.core.IFlexDisplayObject;
 import mx.core.ILayoutElement;
 import mx.core.mx_internal;
@@ -41,7 +45,8 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 	private var labelHelper:LabelHelper;
 
-	private var mover:WindowMover;
+	private static var mover:WindowMover;
+	private static var resizer:WindowResizer;
 
 	public function AbstractWindowSkin()
 	{
@@ -58,7 +63,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		_contentView = value;
 		if (initialized)
 		{
-			addChild(DisplayObject(_contentView)); 
+			addChildAt(DisplayObject(_contentView), 0); 
 		}
 	}
 
@@ -81,7 +86,6 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		super.createChildren();
 
 		labelHelper.font = getFont("SystemFont");
-		mover = new WindowMover(this, TITLE_BAR_HEIGHT, CONTENT_INSETS);
 		border = laf.getBorder("Window.border");
 
 		addChild(DisplayObject(_contentView));
@@ -90,6 +94,40 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		{
 			resizeGripper = new resizeGripperClass();
 			addDisplayObject(resizeGripper);
+		}
+
+		addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+	}
+
+	private function mouseDownHandler(event:MouseEvent):void
+	{
+		if (event.target != this && !(event.target is TextLine))
+		{
+			return;
+		}
+
+		var mouseY:Number = event.localY;
+		var mouseX:Number = event.localX;
+		if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (mouseY > CONTENT_INSETS.top && mouseY < (height - CONTENT_INSETS.bottom)))
+		{
+			return;
+		}
+
+		if (mouseX >= resizeGripper.x && mouseY >= resizeGripper.y)
+		{
+			if (resizer == null)
+			{
+				resizer = new WindowResizer();
+			}
+			resizer.resize(event, this);
+		}
+		else
+		{
+			if (mover == null)
+			{
+				mover = new WindowMover();
+			}
+			mover.move(event, this, TITLE_BAR_HEIGHT);
 		}
 	}
 
@@ -127,10 +165,8 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			_contentView.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
 		}
 
-//		var offset:Number = 1;
-		var offset:Number = 4;
-		resizeGripper.x = w - 11 - offset;
-		resizeGripper.y = h - 11 - offset;
+		resizeGripper.x = w - 11 - 4;
+		resizeGripper.y = h - 11 - 4;
 	}
 
 	public function get defaultButton():IFlexDisplayObject

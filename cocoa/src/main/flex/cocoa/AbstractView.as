@@ -5872,8 +5872,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		if (canSkipMeasurement())
 		{
 			invalidateSizeFlag = false;
-			_measuredMinWidth = 0;
-			_measuredMinHeight = 0;
+			// develar — закомментировано — если мы установили ширину явно, то почему мы должны сбрасывать _measuredMinWidth/_measuredMinHeight — см. WindowResizer
+//			_measuredMinWidth = 0;
+//			_measuredMinHeight = 0;
 		}
 		else
 		{

@@ -1,9 +1,6 @@
 package cocoa.plaf.aqua
 {
-import cocoa.Insets;
-
 import flash.events.MouseEvent;
-import flash.text.engine.TextLine;
 
 import mx.core.IFlexDisplayObject;
 
@@ -18,30 +15,12 @@ public class WindowMover
 	private var object:IFlexDisplayObject;
 	private var titleBarHeight:Number;
 
-	private var contentInsets:Insets;
-
 	private static const MIN_SIDE_VISIBLE_WIDTH:Number = 4;
 
-	public function WindowMover(object:IFlexDisplayObject, titleBarHeight:Number, contentInsets:Insets)
+	public function move(event:MouseEvent, object:IFlexDisplayObject, titleBarHeight:Number):void
 	{
 		this.object = object;
 		this.titleBarHeight = titleBarHeight;
-		this.contentInsets = contentInsets;
-
-		object.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-	}
-
-	private function mouseDownHandler(event:MouseEvent):void
-	{
-		var objectHeight:Number = object.height;
-		var mouseY:Number = event.localY;
-		var mouseX:Number = event.localX;
-		if ((event.target != object && !(event.target is TextLine)) ||
-			mouseY < 0 || mouseX < 0 || mouseX > object.width || mouseY > object.height || /* skip shadow */
-			(mouseY > contentInsets.top && mouseY < (objectHeight - contentInsets.bottom)))
-		{
-			return;
-		}
 
 		offsetX = event.stageX - object.x;
 		offsetY = event.stageY - object.y;
@@ -62,6 +41,8 @@ public class WindowMover
 		{
 			object.y = maxY;
 		}
+
+		object = null;
 	}
 
 	private function mouseMoveHandler(event:MouseEvent):void

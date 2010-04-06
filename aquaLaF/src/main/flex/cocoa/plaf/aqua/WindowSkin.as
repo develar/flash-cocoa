@@ -48,7 +48,7 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 			controlBar.layout = bottomBarGroupLayout;
 
 			component.uiPartAdded("controlBar", controlBar);
-			addChild(controlBar);
+			addChildAt(controlBar, 0);
 		}
 	}
 
