@@ -120,5 +120,22 @@ public class AbstractLookAndFeel implements LookAndFeel
 			return _parent.getCursor(cursorType);
 		}
 	}
+
+	public function getColors(key:String):Vector.<uint>
+	{
+		var value:Vector.<uint> = data[key];
+		if (value != null)
+		{
+			return value;
+		}
+		else if (_parent == null)
+		{
+			throw new ArgumentError("Unknown " + key);
+		}
+		else
+		{
+			return _parent.getColors(key);
+		}
+	}
 }
 }

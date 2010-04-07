@@ -4,6 +4,7 @@ import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.View;
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.utils.ByteArray;
@@ -46,6 +47,11 @@ public class OneBitmapBorder extends AbstractBitmapBorder
 		border._layoutHeight = bitmap.height + border._frameInsets.top + border._frameInsets.bottom;
 		border._layoutWidth = bitmap.width + border._frameInsets.left + border._frameInsets.right;
 		return border;
+	}
+
+	public static function createByBitmapClass(bitmapClass:Class, contentInsets:Insets = null, frameInsets:FrameInsets = null):OneBitmapBorder
+	{
+		return create(Bitmap(new bitmapClass()).bitmapData, contentInsets, frameInsets);
 	}
 
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
