@@ -190,7 +190,7 @@ final class WindowFrameLookAndFeel extends AbstractLookAndFeel
 
 final class AquaFonts
 {
-	private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI");
+	private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
 
 	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
 	public static const MENU_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 14);
@@ -203,7 +203,7 @@ final class AquaFonts
 	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = SYSTEM_FONT.clone();
 	SYSTEM_FONT_HIGHLIGHTED.color = 0xffffff;
 
-	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(new FontDescription("Lucida Grande, Segoe UI", FontWeight.BOLD), 11);
+	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD), 11);
 
 	public static const VIEW_FONT_HIGHLIGHTED:ElementFormat = VIEW_FONT.clone();
 	VIEW_FONT_HIGHLIGHTED.color = 0xffffff;

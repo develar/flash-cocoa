@@ -77,7 +77,7 @@ public class ListView extends List implements Viewable, Control
 		selectedItem = value;
 	}
 
-	private var _verticalScrollbarPolicy:int = ScrollbarPolicy.AUTO;
+	private var _verticalScrollbarPolicy:int = ScrollPolicy.AUTO;
 	public function set verticalScrollbarPolicy(value:uint):void
 	{
 		_verticalScrollbarPolicy = value;
@@ -87,7 +87,7 @@ public class ListView extends List implements Viewable, Control
 		}
 	}
 
-	private var _horizontalScrollbarPolicy:int = ScrollbarPolicy.AUTO;
+	private var _horizontalScrollbarPolicy:int = ScrollPolicy.AUTO;
 	public function set horizontalScrollbarPolicy(value:uint):void
 	{
 		_horizontalScrollbarPolicy = value;
