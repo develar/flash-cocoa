@@ -1,7 +1,5 @@
 package cocoa.bar
 {
-import cocoa.plaf.PushButtonSkin;
-
 import flash.events.MouseEvent;
 
 import spark.components.ButtonBarButton;
@@ -15,20 +13,6 @@ public class BarButton extends ButtonBarButton
 	{
 		addEventListener(MouseEvent.ROLL_OVER, mouseEventHandler);
 		addEventListener(MouseEvent.ROLL_OUT, mouseEventHandler);
-	}
-
-	override public function set label(value:String):void
-	{
-		if (value == label)
-		{
-			return;
-		}
-
-		super.label = value;
-		if (skin is PushButtonSkin)
-		{
-			PushButtonSkin(skin).label = value;
-		}
 	}
 }
 }

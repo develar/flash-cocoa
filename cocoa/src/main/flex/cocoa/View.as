@@ -2,9 +2,10 @@ package cocoa
 {
 import flash.display.DisplayObject;
 
+import mx.core.IInvalidating;
 import mx.core.IUIComponent;
 
-public interface View extends Viewable, IUIComponent
+public interface View extends Viewable, IUIComponent, IInvalidating
 {
 	/**
 	 *  This method allows access to the Player's native implementation of addChild()

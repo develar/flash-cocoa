@@ -1,6 +1,6 @@
 package cocoa
 {
-public interface Button
+public interface Cell
 {
 	function get state():int;
 }

@@ -48,7 +48,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 	/**
 	 * Only once before initial commitProperties.
 	 */
-	private var _mouseSelectionMode:int = ItemMouseSelectionMode.click;
+	private var _mouseSelectionMode:int = ItemMouseSelectionMode.CLICK;
 	public function set mouseSelectionMode(value:int):void
 	{
 		if (value != _mouseSelectionMode)
@@ -64,9 +64,9 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		if (flags & mouseSelectionModeChanged)
 		{
 			flags ^= mouseSelectionModeChanged;
-			if (_mouseSelectionMode != ItemMouseSelectionMode.none)
+			if (_mouseSelectionMode != ItemMouseSelectionMode.NONE)
 			{
-				addEventListener(_mouseSelectionMode == ItemMouseSelectionMode.click ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN, itemMouseSelectHandler);
+				addEventListener(_mouseSelectionMode == ItemMouseSelectionMode.CLICK ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN, itemMouseSelectHandler);
 			}
 		}
 

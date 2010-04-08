@@ -1,11 +1,14 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Insets;
+import cocoa.ItemMouseSelectionMode;
 import cocoa.SingleSelectionDataGroup;
 import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.AbstractSkin;
+
+import cocoa.plaf.SegmentedControlController;
 
 import mx.core.ClassFactory;
 import mx.core.ILayoutElement;
@@ -47,6 +50,10 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 			segmentedControl.layout = layout;
 			segmentedControl.laf = laf;
 			segmentedControl.itemRenderer = new ClassFactory(SegmentItemRenderer);
+
+			segmentedControl.mouseSelectionMode = ItemMouseSelectionMode.NONE;
+
+			SegmentedControlController(laf.getFactory(component.lafPrefix + ".segmentedControlController").newInstance()).register(segmentedControl);
 
 			addChild(segmentedControl);
 			component.uiPartAdded("segmentedControl", segmentedControl);

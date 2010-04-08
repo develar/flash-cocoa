@@ -2,8 +2,8 @@ package cocoa
 {
 public final class ItemMouseSelectionMode
 {
-	public static const down:int = 0;
-	public static const click:int = 1;
-	public static const none:int = 2;
+	public static const DOWN:int = 0;
+	public static const CLICK:int = 1;
+	public static const NONE:int = 2;
 }
 }

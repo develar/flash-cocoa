@@ -13,8 +13,7 @@ public interface LookAndFeel
 	function getIcon(key:String):Icon;
 	function getFont(key:String):ElementFormat;
 
-	function getUI(key:String):Class;
-
+	function getClass(key:String):Class;
 	function getFactory(key:String):IFactory;
 
 	function getCursor(cursorType:int):CursorData;

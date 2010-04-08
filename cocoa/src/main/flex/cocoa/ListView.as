@@ -63,7 +63,7 @@ public class ListView extends List implements Viewable, Control
 			}
 		}
 
-		skinClass = laf.getUI("ListView");
+		skinClass = laf.getClass("ListView");
 		super.createChildren();
 	}
 

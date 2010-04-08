@@ -1,7 +1,7 @@
 package cocoa.plaf
 {
 import cocoa.Border;
-import cocoa.Button;
+import cocoa.Cell;
 import cocoa.Component;
 import cocoa.Insets;
 import cocoa.LabelHelper;
@@ -17,7 +17,7 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
 
-	protected var myComponent:Button;
+	protected var myComponent:Cell;
 
 	public function AbstractPushButtonSkin()
 	{
@@ -30,7 +30,7 @@ public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSk
 	override public function attach(component:Component, laf:LookAndFeel):void
 	{
 		super.attach(component, laf);
-		myComponent = Button(component);
+		myComponent = Cell(component);
 	}
 
 	override public function get baselinePosition():Number

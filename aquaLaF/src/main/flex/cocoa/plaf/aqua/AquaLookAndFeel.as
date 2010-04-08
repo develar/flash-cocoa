@@ -3,6 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
+import cocoa.SingletonClassFactory;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
@@ -14,6 +15,7 @@ import cocoa.plaf.Scale3EdgeHBitmapBorder;
 import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
+import cocoa.plaf.SegmentedControlController;
 import cocoa.plaf.SliderNumericStepperSkin;
 
 import flash.utils.ByteArray;
@@ -62,6 +64,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["TabView"] = TabViewSkin;
 		data["TabView.borderless"] = BorderlessTabViewSkin;
+		data["TabView.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
 
 		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];

@@ -115,7 +115,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	{
 		if (_skinClass == null)
 		{
-			_skinClass = laf.getUI(lafPrefix);
+			_skinClass = laf.getClass(lafPrefix);
 		}
 		_skin = new _skinClass();
 		_skinClass = null;

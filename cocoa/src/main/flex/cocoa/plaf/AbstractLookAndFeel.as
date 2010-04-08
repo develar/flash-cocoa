@@ -70,7 +70,7 @@ public class AbstractLookAndFeel implements LookAndFeel
 		}
 	}
 
-	public function getUI(key:String):Class
+	public function getClass(key:String):Class
 	{
 		var value:Class = data[key];
 		if (value != null)
@@ -83,7 +83,7 @@ public class AbstractLookAndFeel implements LookAndFeel
 		}
 		else
 		{
-			return _parent.getUI(key);
+			return _parent.getClass(key);
 		}
 	}
 

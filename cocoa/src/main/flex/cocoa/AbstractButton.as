@@ -4,13 +4,13 @@ import cocoa.plaf.PushButtonSkin;
 
 import flash.events.MouseEvent;
 
-public class AbstractButton extends AbstractControl implements Button
+public class AbstractButton extends AbstractControl implements Cell
 {
 	protected var mySkin:PushButtonSkin;
 
 	private var oldState:int;
 	
-	private var _state:int = ButtonState.off;
+	private var _state:int = CellState.OFF;
 	public function get state():int
 	{
 		return _state;
@@ -51,9 +51,9 @@ public class AbstractButton extends AbstractControl implements Button
 		if (event.target == mySkin)
 		{
 			// может быть уже отвалидировано в roll over/out
-			if (_state == ButtonState.on)
+			if (_state == CellState.ON)
 			{
-				_state = ButtonState.off;
+				_state = CellState.OFF;
 				adjustState(event);
 			}
 
@@ -66,7 +66,7 @@ public class AbstractButton extends AbstractControl implements Button
 
 	private function mouseOverHandler(event:MouseEvent):void
 	{
-		_state = oldState == ButtonState.off ? ButtonState.on : ButtonState.off;
+		_state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
 		adjustState(event);
 	}
 

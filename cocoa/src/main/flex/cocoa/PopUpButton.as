@@ -13,13 +13,13 @@ use namespace ui;
  * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
 [DefaultProperty("menu")]
-public class PopUpButton extends AbstractControl implements Button
+public class PopUpButton extends AbstractControl implements Cell
 {
 	private var labelChanged:Boolean = false;
 
 	private var menuController:PopUpMenuController;
 
-	private var _state:int = ButtonState.off;
+	private var _state:int = CellState.OFF;
 	public function get state():int
 	{
 		return _state;

@@ -44,7 +44,7 @@ public class UIManager
 
 	public function getUI(key:String):Class
 	{
-		return laf.getUI(key);
+		return laf.getClass(key);
 	}
 	
 	public function getFactory(key:String):IFactory
