@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.IconButtonSkin;
+
 public class IconButton extends PushButton
 {
 	override public function get lafPrefix():String
@@ -19,7 +21,7 @@ public class IconButton extends PushButton
 			_icon = value;
 			if (mySkin != null)
 			{
-//				mySkin.icon = _icon;
+				IconButtonSkin(mySkin).icon = _icon;
 			}
 		}
 	}
@@ -28,7 +30,7 @@ public class IconButton extends PushButton
     {
 		super.skinAttachedHandler();
 
-//		mySkin.icon = _icon;
+		IconButtonSkin(mySkin).icon = _icon;
 	}
 }
 }

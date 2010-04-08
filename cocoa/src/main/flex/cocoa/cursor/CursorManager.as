@@ -8,8 +8,6 @@ import flash.utils.Dictionary;
 import mx.core.FlexGlobals;
 import mx.managers.CursorManager;
 
-
-
 public class CursorManager
 {
 	private const cursorIDMap:Dictionary = new Dictionary();

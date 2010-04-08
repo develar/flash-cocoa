@@ -140,7 +140,7 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 	public function attach(component:Component, laf:LookAndFeel):void
 	{
 		_component = component;
-		this.laf = laf;
+		this._laf = laf;
 
 		this["hostComponent"] = component;
 	}

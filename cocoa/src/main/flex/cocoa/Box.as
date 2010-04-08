@@ -73,6 +73,6 @@ public class Box extends AbstractComponent
 	override protected function resourcesChanged():void
     {
     	dispatchEvent(new Event("mChanged"));
-    }
+	}
 }
 }

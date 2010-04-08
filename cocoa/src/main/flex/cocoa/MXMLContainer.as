@@ -3,6 +3,7 @@ package cocoa
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
 
 import com.asfusion.mate.events.InjectorEvent;
 
@@ -28,9 +29,17 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class MXMLContainer extends Group implements ViewContainer
+public class MXMLContainer extends Group implements ViewContainer, LookAndFeelProvider
 {
-	protected var laf:LookAndFeel;
+	protected var _laf:LookAndFeel;
+	public function get laf():LookAndFeel
+	{
+		return _laf;
+	}
+	public function set laf(value:LookAndFeel):void
+	{
+		_laf = value;
+	}
 	
 	private var createChildrenCalled:Boolean;
 	private var elementsChanged:Boolean;
@@ -101,7 +110,7 @@ public class MXMLContainer extends Group implements ViewContainer
 		if (view is Component)
 		{
 			var component:Component = Component(view);
-			view = component.skin == null ? component.createView(laf) : component.skin;
+			view = component.skin == null ? component.createView(_laf) : component.skin;
 		}
 		else if (view is Injectable || view is SkinnableComponent || (view is GroupBase && GroupBase(view).id != null))
 		{

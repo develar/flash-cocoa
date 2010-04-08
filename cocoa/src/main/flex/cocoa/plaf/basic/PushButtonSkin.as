@@ -15,7 +15,7 @@ import flash.display.Graphics;
 
 import mx.managers.IFocusManagerComponent;
 
-public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFocusManagerComponent
+public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButtonSkin, IFocusManagerComponent
 {
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
@@ -27,12 +27,17 @@ public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFoc
 		super();
 
 		mouseChildren = false;
-		labelHelper = new LabelHelper(this);
+	}
+
+	protected function get bordered():Boolean
+	{
+		return true;
 	}
 
 	override public function attach(component:Component, laf:LookAndFeel):void
 	{
 		super.attach(component, laf);
+		
 		myComponent = Cell(component);
 	}
 
@@ -43,7 +48,11 @@ public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFoc
 
 	public function set label(value:String):void
 	{
-		if (value == labelHelper.text)
+		if (labelHelper == null)
+		{
+			labelHelper = new LabelHelper(this, initialized ? getFont("SystemFont") : null);
+		}
+		else if (value == labelHelper.text)
 		{
 			return;
 		}
@@ -58,15 +67,22 @@ public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFoc
 	{
 		super.createChildren();
 
-		labelHelper.font = getFont("SystemFont");
-		border = getBorder("border");
+		if (labelHelper != null)
+		{
+			labelHelper.font = getFont("SystemFont");
+		}
+
+		if (bordered)
+		{
+			border = getBorder("border");
+		}
 
 		adjustTitleWidth();
 	}
 
 	override protected function measure():void
 	{
-		if (!labelHelper.hasText)
+		if (labelHelper == null || !labelHelper.hasText)
 		{
 			return;
 		}
@@ -79,9 +95,12 @@ public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFoc
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		labelHelper.font = getFont(enabled ? "SystemFont" : "SystemFont.disabled");
-		labelHelper.validate();
-		labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
+		if (labelHelper != null)
+		{
+			labelHelper.font = getFont(enabled ? "SystemFont" : "SystemFont.disabled");
+			labelHelper.validate();
+			labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
+		}
 
 		var g:Graphics = graphics;
 		g.clear();
@@ -109,7 +128,7 @@ public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFoc
 
 	private function adjustTitleWidth():void
 	{
-		if (border != null)
+		if (border != null && labelHelper != null)
 		{
 			var titleInsets:Insets = border.contentInsets;
 			labelHelper.adjustWidth(_layoutMetrics.width - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));

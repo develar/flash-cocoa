@@ -17,6 +17,7 @@ import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.SegmentedControlController;
 import cocoa.plaf.SliderNumericStepperSkin;
+import cocoa.plaf.basic.IconButtonSkin;
 
 import flash.utils.ByteArray;
 
@@ -68,6 +69,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["PushButton"] = PushButtonSkin;
 		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];
+
+		data["IconButton"] = IconButtonSkin;
 
 		data["PopUpButton"] = PushButtonSkin;
 		data["PopUpButton.border"] = borders[2 + BezelStyle.rounded.ordinal];
