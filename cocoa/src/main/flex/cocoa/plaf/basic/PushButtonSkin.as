@@ -15,14 +15,14 @@ import flash.display.Graphics;
 
 import mx.managers.IFocusManagerComponent;
 
-public class AbstractPushButtonSkin extends AbstractSkin implements PushButtonSkin, IFocusManagerComponent
+public class PushButtonSkin extends AbstractSkin implements PushButtonSkin, IFocusManagerComponent
 {
 	protected var labelHelper:LabelHelper;
 	protected var border:Border;
 
 	protected var myComponent:Cell;
 
-	public function AbstractPushButtonSkin()
+	public function PushButtonSkin()
 	{
 		super();
 

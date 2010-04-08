@@ -1,10 +1,10 @@
 package cocoa.plaf.aqua
 {
 import cocoa.CellState;
-import cocoa.plaf.basic.AbstractPushButtonSkin;
+import cocoa.plaf.basic.PushButtonSkin;
 import cocoa.plaf.Scale3EdgeHBitmapBorder;
 
-public class PushButtonSkin extends AbstractPushButtonSkin
+public class PushButtonSkin extends cocoa.plaf.basic.PushButtonSkin
 {
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
