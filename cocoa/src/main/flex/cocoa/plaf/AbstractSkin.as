@@ -13,11 +13,8 @@ import flash.geom.Point;
 import flash.text.engine.ElementFormat;
 
 import mx.core.IFactory;
-import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
-
-use namespace mx_internal;
 
 /**
  * Default base skin implementation for view

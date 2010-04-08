@@ -7,7 +7,6 @@ import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.AbstractSkin;
-
 import cocoa.plaf.SegmentedControlController;
 
 import mx.core.ClassFactory;

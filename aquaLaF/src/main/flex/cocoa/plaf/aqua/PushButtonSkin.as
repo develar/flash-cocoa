@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.CellState;
-import cocoa.plaf.AbstractPushButtonSkin;
+import cocoa.plaf.basic.AbstractPushButtonSkin;
 import cocoa.plaf.Scale3EdgeHBitmapBorder;
 
 public class PushButtonSkin extends AbstractPushButtonSkin

@@ -21,8 +21,7 @@ use namespace ui;
 
 public class PopUpMenuController extends ListController
 {
-	private const MOUSE_CLICK_INTERVAL:int = 400;
-
+	private static const MOUSE_CLICK_INTERVAL:int = 400;
 	protected static const sharedPoint:Point = new Point();
 	
 	protected var popUpButton:PopUpButton;

@@ -1,4 +1,4 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.Border;
 import cocoa.Cell;
@@ -7,6 +7,9 @@ import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.TextInsets;
 import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.PushButtonSkin;
 
 import flash.display.Graphics;
 

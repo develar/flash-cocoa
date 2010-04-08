@@ -3,6 +3,7 @@ package cocoa.plaf
 import cocoa.Icon;
 import cocoa.View;
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Matrix;
@@ -19,6 +20,11 @@ public class BitmapIcon implements Icon, ExternalizableResource
 		var bitmapIcon:BitmapIcon = new BitmapIcon();
 		bitmapIcon.bitmapData = bitmapData;
 		return bitmapIcon;
+	}
+
+	public static function createByBitmapClass(bitmapClass:Class):BitmapIcon
+	{
+		return create(Bitmap(new bitmapClass()).bitmapData);
 	}
 
 	public function get iconWidth():Number
