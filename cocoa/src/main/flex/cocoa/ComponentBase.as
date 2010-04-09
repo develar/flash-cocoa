@@ -84,10 +84,9 @@ public class ComponentBase extends OnDemandEventDispatcher
 	protected function partAdded(id:String, instance:Object):void
 	{
 		this[id] = instance;
-		const handlerName:String = id + "Added";
 		if ((int(skinParts[id]) & HANDLER_NOT_EXISTS) == 0)
 		{
-			this[handlerName]();
+			this[id + "Added"]();
 		}
 	}
 

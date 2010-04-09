@@ -132,7 +132,17 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 		return _skin;
 	}
 
-	public function get lafPrefix():String
+	private var _lafPrefix:String;
+	public final function get lafPrefix():String
+	{
+		return _lafPrefix == null ? defaultLaFPrefix : _lafPrefix;
+	}
+	public final function set lafPrefix(value:String):void
+	{
+		_lafPrefix = value;
+	}
+
+	protected function get defaultLaFPrefix():String
 	{
 		throw new Error("abstract");
 	}
@@ -146,11 +156,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	{
 		if (skinStateIsDirty)
 		{
-			// This component must first be updated to the pending state as the skin inherits styles from this component.
-			//noinspection UnnecessaryLocalVariableJS
-			var pendingState:String = getCurrentSkinState();
-			// stateChanged(skin.currentState, pendingState, false);
-			IStateClient2(_skin).currentState = pendingState;
+			IStateClient2(_skin).currentState = getCurrentSkinState();
 			skinStateIsDirty = false;
 		}
 	}

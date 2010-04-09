@@ -50,7 +50,12 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 	{
 		if (labelHelper == null)
 		{
-			labelHelper = new LabelHelper(this, initialized ? getFont("SystemFont") : null);
+			if (value == null)
+			{
+				return;
+			}
+
+			labelHelper = new LabelHelper(this, laf == null ? null : getFont("SystemFont"));
 		}
 		else if (value == labelHelper.text)
 		{

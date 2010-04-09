@@ -7,7 +7,17 @@ import flash.events.IEventDispatcher;
 
 public interface Component extends Viewable, IEventDispatcher, UIPartController
 {
+	/**
+	 * Префикс, используемый компонентом при составлении абсолютного ключа для получения некого стиля.
+	 * В самом компоненте указывается путем переопределения геттера defaultLaFPrefix.
+	 */
 	function get lafPrefix():String;
+	/**
+	 * Если компонент используется как часть скина другого, то нам может потребоваться изменить его LaF,
+	 * но не таким дорогим способом как создание дочернего LaF — поэтому для компонента laf prefix может быть указан явно (в этом случае defaultLaFPrefix не будет использоваться).
+	 */
+	function set lafPrefix(value:String):void
+
 	function get skin():Skin;
 
 	function set skinClass(value:Class):void;

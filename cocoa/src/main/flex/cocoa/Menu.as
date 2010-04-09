@@ -2,7 +2,7 @@ package cocoa
 {
 import flash.utils.Dictionary;
 
-import mx.collections.IList;
+import org.flyti.util.List;
 
 use namespace ui;
 
@@ -41,7 +41,7 @@ public class Menu extends AbstractComponent
 
 	public function get selectedItem():Object
 	{
-		return _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
+		return _items.empty ? null : _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
 	}
 	public function set selectedItem(value:Object):void
 	{
@@ -59,8 +59,8 @@ public class Menu extends AbstractComponent
 	}
 
 	private var itemsChanged:Boolean;
-	private var _items:IList;
-	public function set items(value:IList):void
+	private var _items:List;
+	public function set items(value:List):void
 	{
 		if (value != _items)
 		{
@@ -75,7 +75,7 @@ public class Menu extends AbstractComponent
 		return _items.length;
 	}
 
-	override public function get lafPrefix():String
+	override protected function get defaultLaFPrefix():String
 	{
 		return "Menu";
 	}

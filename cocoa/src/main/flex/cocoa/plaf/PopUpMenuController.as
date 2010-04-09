@@ -86,21 +86,22 @@ public class PopUpMenuController extends ListController
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-		if (!popUpButton.skin.hitTestPoint(event.stageX, event.stageY))
+		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
+		if (!popUpButtonSkin.hitTestPoint(event.stageX, event.stageY))
 		{
 			return;
 		}
-		
-		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
+
 		var menuSkin:Skin = _menu.skin;
 		if (menuSkin == null)
 		{
 			menuSkin = _menu.createView(laf);
 		}
-		else
+		else if (DisplayObject(menuSkin).parent != null)
 		{
-			assert(DisplayObject(menuSkin).parent == null);
+			return;
 		}
+		
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		setPopUpPosition();
 

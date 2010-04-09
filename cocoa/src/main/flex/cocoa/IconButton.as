@@ -4,7 +4,7 @@ import cocoa.plaf.IconButtonSkin;
 
 public class IconButton extends PushButton
 {
-	override public function get lafPrefix():String
+	override protected function get defaultLaFPrefix():String
 	{
 		return "IconButton";
 	}

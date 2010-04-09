@@ -61,7 +61,7 @@ public class PopUpButton extends AbstractControl implements Cell
 
 	protected function updateLabelDisplay():void
 	{
-		PushButtonSkin(skin).label = LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
+		PushButtonSkin(skin).label = selectedItem == null ? null : LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
 	}
 
 	public function get selectedItem():Object
@@ -86,7 +86,7 @@ public class PopUpButton extends AbstractControl implements Cell
 		}
 	}
 
-	override public function get lafPrefix():String
+	override protected function get defaultLaFPrefix():String
 	{
 		return "PopUpButton";
 	}

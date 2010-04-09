@@ -28,7 +28,7 @@ public class Box extends AbstractComponent
 
 	private var _elements:Array;
 
-	override public function get lafPrefix():String
+	override protected function get defaultLaFPrefix():String
 	{
 		return "Box";
 	}

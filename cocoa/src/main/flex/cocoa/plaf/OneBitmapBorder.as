@@ -60,7 +60,7 @@ public class OneBitmapBorder extends AbstractBitmapBorder
 		sharedMatrix.ty = _frameInsets.top;
 
 		g.beginBitmapFill(bitmap, sharedMatrix, false);
-		g.drawRect(_frameInsets.left, _frameInsets.top, w, h - _frameInsets.bottom - _frameInsets.top);
+		g.drawRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.bottom - _frameInsets.top);
 		g.endFill();
 	}
 

@@ -39,7 +39,7 @@ public class Dialog extends Window
 	private var okButton:PushButton;
 	private var cancelButton:PushButton;
 
-	override public function get lafPrefix():String
+	override protected function get defaultLaFPrefix():String
 	{
 		return RESOURCE_BUNDLE;
 	}
