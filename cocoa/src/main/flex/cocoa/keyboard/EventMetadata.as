@@ -3,7 +3,7 @@ package cocoa.keyboard
 import flash.events.Event;
 import flash.utils.Dictionary;
 
-public class EventMetadata
+public final class EventMetadata
 {
 	private static const instances:Dictionary = new Dictionary();
 
