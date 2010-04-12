@@ -16,14 +16,7 @@ use namespace ui;
 public class PopUpButton extends AbstractControl implements Cell
 {
 	private var labelChanged:Boolean = false;
-
 	private var menuController:PopUpMenuController;
-
-	private var _state:int = CellState.OFF;
-	public function get state():int
-	{
-		return _state;
-	}
 
 	private var _menu:Menu;
 	public function set menu(value:Menu):void

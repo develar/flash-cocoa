@@ -8,6 +8,17 @@ public class AbstractControl extends AbstractComponent implements Control
 		_action = value;
 	}
 
+	private var _state:int = CellState.OFF;
+	public final function get state():int
+	{
+		return _state;
+	}
+	public final function set state(value:int):void
+	{
+		_state = value;
+		skin.invalidateDisplayList();
+	}
+
 	public function get objectValue():Object
 	{
 		throw new Error("abstract");

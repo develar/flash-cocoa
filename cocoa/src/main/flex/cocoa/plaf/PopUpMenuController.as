@@ -1,5 +1,6 @@
 package cocoa.plaf
 {
+import cocoa.CellState;
 import cocoa.HighlightableItemRenderer;
 import cocoa.Menu;
 import cocoa.PopUpButton;
@@ -101,6 +102,8 @@ public class PopUpMenuController extends ListController
 		{
 			return;
 		}
+
+		popUpButton.state = CellState.ON;
 		
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		setPopUpPosition();
@@ -119,6 +122,8 @@ public class PopUpMenuController extends ListController
 
 	protected function close():void
 	{
+		popUpButton.state = CellState.OFF;
+
 		var stage:Stage = DisplayObject(popUpButton.skin).stage;
 		stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 		stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);

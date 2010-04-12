@@ -9,12 +9,6 @@ public class AbstractButton extends AbstractControl implements Cell
 	protected var mySkin:PushButtonSkin;
 
 	private var oldState:int;
-	
-	private var _state:int = CellState.OFF;
-	public function get state():int
-	{
-		return _state;
-	}
 
 	override protected function skinAttachedHandler():void
 	{
@@ -51,10 +45,10 @@ public class AbstractButton extends AbstractControl implements Cell
 		if (event.target == mySkin)
 		{
 			// может быть уже отвалидировано в roll over/out
-			if (_state == CellState.ON)
+			if (state == CellState.ON)
 			{
-				_state = CellState.OFF;
-				adjustState(event);
+				state = CellState.OFF;
+				event.updateAfterEvent();
 			}
 
 			if (_action != null)
@@ -66,19 +60,13 @@ public class AbstractButton extends AbstractControl implements Cell
 
 	private function mouseOverHandler(event:MouseEvent):void
 	{
-		_state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
-		adjustState(event);
+		state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
+		event.updateAfterEvent();
 	}
 
 	private function mouseOutHandler(event:MouseEvent):void
 	{
-		_state = oldState;
-		adjustState(event);
-	}
-
-	private function adjustState(event:MouseEvent):void
-	{
-		mySkin.invalidateDisplayList();
+		state = oldState;
 		event.updateAfterEvent();
 	}
 }
