@@ -60,7 +60,7 @@
 
 								<class>**.sidebar.*</class>
 								<class>**.Panel</class>
-								<class>**.MXMLSkin</class>
+								<class>**.*MXMLSkin</class>
 								<class>**.AbstractSkin</class>
 								<class>**.*?Button</class>
 								<class>**.*ApplicationImpl</class>
@@ -95,6 +95,10 @@
 								<class>
 									<name>MXMLSkin</name>
 									<id>Skin</id>
+								</class>
+								<class>
+									<name>BorderedMXMLSkin</name>
+									<id>BorderedSkin</id>
 								</class>
 							</names>
 						</manifest>
