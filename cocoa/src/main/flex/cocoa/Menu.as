@@ -41,7 +41,7 @@ public class Menu extends AbstractComponent
 
 	public function get selectedItem():Object
 	{
-		return _items.empty ? null : _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
+		return _items.empty || (itemGroup != null && itemGroup.selectedIndex == ListSelection.NO_SELECTION) ? null : _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
 	}
 	public function set selectedItem(value:Object):void
 	{
@@ -89,7 +89,7 @@ public class Menu extends AbstractComponent
 			itemsChanged = false;
 			itemGroup.dataProvider = _items;
 			itemGroup.selectedIndex = pendingSelectedIndex;
-			pendingSelectedIndex = -1;
+			pendingSelectedIndex = ListSelection.NO_SELECTION;
 		}
 	}
 }

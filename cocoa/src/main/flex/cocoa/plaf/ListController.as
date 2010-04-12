@@ -29,7 +29,7 @@ public class ListController
 		}
 	}
 
-	private function rollOutHandler(event:MouseEvent):void
+	protected function rollOutHandler(event:MouseEvent):void
 	{
 		if (highlightedRenderer != null)
 		{
@@ -39,7 +39,7 @@ public class ListController
 		}
 	}
 
-	private function mouseMoveHandler(event:MouseEvent):void
+	protected function mouseMoveHandler(event:MouseEvent):void
 	{
 		if (highlightedRenderer == event.target)
 		{

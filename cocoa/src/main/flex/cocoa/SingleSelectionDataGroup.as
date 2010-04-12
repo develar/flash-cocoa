@@ -45,7 +45,10 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
 		{
 			itemSelected(oldSelectedIndex, false);
 		}
-		itemSelected(_selectedIndex, true);
+		if (_selectedIndex != ListSelection.NO_SELECTION)
+		{
+			itemSelected(_selectedIndex, true);
+		}
 
 		dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, oldSelectedIndex, _selectedIndex));
 

@@ -2,6 +2,7 @@ package cocoa.plaf
 {
 import cocoa.CellState;
 import cocoa.HighlightableItemRenderer;
+import cocoa.ListSelection;
 import cocoa.Menu;
 import cocoa.PopUpButton;
 import cocoa.ui;
@@ -116,8 +117,11 @@ public class PopUpMenuController extends ListController
 
 		mouseDownTime = getTimer();
 
-		highlightedRenderer = HighlightableItemRenderer(itemGroup.getElementAt(_menu.selectedIndex));
-		highlightedRenderer.highlighted = true;
+		if (_menu.selectedIndex != ListSelection.NO_SELECTION)
+		{
+			highlightedRenderer = HighlightableItemRenderer(itemGroup.getElementAt(_menu.selectedIndex));
+			highlightedRenderer.highlighted = true;
+		}
 	}
 
 	protected function close():void
