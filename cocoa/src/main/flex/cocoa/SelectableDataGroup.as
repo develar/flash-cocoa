@@ -6,7 +6,6 @@ import cocoa.plaf.LookAndFeelProvider;
 
 import flash.events.MouseEvent;
 
-import mx.core.IFlexDisplayObject;
 import mx.core.IVisualElement;
 import mx.core.mx_internal;
 
@@ -121,7 +120,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		}
 	}
 
-	public function itemToIcon(item:Object):IFlexDisplayObject
+	private function itemToIcon(item:Object):Icon
     {
 		return _iconFunction(item);
 	}

@@ -23,14 +23,6 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	private static const highlightOffOffset:int = 2;
 	private static const highlightOnOffset:int = 3;
 
-	public function SegmentItemRenderer()
-	{
-		// TabView скин в Aqua при нажатии на невыделенную кнопку (то есть down state) отображает более серую кнопку — как только мышь up или roll out, оно возвращается в up state
-//		addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-//		addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
-//		addEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
-	}
-
 	override public function get lafPrefix():String
 	{
 		return "SegmentItem";

@@ -23,7 +23,7 @@ public class BoxSkin extends AbstractSkin
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		contentGroup.setActualSize(contentGroup.getExplicitOrMeasuredWidth(), contentGroup.getExplicitOrMeasuredHeight());
+		contentGroup.setActualSize(w, h);
 	}
 }
 }

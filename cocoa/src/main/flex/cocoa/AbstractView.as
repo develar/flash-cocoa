@@ -5162,7 +5162,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	mx_internal function childAdded(child:DisplayObject):void
+	protected function childAdded(child:DisplayObject):void
 	{
 		if (child is IUIComponent)
 		{
@@ -5174,7 +5174,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	mx_internal function childRemoved(child:DisplayObject):void
+	protected function childRemoved(child:DisplayObject):void
 	{
 		if (child is IUIComponent)
 		{

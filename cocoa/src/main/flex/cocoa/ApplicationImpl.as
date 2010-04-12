@@ -444,5 +444,14 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
 		}
 	}
+
+	override protected function childAdded(child:DisplayObject):void
+	{
+		super.childAdded(child);
+
+		invalidateDisplayList();
+
+		ILayoutElement(child).setLayoutBoundsSize(width, height);
+	}
 }
 }

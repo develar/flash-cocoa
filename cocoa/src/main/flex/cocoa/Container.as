@@ -191,10 +191,14 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 
 	public function removeElementAt(index:int):IVisualElement
 	{
-		var element:IVisualElement = _subviews[index];
+		var element:Viewable = _subviews[index];
+		if (element is Component)
+		{
+			element = Component(element).skin;
+		}
 		if (!subviewsChanged)
 		{
-			super.removeChild(DisplayObject(element is Component ? Component(element).skin : element));
+			super.removeChild(DisplayObject(element));
 
 			invalidateSize();
 			invalidateDisplayList();
@@ -207,7 +211,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 
 		_subviews.splice(index, 1);
 
-		return element;
+		return IVisualElement(element);
 	}
 
 	public function addSubview(view:Viewable, index:int = -1):void
