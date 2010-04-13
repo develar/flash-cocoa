@@ -19,9 +19,9 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder
 		throw new Error("Abstract");
 	}
 
-	protected function init(frameInsets:FrameInsets, contentInsets:Insets = null):void
+	protected function init(frameInsets:FrameInsets = null, contentInsets:Insets = null):void
 	{
-		if (_frameInsets != null)
+		if (frameInsets != null)
 		{
 			_frameInsets = frameInsets;
 		}
