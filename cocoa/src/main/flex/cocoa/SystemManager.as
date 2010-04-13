@@ -11,7 +11,8 @@ public class SystemManager extends mx.managers.SystemManager
 	protected function registerSingletons():void
 	{
 		Singleton.registerClass("mx.resources::IResourceManager", Class(getDefinitionByName("cocoa.resources::ResourceManager")));
-		Singleton.registerClass("mx.managers::IBrowserManager", Class(getDefinitionByName("org.flyti.flyf.managers.browserManager::BrowserManager")));
+//		Singleton.registerClass("mx.managers::IBrowserManager", Class(getDefinitionByName("org.flyti.flyf.managers.browserManager::BrowserManager")));
+		Singleton.registerClass("mx.managers::IToolTipManager2", Class(getDefinitionByName("cocoa::ToolTipManager")));
 	}
 
 	override mx_internal function kickOff():void

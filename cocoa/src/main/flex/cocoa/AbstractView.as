@@ -76,7 +76,6 @@ import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
 import mx.managers.IToolTipManagerClient;
 import mx.managers.SystemManagerGlobals;
-import mx.managers.ToolTipManager;
 import mx.styles.ISimpleStyleClient;
 import mx.styles.IStyleClient;
 import mx.utils.MatrixUtil;
@@ -4591,7 +4590,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		var oldValue:String = _toolTip;
 		_toolTip = value;
 
-		ToolTipManager.registerToolTip(this, oldValue, value);
+		ToolTipManager.instance.registerToolTip(this, oldValue, value);
 
 		dispatchEvent(new Event("toolTipChanged"));
 	}
