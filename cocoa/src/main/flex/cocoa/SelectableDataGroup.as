@@ -44,6 +44,12 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		_iconFunction = value;
 	}
 
+	private var _labelFunction:Function;
+	public function set labelFunction(value:Function):void
+	{
+		_labelFunction = value;
+	}
+
 	/**
 	 * Only once before initial commitProperties.
 	 */
@@ -123,6 +129,11 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 	private function itemToIcon(item:Object):Icon
     {
 		return _iconFunction(item);
+	}
+
+	override public function itemToLabel(item:Object):String
+	{
+		return _labelFunction == null ? super.itemToLabel(item) : _labelFunction(item);
 	}
 }
 }

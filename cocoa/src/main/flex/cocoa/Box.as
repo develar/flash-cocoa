@@ -64,15 +64,15 @@ public class Box extends AbstractComponent
 		_resourceBundle = value;
 	}
 
-	[Bindable(event="mChanged")]
-	public function m(key:String):String
+	[Bindable(event="lChanged")]
+	public function l(key:String):String
 	{
 		return _resourceBundle == null ? null : resourceManager.getString(_resourceBundle, key);
 	}
 
 	override protected function resourcesChanged():void
     {
-    	dispatchEvent(new Event("mChanged"));
+    	dispatchEvent(new Event("lChanged"));
 	}
 }
 }

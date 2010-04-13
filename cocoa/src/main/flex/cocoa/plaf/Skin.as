@@ -12,8 +12,6 @@ public interface Skin extends SimpleSkin, IToolTipManagerClient, View
 
 	function get component():Component;
 
-	function setFocus():void;
-
 	function attach(component:Component, laf:LookAndFeel):void;
 }
 }

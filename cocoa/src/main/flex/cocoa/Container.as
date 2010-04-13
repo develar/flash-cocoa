@@ -42,6 +42,18 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 		mouseEnabledWhereTransparent = false;
 	}
 
+//	protected var _resourceBundle:String;
+//	public function set resourceBundle(value:String):void
+//	{
+//		_resourceBundle = value;
+//	}
+
+	//[Bindable(event="mChanged")]
+	protected function l(key:String):String
+	{
+		return _resourceBundle == null ? key : resourceManager.getString(_resourceBundle, key);
+	}
+
 	private var _subviews:Array;
 	public function set subviews(value:Array):void
 	{

@@ -17,5 +17,7 @@ public interface View extends Viewable, IUIComponent, IInvalidating
 	function removeDisplayObject(displayObject:DisplayObject):void;
 
 	function get initialized():Boolean;
+
+	function setFocus():void;
 }
 }
