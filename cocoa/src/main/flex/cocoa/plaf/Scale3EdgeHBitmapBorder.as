@@ -14,7 +14,7 @@ import flash.display.Graphics;
  */
 public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder
 {
-	public static function create(frameInsets:FrameInsets, contentInsets:Insets = null):Scale3EdgeHBitmapBorder
+	public static function create(frameInsets:FrameInsets = null, contentInsets:Insets = null):Scale3EdgeHBitmapBorder
 	{
 		var border:Scale3EdgeHBitmapBorder = new Scale3EdgeHBitmapBorder();
 		border.init(frameInsets, contentInsets);

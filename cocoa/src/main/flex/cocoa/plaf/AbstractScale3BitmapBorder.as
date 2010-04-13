@@ -21,7 +21,10 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder
 
 	protected function init(frameInsets:FrameInsets, contentInsets:Insets = null):void
 	{
-		_frameInsets = frameInsets;
+		if (_frameInsets != null)
+		{
+			_frameInsets = frameInsets;
+		}
 		if (contentInsets != null)
 		{
 			_contentInsets = contentInsets;
@@ -44,7 +47,7 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder
 	{
 		super.readExternal(input);
 
-		_frameInsets = readFrameInsets(input);
+		lazyReadFrameInsets(input);
 		initTransient();
 	}
 
@@ -53,7 +56,7 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder
 		output.writeByte(serialTypeId);
 		super.writeExternal(output);
 
-		writeFrameInsets(output);
+		lazyWriteFrameInsets(output);
 	}
 }
 }

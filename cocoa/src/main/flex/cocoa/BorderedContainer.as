@@ -4,7 +4,7 @@ import flash.display.Graphics;
 
 import spark.components.ResizeMode;
 
-public class BorderedContainer extends Container implements ViewContainer
+public class BorderedContainer extends Container
 {
 	private var _border:Border;
 	public function get border():Border

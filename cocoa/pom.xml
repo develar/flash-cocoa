@@ -67,6 +67,7 @@
 								<class>**.ViewStack</class>
 								<class>**.*Group</class>
 								<class>**.Container</class>
+								<class>**.BorderedContainer</class>
 								<class>**.*Stepper</class>
 								<class>**.*Slider</class>
 								<class>**.*Bar</class>

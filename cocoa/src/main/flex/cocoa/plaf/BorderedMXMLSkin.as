@@ -12,7 +12,7 @@ public class BorderedMXMLSkin extends MXMLSkin
 	{
 		super.createChildren();
 
-		border = _laf.getBorder("ApplicationTitleBar.border");
+		border = _laf.getBorder(component.lafPrefix + ".border");
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
