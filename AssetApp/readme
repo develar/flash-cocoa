@@ -12,3 +12,7 @@ or
 screencapture -ic
 
 Чтобы четко понять границы волны на scrollbar thumb — Image -> Posterize в Pixelmator.
+
+На iMac цветовой профиль экрана это iMac. При Copy Picture of selected area to the clipboard в Pixelmator при New и дальнейшем Paste оказываются пиксели в цветовом профиле iMac. А для Flash Player нужно сохранять как sRGB IEC61966-2.1. Поэтому:
+1) открыли — Color Management: Advanced, iMac с Convert pixels to selected profile
+2) при сохранении (обычном, не for web) — Color Management: Advanced, sRGB IEC61966-2.1 без конвертации pixels.
