@@ -87,7 +87,7 @@ public class TreeItemRenderer extends UIComponent implements IListItemRenderer, 
 		validateLabel();
 
 		// icon size 16, horizontal gap 0
-		measuredWidth = _listData.indent + 32 + labelTexLine.textWidth;
+		measuredWidth = _listData == null?32: _listData.indent + 32 + labelTexLine.textWidth;
 		measuredHeight = 20;
 	}
 
@@ -154,6 +154,10 @@ public class TreeItemRenderer extends UIComponent implements IListItemRenderer, 
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
+		if(w == 0 || h == 0)
+		{
+			return;
+		}
 		var itemX:Number = _listData.indent + 16;
 		icon.x = itemX;
 		itemX += 16;

@@ -24,7 +24,7 @@ public class DialogManager
 		{
 			if (modalBoxExists)
 			{
-				throw new Error("modal window already opened");
+				//throw new Error("modal window already opened");
 			}
 			else
 			{
