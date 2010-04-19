@@ -130,6 +130,8 @@ public class ListView extends List implements Viewable, Control
 	{
 		super.attachSkin();
 
+		ListViewSkin(skin).laf = laf;
+
 		ListViewSkin(skin).verticalScrollbarPolicy = _verticalScrollbarPolicy;
 		ListViewSkin(skin).horizontalScrollbarPolicy = _horizontalScrollbarPolicy;
 	}

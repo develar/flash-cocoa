@@ -45,7 +45,7 @@ public class AbstractListController
 		{
 			// skip
 		}
-		else if (event.target != itemGroup)
+		else if (event.target != event.currentTarget)
 		{
 			if (highlightedRenderer != null)
 			{

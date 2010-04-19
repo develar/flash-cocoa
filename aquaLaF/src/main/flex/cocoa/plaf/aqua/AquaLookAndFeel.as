@@ -18,6 +18,7 @@ import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.SegmentedControlController;
 import cocoa.plaf.SliderNumericStepperSkin;
 import cocoa.plaf.basic.IconButtonSkin;
+import cocoa.plaf.basic.ListViewSkin;
 
 import flash.utils.ByteArray;
 
@@ -62,6 +63,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["SourceListView"] = SourceListSkin;
 		data["ListView"] = ListViewSkin;
+		data["ListView.border"] = new ListViewBorder();
 
 		data["TabView"] = TabViewSkin;
 		data["TabView.borderless"] = BorderlessTabViewSkin;
