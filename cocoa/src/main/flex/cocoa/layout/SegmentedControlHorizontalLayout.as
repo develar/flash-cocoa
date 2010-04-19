@@ -5,7 +5,7 @@ import mx.core.ILayoutElement;
 import spark.components.supportClasses.GroupBase;
 
 /**
- *  The BarHorizontalLayout is a layout specifically designed for the Sidebar or TabView
+ *  The SegmentedControlHorizontalLayout is a layout specifically designed for the Sidebar or TabView
  *
  *  The layout lays out the children horizontally, left to right.
  *  The layout measures such that all children are sized at their preferred size.

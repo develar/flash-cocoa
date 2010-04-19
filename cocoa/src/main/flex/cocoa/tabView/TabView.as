@@ -70,7 +70,7 @@ public class TabView extends SingleSelectionBar
 		viewStack.show(pane);
 	}
 
-	private function createPaneView(paneItem:PaneItem):void
+	protected function createPaneView(paneItem:PaneItem):void
 	{
 		assert(paneItem.view == null);
 

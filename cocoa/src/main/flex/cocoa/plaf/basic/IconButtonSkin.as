@@ -50,7 +50,7 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 		var g:Graphics = graphics;
 		g.clear();
 
-		_icon.draw(this, g, Math.round((w - _icon.iconWidth - iconInsets.width) * 0.5), iconInsets.top);
+		_icon.draw(this, g, Math.round((w - _icon.iconWidth) * 0.5), iconInsets.top);
 
 		// for mouse events
 		g.beginFill(0, 0);

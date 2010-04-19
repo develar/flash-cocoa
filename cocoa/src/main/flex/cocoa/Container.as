@@ -111,11 +111,11 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 					p = p.parent;
 				}
 			}
-		}
 
-		if (_laf == null)
-		{
-			throw new Error("laf not found");
+			if (_laf == null)
+			{
+				throw new Error("laf not found");
+			}
 		}
 
 		if (layout == null)
