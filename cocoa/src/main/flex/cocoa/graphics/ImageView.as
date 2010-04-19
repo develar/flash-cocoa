@@ -138,7 +138,7 @@ public class ImageView extends AbstractView
 			return;
 		}
 
-		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
+		3// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
 		var laf:LookAndFeel;
 		var p:DisplayObjectContainer = parent;
 		while (p != null)

@@ -1,6 +1,7 @@
 package cocoa.plaf.basic
 {
 import cocoa.Icon;
+import cocoa.Insets;
 import cocoa.plaf.IconButtonSkin;
 
 import flash.display.Graphics;
@@ -18,10 +19,30 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 		return false;
 	}
 
+	protected function get iconInsets():Insets
+	{
+		throw new Error("abstract");
+	}
+
+	protected function get labelInsets():Insets
+	{
+		throw new Error("abstract");
+	}
+
 	override protected function measure():void
 	{
-		measuredMinWidth = measuredWidth = 16 + 2 + 2;
-		measuredMinHeight = measuredHeight = 16 + 3 + 3;
+		measuredMinWidth = measuredWidth = _icon.iconWidth + iconInsets.width;
+		measuredMinHeight = measuredHeight = _icon.iconHeight + iconInsets.height;
+
+		if (labelHelper != null)
+		{
+			labelHelper.validate();
+			var widthExcess:Number = (Math.round(labelHelper.textWidth) + labelInsets.width) - measuredWidth;
+			if (widthExcess > 0)
+			{
+				measuredWidth += widthExcess;
+			}
+		}
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -29,13 +50,17 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 		var g:Graphics = graphics;
 		g.clear();
 
-		// согласно Apple HIG — "Typically, the outer dimensions of an icon button include a margin of about 10 pixels all the way around the icon and label.", но пока что мы зашиваем значения Fluent UI
-		_icon.draw(this, g, 2, 3);
+		_icon.draw(this, g, Math.round((w - _icon.iconWidth - iconInsets.width) * 0.5), iconInsets.top);
 
 		// for mouse events
 		g.beginFill(0, 0);
 		g.drawRect(0, 0, w, h);
 		g.endFill();
+
+		if (labelHelper != null)
+		{
+			labelHelper.moveToCenter(w, labelInsets.top);
+		}
 	}
 }
 }
