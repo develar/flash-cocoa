@@ -6,6 +6,8 @@ import spark.events.IndexChangeEvent;
 
 use namespace mx_internal;
 
+[Event(name="change", type="spark.events.IndexChangeEvent")]
+
 public class SingleSelectionDataGroup extends SelectableDataGroup
 {
 	private var oldSelectedIndex:int = ListSelection.NO_SELECTION;

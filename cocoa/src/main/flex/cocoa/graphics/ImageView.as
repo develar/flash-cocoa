@@ -138,7 +138,7 @@ public class ImageView extends AbstractView
 			return;
 		}
 
-		3// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
+		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
 		var laf:LookAndFeel;
 		var p:DisplayObjectContainer = parent;
 		while (p != null)
@@ -146,20 +146,18 @@ public class ImageView extends AbstractView
 			if (p is LookAndFeelProvider)
 			{
 				laf = LookAndFeelProvider(p).laf;
-				break;
-			}
-			else
-			{
-				if (p is Skin && Skin(p).component is LookAndFeelProvider)
+				if (laf != null)
 				{
-					laf = LookAndFeelProvider(Skin(p).component).laf;
 					break;
 				}
-				else
-				{
-					p = p.parent;
-				}
 			}
+			else if (p is Skin && Skin(p).component is LookAndFeelProvider)
+			{
+				laf = LookAndFeelProvider(Skin(p).component).laf;
+				break;
+			}
+
+			p = p.parent;
 		}
 
 		_border = laf.getBorder("ImageView.border");

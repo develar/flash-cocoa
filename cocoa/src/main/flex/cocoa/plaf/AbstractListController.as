@@ -8,7 +8,7 @@ import flash.ui.Keyboard;
 
 import spark.components.DataGroup;
 
-public class ListController
+public class AbstractListController
 {
 	protected static const HIGHLIGHTABLE:uint = 1 << 0;
 
