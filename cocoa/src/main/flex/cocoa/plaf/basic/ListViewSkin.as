@@ -3,59 +3,91 @@ package cocoa.plaf.basic
 import cocoa.Border;
 import cocoa.FlexDataGroup;
 import cocoa.LightFlexUIComponent;
+import cocoa.ListView;
+import cocoa.ScrollPolicy;
 import cocoa.ScrollView;
 import cocoa.plaf.ListViewSkin;
 import cocoa.plaf.LookAndFeel;
 
+import flash.display.DisplayObject;
 import flash.display.Graphics;
+
+import mx.core.IUIComponent;
 
 public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.ListViewSkin
 {
-	public var scrollView:ScrollView;
-	public var dataGroup:FlexDataGroup;
+	private var scrollView:ScrollView;
+	protected var dataGroup:FlexDataGroup;
+	private var contentView:IUIComponent;
 
 	private var border:Border;
 
-	private var _laf:LookAndFeel;
+	protected var _laf:LookAndFeel;
 	public function set laf(value:LookAndFeel):void
 	{
 		_laf = value;
+	}
 
+	override protected function createChildren():void
+	{
 		border = _laf.getBorder("ListView.border");
 
 		dataGroup = new FlexDataGroup();
 
-		scrollView = new ScrollView();
-		scrollView.hasFocusableChildren = false;
-		scrollView.documentView = dataGroup;
+		if (_horizontalScrollPolicy != ScrollPolicy.OFF && _verticalScrollPolicy != ScrollPolicy.OFF)
+		{
+			scrollView = new ScrollView();
+			scrollView.hasFocusableChildren = false;
+			scrollView.documentView = dataGroup;
 
-		scrollView.move(border.contentInsets.left, border.contentInsets.top);
+			scrollView.horizontalScrollPolicy = _horizontalScrollPolicy;
+			scrollView.verticalScrollPolicy = _verticalScrollPolicy;
 
-		addChild(scrollView);
+			contentView = scrollView;
+		}
+		else
+		{
+			contentView = dataGroup;
+		}
+
+		contentView.move(border.contentInsets.left, border.contentInsets.top);
+		addChild(DisplayObject(contentView));
+
+		ListView(parent).uiPartAdded("dataGroup", dataGroup);
 	}
 
-	public function set verticalScrollbarPolicy(value:uint):void
+	private var _verticalScrollPolicy:int;
+	public function set verticalScrollPolicy(value:uint):void
 	{
-		scrollView.verticalScrollbarPolicy = value;
+		_verticalScrollPolicy = value;
+		if (scrollView != null)
+		{
+			scrollView.verticalScrollPolicy = value;
+		}
 	}
 
-	public function set horizontalScrollbarPolicy(value:uint):void
+	private var _horizontalScrollPolicy:int;
+	public function set horizontalScrollPolicy(value:uint):void
 	{
-		scrollView.horizontalScrollbarPolicy = value;
+		_horizontalScrollPolicy = value;
+		if (scrollView != null)
+		{
+			scrollView.horizontalScrollPolicy = value;
+		}
 	}
 
 	override protected function measure():void
 	{
-		measuredMinWidth = scrollView.getMinBoundsWidth() + border.contentInsets.width;
-        measuredWidth = scrollView.getPreferredBoundsWidth() + border.contentInsets.width;
+		measuredMinWidth = contentView.minWidth + border.contentInsets.width;
+        measuredWidth = contentView.getExplicitOrMeasuredWidth() + border.contentInsets.width;
 
-        measuredMinHeight = scrollView.getMinBoundsHeight() + border.contentInsets.height;
-        measuredHeight = scrollView.getPreferredBoundsHeight() + border.contentInsets.height;
+        measuredMinHeight = contentView.minHeight + border.contentInsets.height;
+        measuredHeight = contentView.getExplicitOrMeasuredHeight() + border.contentInsets.height;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		scrollView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
+		contentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
 
 		var g:Graphics = graphics;
 		g.clear();

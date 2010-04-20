@@ -6,18 +6,26 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
+import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
 import mx.core.IVisualElement;
+import mx.core.UIComponent;
 import mx.core.mx_internal;
 
 import spark.components.List;
 
 use namespace mx_internal;
 
-public class ListView extends List implements Viewable, Control
+public class ListView extends List implements Viewable, Control, UIPartController
 {
 	private var skinClass:Class;
+
+	private var mySkin:ListViewSkin;
+	override public function get skin():UIComponent
+	{
+		return UIComponent(mySkin);
+	}
 
 	protected var _action:Function;
 	public function set action(value:Function):void
@@ -64,7 +72,15 @@ public class ListView extends List implements Viewable, Control
 		}
 
 		skinClass = laf.getClass("ListView");
-		super.createChildren();
+		mySkin = new skinClass();
+		mySkin.laf = laf;
+		mySkin.verticalScrollPolicy = _verticalScrollPolicy;
+		mySkin.horizontalScrollPolicy = _horizontalScrollPolicy;
+
+		var skinAsDisplayObject:DisplayObject = DisplayObject(mySkin);
+		addingChild(skinAsDisplayObject);
+		$addChildAt(skinAsDisplayObject, 0);
+		childAdded(skinAsDisplayObject);
 	}
 
 	public function get objectValue():Object
@@ -77,23 +93,23 @@ public class ListView extends List implements Viewable, Control
 		selectedItem = value;
 	}
 
-	private var _verticalScrollbarPolicy:int = ScrollPolicy.AUTO;
-	public function set verticalScrollbarPolicy(value:uint):void
+	private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
+	public function set verticalScrollPolicy(value:uint):void
 	{
-		_verticalScrollbarPolicy = value;
+		_verticalScrollPolicy = value;
 		if (skin != null)
 		{
-			ListViewSkin(skin).verticalScrollbarPolicy = _verticalScrollbarPolicy;
+			ListViewSkin(skin).verticalScrollPolicy = _verticalScrollPolicy;
 		}
 	}
 
-	private var _horizontalScrollbarPolicy:int = ScrollPolicy.AUTO;
-	public function set horizontalScrollbarPolicy(value:uint):void
+	private var _horizontalScrollPolicy:int = ScrollPolicy.AUTO;
+	public function set horizontalScrollPolicy(value:uint):void
 	{
-		_horizontalScrollbarPolicy = value;
+		_horizontalScrollPolicy = value;
 		if (skin != null)
 		{
-			ListViewSkin(skin).horizontalScrollbarPolicy = _horizontalScrollbarPolicy;
+			ListViewSkin(skin).horizontalScrollPolicy = _horizontalScrollPolicy;
 		}
 	}
 
@@ -109,6 +125,8 @@ public class ListView extends List implements Viewable, Control
 
 	// disable unwanted legacy
 	include "../../unwantedLegacy.as";
+
+	include "../../legacyConstraints.as";
 	
 	override public function getStyle(styleProp:String):*
 	{
@@ -128,12 +146,12 @@ public class ListView extends List implements Viewable, Control
 
 	override protected function attachSkin():void
 	{
-		super.attachSkin();
+	}
 
-		ListViewSkin(skin).laf = laf;
-
-		ListViewSkin(skin).verticalScrollbarPolicy = _verticalScrollbarPolicy;
-		ListViewSkin(skin).horizontalScrollbarPolicy = _horizontalScrollbarPolicy;
+	public function uiPartAdded(id:String, instance:Object):void
+	{
+		this[id] = instance;
+		partAdded(id, instance);
 	}
 }
 }

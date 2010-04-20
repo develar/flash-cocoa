@@ -1,7 +1,6 @@
 package cocoa
 {
 import cocoa.layout.AdvancedLayout;
-import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
@@ -321,8 +320,6 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 		return View(getElementAt(index));
 	}
 
-	private var layoutMetrics:LayoutMetrics;
-
 	public function get numSubviews():int
 	{
 		return numElements;
@@ -331,28 +328,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 	// disable unwanted legacy
 	include "../../unwantedLegacy.as";
 
-	override public function getConstraintValue(constraintName:String):*
-    {
-		if (layoutMetrics == null)
-		{
-			return undefined;
-		}
-		else
-		{
-			var value:Number = layoutMetrics[constraintName];
-			return isNaN(value) ? undefined : value;
-		}
-	}
-
-	override public function setConstraintValue(constraintName:String, value:*):void
-    {
-		if (layoutMetrics == null)
-		{
-			layoutMetrics = new LayoutMetrics();
-		}
-
-		layoutMetrics[constraintName] = value;
-	}
+	include "../../legacyConstraints.as";
 
 	override public function parentChanged(p:DisplayObjectContainer):void
 	{
@@ -363,10 +339,5 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
 		}
 	}
-
-//	override public function getStyle(styleProp:String):*
-//	{
-//		return super.getStyle(styleProp);
-//	}
 }
 }

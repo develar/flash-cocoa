@@ -50,25 +50,25 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		}
 	}
 
-	private var _verticalScrollbarPolicy:int = ScrollPolicy.AUTO;
-	public function set verticalScrollbarPolicy(value:uint):void
+	private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
+	public function set verticalScrollPolicy(value:uint):void
 	{
-		_verticalScrollbarPolicy = value;
+		_verticalScrollPolicy = value;
 
 		if (verticalScrollBar != null)
 		{
-			verticalScrollBar.visible = _verticalScrollbarPolicy != ScrollPolicy.OFF;
+			verticalScrollBar.visible = _verticalScrollPolicy != ScrollPolicy.OFF;
 		}
 	}
 
-	private var _horizontalScrollbarPolicy:int = ScrollPolicy.AUTO;
-	public function set horizontalScrollbarPolicy(value:uint):void
+	private var _horizontalScrollPolicy:int = ScrollPolicy.AUTO;
+	public function set horizontalScrollPolicy(value:uint):void
 	{
-		_horizontalScrollbarPolicy = value;
+		_horizontalScrollPolicy = value;
 
 		if (horizontalScrollBar != null)
 		{
-			horizontalScrollBar.visible = _horizontalScrollbarPolicy != ScrollPolicy.OFF;
+			horizontalScrollBar.visible = _horizontalScrollPolicy != ScrollPolicy.OFF;
 		}
 	}
 
@@ -80,13 +80,13 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 	{
 		super.createChildren();
 
-		if (_verticalScrollbarPolicy != ScrollPolicy.OFF)
+		if (_verticalScrollPolicy != ScrollPolicy.OFF)
 		{
 			verticalScrollBar = new VScrollBar();
 			addChild(verticalScrollBar);
 		}
 
-		if (_horizontalScrollbarPolicy != ScrollPolicy.OFF)
+		if (_horizontalScrollPolicy != ScrollPolicy.OFF)
 		{
 			horizontalScrollBar = new HScrollBar();
 			addChild(horizontalScrollBar);
@@ -191,7 +191,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		var hAuto:Boolean = false;
 		if (measuredSizeIncludesScrollBars)
 		{
-			switch (_horizontalScrollbarPolicy)
+			switch (_horizontalScrollPolicy)
 			{
 				case ScrollPolicy.ON:
 				{
@@ -219,7 +219,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
 		var vAuto:Boolean = false;
 		if (measuredSizeIncludesScrollBars)
 		{
-			switch (_verticalScrollbarPolicy)
+			switch (_verticalScrollPolicy)
 			{
 				case ScrollPolicy.ON:
 				{
@@ -436,7 +436,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
         var oldShowVSB:Boolean = vsbVisible;
 
         var hAuto:Boolean = false;
-        switch(_horizontalScrollbarPolicy)
+        switch(_horizontalScrollPolicy)
         {
             case ScrollPolicy.ON:
                 hsbVisible = true;
@@ -455,7 +455,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent
         }
 
         var vAuto:Boolean = false;
-        switch(_verticalScrollbarPolicy)
+        switch(_verticalScrollPolicy)
         {
            case ScrollPolicy.ON:
                 vsbVisible = true;

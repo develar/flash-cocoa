@@ -1,7 +1,6 @@
 package cocoa
 {
 import cocoa.layout.AdvancedLayout;
-import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
@@ -260,33 +259,10 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 		return numElements;
 	}
 
-	protected var _layoutMetrics:LayoutMetrics;
-
 	// disable unwanted legacy
 	include "../../unwantedLegacy.as";
 
-	override public function getConstraintValue(constraintName:String):*
-    {
-		if (_layoutMetrics == null)
-		{
-			return undefined;
-		}
-		else
-		{
-			var value:Number = _layoutMetrics[constraintName];
-			return isNaN(value) ? undefined : value;
-		}
-	}
-
-	override public function setConstraintValue(constraintName:String, value:*):void
-    {
-		if (_layoutMetrics == null)
-		{
-			_layoutMetrics = new LayoutMetrics();
-		}
-
-		_layoutMetrics[constraintName] = value;
-	}
+	include "../../legacyConstraints.as";
 
 	override public function parentChanged(p:DisplayObjectContainer):void
 	{
