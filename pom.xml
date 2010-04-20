@@ -8,6 +8,11 @@
 		<version>1.0.7</version>
 	</parent>
 
+	<properties>
+		<fdk.version>4.0.0.15012</fdk.version>
+		<flex.sdk.version>4.0.0.15012</flex.sdk.version>
+	</properties>
+
 	<name>Cocoa Aggregator</name>
 	<groupId>org.flyti.cocoa</groupId>
 	<artifactId>cocoaAggregator</artifactId>
