@@ -16,11 +16,17 @@ public final class Scale9BitmapBorder extends AbstractMultipleBitmapBorder
 	private var rightSliceInnerWidth:int;
 	private var bottomSliceInnerHeight:int;
 
-	public static function create(frameInsets:FrameInsets, contentInsets:Insets):Scale9BitmapBorder
+	public static function create(frameInsets:FrameInsets = null, contentInsets:Insets = null):Scale9BitmapBorder
 	{
 		var border:Scale9BitmapBorder = new Scale9BitmapBorder();
-		border._frameInsets = frameInsets;
-		border._contentInsets = contentInsets;
+		if (frameInsets != null)
+		{
+			border._frameInsets = frameInsets;
+		}
+		if (contentInsets != null)
+		{
+			border._contentInsets = contentInsets;
+		}
 		return border;
 	}
 
@@ -43,28 +49,28 @@ public final class Scale9BitmapBorder extends AbstractMultipleBitmapBorder
 		const bottomSliceY:Number = h - bottomSliceInnerHeight;
 
 		const topAreaHeight:Number = bottomSliceY - _frameInsets.top;
-		const bottomAreaHeight:Number = bitmaps[2].height;
+		const bottomAreaHeight:Number = bitmaps[_bitmapIndex + 2].height;
 		const leftAreaWidth:Number = rightSliceX - _frameInsets.left;
-		const rightAreaWidth:Number = bitmaps[1].width;
+		const rightAreaWidth:Number = bitmaps[_bitmapIndex + 1].width;
 
-		g.beginBitmapFill(bitmaps[0], sharedMatrix, false);
+		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
 		g.drawRect(_frameInsets.left, sharedMatrix.ty, leftAreaWidth, topAreaHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
-		g.beginBitmapFill(bitmaps[1], sharedMatrix, false);
+		g.beginBitmapFill(bitmaps[_bitmapIndex + 1], sharedMatrix, false);
 		g.drawRect(rightSliceX, sharedMatrix.ty, rightAreaWidth, topAreaHeight);
 		g.endFill();
 
 		sharedMatrix.ty = bottomSliceY;
 
 		sharedMatrix.tx = _frameInsets.left;
-		g.beginBitmapFill(bitmaps[2], sharedMatrix, false);
+		g.beginBitmapFill(bitmaps[_bitmapIndex + 2], sharedMatrix, false);
 		g.drawRect(_frameInsets.left, bottomSliceY, leftAreaWidth, bottomAreaHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
-		g.beginBitmapFill(bitmaps[3], sharedMatrix, false);
+		g.beginBitmapFill(bitmaps[_bitmapIndex + 3], sharedMatrix, false);
 		g.drawRect(rightSliceX, bottomSliceY, rightAreaWidth, bottomAreaHeight);
 		g.endFill();
 	}
