@@ -11,9 +11,7 @@ import cocoa.plaf.WindowSkin;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;
-
 import flash.events.MouseEvent;
-
 import flash.text.engine.TextLine;
 
 import mx.core.IFlexDisplayObject;
@@ -157,7 +155,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			labelHelper.moveToCenter(w, 16);
 		}
 
-		border.draw(this, g, w, h);
+		border.draw(this, g, w, h - BOTTOM_BAR_HEIGHT);
 
 		if (_contentView != null)
 		{

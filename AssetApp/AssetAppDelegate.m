@@ -9,7 +9,7 @@
 		
 	NSRect frame = NSMakeRect(500, 500, 800, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
-	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
+	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
 	[testWindow setHasShadow:NO];
 	[testWindow makeKeyAndOrderFront:NSApp];

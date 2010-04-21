@@ -37,6 +37,9 @@ public class Builder
 	[Embed(source="/Window.bottomBar.application.png")]
 	private static var windowBottomBarApplicationClass:Class;
 
+	[Embed(source="/Window.titleBarAndContent.png")]
+	private static var windowTitleBarAndContentClass:Class;
+
 	[Embed(source="/segmentedControl.png")]
 	private static var segmentedControlClass:Class;
 
@@ -68,7 +71,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 14 /* scrollbars */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 14 /* scrollbars */ + 1 /* title bar */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -84,6 +87,8 @@ public class Builder
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
 
 		compoundImageReader.readScrollbar();
+
+		compoundImageReader.readTitleBarAndContent(windowTitleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

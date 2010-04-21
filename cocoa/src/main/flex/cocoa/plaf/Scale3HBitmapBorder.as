@@ -6,6 +6,9 @@ import cocoa.View;
 
 import flash.display.Graphics;
 
+/**
+ * В отличие от Scale3EdgeHBitmapBorder масштабирует честно без уловок тремя кусочками (то есть центральный кусочек может быть более чем 1 px)
+ */
 public class Scale3HBitmapBorder extends AbstractScale3BitmapBorder
 {
 	protected var firstSize:Number;

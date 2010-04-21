@@ -72,6 +72,20 @@ internal final class CompoundImageReader
 		borders[position++] = border;
 	}
 
+	public function readTitleBarAndContent(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder):void
+	{
+		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
+		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
+
+		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, frameRectangle.top, true, false);
+		frameRectangle.height = sliceCalculator.calculateFromTop(compoundBitmapData, frameRectangle);
+
+		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
+		border.configure(bitmaps);
+
+		borders[position++] = border;
+	}
+
 	/**
 	 * 2 (v and h) track, 4 h/v decrement button (normal and highlighted), 4 h/v increment button (normal and highlighted),
 	 * v/h thumb, v/h off track

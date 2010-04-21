@@ -19,6 +19,8 @@ public class WindowMover
 
 	public function move(event:MouseEvent, object:IFlexDisplayObject, titleBarHeight:Number):void
 	{
+		assert(this.object == null);
+
 		this.object = object;
 		this.titleBarHeight = titleBarHeight;
 

@@ -26,14 +26,16 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder
 		sharedMatrix.tx = _frameInsets.left;
 		sharedMatrix.ty = _frameInsets.top;
 
+		const actualHeight:Number = h - _frameInsets.top - _frameInsets.bottom;
+
 		var rightSliceX:Number = w - lastSize - _frameInsets.right;
 		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
-		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _frameInsets.left, size);
+		g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _frameInsets.left, actualHeight);
 		g.endFill();
 
 		sharedMatrix.tx = rightSliceX;
 		g.beginBitmapFill(bitmaps[_bitmapIndex + 1], sharedMatrix, false);
-		g.drawRect(rightSliceX, sharedMatrix.ty, lastSize, size);
+		g.drawRect(rightSliceX, sharedMatrix.ty, lastSize, actualHeight);
 		g.endFill();
 	}
 
