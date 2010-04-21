@@ -7,10 +7,6 @@ import cocoa.plaf.WindowSkin;
 
 import mx.core.mx_internal;
 
-import spark.layouts.HorizontalAlign;
-import spark.layouts.HorizontalLayout;
-import spark.layouts.VerticalAlign;
-
 use namespace mx_internal;
 
 /**
@@ -39,12 +35,9 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 			controlBar.border = laf.getBorder("Window.bottomBar." + _bottomBarStyle.name);
 			controlBar.mouseEnabled = false;
 
-			var bottomBarGroupLayout:HorizontalLayout = new HorizontalLayout();
-			bottomBarGroupLayout.verticalAlign = VerticalAlign.MIDDLE;
-			bottomBarGroupLayout.horizontalAlign = HorizontalAlign.RIGHT;
-			bottomBarGroupLayout.paddingLeft = 21;
-			bottomBarGroupLayout.paddingRight = 21;
-			bottomBarGroupLayout.gap = 12;
+			var bottomBarGroupLayout:BottomBarLayout = new BottomBarLayout();
+			bottomBarGroupLayout.padding = 20;
+			bottomBarGroupLayout.gap = _bottomBarStyle == BottomBarStyle.application ? 8 : 12;
 			controlBar.layout = bottomBarGroupLayout;
 
 			component.uiPartAdded("controlBar", controlBar);
@@ -54,10 +47,12 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 
 	override protected function measure():void
 	{
-		measuredMinWidth = Math.max(_contentView.minWidth, controlBar.minWidth);
+//		measuredMinWidth = Math.max(_contentView.minWidth, controlBar.minWidth);
+		measuredMinWidth = _contentView.minWidth;
 		measuredMinHeight = CONTENT_INSETS.height + _contentView.minHeight;
 
-		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
+//		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
+		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + CONTENT_INSETS.width;
 		measuredHeight = CONTENT_INSETS.height + _contentView.getExplicitOrMeasuredHeight();
 	}
 

@@ -39,6 +39,8 @@ public class Dialog extends Window
 	private var okButton:PushButton;
 	private var cancelButton:PushButton;
 
+	protected var controlButtons:Vector.<PushButton>;
+
 	override protected function get defaultLaFPrefix():String
 	{
 		return RESOURCE_BUNDLE;
@@ -94,6 +96,14 @@ public class Dialog extends Window
 			okButton = createControlButton(getOkLocalizedLabel(), ok);
 			okButton.enabled = _valid;
 			controlBar.addSubview(okButton);
+
+			if (controlButtons != null)
+			{
+				for each (var controlButton:PushButton in controlButtons)
+				{
+					controlBar.addSubview(controlButton);
+				}
+			}
 		}
 
 		super.commitProperties();
@@ -109,11 +119,11 @@ public class Dialog extends Window
 		dispatchEvent(new DialogEvent(DialogEvent.OK));
 	}
 
-	private function createControlButton(label:String, clickHandler:Function):PushButton
+	private function createControlButton(label:String, actionHandler:Function):PushButton
 	{
 		var button:PushButton = new PushButton();
 		button.label = label;
-		button.action = clickHandler;
+		button.action = actionHandler;
 		return button;
 	}
 

@@ -3995,7 +3995,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 *  @playerversion Flash 9
 	 *  @playerversion AIR 1.1
 	 *  @productversion Flex 3
-	 */ public function get explicitMinWidth():Number
+	 */
+	public function get explicitMinWidth():Number
 	{
 		return _explicitMinWidth;
 	}
