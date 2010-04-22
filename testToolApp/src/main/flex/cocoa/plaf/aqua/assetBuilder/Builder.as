@@ -35,10 +35,11 @@ public class Builder
 	private static var popUpMenuClass:Class;
 
 	[Embed(source="/Window.bottomBar.application.png")]
-	private static var windowBottomBarApplicationClass:Class;
-
+	private static var bottomBarApplicationClass:Class;
 	[Embed(source="/Window.titleBarAndContent.png")]
-	private static var windowTitleBarAndContentClass:Class;
+	private static var titleBarAndContentClass:Class;
+	[Embed(source="/Window.titleBarAndSmallToolbarAndContent.png")]
+	private static var titleBarAndSmallToolbarAndContent:Class;
 
 	[Embed(source="/segmentedControl.png")]
 	private static var segmentedControlClass:Class;
@@ -71,7 +72,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 14 /* scrollbars */ + 1 /* title bar */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 14 /* scrollbars */ + 2 /* title bar, titleBarAndSmallToolbarAndContent */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -83,12 +84,13 @@ public class Builder
 
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
-		compoundImageReader.readScale3(windowBottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
+		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
 
 		compoundImageReader.readScrollbar();
 
-		compoundImageReader.readTitleBarAndContent(windowTitleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
+		compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
+		compoundImageReader.readTitleBarAndContent(titleBarAndSmallToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

@@ -24,7 +24,7 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
-import org.flyti.aqua.SourceListSkin;
+import cocoa.plaf.aqua.SourceListSkin;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel
 {
