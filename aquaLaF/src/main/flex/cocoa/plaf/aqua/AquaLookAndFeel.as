@@ -24,16 +24,12 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
-import cocoa.plaf.aqua.SourceListSkin;
-
 public class AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
 	private static var assetsDataClass:Class;
 	private static var borders:Vector.<Border>;
 	private static var icons:Vector.<Icon>;
-
-	private static const scrollbarBorderPosition:int = 8;
 
 	public function AquaLookAndFeel()
 	{
@@ -43,6 +39,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 	protected function initialize():void
 	{
 		initAssets();
+
+		const scrollbarBorderPosition:int = 9;
 
 		data["SystemFont"] = AquaFonts.SYSTEM_FONT;
 		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
@@ -61,7 +59,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Window.border"] = borders[scrollbarBorderPosition + 14];
 		data["Window.bottomBar.application"] = borders[6];
 
-		data["SourceListView"] = SourceListSkin;
+		data["SourceListView"] = SourceListViewSkin;
 		data["ListView"] = ListViewSkin;
 		data["ListView.border"] = new ListViewBorder();
 

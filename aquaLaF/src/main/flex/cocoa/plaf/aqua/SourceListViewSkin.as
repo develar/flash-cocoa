@@ -9,14 +9,14 @@ import flash.display.Graphics;
 
 import mx.core.ILayoutElement;
 
-public class SourceListSkin extends AbstractSkin implements AdvancedLayout
+public class SourceListViewSkin extends AbstractSkin implements AdvancedLayout
 {
 	private static const STROKE_THICKNESS:Number = 1;
 	private static const STROKE_OFFSET:Number = STROKE_THICKNESS / 2;
 
 	private var contentGroup:Container;
 
-	public function SourceListSkin()
+	public function SourceListViewSkin()
 	{
 		super();
 
@@ -26,11 +26,6 @@ public class SourceListSkin extends AbstractSkin implements AdvancedLayout
 	override public function set layoutMetrics(value:LayoutMetrics):void
 	{
 		super.layoutMetrics = value;
-
-		if (isNaN(_layoutMetrics.percentHeight))
-		{
-			_layoutMetrics.percentHeight = 100;
-		}
 
 		width = 121;
 	}

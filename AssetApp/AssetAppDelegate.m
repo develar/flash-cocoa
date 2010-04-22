@@ -9,7 +9,7 @@
 		
 	NSRect frame = NSMakeRect(500, 500, 800, CONTROL_FRAME_HEIGHT * 13);
 	// должно NSTitledWindowMask, иначе окно не active
-	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
+	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
 	[testWindow setHasShadow:NO];
 	[testWindow makeKeyAndOrderFront:NSApp];
@@ -141,11 +141,12 @@
 	
 //	NSScroll
 	
-	return;
+	//return;
 	
 	// SegmentedControl
 	frame.origin.x = 100;
-	frame.size.height = CONTROL_FRAME_HEIGHT * 8;
+	frame.size.width = 200;
+	frame.size.height = CONTROL_FRAME_HEIGHT * 9;
 	NSWindow* sWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[sWindow setOpaque:NO];
 	[sWindow setHasShadow:NO];
@@ -155,6 +156,8 @@
 	controlFrame.origin.x = 0;
 	controlFrame.origin.y = frame.size.height - CONTROL_FRAME_HEIGHT;
 	controlFrame.size.width = 200;
+	
+	controlFrame.size.height = 3;
 	
 	contentView = [sWindow contentView];
 	
@@ -167,7 +170,7 @@
 	NSSegmentedControl *segmentedControl = [self createSegmentedControl];
 	
 	NSEvent *event = [NSEvent mouseEventWithType:NSLeftMouseDown
-							location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 1) 
+							location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 2)
 							modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 	
 	[segmentedControl mouseDown:event];
@@ -175,14 +178,14 @@
 	segmentedControl = [self createSegmentedControl];
 	
 	event = [NSEvent mouseEventWithType:NSLeftMouseDown
-							   location:NSMakePoint([segmentedControl frame].origin.x + 30, [segmentedControl frame].origin.y + 1) 
+							   location:NSMakePoint([segmentedControl frame].origin.x + 30, [segmentedControl frame].origin.y + 2) 
 						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 	
 	[segmentedControl mouseDown:event];
 	
 	segmentedControl = [self createSegmentedControl];
 	event = [NSEvent mouseEventWithType:NSLeftMouseDown
-							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 1) 
+							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 2) 
 						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 	
 	[segmentedControl mouseDown:event];
@@ -192,7 +195,7 @@
 	[segmentedControl setSelectedSegment:0];
 	
 	event = [NSEvent mouseEventWithType:NSLeftMouseDown
-							   location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 1) 
+							   location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 2) 
 						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 	
 	[segmentedControl mouseDown:event];
@@ -200,7 +203,7 @@
 	segmentedControl = [self createSegmentedControl];
 	[segmentedControl setSelectedSegment:2];
 	event = [NSEvent mouseEventWithType:NSLeftMouseDown
-							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 1) 
+							   location:NSMakePoint([segmentedControl frame].origin.x + 50, [segmentedControl frame].origin.y + 2) 
 						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 	
 	[segmentedControl mouseDown:event];
@@ -264,6 +267,8 @@
 - (id)createSegmentedControl {
 	NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] initWithFrame:controlFrame];
 	[contentView addSubview:segmentedControl];
+	
+	[segmentedControl setSegmentStyle:NSSegmentStyleTexturedRounded];
 	
 	[segmentedControl setSegmentCount:3];
 	

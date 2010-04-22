@@ -43,15 +43,21 @@ public class Builder
 
 	[Embed(source="/segmentedControl.png")]
 	private static var segmentedControlClass:Class;
-
 	[Embed(source="/segmentedControl2.png")]
 	private static var segmentedControl2Class:Class;
-
 	[Embed(source="/segmentedControl3.png")]
 	private static var segmentedControl3Class:Class;
-
 	[Embed(source="/segmentedControl4.png")]
 	private static var segmentedControl4Class:Class;
+
+	[Embed(source="/segmentedControl.texturedRounded.png")]
+	private static var segmentedControlTRClass:Class;
+	[Embed(source="/segmentedControl2.texturedRounded.png")]
+	private static var segmentedControl2TRClass:Class;
+	[Embed(source="/segmentedControl3.texturedRounded.png")]
+	private static var segmentedControl3TRClass:Class;
+	[Embed(source="/segmentedControl4.texturedRounded.png")]
+	private static var segmentedControl4TRClass:Class;
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
@@ -72,7 +78,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 2 + 14 /* scrollbars */ + 2 /* title bar, titleBarAndSmallToolbarAndContent */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ + 2 /* title bar, titleBarAndSmallToolbarAndContent */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -85,7 +91,9 @@ public class Builder
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
 		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
+
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
+		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlTRClass, segmentedControl2TRClass, segmentedControl3TRClass, segmentedControl4TRClass);
 
 		compoundImageReader.readScrollbar();
 

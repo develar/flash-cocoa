@@ -7,6 +7,11 @@ screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resou
 screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl3.png
 screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl4.png
 
+screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl.texturedRounded.png
+screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl2.texturedRounded.png
+screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl3.png
+screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl4.png
+
 or
 
 screencapture -ic

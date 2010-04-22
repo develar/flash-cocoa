@@ -10,8 +10,6 @@ import cocoa.ui;
 
 import flash.utils.Dictionary;
 
-
-
 use namespace ui;
 
 public class Sidebar extends Bar
