@@ -73,7 +73,7 @@
 			</layout>
 		</ListView>
 
-		<cocoa:SingleSelectionDataGroup dataProvider="{shortListData}" itemRenderer="{new ClassFactory(SegmentItemRenderer)}"/>
+		<!--<cocoa:SingleSelectionDataGroup dataProvider="{shortListData}" itemRenderer="{new ClassFactory(SegmentItemRenderer)}"/>-->
 	</Container>
 
 	<!--<controlButtons>-->
