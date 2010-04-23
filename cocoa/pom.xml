@@ -71,6 +71,7 @@
 								<class>**.*Stepper</class>
 								<class>**.*Slider</class>
 								<class>**.*Bar</class>
+								<class>**.Toolbar</class>
 								<class>**.*Box</class>
 								<class>**.ListView</class>
 								<class>**.ResourceMetadata</class>

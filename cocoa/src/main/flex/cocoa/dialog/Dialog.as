@@ -17,9 +17,6 @@ use namespace ui;
 [Event(name="ok", type="cocoa.dialog.events.DialogEvent")]
 [Event(name="cancel", type="cocoa.dialog.events.DialogEvent")]
 
-/**
- * Настройки controlBar после полного создания компонента изменить нельзя
- */
 [ResourceBundle("Dialog")]
 public class Dialog extends Window
 {

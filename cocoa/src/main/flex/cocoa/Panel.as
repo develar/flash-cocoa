@@ -5,8 +5,6 @@ import cocoa.sidebar.events.SidebarEvent;
 import flash.events.MouseEvent;
 import flash.utils.Dictionary;
 
-import mx.core.IVisualElement;
-
 import spark.components.supportClasses.TextBase;
 
 use namespace ui;
@@ -21,19 +19,19 @@ public class Panel extends Window
 		return _skinParts;
 	}
 
+	protected function l(key:String):String
+	{
+		return key;
+	}
+
 	ui var titleDisplay:TextBase;
 
-	ui var minimizeButton:IVisualElement;
-	ui var closeSideButton:IVisualElement;
+	ui var minimizeButton:PushButton;
+	ui var closeSideButton:PushButton;
 
 	ui function minimizeButtonAdded():void
 	{
-		minimizeButton.addEventListener(MouseEvent.CLICK, minimizeButtonClickHandler);
-	}
-
-	ui function minimizeButtonRemoved():void
-	{
-		minimizeButton.removeEventListener(MouseEvent.CLICK, minimizeButtonClickHandler);
+		minimizeButton.addEventListener(MouseEvent.CLICK, minimizeButtonActionHandler);
 	}
 
 	ui function closeSideButtonAdded():void
@@ -41,12 +39,7 @@ public class Panel extends Window
 		closeSideButton.addEventListener(MouseEvent.CLICK, closeSideButtonClickHandler);
 	}
 
-	ui function closeSideButtonRemoved():void
-	{
-		closeSideButton.removeEventListener(MouseEvent.CLICK, closeSideButtonClickHandler);
-	}
-
-	private function minimizeButtonClickHandler(event:MouseEvent):void
+	private function minimizeButtonActionHandler(event:MouseEvent):void
 	{
 		dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_PANE));
 	}

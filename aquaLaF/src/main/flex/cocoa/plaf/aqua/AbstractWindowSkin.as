@@ -3,6 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.LabelHelper;
+import cocoa.Toolbar;
 import cocoa.View;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
@@ -31,11 +32,14 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	[Embed(source="/Window.resizeGripper.png")]
 	private static const resizeGripperClass:Class;
 
-	private static const TITLE_BAR_HEIGHT:Number = 23; // вместе с 1px полосой внизу, которая визуально разделяет label bar от content pane
-	protected static const BOTTOM_BAR_HEIGHT:Number = 47; // без нижней 1px полосы означающей drop shadow
+	private static const TITLE_BAR_HEIGHT:Number = 22; // вместе (или без в случае если есть toolbar) с 1px полосой внизу, которая визуально отделяет от content view
+	protected static const BOTTOM_BAR_HEIGHT:Number = 47;
+	protected static const TOOLBAR_SMALL_HEIGHT:Number = 47; // вместе c нижней 1px полосой, которая визуально отделяет от content view
 
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
-	protected static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
+	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
+
+	protected static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
 
 	private var resizeGripper:DisplayObject;
 
@@ -51,8 +55,19 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		labelHelper = new LabelHelper(this);
 	}
 
+	protected function get contentInsets():Insets
+	{
+		return _toolbar == null ? CONTENT_INSETS : CONTENT_INSETS_TOOLBAR;
+	}
+
 	public function set bottomBarStyle(value:BottomBarStyle):void
 	{
+	}
+
+	protected var _toolbar:Toolbar;
+	public function set toolbar(value:Toolbar):void
+	{
+		_toolbar = value;
 	}
 
 	protected var _contentView:View;
@@ -84,8 +99,19 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		super.createChildren();
 
 		labelHelper.font = getFont("SystemFont");
-		border = laf.getBorder("Window.border");
 
+		if (_toolbar == null)
+		{
+			border = laf.getBorder("Window.border");
+		}
+		else
+		{
+			border = laf.getBorder("Window.border.smallToolbar");
+			var toolbarSkin:DisplayObject = DisplayObject(_toolbar.createView(laf));
+			toolbarSkin.y = TITLE_BAR_HEIGHT;
+			toolbarSkin.height = TOOLBAR_SMALL_HEIGHT - 1;
+			addChild(toolbarSkin);
+		}
 		addChild(DisplayObject(_contentView));
 
 		if (resizeGripper == null)
@@ -106,7 +132,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 		var mouseY:Number = event.localY;
 		var mouseX:Number = event.localX;
-		if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (mouseY > CONTENT_INSETS.top && mouseY < (height - CONTENT_INSETS.bottom)))
+		if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (mouseY > contentInsets.top && mouseY < (height - contentInsets.bottom)))
 		{
 			return;
 		}
@@ -138,10 +164,10 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	override protected function measure():void
 	{
 		measuredMinWidth = Math.max(_contentView.minWidth);
-		measuredMinHeight = CONTENT_INSETS.height + _contentView.minHeight;
+		measuredMinHeight = contentInsets.height + _contentView.minHeight;
 
-		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
-		measuredHeight = CONTENT_INSETS.height + _contentView.getExplicitOrMeasuredHeight();
+		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth()) + contentInsets.width;
+		measuredHeight = contentInsets.height + _contentView.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -157,11 +183,13 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 		border.draw(this, g, w, h - BOTTOM_BAR_HEIGHT);
 
-		if (_contentView != null)
+		if (_toolbar != null)
 		{
-			_contentView.move(CONTENT_INSETS.left, CONTENT_INSETS.top);
-			_contentView.setActualSize(w - CONTENT_INSETS.width, h - CONTENT_INSETS.height);
+			_toolbar.skin.setActualSize(w, TOOLBAR_SMALL_HEIGHT - 1);
 		}
+
+		_contentView.move(contentInsets.left, contentInsets.top);
+		_contentView.setActualSize(w - contentInsets.width, h - contentInsets.height);
 
 		resizeGripper.x = w - 11 - 4;
 		resizeGripper.y = h - 11 - 4;

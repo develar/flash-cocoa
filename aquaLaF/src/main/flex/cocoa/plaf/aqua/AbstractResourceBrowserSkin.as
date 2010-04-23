@@ -1,7 +1,6 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Component;
-import cocoa.Container;
 import cocoa.plaf.AbstractSkin;
 import cocoa.sidebar.SourceListView;
 
@@ -11,8 +10,6 @@ import mx.core.IUIComponent;
 
 public class AbstractResourceBrowserSkin extends AbstractSkin
 {
-	protected var toolbar:Container;
-
 	protected var sourceListView:SourceListView;
 	protected var resourceList:Component;
 
@@ -20,7 +17,6 @@ public class AbstractResourceBrowserSkin extends AbstractSkin
 	{
 		super.createChildren();
 
-		addChild(toolbar);
 		addChild(DisplayObject(sourceListView.createView(laf)));
 		addChild(DisplayObject(resourceList.createView(laf)));
 	}
@@ -33,24 +29,16 @@ public class AbstractResourceBrowserSkin extends AbstractSkin
 		measuredWidth = sourceListViewSkin.getExplicitOrMeasuredWidth() + resourceListSkin.getExplicitOrMeasuredWidth();
 
 		measuredMinHeight = Math.max(sourceListViewSkin.minHeight, resourceListSkin.minHeight);
-		measuredHeight = Math.max(sourceListViewSkin.getExplicitOrMeasuredHeight(), resourceListSkin.getExplicitOrMeasuredHeight()) + toolbar.getExplicitOrMeasuredHeight();
+		measuredHeight = Math.max(sourceListViewSkin.getExplicitOrMeasuredHeight(), resourceListSkin.getExplicitOrMeasuredHeight());
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		var sourceListViewSkin:IUIComponent = sourceListView.skin;
+		var sourceListViewWidth:Number = sourceListView.skin.getExplicitOrMeasuredWidth();
+		sourceListView.skin.setActualSize(sourceListViewWidth, h);
 
-		var toolbarHeight:Number = toolbar.getExplicitOrMeasuredHeight();
-		var sourceListViewWidth:Number = sourceListViewSkin.getExplicitOrMeasuredWidth();
-		const contentHeight:Number = h - toolbarHeight;
-		sourceListViewSkin.setActualSize(sourceListViewWidth, contentHeight);
-		sourceListViewSkin.y = toolbarHeight;
-
-		toolbar.setActualSize(w - sourceListViewWidth, toolbarHeight);
-		toolbar.x = sourceListViewWidth;
-
-		resourceList.skin.move(sourceListViewWidth, toolbarHeight);
-		resourceList.skin.setActualSize(w - sourceListViewWidth, contentHeight);
+		IUIComponent(resourceList.skin).x = sourceListViewWidth;
+		resourceList.skin.setActualSize(w - sourceListViewWidth, h);
 	}
 }
 }

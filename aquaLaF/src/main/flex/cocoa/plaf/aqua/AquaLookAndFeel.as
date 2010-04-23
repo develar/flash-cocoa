@@ -57,6 +57,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Dialog"] = WindowSkin;
 		data["HUDWindow"] = HUDWindowSkin;
 		data["Window.border"] = borders[scrollbarBorderPosition + 14];
+		data["Window.border.smallToolbar"] = borders[scrollbarBorderPosition + 15];
 		data["Window.bottomBar.application"] = borders[6];
 
 		data["SourceListView"] = SourceListViewSkin;

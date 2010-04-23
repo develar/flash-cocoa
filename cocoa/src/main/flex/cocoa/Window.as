@@ -22,6 +22,8 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		listenResourceChange();
 	}
 
+	protected var toolbar:Toolbar;
+
 	private var _title:String;
 	public function set title(value:String):void
 	{
@@ -59,6 +61,11 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		if (_title != null)
 		{
 			mySkin.title = _title;
+		}
+
+		if (toolbar != null)
+		{
+			mySkin.toolbar = toolbar;
 		}
 
 		if (_mxmlContent != null)

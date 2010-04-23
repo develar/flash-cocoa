@@ -49,11 +49,11 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 	{
 //		measuredMinWidth = Math.max(_contentView.minWidth, controlBar.minWidth);
 		measuredMinWidth = _contentView.minWidth;
-		measuredMinHeight = CONTENT_INSETS.height + _contentView.minHeight;
+		measuredMinHeight = contentInsets.height + _contentView.minHeight;
 
 //		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
-		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + CONTENT_INSETS.width;
-		measuredHeight = CONTENT_INSETS.height + _contentView.getExplicitOrMeasuredHeight();
+		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + contentInsets.width;
+		measuredHeight = contentInsets.height + _contentView.getExplicitOrMeasuredHeight();
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

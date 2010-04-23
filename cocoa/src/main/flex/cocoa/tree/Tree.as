@@ -1,10 +1,10 @@
 package cocoa.tree
 {
 import cocoa.IEditable;
-
-import cocoa.Viewable;
+import cocoa.View;
 
 import flash.display.DisplayObject;
+import flash.errors.IllegalOperationError;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.geom.Point;
@@ -33,7 +33,7 @@ use namespace mx_internal;
 [Exclude(name="borderThickness", kind="style")]
 
 [Style(name="pageIcon", type="Class", format="EmbeddedFile")]
-public class Tree extends mx.controls.Tree implements IEditable, Viewable
+public class Tree extends mx.controls.Tree implements IEditable, View
 {
 	public function Tree()
 	{
@@ -441,5 +441,15 @@ public class Tree extends mx.controls.Tree implements IEditable, Viewable
     {
         return mouseEventToItemRenderer(event);
     }
+
+	public function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
+	{
+		throw new IllegalOperationError("unsupported");
+	}
+
+	public function removeDisplayObject(displayObject:DisplayObject):void
+	{
+		throw new IllegalOperationError("unsupported");
+	}
 }
 }
