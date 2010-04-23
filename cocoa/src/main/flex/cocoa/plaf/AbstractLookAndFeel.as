@@ -13,6 +13,11 @@ public class AbstractLookAndFeel implements LookAndFeel
 {
 	protected const data:Dictionary = new Dictionary();
 
+	public final function get defaults():Dictionary
+	{
+		return data;
+	}
+
 	private var _parent:LookAndFeel;
 	public function set parent(value:LookAndFeel):void
 	{
