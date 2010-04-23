@@ -32,20 +32,18 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent
 			if (p is LookAndFeelProvider)
 			{
 				laf = LookAndFeelProvider(p).laf;
-				break;
-			}
-			else
-			{
-				if (p is Skin && Skin(p).component is LookAndFeelProvider)
+				if (laf != null)
 				{
-					laf = LookAndFeelProvider(Skin(p).component).laf;
 					break;
 				}
-				else
-				{
-					p = p.parent;
-				}
 			}
+			else if (p is Skin && Skin(p).component is LookAndFeelProvider)
+			{
+				laf = LookAndFeelProvider(Skin(p).component).laf;
+				break;
+			}
+
+			p = p.parent;
 		}
 
 		offBorder = laf.getBorder("Scrollbar.track." + orientation + ".off");
