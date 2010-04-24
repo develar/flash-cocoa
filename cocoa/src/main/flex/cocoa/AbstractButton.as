@@ -8,7 +8,12 @@ public class AbstractButton extends AbstractControl implements Cell
 {
 	protected var mySkin:PushButtonSkin;
 
-	private var oldState:int;
+	private var oldState:int = -1;
+
+	public function get isMouseDown():Boolean
+	{
+		return oldState != -1;
+	}
 
 	override protected function skinAttachedHandler():void
 	{
@@ -37,6 +42,8 @@ public class AbstractButton extends AbstractControl implements Cell
 
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
+		oldState = -1;
+
 		mySkin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
 		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);

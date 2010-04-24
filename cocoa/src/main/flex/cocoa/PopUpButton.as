@@ -18,6 +18,11 @@ public class PopUpButton extends AbstractControl implements Cell
 	private var labelChanged:Boolean = false;
 	private var menuController:PopUpMenuController;
 
+	public function get isMouseDown():Boolean
+	{
+		return false;
+	}
+
 	private var _menu:Menu;
 	public function set menu(value:Menu):void
 	{
