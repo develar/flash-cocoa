@@ -1,5 +1,10 @@
-package cocoa
+package cocoa.plaf
 {
+import cocoa.Border;
+import cocoa.FrameInsets;
+import cocoa.Insets;
+import cocoa.View;
+
 import flash.display.Graphics;
 
 public class AbstractBorder implements Border

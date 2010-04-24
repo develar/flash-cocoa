@@ -5,8 +5,8 @@ import cocoa.Bordered;
 
 import flash.display.Graphics;
 
-import mx.core.mx_internal;
 import mx.core.UIComponent;
+import mx.core.mx_internal;
 
 import spark.components.Button;
 

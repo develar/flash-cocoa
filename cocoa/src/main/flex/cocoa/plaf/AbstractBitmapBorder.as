@@ -1,6 +1,5 @@
 package cocoa.plaf
 {
-import cocoa.AbstractBorder;
 import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.TextInsets;

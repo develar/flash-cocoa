@@ -1,6 +1,6 @@
 package cocoa.plaf.aqua
 {
-import cocoa.AbstractBorder;
+import cocoa.plaf.AbstractBorder;
 import cocoa.Border;
 import cocoa.View;
 

@@ -1,7 +1,6 @@
 package cocoa.plaf.scrollbar
 {
 import cocoa.VScrollBar;
-
 import cocoa.plaf.LookAndFeel;
 
 import flash.events.Event;
