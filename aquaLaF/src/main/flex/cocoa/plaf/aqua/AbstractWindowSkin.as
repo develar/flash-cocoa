@@ -10,6 +10,8 @@ import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
 import cocoa.plaf.WindowSkin;
 
+import cocoa.ui;
+
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.events.MouseEvent;
@@ -21,6 +23,7 @@ import mx.core.mx_internal;
 import mx.managers.IFocusManagerContainer;
 
 use namespace mx_internal;
+use namespace ui;
 
 /**
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
@@ -32,9 +35,9 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	[Embed(source="/Window.resizeGripper.png")]
 	private static const resizeGripperClass:Class;
 
-	private static const TITLE_BAR_HEIGHT:Number = 22; // вместе (или без в случае если есть toolbar) с 1px полосой внизу, которая визуально отделяет от content view
+	private static const TITLE_BAR_HEIGHT:Number = 21;
 	protected static const BOTTOM_BAR_HEIGHT:Number = 47;
-	protected static const TOOLBAR_SMALL_HEIGHT:Number = 47; // вместе c нижней 1px полосой, которая визуально отделяет от content view
+	protected static const TOOLBAR_SMALL_HEIGHT:Number = 47;
 
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
 	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
@@ -109,7 +112,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			border = laf.getBorder("Window.border.smallToolbar");
 			var toolbarSkin:DisplayObject = DisplayObject(_toolbar.createView(laf));
 			toolbarSkin.y = TITLE_BAR_HEIGHT;
-			toolbarSkin.height = TOOLBAR_SMALL_HEIGHT - 1;
+			toolbarSkin.height = TOOLBAR_SMALL_HEIGHT;
 			addChild(toolbarSkin);
 		}
 		addChild(DisplayObject(_contentView));
@@ -183,9 +186,14 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 		border.draw(this, g, w, h - BOTTOM_BAR_HEIGHT);
 
+		// линия отделяющая контент от title/tool bar
+		g.lineStyle(1, 0x515151);
+		g.moveTo(0, contentInsets.top);
+		g.lineTo(w, contentInsets.top);
+
 		if (_toolbar != null)
 		{
-			_toolbar.skin.setActualSize(w, TOOLBAR_SMALL_HEIGHT - 1);
+			_toolbar.skin.setActualSize(w, TOOLBAR_SMALL_HEIGHT);
 		}
 
 		_contentView.move(contentInsets.left, contentInsets.top);

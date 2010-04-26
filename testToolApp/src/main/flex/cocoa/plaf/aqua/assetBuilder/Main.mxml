@@ -34,6 +34,7 @@
 			createDeferredContent();
 
 			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
+			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog()));
 		}
 
 		override protected function initializeMaps():void

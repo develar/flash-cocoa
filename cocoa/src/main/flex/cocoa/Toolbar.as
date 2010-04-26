@@ -6,9 +6,9 @@ public class Toolbar extends Box
 	{
 	}
 
-//	override protected function get defaultLaFPrefix():String
-//	{
-//		return super.defaultLaFPrefix;
-//	}
+	override protected function get defaultLaFPrefix():String
+	{
+		return "Toolbar";
+	}
 }
 }

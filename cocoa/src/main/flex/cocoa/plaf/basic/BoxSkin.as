@@ -5,15 +5,18 @@ import cocoa.plaf.AbstractSkin;
 
 public class BoxSkin extends AbstractSkin
 {
-	private var contentGroup:Container;
+	protected var contentGroup:Container;
 
 	override protected function createChildren():void
 	{
 		super.createChildren();
-		
-		contentGroup = new Container();
-		component.uiPartAdded("contentGroup", contentGroup);
-		addChild(contentGroup);
+
+		if (contentGroup == null)
+		{
+			contentGroup = new Container();
+			component.uiPartAdded("contentGroup", contentGroup);
+			addChild(contentGroup);
+		}
 	}
 
 	override protected function measure():void

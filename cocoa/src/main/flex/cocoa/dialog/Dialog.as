@@ -121,6 +121,7 @@ public class Dialog extends Window
 		var button:PushButton = new PushButton();
 		button.label = label;
 		button.action = actionHandler;
+		button.right = 0;
 		return button;
 	}
 

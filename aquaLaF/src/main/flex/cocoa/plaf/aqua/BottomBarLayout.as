@@ -30,12 +30,18 @@ public class BottomBarLayout extends LayoutBase
 		var right:Number = w - _padding;
 		var x:Number;
 
+		// toolbar должен иметь возможность получить ширину source list view и от нее начинать — в cocoa это решено путем flexible space toolbar item, у нас же пока нет времени сделать это полностью, и вот такой хак
+		if (_gap == 10)
+		{
+			left = 121;
+		}
+
 		for (var i:int = layoutTarget.numElements - 1; i >= 0; i--)
 		{
 			var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
 			layoutElement.setLayoutBoundsSize(NaN, NaN);
 
-			if (isNaN(Number(layoutElement.left)))
+			if (!isNaN(Number(layoutElement.right)))
 			{
 				x = right - layoutElement.getPreferredBoundsWidth();
 				right = x - _gap;

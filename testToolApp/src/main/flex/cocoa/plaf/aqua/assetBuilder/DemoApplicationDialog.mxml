@@ -8,7 +8,6 @@
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.MenuItemRenderer;
 		import cocoa.plaf.WindowSkin;
-		import cocoa.plaf.aqua.SegmentItemRenderer;
 		import cocoa.resources.ResourceMetadata;
 
 		import org.flyti.util.ArrayList;

@@ -7,6 +7,7 @@ import cocoa.SingletonClassFactory;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.LinearGradientBorder;
 import cocoa.plaf.MenuSkin;
 import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
@@ -19,6 +20,7 @@ import cocoa.plaf.SliderNumericStepperSkin;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
+import cocoa.plaf.aqua.ToolbarSkin;
 
 import flash.utils.ByteArray;
 
@@ -53,6 +55,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["ImageView.border"] = borders[3];
 
 		data["Box"] = BoxSkin;
+
+		data["Toolbar"] = ToolbarSkin;
+		data["Toolbar.border"] = new LinearGradientBorder([0xd0d0d0, 0xa7a7a7], new FrameInsets(0, -17));
 
 		data["Dialog"] = WindowSkin;
 		data["HUDWindow"] = HUDWindowSkin;
