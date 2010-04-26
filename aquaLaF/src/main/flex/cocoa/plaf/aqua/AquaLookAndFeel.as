@@ -7,7 +7,6 @@ import cocoa.SingletonClassFactory;
 import cocoa.plaf.AbstractBitmapBorder;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
-import cocoa.plaf.BoxSkin;
 import cocoa.plaf.MenuSkin;
 import cocoa.plaf.OneBitmapBorder;
 import cocoa.plaf.Scale1BitmapBorder;
@@ -17,6 +16,7 @@ import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.SegmentedControlController;
 import cocoa.plaf.SliderNumericStepperSkin;
+import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
 
