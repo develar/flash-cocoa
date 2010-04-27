@@ -44,7 +44,7 @@
 					</runtimeLocales>
 					<manifests>
 						<manifest>
-							<uri>library://cocoa</uri>
+							<uri>cocoa</uri>
 							<excludes>
 								<class>**.Application</class>
 							</excludes>
