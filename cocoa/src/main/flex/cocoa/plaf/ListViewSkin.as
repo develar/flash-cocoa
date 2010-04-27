@@ -6,5 +6,7 @@ public interface ListViewSkin
 	function set horizontalScrollPolicy(value:uint):void;
 
 	function set laf(value:LookAndFeel):void;
+
+	function set bordered(value:Boolean):void;
 }
 }

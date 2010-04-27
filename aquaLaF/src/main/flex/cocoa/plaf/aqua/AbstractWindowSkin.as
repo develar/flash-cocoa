@@ -40,9 +40,9 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	protected static const TOOLBAR_SMALL_HEIGHT:Number = 47;
 
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
-	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
+	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
-	protected static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT, 0, BOTTOM_BAR_HEIGHT);
+	protected static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
 	private var resizeGripper:DisplayObject;
 
@@ -188,8 +188,8 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 		// линия отделяющая контент от title/tool bar
 		g.lineStyle(1, 0x515151);
-		g.moveTo(0, contentInsets.top);
-		g.lineTo(w, contentInsets.top);
+		g.moveTo(0, contentInsets.top - 1);
+		g.lineTo(w, contentInsets.top - 1);
 
 		if (_toolbar != null)
 		{

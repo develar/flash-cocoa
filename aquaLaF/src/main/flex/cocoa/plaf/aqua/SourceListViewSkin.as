@@ -55,10 +55,10 @@ public class SourceListViewSkin extends AbstractSkin implements AdvancedLayout
 		var g:Graphics = graphics;
 		g.clear();
 
-		const left:Number = STROKE_OFFSET;
-		const top:Number = STROKE_OFFSET;
-		const right:Number = w - STROKE_OFFSET;
-		const bottom:Number = h - STROKE_OFFSET;
+		const left:Number = 0;
+		const top:Number = 0;
+		const right:Number = w - 1;
+		const bottom:Number = h;
 
 		g.beginFill(0xdee4ea);
 		g.moveTo(left, top);

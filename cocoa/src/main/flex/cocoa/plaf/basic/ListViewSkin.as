@@ -22,6 +22,12 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
 
 	private var border:Border;
 
+	private var _bordered:Boolean = true;
+	public function set bordered(value:Boolean):void
+	{
+		_bordered = value;
+	}
+
 	protected var _laf:LookAndFeel;
 	public function set laf(value:LookAndFeel):void
 	{
@@ -30,8 +36,6 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
 
 	override protected function createChildren():void
 	{
-		border = _laf.getBorder("ListView.border");
-
 		dataGroup = new FlexDataGroup();
 
 		if (_horizontalScrollPolicy != ScrollPolicy.OFF && _verticalScrollPolicy != ScrollPolicy.OFF)
@@ -50,7 +54,12 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
 			contentView = dataGroup;
 		}
 
-		contentView.move(border.contentInsets.left, border.contentInsets.top);
+		if (_bordered)
+		{
+			border = _laf.getBorder("ListView.border");
+			contentView.move(border.contentInsets.left, border.contentInsets.top);
+		}
+
 		addChild(DisplayObject(contentView));
 
 		ListView(parent).uiPartAdded("dataGroup", dataGroup);
@@ -78,20 +87,33 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
 
 	override protected function measure():void
 	{
-		measuredMinWidth = contentView.minWidth + border.contentInsets.width;
-        measuredWidth = contentView.getExplicitOrMeasuredWidth() + border.contentInsets.width;
+		measuredMinWidth = contentView.minWidth;
+        measuredWidth = contentView.getExplicitOrMeasuredWidth();
 
-        measuredMinHeight = contentView.minHeight + border.contentInsets.height;
-        measuredHeight = contentView.getExplicitOrMeasuredHeight() + border.contentInsets.height;
+		measuredMinHeight = contentView.minHeight;
+        measuredHeight = contentView.getExplicitOrMeasuredHeight();
+
+		if (_bordered)
+		{
+			measuredMinWidth += border.contentInsets.height;
+			measuredWidth += border.contentInsets.height;
+		}
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		contentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
+		if (_bordered)
+		{
+			contentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
 
-		var g:Graphics = graphics;
-		g.clear();
-		border.draw(null, g, w, h);
+			var g:Graphics = graphics;
+			g.clear();
+			border.draw(null, g, w, h);
+		}
+		else
+		{
+			contentView.setActualSize(w, h);
+		}
 	}
 }
 }

@@ -27,6 +27,12 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 		return UIComponent(mySkin);
 	}
 
+	private var _bordered:Boolean = true;
+	public function set bordered(value:Boolean):void
+	{
+		_bordered = value;
+	}
+
 	protected var _action:Function;
 	public function set action(value:Function):void
 	{
@@ -74,6 +80,7 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 		skinClass = laf.getClass("ListView");
 		mySkin = new skinClass();
 		mySkin.laf = laf;
+		mySkin.bordered = _bordered;
 		mySkin.verticalScrollPolicy = _verticalScrollPolicy;
 		mySkin.horizontalScrollPolicy = _horizontalScrollPolicy;
 
