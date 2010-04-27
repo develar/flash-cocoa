@@ -24,6 +24,11 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 
 	protected var toolbar:Toolbar;
 
+	protected final function l(key:String):String
+	{
+		return resourceManager.getString(_resourceBundle, key);
+	}
+
 	private var _title:String;
 	public function set title(value:String):void
 	{

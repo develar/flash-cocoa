@@ -19,11 +19,6 @@ public class Panel extends Window
 		return _skinParts;
 	}
 
-	protected function l(key:String):String
-	{
-		return key;
-	}
-
 	ui var titleDisplay:TextBase;
 
 	ui var minimizeButton:PushButton;
