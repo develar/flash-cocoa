@@ -21,7 +21,6 @@ public class TextView extends AbstractView implements IViewport
 	private var containerController:ContainerController;
 
 
-	private var textFlowChanged:Boolean;
 	private var _textFlow:TextFlow;
 	public function get textFlow():TextFlow
 	{
@@ -35,15 +34,36 @@ public class TextView extends AbstractView implements IViewport
 			if (_textFlow != null)
 			{
 				_textFlow.removeEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlowCompositionCompleteHandler);
-				if(_textFlow.flowComposer != null)
+				if (_textFlow.flowComposer != null)
 				{
 					_textFlow.flowComposer.removeAllControllers();
 				}
 			}
 			_textFlow = value;
-			textFlowChanged = true;
-			invalidateProperties();
+			//add controller immediately to mark that textFlow already in use
+			if (_textFlow != null)
+			{
+				_textFlow.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlowCompositionCompleteHandler);
+				if (containerController == null)
+				{
+					createController();
+				}
+				_textFlow.flowComposer.addController(containerController);
+				if (_textFlow.interactionManager == null)
+				{
+					_textFlow.interactionManager = new SelectionManager();
+				}
+				invalidateProperties();
+				invalidateDisplayList();
+			}
 		}
+	}
+
+	private function createController():void
+	{
+		container = new Sprite;
+		addDisplayObject(container);
+		containerController = new ContainerController(container, 0, 0);
 	}
 
 	private function textFlowCompositionCompleteHandler(event:CompositionCompleteEvent):void
@@ -77,33 +97,14 @@ public class TextView extends AbstractView implements IViewport
 		}
 	}
 
-
-	override protected function createChildren():void
-	{
-		container = new Sprite;
-		addDisplayObject(container);
-
-		containerController = new ContainerController(container, 0, 0);
-
-	}
-
 	override protected function commitProperties():void
 	{
 		super.commitProperties();
-		if (textFlowChanged)
-		{
-			if (_textFlow != null)
-			{
-				_textFlow.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textFlowCompositionCompleteHandler);
-				_textFlow.flowComposer.addController(containerController);
-				if (_textFlow.interactionManager == null)
-				{
-					_textFlow.interactionManager = new SelectionManager();
-				}
-			}
-			textFlowChanged = false;
-		}
 
+		if (containerController == null)
+		{
+			createController();
+		}
 		if (clipAndEnableScrollingChanged)
 		{
 			// The TLF code seems to check for !off.
@@ -144,7 +145,7 @@ public class TextView extends AbstractView implements IViewport
 		{
 			measuredWidth = explicitWidth;
 		}
-		else if(_textFlow != null)
+		else if (_textFlow != null)
 		{
 			measuredWidth = containerController.compositionWidth;
 		}
@@ -162,9 +163,9 @@ public class TextView extends AbstractView implements IViewport
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		if(_textFlow != null)
+		if (_textFlow != null)
 		{
-			containerController.setCompositionSize(w,h);
+			containerController.setCompositionSize(w, h);
 			textFlow.flowComposer.updateToController();
 		}
 
