@@ -53,9 +53,9 @@ public class TextView extends AbstractView implements IViewport
 				{
 					_textFlow.interactionManager = new SelectionManager();
 				}
-				invalidateProperties();
-				invalidateDisplayList();
 			}
+			invalidateProperties();
+			invalidateDisplayList();
 		}
 	}
 

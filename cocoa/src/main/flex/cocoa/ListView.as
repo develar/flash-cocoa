@@ -19,7 +19,11 @@ use namespace mx_internal;
 
 public class ListView extends List implements Viewable, Control, UIPartController
 {
-	private var skinClass:Class;
+	private var _skinClass:Class;
+	public function set skinClass(value:Class):void
+	{
+		_skinClass = value;
+	}
 
 	private var mySkin:ListViewSkin;
 	override public function get skin():UIComponent
@@ -77,8 +81,8 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 			}
 		}
 
-		skinClass = laf.getClass("ListView");
-		mySkin = new skinClass();
+		_skinClass = laf.getClass("ListView");
+		mySkin = new _skinClass();
 		mySkin.laf = laf;
 		mySkin.bordered = _bordered;
 		mySkin.verticalScrollPolicy = _verticalScrollPolicy;
@@ -139,7 +143,7 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 	{
 		if (styleProp == "skinClass")
 		{
-			return skinClass;
+			return _skinClass;
 		}
 		else if (styleProp == "layoutDirection")
 		{

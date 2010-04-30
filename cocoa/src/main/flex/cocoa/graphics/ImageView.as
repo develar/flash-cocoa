@@ -50,6 +50,7 @@ public class ImageView extends AbstractView
 			_bitmapData = value;
 			invalidateSize();
 			invalidateDisplayList();
+			invalidateParentSizeAndDisplayList();
 		}
 	}
 
@@ -165,6 +166,7 @@ public class ImageView extends AbstractView
 
 	override protected function measure():void
 	{
+		trace(this.name + " === measure called");
 		// no bitmapData size considered without predefined boundsRect
 		if (imageFrame != null && _bitmapData != null)
 		{
@@ -186,7 +188,7 @@ public class ImageView extends AbstractView
 		{
 			return;
 		}
-
+		trace(this.name + " updl "+w+" : "+h);
 		sharedRectangle.width = w;
 		sharedRectangle.height = h;
 
