@@ -166,7 +166,7 @@ public class ImageView extends AbstractView
 
 	override protected function measure():void
 	{
-		trace(this.name + " === measure called");
+		//trace(this.name + " === measure called");
 		// no bitmapData size considered without predefined boundsRect
 		if (imageFrame != null && _bitmapData != null)
 		{
@@ -188,7 +188,7 @@ public class ImageView extends AbstractView
 		{
 			return;
 		}
-		trace(this.name + " updl "+w+" : "+h);
+		//trace(this.name + " updl "+w+" : "+h);
 		sharedRectangle.width = w;
 		sharedRectangle.height = h;
 
