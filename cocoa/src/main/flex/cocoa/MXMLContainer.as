@@ -111,7 +111,7 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 			var component:Component = Component(view);
 			view = component.skin == null ? component.createView(_laf) : component.skin;
 		}
-		else if (view is Injectable || view is SkinnableComponent || (view is GroupBase && GroupBase(view).id != null))
+		else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null))
 		{
 			dispatchEvent(new InjectorEvent(view));
 		}
@@ -171,7 +171,7 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 
 		if (!elementsChanged)
 		{
-			elementAdded(element, index);
+			subviewAdded(element, index);
 		}
 
 		return element;

@@ -146,7 +146,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 			var component:Component = Component(view);
 			view = component.skin == null ? component.createView(_laf) : component.skin;
 		}
-		else if (view is Injectable || view is SkinnableComponent || (view is Container && Container(view).id != null))
+		else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null))
 		{
 			dispatchEvent(new InjectorEvent(view));
 		}
