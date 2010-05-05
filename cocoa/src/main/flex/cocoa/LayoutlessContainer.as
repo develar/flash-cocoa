@@ -9,6 +9,8 @@ import com.asfusion.mate.events.InjectorEvent;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
+import mx.core.ILayoutElement;
+
 import org.flyti.plexus.Injectable;
 
 import spark.components.supportClasses.GroupBase;
@@ -94,6 +96,23 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 	public function get numSubviews():int
 	{
 		return numChildren;
+	}
+
+	override protected function updateDisplayList(w:Number, h:Number):void
+	{
+		var n:int = numChildren;
+		while (n-- > 0)
+		{
+			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
+		}
+
+//		if (parent is Container && Container(parent).id == "_scrollerViewport")
+//		{
+//		var g:Graphics = graphics;
+//		g.beginFill(0x000000, 0.5);
+//		g.drawRect(0, 0, w, h);
+//		g.endFill();
+//		}
 	}
 }
 }

@@ -15,7 +15,6 @@ import mx.core.ContainerCreationPolicy;
 import mx.core.FlexGlobals;
 import mx.core.IFlexDisplayObject;
 import mx.core.IInvalidating;
-import mx.core.ILayoutElement;
 import mx.core.Singleton;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
@@ -435,23 +434,5 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 	public function set defaultButton(value:IFlexDisplayObject):void
 	{
 	}
-
-	override protected function updateDisplayList(w:Number, h:Number):void
-	{
-		var n:int = numChildren;
-		while (n-- > 0)
-		{
-			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
-		}
-	}
-
-//	override protected function childAdded(child:DisplayObject):void
-//	{
-//		super.childAdded(child);
-//
-//		invalidateDisplayList();
-//
-//		ILayoutElement(child).setLayoutBoundsSize(width, height);
-//	}
 }
 }
