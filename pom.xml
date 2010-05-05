@@ -9,8 +9,8 @@
 	</parent>
 
 	<properties>
-		<fdk.version>4.1.0.15667</fdk.version>
-		<flex.sdk.version>4.1.0.15667</flex.sdk.version>
+		<fdk.version>4.1.0.15885</fdk.version>
+		<flex.sdk.version>4.1.0.15885</flex.sdk.version>
 	</properties>
 
 	<name>Cocoa Aggregator</name>
