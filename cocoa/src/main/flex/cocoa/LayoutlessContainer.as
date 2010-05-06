@@ -105,14 +105,6 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 		{
 			ILayoutElement(getChildAt(n)).setLayoutBoundsSize(w, h);
 		}
-
-//		if (parent is Container && Container(parent).id == "_scrollerViewport")
-//		{
-//		var g:Graphics = graphics;
-//		g.beginFill(0x000000, 0.5);
-//		g.drawRect(0, 0, w, h);
-//		g.endFill();
-//		}
 	}
 }
 }

@@ -53,6 +53,7 @@ import mx.effects.EffectManager;
 import mx.effects.IEffectInstance;
 import mx.events.DynamicEvent;
 import mx.events.FlexEvent;
+import mx.events.MoveEvent;
 import mx.events.PropertyChangeEvent;
 import mx.events.ResizeEvent;
 import mx.filters.BaseFilter;
@@ -6217,10 +6218,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 				_layoutFeatures.layoutX = x;
 			}
 
-//			if (hasEventListener("xChanged"))
-//			{
-//				dispatchEvent(new Event("xChanged"));
-//			}
+			if (hasEventListener("xChanged"))
+			{
+				dispatchEvent(new Event("xChanged"));
+			}
 			changed = true;
 		}
 
@@ -6235,16 +6236,20 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 				_layoutFeatures.layoutY = y;
 			}
 
-//			if (hasEventListener("yChanged"))
-//			{
-//				dispatchEvent(new Event("yChanged"));
-//			}
+			if (hasEventListener("yChanged"))
+			{
+				dispatchEvent(new Event("yChanged"));
+			}
 			changed = true;
 		}
 
 		if (changed)
 		{
 			invalidateTransform();
+			if (hasEventListener(MoveEvent.MOVE))
+			{
+				dispatchEvent(new MoveEvent(MoveEvent.MOVE));
+			}
 		}
 	}
 
