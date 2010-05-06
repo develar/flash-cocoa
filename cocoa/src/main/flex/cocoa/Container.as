@@ -19,7 +19,6 @@ import mx.core.mx_internal;
 import org.flyti.plexus.Injectable;
 
 import spark.components.supportClasses.GroupBase;
-import spark.components.supportClasses.SkinnableComponent;
 import spark.layouts.BasicLayout;
 import spark.layouts.supportClasses.LayoutBase;
 

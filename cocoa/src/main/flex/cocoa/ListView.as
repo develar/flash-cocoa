@@ -164,5 +164,15 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 		this[id] = instance;
 		partAdded(id, instance);
 	}
+
+	override public function parentChanged(p:DisplayObjectContainer):void
+	{
+		super.parentChanged(p);
+
+		if (p != null)
+		{
+			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+		}
+	}
 }
 }
