@@ -7,7 +7,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 		
-	NSRect frame = NSMakeRect(500, 500, 800, CONTROL_FRAME_HEIGHT * 13);
+	NSRect frame = NSMakeRect(500, 500, 800, CONTROL_FRAME_HEIGHT * 14);
 	// должно NSTitledWindowMask, иначе окно не active
 	NSWindow* testWindow  = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask | NSResizableWindowMask | NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
 	[testWindow setOpaque:NO];
@@ -139,9 +139,20 @@
 	[imageView setEditable:YES];
 	[contentView addSubview:imageView];
 	
-//	NSScroll
+	// Color Well
 	
-	//return;
+	controlFrame.origin.x = 0;
+	controlFrame.origin.y -= 50 + 10;
+	controlFrame.size.width = 20;
+	controlFrame.size.height = 20;
+	
+	NSColorWell *colorWell = [[NSColorWell alloc] initWithFrame:controlFrame];
+//	[colorWell setImageFrameStyle:NSImageFrameGrayBezel];
+//	[imageView setEditable:YES];
+	[contentView addSubview:colorWell];
+	
+	
+	return;
 	
 	// SegmentedControl
 	frame.origin.x = 100;

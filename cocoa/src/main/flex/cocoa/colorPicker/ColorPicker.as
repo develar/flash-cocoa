@@ -8,5 +8,11 @@ public class ColorPicker extends mx.controls.ColorPicker
 	{
 		return (0xff << 24) | selectedColor;
 	}
+
+	override protected function measure():void
+	{
+		measuredMinWidth = measuredWidth = 21;
+		measuredMinHeight = measuredHeight = 21;
+	}
 }
 }
