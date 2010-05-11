@@ -34,6 +34,11 @@ public class WindowMover
 
 	private function mouseUpHandler(event:MouseEvent):void
 	{
+		if (object == null)
+		{
+			return; // мы при mouse up вне окна браузера можем получить событие как от mouseCatcher в SystemManager, так и от stage собственно
+		}
+
 		object.cacheAsBitmap = false;
 		object.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 		object.stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);

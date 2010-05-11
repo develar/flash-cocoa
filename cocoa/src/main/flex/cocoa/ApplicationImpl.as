@@ -68,6 +68,8 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		{
 			maps.fixed = true;
 		}
+
+		invalidateProperties();
 	}
 
 	private var _creationPolicy:String;
@@ -216,13 +218,17 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 	override protected function invalidateParentSizeAndDisplayList():void
 	{
 		if (!includeInLayout)
+		{
 			return;
+		}
 
 		var p:IInvalidating = parent as IInvalidating;
 		if (!p)
 		{
 			if (parent is ISystemManager)
+			{
 				ISystemManager(parent).invalidateParentSizeAndDisplayList();
+			}
 
 			return;
 		}
@@ -278,13 +284,10 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 				resizeHandlerAdded = true;
 			}
 		}
-		else
+		else if (resizeHandlerAdded)
 		{
-			if (resizeHandlerAdded)
-			{
-				systemManager.removeEventListener(Event.RESIZE, resizeHandler);
-				resizeHandlerAdded = false;
-			}
+			systemManager.removeEventListener(Event.RESIZE, resizeHandler);
+			resizeHandlerAdded = false;
 		}
 
 		if (percentBoundsChanged)
@@ -354,15 +357,11 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
 	private function updateBounds():void
 	{
-		// When user has not specified any width/height,
-		// application assumes the size of the stage.
-		// If developer has specified width/height,
-		// the application will not resize.
-		// If developer has specified percent width/height,
-		// application will resize to the required value
+		// When user has not specified any width/height, application assumes the size of the stage.
+		// If developer has specified width/height, the application will not resize.
+		// If developer has specified percent width/height, application will resize to the required value
 		// based on the current SystemManager's width/height.
-		// If developer has specified min/max values,
-		// then application will not resize beyond those values.
+		// If developer has specified min/max values, then application will not resize beyond those values.
 
 		var w:Number;
 		var h:Number;
@@ -381,10 +380,14 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 			}
 
 			if (!isNaN(explicitMaxWidth))
+			{
 				w = Math.min(w, explicitMaxWidth);
+			}
 
 			if (!isNaN(explicitMinWidth))
+			{
 				w = Math.max(w, explicitMinWidth);
+			}
 		}
 		else
 		{
