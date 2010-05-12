@@ -23,12 +23,29 @@ public class PushButton extends AbstractButton
 			}
 		}
 	}
+	
+	private var _toolTip:String;
+	public function set toolTip(value:String):void
+	{
+		if (value != _toolTip)
+		{
+			_toolTip = value;
+			if (mySkin != null)
+			{
+				mySkin.toolTip = _toolTip;
+			}
+		}
+	}
 
 	override protected function skinAttachedHandler():void
     {
 		super.skinAttachedHandler();
 
 		mySkin.label = _label;
+		if (_toolTip != null)
+		{
+			mySkin.toolTip = _toolTip;
+		}
 	}
 
 	override public function get objectValue():Object
