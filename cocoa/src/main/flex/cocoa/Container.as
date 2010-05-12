@@ -10,6 +10,8 @@ import com.asfusion.mate.events.InjectorEvent;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
+import flash.errors.IllegalOperationError;
+
 import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IVisualElement;
@@ -28,7 +30,7 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider
+public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider, IVisualElementContainer
 {
 	private var createChildrenCalled:Boolean;
 	private var subviewsChanged:Boolean;
@@ -337,6 +339,45 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 		{
 			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
 		}
+	}
+
+	// we need implement IVisualElementContainer for states (AddItems)
+	public function addElement(element:IVisualElement):IVisualElement
+	{
+		addSubview(Viewable(element));
+		return element;
+	}
+
+	public function addElementAt(element:IVisualElement, index:int):IVisualElement
+	{
+		addSubview(Viewable(element), index);
+		return element;
+	}
+
+	public function removeElement(element:IVisualElement):IVisualElement
+	{
+		removeSubview(Viewable(element));
+		return element;
+	}
+
+	public function removeAllElements():void
+	{
+		throw new IllegalOperationError();
+	}
+
+	public function setElementIndex(element:IVisualElement, index:int):void
+	{
+		throw new IllegalOperationError();
+	}
+
+	public function swapElements(element1:IVisualElement, element2:IVisualElement):void
+	{
+		throw new IllegalOperationError();
+	}
+
+	public function swapElementsAt(index1:int, index2:int):void
+	{
+		throw new IllegalOperationError();
 	}
 }
 }
