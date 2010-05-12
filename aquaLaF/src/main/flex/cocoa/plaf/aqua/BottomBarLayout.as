@@ -6,7 +6,8 @@ import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
 /**
- * воспринимает left, right и horizontal center как указание центровки – то есть кнопка с left=0 (значение не имеет смысла) будет у левого края (но не будет наезжать на другие кнопки у этого края)
+ * воспринимает left, right и horizontal center как указание центровки – то есть кнопка с left=0 будет у левого края (но не будет наезжать на другие кнопки у этого края)
+ * значение constraint имеет смысл при > 0 — добавляется gap * constraintValue
  */
 public class BottomBarLayout extends LayoutBase
 {
@@ -36,23 +37,40 @@ public class BottomBarLayout extends LayoutBase
 			left += 121;
 		}
 
-		for (var i:int = layoutTarget.numElements - 1; i >= 0; i--)
-		{
-			var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
-			layoutElement.setLayoutBoundsSize(NaN, NaN);
+		var layoutElement:ILayoutElement;
+		var n:int = layoutTarget.numElements;
 
-			if (!isNaN(Number(layoutElement.right)))
+		for (var i:int = 0; i < n; i++)
+		{
+			layoutElement = layoutTarget.getElementAt(i);
+			if (isNaN(Number(layoutElement.right)))
 			{
-				x = right - layoutElement.getPreferredBoundsWidth();
-				right = x - _gap;
-			}
-			else
-			{
+				layoutElement.setLayoutBoundsSize(NaN, NaN);
+
+				var leftConstraint:Number = Number(layoutElement.left);
+				if (!isNaN(leftConstraint) && leftConstraint > 0)
+				{
+					left += leftConstraint * _gap;
+				}
+
 				x = left;
 				left += layoutElement.getPreferredBoundsWidth() + _gap;
+
+				layoutElement.setLayoutBoundsPosition(x, Math.round((h - layoutElement.getPreferredBoundsHeight()) / 2));
 			}
-			
-			layoutElement.setLayoutBoundsPosition(x, Math.round((h - layoutElement.getPreferredBoundsHeight()) / 2));
+		}
+
+		for (i = n - 1; i >= 0; i--)
+		{
+			layoutElement = layoutTarget.getElementAt(i);
+			if (!isNaN(Number(layoutElement.right)))
+			{
+				layoutElement.setLayoutBoundsSize(NaN, NaN);
+				x = right - layoutElement.getPreferredBoundsWidth();
+				right = x - _gap;
+
+				layoutElement.setLayoutBoundsPosition(x, Math.round((h - layoutElement.getPreferredBoundsHeight()) / 2));
+			}
 		}
 	}
 }

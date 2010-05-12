@@ -66,5 +66,14 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 			labelHelper.moveToCenter(w, labelInsets.top);
 		}
 	}
+
+	override public function set enabled(value:Boolean):void
+	{
+		if (value != enabled)
+		{
+			super.enabled = value;
+			alpha = value ? 1 : 0.5;
+		}
+	}
 }
 }

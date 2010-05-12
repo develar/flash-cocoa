@@ -40,10 +40,13 @@ public class AbstractButton extends AbstractControl implements Cell
 		mouseOverHandler(event);
 	}
 
+	protected function get toggled():Boolean
+	{
+		return false;
+	}
+
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
-		oldState = -1;
-
 		mySkin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
 		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
@@ -52,7 +55,20 @@ public class AbstractButton extends AbstractControl implements Cell
 		if (event.target == mySkin)
 		{
 			// может быть уже отвалидировано в roll over/out
-			if (state == CellState.ON)
+			if (toggled)
+			{
+				if (state == oldState)
+				{
+					state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
+					event.updateAfterEvent();
+				}
+				else
+				{
+					// во fluent есть over — при установке state в mouseOverHandler mouseDown == true, а тут уже up — для button state разницы нет, а вот для скина поддерживающего over есть
+					skin.invalidateDisplayList();
+				}
+			}
+			else if (state == CellState.ON)
 			{
 				state = CellState.OFF;
 				event.updateAfterEvent();
@@ -63,6 +79,8 @@ public class AbstractButton extends AbstractControl implements Cell
 				_action();
 			}
 		}
+
+		oldState = -1;
 	}
 
 	private function mouseOverHandler(event:MouseEvent):void
