@@ -76,6 +76,14 @@ public class ColorPickerSkin extends ProgrammaticSkin
 		// inner border
 		g.lineStyle(1, 0x8a8a8a);
 		g.drawRect(5, 5, w - 5 - 5 - 1, h - 5 - 5 - 1);
+
+		if (name == "disabledSkin")
+        {
+			g.lineStyle();
+			g.beginFill(0xffffff, 1);
+			g.drawRect(6, 6, w - 6 - 6, h - 6 - 6);
+			g.endFill();
+		}
 	}
 }
 }
