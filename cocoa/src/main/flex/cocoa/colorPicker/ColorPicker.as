@@ -40,9 +40,9 @@ public class ColorPicker extends mx.controls.ColorPicker
 		downArrowButtonGraphics.drawRect(0, 0, w, h);
 	}
 
-	override public function drawFocus(isFocused:Boolean):void
-	{
-		// ignore
-	}
+//	override public function drawFocus(isFocused:Boolean):void
+//	{
+//		// ignore
+//	}
 }
 }
