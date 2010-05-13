@@ -147,9 +147,16 @@
 	controlFrame.size.height = 20;
 	
 	NSColorWell *colorWell = [[NSColorWell alloc] initWithFrame:controlFrame];
-//	[colorWell setImageFrameStyle:NSImageFrameGrayBezel];
-//	[imageView setEditable:YES];
+	[colorWell setColor:[NSColor redColor]];
 	[contentView addSubview:colorWell];
+	
+	controlFrame.origin.x += 60;
+	
+	NSColorWell *colorWell2 = [[NSColorWell alloc] initWithFrame:controlFrame];
+	[colorWell2 setColor:[NSColor redColor]];
+	[colorWell2 setEnabled:NO];
+	[contentView addSubview:colorWell2];
+	
 	
 	
 	return;
