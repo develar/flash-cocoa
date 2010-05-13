@@ -24,7 +24,7 @@ public class PushButton extends AbstractButton
 		}
 	}
 	
-	private var _toolTip:String;
+	protected var _toolTip:String;
 	public function set toolTip(value:String):void
 	{
 		if (value != _toolTip)

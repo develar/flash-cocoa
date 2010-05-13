@@ -13,7 +13,7 @@ public class AbstractControl extends AbstractComponent implements Control
 	{
 		return _state;
 	}
-	public final function set state(value:int):void
+	public function set state(value:int):void
 	{
 		_state = value;
 		skin.invalidateDisplayList();

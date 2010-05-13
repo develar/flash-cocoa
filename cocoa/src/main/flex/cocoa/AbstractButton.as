@@ -10,6 +10,18 @@ public class AbstractButton extends AbstractControl implements Cell
 
 	private var oldState:int = -1;
 
+	public function get selected():Boolean
+	{
+		return state == CellState.ON;
+	}
+	public function set selected(value:Boolean):void
+	{
+		if (value && state != CellState.ON)
+		{
+			state = value ? CellState.ON : CellState.OFF;
+		}
+	}
+
 	public function get isMouseDown():Boolean
 	{
 		return oldState != -1;

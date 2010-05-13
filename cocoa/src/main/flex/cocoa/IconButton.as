@@ -11,6 +11,16 @@ public class IconButton extends PushButton
 		return "IconButton";
 	}
 
+	private var _bordered:Boolean = true;
+	public function get bordered():Boolean
+	{
+		return _bordered;
+	}
+	public function set bordered(value:Boolean):void
+	{
+		_bordered = value;
+	}
+
 	private var _icon:Icon;
 	public function get icon():Icon
 	{
