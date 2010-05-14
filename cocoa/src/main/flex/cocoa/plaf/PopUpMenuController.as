@@ -107,6 +107,7 @@ public class PopUpMenuController extends AbstractListController
 		popUpButton.state = CellState.ON;
 		
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
+		menuSkin.validateNow(); // если это datagroup, то оно должно валидировать display list c item render (их y) до setPopUpPosition 
 		setPopUpPosition();
 
 		itemGroup = _menu.itemGroup;
@@ -141,6 +142,7 @@ public class PopUpMenuController extends AbstractListController
 
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
+		var proposedSelectedIndex:int = -1;
 		// проверка на border (как в Cocoa — можно кликнуть на border, и при этом и меню не будет скрыто, и выделенный item не изменится)
 		if (!_menu.skin.hitTestPoint(event.stageX, event.stageY))
 		{
@@ -152,7 +154,7 @@ public class PopUpMenuController extends AbstractListController
 		}
 		else if (event.target != _menu.skin && event.target != itemGroup)
 		{
-			popUpButton.selectedIndex = IItemRenderer(event.target).itemIndex;
+			proposedSelectedIndex = IItemRenderer(event.target).itemIndex;
 		}
 		else
 		{
@@ -161,6 +163,10 @@ public class PopUpMenuController extends AbstractListController
 
 		if (mouseDownTime == -1 || (getTimer() - mouseDownTime) > MOUSE_CLICK_INTERVAL)
 		{
+			if (proposedSelectedIndex != -1)
+			{
+				popUpButton.selectedIndex = proposedSelectedIndex;
+			}
 			close();
 		}
 		else
