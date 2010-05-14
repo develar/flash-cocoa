@@ -2,10 +2,8 @@ package cocoa
 {
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
-import flash.text.engine.FontLookup;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
-import flash.text.engine.TextLine;
 
 import mx.core.IUIComponent;
 import mx.core.mx_internal;
@@ -67,26 +65,17 @@ public class NumericStepper extends spark.components.NumericStepper
 		}
 	}
 
-	override protected function partAdded(partName:String, instance:Object):void
-	{
-		super.partAdded(partName, instance);
-
-		if (instance == textDisplay)
-		{
-			textDisplay.width = calculateTextWidth();
-		}
-	}
-
 	protected override function commitProperties():void
 	{
 		super.commitProperties();
 
-		if (maxChanged || stepSizeChanged || valueFormatFunctionChanged)
+		if (textWidthAffected)
 		{
-			textDisplay.width = calculateTextWidth();
-			maxChanged = false;
-			stepSizeChanged = false;
-			valueFormatFunctionChanged = false;
+			if (isNaN(explicitWidth))
+			{
+				textDisplay.width = calculateTextWidth() + 2;
+			}
+			textWidthAffected = false;
 		}
 
 		if (focusVisibleChanged)
@@ -119,81 +108,49 @@ public class NumericStepper extends spark.components.NumericStepper
 		}
     }
 
+	private static const textElement:TextElement = new TextElement();
+	private static const textBlock:TextBlock = new TextBlock(textElement);
+
 	private function calculateTextWidth():Number
-    {
-        var fontDescription:FontDescription = new FontDescription();
+	{
+		var fontDescription:FontDescription = new FontDescription(textDisplay.textDisplay.getStyle("fontFamily"));
+		fontDescription.fontLookup = textDisplay.textDisplay.getStyle("fontLookup");
 
-        var s:String;
+		var elementFormat:ElementFormat = new ElementFormat();
+		elementFormat.fontDescription = fontDescription;
+		elementFormat.fontSize = textDisplay.textDisplay.getStyle("fontSize");
 
-        s = getStyle("cffHinting");
-        if (s != null)
-            fontDescription.cffHinting = s;
+		textElement.elementFormat = elementFormat;
+		textElement.text = calculateWidestText();
+		return Math.ceil(textBlock.createTextLine().width);
+	}
 
-        s = getStyle("fontFamily");
-        if (s != null)
-            fontDescription.fontName = s;
-
-        s = getStyle("fontLookup");
-        if (s != null)
-        {
-            // FTE understands only "device" and "embeddedCFF"
-            // for fontLookup. But Flex allows this style to be
-            // set to "auto", in which case we automatically
-            // determine it based on whether the CSS styles
-            // specify an embedded font.
-            if (s == "auto")
-            {
-                s = textDisplay.textDisplay.textContainerManager.swfContext ?
-                    FontLookup.EMBEDDED_CFF :
-                    FontLookup.DEVICE;
-            }
-        }
-
-        s = getStyle("fontStyle");
-        if (s != null)
-            fontDescription.fontPosture = s;
-
-        s = getStyle("fontWeight");
-        if (s != null)
-            fontDescription.fontWeight = s;
-
-        var elementFormat:ElementFormat = new ElementFormat();
-        elementFormat.fontDescription = fontDescription;
-        elementFormat.fontSize = getStyle("fontSize");
-
-        var textElement:TextElement = new TextElement();
-        textElement.elementFormat = elementFormat;
-        textElement.text = calculateWidestText();
-
-        var textBlock:TextBlock = new TextBlock();
-        textBlock.content = textElement;
-
-        var textLine:TextLine = textBlock.createTextLine();
-		return textLine.width;
-    }
-
-	// override
-	private var valueFormatFunctionChanged:Boolean;
+	private var textWidthAffected:Boolean = true;
 
 	override public function set valueFormatFunction(value:Function):void
     {
-        valueFormatFunctionChanged = true;
+		if (isNaN(explicitWidth))
+		{
+			textWidthAffected = true;
+		}
         super.valueFormatFunction = value;
     }
 
-	private var stepSizeChanged:Boolean = false;
-
 	override public function set stepSize(value:Number):void
 	{
-		stepSizeChanged = true;
+		if (isNaN(explicitWidth))
+		{
+			textWidthAffected = true;
+		}
 		super.stepSize = value;
 	}
 
-	private var maxChanged:Boolean = false;
-
     override public function set maximum(value:Number):void
     {
-        maxChanged = true;
+		if (isNaN(explicitWidth))
+		{
+        	textWidthAffected = true;
+		}
         super.maximum = value;
     }
 
