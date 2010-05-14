@@ -18,7 +18,7 @@ public class DialogManager
 {
 	private var modalBoxExists:Boolean;
 
-	public function open(window:Window, modal:Boolean = true):void
+	public function open(window:Window, modal:Boolean = true, autoCenter:Boolean = true):void
 	{
 		if (modal)
 		{
@@ -41,7 +41,7 @@ public class DialogManager
 		}
 		else
 		{
-			addPopUp(window, modal);
+			addPopUp(window, modal, true, autoCenter);
 		}
 	}
 
@@ -50,7 +50,7 @@ public class DialogManager
 		addPopUp(Window(event.currentTarget), true, false);
 	}
 
-	private function addPopUp(window:Window, modal:Boolean = true, dispatchInjectorEvent:Boolean = true):void
+	private function addPopUp(window:Window, modal:Boolean = true, dispatchInjectorEvent:Boolean = true, autoCenter:Boolean = true):void
 	{
 		var skin:Skin = window.skin;
 		if (skin == null)
@@ -65,7 +65,10 @@ public class DialogManager
 
 		//		skin.addEventListener(ResizeEvent.RESIZE, dialogCreationCompleteHandler);
 		PopUpManager.addPopUp(skin, DisplayObject(FlexGlobals.topLevelApplication), modal);
-		PopUpManager.centerPopUp(skin);
+		if (autoCenter)
+		{
+			PopUpManager.centerPopUp(skin);
+		}
 		skin.setFocus();
 	}
 
@@ -74,20 +77,23 @@ public class DialogManager
 //		PopUpManager.centerPopUp(Skin(event.currentTarget));
 //	}
 
-	private function okOrCancelHandler(event:DialogEvent):void
+	public function close(window:Window):void
 	{
-		var box:Window = Window(event.currentTarget);
+		window.removeEventListener(DialogEvent.OK, okOrCancelHandler);
+		window.removeEventListener(DialogEvent.CANCEL, okOrCancelHandler);
 
-		box.removeEventListener(DialogEvent.OK, okOrCancelHandler);
-		box.removeEventListener(DialogEvent.CANCEL, okOrCancelHandler);
-
-		box.dispatchEvent(new DialogEvent(DialogEvent.CLOSING));
+		window.dispatchEvent(new DialogEvent(DialogEvent.CLOSING));
 
 		if (modalBoxExists)
 		{
 			modalBoxExists = false;
 		}
-		PopUpManager.removePopUp(box.skin);
+		PopUpManager.removePopUp(window.skin);
+	}
+
+	private function okOrCancelHandler(event:DialogEvent):void
+	{
+		close(Window(event.currentTarget));
 	}
 }
 }

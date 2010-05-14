@@ -65,15 +65,14 @@ public class Label extends TextBase
 	private static function initClass():void
 	{
 		staticTextBlock = new TextBlock();
-
 		staticTextElement = new TextElement();
-
 		staticSpaceJustifier = new SpaceJustifier();
-
 		staticEastAsianJustifier = new EastAsianJustifier();
 
 		if ("recreateTextLine" in staticTextBlock)
+		{
 			recreateTextLine = staticTextBlock["recreateTextLine"];
+		}
 	}
 
 	initClass();
@@ -123,7 +122,7 @@ public class Label extends TextBase
 
 		if (elementFormat == null)
 		{
-			elementFormat = laf.getFont("ButtonFont");
+			elementFormat = laf.getFont("ViewFont");
 		}
 
 		// Set the composition bounds to be used by createTextLines().

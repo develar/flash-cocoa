@@ -7,11 +7,16 @@ import spark.layouts.HorizontalLayout;
 [Abstract]
 public class Tab extends Container
 {
-	protected var active:Boolean;
+	protected var _active:Boolean;
+	public function set active(value:Boolean):void
+	{
+		_active = value;
+		invalidateActiveState();
+	}
 
 	protected function invalidateActiveState():void
 	{
-		if (active)
+		if (_active)
 		{
 			commitActiveState();
 		}
@@ -36,12 +41,12 @@ public class Tab extends Container
 		if (value != visible)
 		{
 			super.visible = value;
-			active = value;
+			_active = value;
 			invalidateActiveState();
 		}
-		else if (value && !active)
+		else if (value && !_active)
 		{
-			active = true;
+			_active = true;
 			invalidateActiveState();
 		}
 	}

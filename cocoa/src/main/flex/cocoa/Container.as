@@ -193,7 +193,9 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 
 	override public function getElementIndex(element:IVisualElement):int
     {
-		return _subviews.indexOf(element);
+		var index:int = _subviews.indexOf(element is Skin ? Skin(element).component : element);
+		assert(index != -1);
+		return index;
 	}
 
 	public function getSubviewIndex(view:Viewable):int

@@ -98,13 +98,16 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 			{
 				mySkin.contentView = View(_contentView);
 			}
-			_contentView = null;
 		}
 		
 		super.skinAttachedHandler();
 	}
 
 	private var _contentView:Viewable;
+	public function get contentView():Viewable
+	{
+		return _contentView;
+	}
 	public function set contentView(view:Viewable):void
 	{
 		_contentView = view;

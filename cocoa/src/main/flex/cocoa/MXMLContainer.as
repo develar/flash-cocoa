@@ -4,6 +4,8 @@ import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
+import cocoa.plaf.Skin;
+
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
@@ -18,7 +20,6 @@ import org.flyti.plexus.Injectable;
 
 import spark.components.Group;
 import spark.components.supportClasses.GroupBase;
-import spark.components.supportClasses.SkinnableComponent;
 import spark.layouts.BasicLayout;
 import spark.layouts.supportClasses.LayoutBase;
 
@@ -236,7 +237,9 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 
 	override public function getElementIndex(element:IVisualElement):int
     {
-		return _subviews.indexOf(element);
+		var index:int = _subviews.indexOf(element is Skin ? Skin(element).component : element);
+		assert(index != -1);
+		return index;
 	}
 
 	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
