@@ -1,5 +1,6 @@
 package cocoa
 {
+import cocoa.AbstractView;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.PopUpMenuController;
 import cocoa.plaf.PushButtonSkin;
@@ -78,7 +79,8 @@ public class PopUpButton extends AbstractControl implements Cell
 			_menu.selectedIndex = value;
 			if (_action != null)
 			{
-				_action();
+				AbstractView(skin).callLater(_action);
+//				_action();
 			}
 			updateLabelDisplay();
 		}
