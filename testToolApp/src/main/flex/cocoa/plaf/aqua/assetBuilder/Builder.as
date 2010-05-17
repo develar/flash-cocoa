@@ -38,8 +38,11 @@ public class Builder
 	private static var bottomBarApplicationClass:Class;
 	[Embed(source="/Window.titleBarAndContent.png")]
 	private static var titleBarAndContentClass:Class;
-	[Embed(source="/Window.titleBarAndSmallToolbarAndContent.png")]
-	private static var titleBarAndSmallToolbarAndContent:Class;
+	[Embed(source="/Window.titleBarAndToolbarAndContent.png")]
+	private static var titleBarAndToolbarAndContent:Class;
+
+	[Embed(source="/Window.hud.titleBarAndContent.png")]
+	private static var hudTitleBarAndContentClass:Class;
 
 	[Embed(source="/segmentedControl.png")]
 	private static var segmentedControlClass:Class;
@@ -78,7 +81,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ + 2 /* title bar, titleBarAndSmallToolbarAndContent */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ + 3 /* title bar, titleBarAndToolbarAndContent, hudTitleBarAndContentClass */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -98,7 +101,8 @@ public class Builder
 		compoundImageReader.readScrollbar();
 
 		compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
-		compoundImageReader.readTitleBarAndContent(titleBarAndSmallToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
+		compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
+		compoundImageReader.readScale9(hudTitleBarAndContentClass, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);
@@ -178,6 +182,8 @@ public class Builder
 			x = 100;
 			y += bitmapData.height < 30 ? 30 : 100;
 		}
+
+		y += 40;
 
 		n = data.readUnsignedByte();
 		var icon:BitmapIcon;

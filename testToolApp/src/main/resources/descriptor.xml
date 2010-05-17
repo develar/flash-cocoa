@@ -8,5 +8,7 @@
 		<systemChrome>none</systemChrome>
 		<transparent>true</transparent>
 		<content>assetBuilder-1.1-SNAPSHOT.swf</content>
+		<x>150</x>
+		<y>150</y>
 	</initialWindow>
 </application>

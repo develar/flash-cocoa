@@ -20,7 +20,6 @@ import cocoa.plaf.SliderNumericStepperSkin;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
-import cocoa.plaf.aqua.ToolbarSkin;
 
 import flash.utils.ByteArray;
 
@@ -62,7 +61,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Dialog"] = WindowSkin;
 		data["HUDWindow"] = HUDWindowSkin;
 		data["Window.border"] = borders[scrollbarBorderPosition + 14];
-		data["Window.border.smallToolbar"] = borders[scrollbarBorderPosition + 15];
+		data["Window.border.toolbar"] = borders[scrollbarBorderPosition + 15];
 		data["Window.bottomBar.application"] = borders[6];
 
 		data["SourceListView"] = SourceListViewSkin;
@@ -174,6 +173,16 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		}
 		return windowFrameLookAndFeel;
 	}
+
+	private var hudLookAndFeel:HUDLookAndFeel;
+	public function createHUDLookAndFeel():HUDLookAndFeel
+	{
+		if (hudLookAndFeel == null)
+		{
+			hudLookAndFeel = new HUDLookAndFeel(borders, this);
+		}
+		return hudLookAndFeel;
+	}
 }
 }
 
@@ -200,14 +209,34 @@ final class WindowFrameLookAndFeel extends AbstractLookAndFeel
 	}
 }
 
+final class HUDLookAndFeel extends AbstractLookAndFeel
+{
+	public function HUDLookAndFeel(borders:Vector.<Border>, parent:AquaLookAndFeel)
+	{
+		initialize(borders);
+		this.parent = parent;
+	}
+
+	private function initialize(borders:Vector.<Border>):void
+	{
+		data["SystemFont"] = AquaFonts.SYSTEM_FONT_HUD;
+		data["ViewFont"] = AquaFonts.VIEW_FONT_HUD;
+
+		data["Window.border"] = borders[9 + 16];
+	}
+}
+
 final class AquaFonts
 {
 	private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
 
 	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
+	public static const SYSTEM_FONT_HUD:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
+
 	public static const MENU_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 14);
 
 	public static const VIEW_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 12);
+	public static const VIEW_FONT_HUD:ElementFormat = SYSTEM_FONT_HUD;
 
 	public static const SYSTEM_FONT_DISABLED:ElementFormat = SYSTEM_FONT.clone();
 	SYSTEM_FONT_DISABLED.color = 0x808080;

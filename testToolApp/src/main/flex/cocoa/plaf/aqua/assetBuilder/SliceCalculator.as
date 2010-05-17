@@ -12,6 +12,8 @@ public class SliceCalculator
 
 	private var pixels:Vector.<uint>;
 
+	private var equalLength:int = 1;
+
 	public function calculateFromTop(bitmapData:BitmapData, sourceRectangle:Rectangle):Number
 	{
 		init(bitmapData, sourceRectangle);
@@ -45,11 +47,20 @@ public class SliceCalculator
 		pixels.fixed = true;
 	}
 
-	public function calculate(bitmapData:BitmapData, frameRectangle:Rectangle, top:int, strict:Boolean = false, allSide:Boolean = false):Insets
+	public function calculate(bitmapData:BitmapData, frameRectangle:Rectangle, top:int, strict:Boolean = false, allSide:Boolean = false, equalLength:int = -1):Insets
 	{
 		frameRectangle.y += top;
 
 		init(bitmapData, frameRectangle);
+
+		if (equalLength != -1)
+		{
+			this.equalLength = equalLength;
+		}
+		else
+		{
+			this.equalLength = 2;
+		}
 
 		var sliceSize:Insets = new Insets(getUnrepeatableFromLeft(strict), allSide ? getUnrepeatableFromTop(strict) : 0, getUnrepeatableFromRight(strict), allSide ? getUnrepeatableFromBottom(strict) : 0);
 
@@ -102,6 +113,8 @@ public class SliceCalculator
 
 	private function getUnrepeatableFromTop(strict:Boolean):int
 	{
+		var equalCount:int;
+
 		rowLoop : for (var row:int = 0, maxRow:int = height - 1; row < maxRow; row++)
 		{
 			for (var i:int = row * width, n:int = i + width; i < n; i++)
@@ -112,7 +125,11 @@ public class SliceCalculator
 				}
 			}
 
-			return row;
+			equalCount++;
+			if (equalCount == equalLength)
+			{
+				return row;
+			}
 		}
 
 		throw new Error("can't find center area");

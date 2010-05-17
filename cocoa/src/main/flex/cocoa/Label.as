@@ -52,7 +52,8 @@ public class Label extends TextBase
 				{
 					break;
 				}
-			} else if (p is Skin && Skin(p).component is LookAndFeelProvider)
+			}
+			else if (p is Skin && Skin(p).component is LookAndFeelProvider)
 			{
 				laf = LookAndFeelProvider(Skin(p).component).laf;
 				break;

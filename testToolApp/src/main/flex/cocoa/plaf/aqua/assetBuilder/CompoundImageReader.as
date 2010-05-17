@@ -249,11 +249,22 @@ internal final class CompoundImageReader
 		position += 2;
 	}
 
-	public function parseScale9Grid(frameRectangle:Rectangle, sliceSize:Insets = null):Vector.<BitmapData>
+	public function readScale9(bitmapDataClass:Class, border:Scale9BitmapBorder, equalLength:int = -1):void
+	{
+		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
+		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
+
+		var bitmaps:Vector.<BitmapData> = parseScale9Grid(frameRectangle, null, equalLength);
+		border.configure(bitmaps);
+
+		borders[position++] = border;
+	}
+
+	public function parseScale9Grid(frameRectangle:Rectangle, sliceSize:Insets = null, equalLength:int = -1):Vector.<BitmapData>
 	{
 		if (sliceSize == null)
 		{
-			sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, true, true);
+			sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, true, true, equalLength);
 		}
 		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
 

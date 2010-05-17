@@ -5,11 +5,11 @@ import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.Toolbar;
 import cocoa.View;
+import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
 import cocoa.plaf.WindowSkin;
-
 import cocoa.ui;
 
 import flash.display.DisplayObject;
@@ -42,7 +42,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
 	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
-	protected static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
+	private static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
 	private var resizeGripper:DisplayObject;
 
@@ -61,6 +61,16 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	protected function get contentInsets():Insets
 	{
 		return _toolbar == null ? CONTENT_INSETS : CONTENT_INSETS_TOOLBAR;
+	}
+
+	protected function get titleBarHeight():Number
+	{
+		return TITLE_BAR_HEIGHT;
+	}
+
+	protected function get titleY():Number
+	{
+		return 16;
 	}
 
 	public function set bottomBarStyle(value:BottomBarStyle):void
@@ -109,15 +119,15 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		}
 		else
 		{
-			border = laf.getBorder("Window.border.smallToolbar");
+			border = laf.getBorder("Window.border.toolbar");
 			var toolbarSkin:DisplayObject = DisplayObject(_toolbar.createView(laf));
-			toolbarSkin.y = TITLE_BAR_HEIGHT;
+			toolbarSkin.y = titleBarHeight;
 			toolbarSkin.height = TOOLBAR_SMALL_HEIGHT;
 			addChild(toolbarSkin);
 		}
 		addChild(DisplayObject(_contentView));
 
-		if (resizeGripper == null)
+		if (Window(component).resizable && resizeGripper == null)
 		{
 			resizeGripper = new resizeGripperClass();
 			addDisplayObject(resizeGripper);
@@ -143,7 +153,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 				return;
 			}
 
-			if (mouseX >= resizeGripper.x && mouseY >= resizeGripper.y)
+			if (Window(component).resizable && mouseX >= resizeGripper.x && mouseY >= resizeGripper.y)
 			{
 				if (resizer == null)
 				{
@@ -159,7 +169,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		{
 			mover = new WindowMover();
 		}
-		mover.move(event, this, TITLE_BAR_HEIGHT);
+		mover.move(event, this, titleBarHeight);
 	}
 
 	public function childCanSkipMeasurement(element:ILayoutElement):Boolean
@@ -170,11 +180,24 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 	override protected function measure():void
 	{
-		measuredMinWidth = Math.max(_contentView.minWidth);
+		measuredMinWidth = _contentView.minWidth;
 		measuredMinHeight = contentInsets.height + _contentView.minHeight;
 
-		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth()) + contentInsets.width;
+		measuredWidth = contentInsets.width + _contentView.getExplicitOrMeasuredWidth();
 		measuredHeight = contentInsets.height + _contentView.getExplicitOrMeasuredHeight();
+	}
+
+	protected function drawTitleBottomBorderLine(g:Graphics, w:Number):void
+	{
+		// линия отделяющая контент от title/tool bar
+		g.lineStyle(1, 0x515151);
+		g.moveTo(0, contentInsets.top - 1);
+		g.lineTo(w, contentInsets.top - 1);
+	}
+
+	protected function get hasBottomBar():Boolean
+	{
+		return false;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -185,15 +208,12 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		if (_title != null)
 		{
 			labelHelper.validate();
-			labelHelper.moveToCenter(w, 16);
+			labelHelper.moveToCenter(w, titleY);
 		}
 
-		border.draw(this, g, w, h - BOTTOM_BAR_HEIGHT);
+		border.draw(this, g, w, hasBottomBar ? h - contentInsets.bottom : h);
 
-		// линия отделяющая контент от title/tool bar
-		g.lineStyle(1, 0x515151);
-		g.moveTo(0, contentInsets.top - 1);
-		g.lineTo(w, contentInsets.top - 1);
+		drawTitleBottomBorderLine(g, w);
 
 		if (_toolbar != null)
 		{
@@ -203,8 +223,11 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		_contentView.move(contentInsets.left, contentInsets.top);
 		_contentView.setActualSize(w - contentInsets.width, h - contentInsets.height);
 
-		resizeGripper.x = w - 11 - 4;
-		resizeGripper.y = h - 11 - 4;
+		if (Window(component).resizable)
+		{
+			resizeGripper.x = w - 11 - 4;
+			resizeGripper.y = h - 11 - 4;
+		}
 	}
 
 	public function get defaultButton():IFlexDisplayObject

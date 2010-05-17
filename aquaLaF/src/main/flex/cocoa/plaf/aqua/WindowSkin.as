@@ -63,5 +63,10 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 		controlBar.y = h - BOTTOM_BAR_HEIGHT;
 		controlBar.setActualSize(w, BOTTOM_BAR_HEIGHT);
 	}
+
+	override protected function get hasBottomBar():Boolean
+	{
+		return true;
+	}
 }
 }

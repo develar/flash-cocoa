@@ -2,15 +2,15 @@ package cocoa.hudInspector
 {
 import cocoa.HUDWindow;
 import cocoa.View;
+import cocoa.Viewable;
 import cocoa.dialog.DialogManager;
 import cocoa.pane.PaneItem;
-import cocoa.plaf.Skin;
 import cocoa.resources.ResourceManager;
 
 import flash.geom.Point;
 import flash.utils.Dictionary;
 
-import mx.core.IVisualElement;
+import mx.core.IUIComponent;
 
 import org.flyti.plexus.plexus;
 
@@ -40,51 +40,62 @@ public class HUDInspectorManager
 
 	public function show(element:Object, elementView:View):void
 	{
-		assert(currentInspector == null);
-
-		var clazz:Class = Class(element.constructor);
-		var inspectorItem:PaneItem = inspectorSetMap[clazz];
-		if (inspectorItem == null)
+		var inspectorContentView:Viewable;
+		// такое будет если при hide мы обнаруживаем что новый элемент имеет такой же тип и не скрываем инспектор, а ничего не делаем 
+		if (currentInspector != null)
 		{
-			return;
-		}
-
-		if (cache == null)
-		{
-			cache = new Dictionary();
+			inspectorContentView = currentInspector.contentView;
 		}
 		else
 		{
-			currentInspector = cache[inspectorItem];
+			var clazz:Class = Class(element.constructor);
+			var inspectorItem:PaneItem = inspectorSetMap[clazz];
+			if (inspectorItem == null)
+			{
+				return;
+			}
+
+			if (cache == null)
+			{
+				cache = new Dictionary();
+			}
+			else
+			{
+				currentInspector = cache[inspectorItem];
+			}
+
+			if (currentInspector == null)
+			{
+				currentInspector = new HUDWindow();
+				currentInspector.resizable = false;
+				currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
+				inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
+				cache[inspectorItem] = currentInspector;
+			}
+
+			inspectorContentView = inspectorItem.view
 		}
 
-		if (currentInspector == null)
+		if (inspectorContentView is ElementRecipient)
 		{
-			currentInspector = new HUDWindow();
-			currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
-			inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
-			if (inspectorItem.view is ElementRecipient)
-			{
-				ElementRecipient(inspectorItem.view).element = element;
-			}
-			cache[inspectorItem] = currentInspector;
+			ElementRecipient(inspectorContentView).element = element;
 		}
 
 		dialogManager.open(currentInspector, false, false);
-		var view:Skin = currentInspector.skin;
 
 		sharedPoint.x = elementView.x;
 		sharedPoint.y = elementView.y;
 		sharedPoint = elementView.parent.localToGlobal(sharedPoint);
 
-		var windowHeightWithPadding:Number = IVisualElement(view).height + WIDOW_PADDING;
+		var inspectorView:IUIComponent = currentInspector.skin;
+		var windowHeightWithPadding:Number = inspectorView.height + WIDOW_PADDING;
 		var y:Number = sharedPoint.y - windowHeightWithPadding;
 		if (y < 0)
 		{
 			y = sharedPoint.y + elementView.height + windowHeightWithPadding;
 		}
 
-		view.move(sharedPoint.x + (elementView.width / 2) - (IVisualElement(view).width / 2), y);
+		inspectorView.move(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2), y);
 	}
 
 	public function hide(element:Object, relatedElement:Object):void

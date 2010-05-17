@@ -6,6 +6,7 @@
 						creationComplete="creationCompleteHandler()">
 
 	<fx:Script><![CDATA[
+		import cocoa.HUDWindow;
 		import cocoa.dialog.DialogEventMap;
 		import cocoa.dialog.events.ShowDialogEvent;
 		import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -33,8 +34,17 @@
 			laf = new AquaLookAndFeel();
 			createDeferredContent();
 
-			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
-			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog()));
+//			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
+//			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog()));
+
+			var hudWindow:HUDWindow = new HUDWindow();
+			hudWindow.resizable = false;
+			hudWindow.title = "Test";
+
+			var c:TestPane = new TestPane();
+			c.buttonTitle = "Testttt";			
+			hudWindow.contentView = c;
+			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(hudWindow));
 		}
 
 		override protected function initializeMaps():void

@@ -14,6 +14,9 @@ import org.flyti.plexus.Injectable;
 public class Window extends AbstractComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher
 {
 	protected var mySkin:WindowSkin;
+	protected var flags:uint = RESIZABLE;
+
+	public static const RESIZABLE:uint = 1 << 0;
 
 	public function Window()
 	{
@@ -27,6 +30,18 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 	protected final function l(key:String):String
 	{
 		return resourceManager.getString(_resourceBundle, key);
+	}
+
+	public function get resizable():Boolean
+	{
+		return (flags & RESIZABLE) != 0;
+	}
+	public function set resizable(value:Boolean):void
+	{
+		if (value == ((flags & RESIZABLE) == 0))
+		{
+			value ? flags |= RESIZABLE : flags ^= RESIZABLE;
+		}
 	}
 
 	private var _title:String;
