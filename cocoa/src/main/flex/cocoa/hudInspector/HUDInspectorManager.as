@@ -80,6 +80,7 @@ public class HUDInspectorManager
 		}
 
 		dialogManager.close(currentInspector);
+		currentInspector = null;
 	}
 }
 }
