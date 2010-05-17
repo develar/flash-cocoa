@@ -2,7 +2,6 @@ package cocoa
 {
 import cocoa.sidebar.events.SidebarEvent;
 
-import flash.events.MouseEvent;
 import flash.utils.Dictionary;
 
 import spark.components.supportClasses.TextBase;
@@ -26,20 +25,20 @@ public class Panel extends Window
 
 	ui function minimizeButtonAdded():void
 	{
-		minimizeButton.addEventListener(MouseEvent.CLICK, minimizeButtonActionHandler);
+		minimizeButton.action = minimizeButtonActionHandler;
 	}
 
 	ui function closeSideButtonAdded():void
 	{
-		closeSideButton.addEventListener(MouseEvent.CLICK, closeSideButtonClickHandler);
+		closeSideButton.action = closeSideButtonClickHandler;
 	}
 
-	private function minimizeButtonActionHandler(event:MouseEvent):void
+	private function minimizeButtonActionHandler():void
 	{
 		dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_PANE));
 	}
 
-	private function closeSideButtonClickHandler(event:MouseEvent):void
+	private function closeSideButtonClickHandler():void
 	{
 		dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_SIDE));
 	}
