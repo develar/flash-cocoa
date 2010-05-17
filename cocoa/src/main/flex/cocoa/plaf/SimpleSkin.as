@@ -1,10 +1,10 @@
 package cocoa.plaf
 {
-import mx.core.IInvalidating;
-import mx.core.IUIComponent;
+import cocoa.View;
+
 import mx.core.IVisualElement;
 
-public interface SimpleSkin extends IVisualElement, IInvalidating, IUIComponent
+public interface SimpleSkin extends IVisualElement, View
 {
 }
 }
