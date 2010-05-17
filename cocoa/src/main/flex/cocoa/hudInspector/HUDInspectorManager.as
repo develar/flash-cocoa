@@ -5,7 +5,6 @@ import cocoa.dialog.DialogManager;
 import cocoa.pane.PaneItem;
 import cocoa.plaf.Skin;
 import cocoa.resources.ResourceManager;
-import cocoa.tabView.Tab;
 
 import flash.utils.Dictionary;
 
@@ -56,9 +55,9 @@ public class HUDInspectorManager
 			currentInspector = new HUDWindow();
 			currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
 			inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
-			if (inspectorItem.view is Tab)
+			if (inspectorItem.view is ElementRecipient)
 			{
-				Tab(inspectorItem.view).active = true;
+				ElementRecipient(inspectorItem.view).element = element;
 			}
 			cache[inspectorItem] = currentInspector;
 		}
@@ -75,9 +74,9 @@ public class HUDInspectorManager
 			return;
 		}
 
-		if (currentInspector.contentView is Tab)
+		if (currentInspector.contentView is ElementRecipient)
 		{
-			Tab(currentInspector.contentView).active = false;
+			ElementRecipient(currentInspector.contentView).element = null;
 		}
 
 		dialogManager.close(currentInspector);

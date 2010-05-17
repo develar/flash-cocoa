@@ -128,34 +128,38 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-		if (event.target != this && !(event.target is TextLine))
+		const targetIsNotTextLine:Boolean = !(event.target is TextLine);
+		if (event.target != this && targetIsNotTextLine)
 		{
 			return;
 		}
 
-		var mouseY:Number = event.localY;
-		var mouseX:Number = event.localX;
-		if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (mouseY > contentInsets.top && mouseY < (height - contentInsets.bottom)))
+		if (targetIsNotTextLine)
 		{
-			return;
+			var mouseY:Number = event.localY;
+			var mouseX:Number = event.localX;
+			if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (mouseY > contentInsets.top && mouseY < (height - contentInsets.bottom)))
+			{
+				return;
+			}
+
+			if (mouseX >= resizeGripper.x && mouseY >= resizeGripper.y)
+			{
+				if (resizer == null)
+				{
+					resizer = new WindowResizer();
+				}
+				resizer.resize(event, this);
+
+				return;
+			}
 		}
 
-		if (mouseX >= resizeGripper.x && mouseY >= resizeGripper.y)
+		if (mover == null)
 		{
-			if (resizer == null)
-			{
-				resizer = new WindowResizer();
-			}
-			resizer.resize(event, this);
+			mover = new WindowMover();
 		}
-		else
-		{
-			if (mover == null)
-			{
-				mover = new WindowMover();
-			}
-			mover.move(event, this, TITLE_BAR_HEIGHT);
-		}
+		mover.move(event, this, TITLE_BAR_HEIGHT);
 	}
 
 	public function childCanSkipMeasurement(element:ILayoutElement):Boolean

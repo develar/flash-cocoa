@@ -1,6 +1,5 @@
 package cocoa
 {
-import cocoa.AbstractView;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.PopUpMenuController;
 import cocoa.plaf.PushButtonSkin;
@@ -79,6 +78,8 @@ public class PopUpButton extends AbstractControl implements Cell
 			_menu.selectedIndex = value;
 			if (_action != null)
 			{
+				// иначе если у некого компонента, что использует pop up menu уже invalid properties,
+				// то вызов invalidateProperties инициированнный вызовом action не приведет к commitProperties
 				AbstractView(skin).callLater(_action);
 //				_action();
 			}
