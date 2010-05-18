@@ -49,8 +49,6 @@
 								<class>**.Application</class>
 							</excludes>
 							<includes>
-								<class>**.*EventMap</class>
-								<!--<class>**.ApplicationImpl</class>-->
 								<class>**.Dialog</class>
 								<class>**.Tab*</class>
 

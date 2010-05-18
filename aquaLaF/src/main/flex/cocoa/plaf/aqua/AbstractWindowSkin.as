@@ -180,11 +180,11 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 	override protected function measure():void
 	{
-		measuredMinWidth = _contentView.minWidth;
-		measuredMinHeight = contentInsets.height + _contentView.minHeight;
+		measuredMinWidth = _contentView.minWidth + contentInsets.width;
+		measuredMinHeight = _contentView.minHeight + contentInsets.height;
 
-		measuredWidth = contentInsets.width + _contentView.getExplicitOrMeasuredWidth();
-		measuredHeight = contentInsets.height + _contentView.getExplicitOrMeasuredHeight();
+		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + contentInsets.width;
+		measuredHeight = _contentView.getExplicitOrMeasuredHeight() + contentInsets.height;
 	}
 
 	protected function drawTitleBottomBorderLine(g:Graphics, w:Number):void

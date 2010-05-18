@@ -10,10 +10,8 @@ import mx.core.ILayoutElement;
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
-public class FormLayout extends LayoutBase
+public class CenterEqualizedLayout extends LayoutBase
 {
-	private static const MAX_ROW_COUNT:int = 3;
-
 	private var columns:Vector.<Column>;
 
 	private var _fieldGap:Number = 3;
@@ -26,9 +24,18 @@ public class FormLayout extends LayoutBase
         if (value != _fieldGap)
 		{
             _fieldGap = value;
-			invalidateTargetSizeAndDisplayList();
 		}
     }
+
+	protected function get maxRowCount():int
+	{
+		return 99;
+	}
+
+	protected function get isRightAlignLabel():Boolean
+	{
+		return true;
+	}
 
 	/**
 	 * Промежуток между controls в колонке
@@ -39,7 +46,6 @@ public class FormLayout extends LayoutBase
         if (value != _controlGap)
 		{
             _controlGap = value;
-			invalidateTargetSizeAndDisplayList();
 		}
     }
 
@@ -49,7 +55,6 @@ public class FormLayout extends LayoutBase
         if (value != _labelGap)
 		{
             _labelGap = value;
-			invalidateTargetSizeAndDisplayList();
 		}
     }
 
@@ -66,7 +71,6 @@ public class FormLayout extends LayoutBase
         if (value != _columnGap)
 		{
             _columnGap = value;
-			invalidateTargetSizeAndDisplayList();
 		}
     }
 
@@ -103,7 +107,7 @@ public class FormLayout extends LayoutBase
 				var skipAdd:Boolean = false;
 				if (isStartElement(element))
 				{
-					if (column == null || column.compositions.length == MAX_ROW_COUNT)
+					if (column == null || column.compositions.length == maxRowCount)
 					{
 						if (column != null && column.separator == null)
 						{
@@ -114,12 +118,13 @@ public class FormLayout extends LayoutBase
 					}
 
 					if (column.compositions.length > 0 && column.compositions[0].length > 1 &&
-						(i == numElements || ((column.compositions.length + 1) == MAX_ROW_COUNT && isAnotherColumnElement(layoutTarget.getElementAt(i)))))
+						(i == numElements || ((column.compositions.length + 1) == maxRowCount && isAnotherColumnElement(layoutTarget.getElementAt(i)))))
 					{
 						column.auxiliaryElement = element;
 						skipAdd = true;
 					}
-					else if (element is CheckBox && (i + 1) < numElements && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
+					// isRightAlignLabel для HUD, ему это не нужно
+					else if (!isRightAlignLabel && element is CheckBox && (i + 1) < numElements && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
 					{
 						column.auxiliaryElement = element;
 						column.isAuxiliaryElementFirst = true;
@@ -131,7 +136,6 @@ public class FormLayout extends LayoutBase
 					}
 				}
 
-//				if (column.auxiliaryElement == null)
 				if (!skipAdd)
 				{
 					column.addElement(element);
@@ -220,17 +224,28 @@ public class FormLayout extends LayoutBase
 					}
 
 					var element:ILayoutElement = composition[elementIndex];
-					element.setLayoutBoundsPosition(localX, localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
-					element.setLayoutBoundsSize(NaN, NaN);
+					if (!isRightAlignLabel || elementIndex != 0)
+					{
+						element.setLayoutBoundsPosition(localX, localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
+					}
 
 					if (elementIndex == 0)
 					{
-						localX += column.widths[elementIndex];
+						var columnPartWidth:Number = column.widths[0];
+						if (isRightAlignLabel)
+						{
+							element.setLayoutBoundsPosition(composition.length == 1 ? (localX + columnPartWidth + _labelGap) : (localX + columnPartWidth - element.getPreferredBoundsWidth()),
+															localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
+						}
+
+						localX += columnPartWidth;
 					}
 					else
 					{
 						localX += element.getPreferredBoundsWidth() + _controlGap;
 					}
+
+					element.setLayoutBoundsSize(NaN, NaN);
 				}
 
 				localY += compositionHeight + fieldGap;
@@ -257,15 +272,5 @@ public class FormLayout extends LayoutBase
 			}
 		}
 	}
-
-	private function invalidateTargetSizeAndDisplayList():void
-    {
-		var group:GroupBase = target;
-		if (group != null)
-		{
-			group.invalidateSize();
-			group.invalidateDisplayList();
-		}
-    }
 }
 }
