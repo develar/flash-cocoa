@@ -80,8 +80,8 @@ public class PopUpButton extends AbstractControl implements Cell
 			{
 				// иначе если у некого компонента, что использует pop up menu уже invalid properties,
 				// то вызов invalidateProperties инициированнный вызовом action не приведет к commitProperties
-				AbstractView(skin).callLater(_action);
-//				_action();
+//				AbstractView(skin).callLater(_action);
+				_action();
 			}
 			updateLabelDisplay();
 		}
