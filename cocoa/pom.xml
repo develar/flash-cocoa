@@ -50,7 +50,6 @@
 							</excludes>
 							<includes>
 								<class>**.*EventMap</class>
-								<class>**.maps.*</class>
 								<!--<class>**.ApplicationImpl</class>-->
 								<class>**.Dialog</class>
 								<class>**.Tab*</class>
@@ -90,6 +89,7 @@
 								<class>cocoa.tree.Tree</class>
 
 								<class>cocoa.graphics.*</class>
+								<class>cocoa.*Separator</class>
 							</includes>
 							<excludes>
 								<class>cocoa.plaf.scrollbar.*</class>

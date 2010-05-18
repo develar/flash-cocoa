@@ -9,7 +9,6 @@ import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
-
 import flash.errors.IllegalOperationError;
 
 import mx.core.IFlexDisplayObject;
@@ -51,7 +50,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 	//[Bindable(event="mChanged")]
 	protected function l(key:String):String
 	{
-		return _resourceBundle == null ? key : resourceManager.getString(_resourceBundle, key);
+		return resourceManager.getString(_resourceBundle, key);
 	}
 
 	private var _subviews:Array;

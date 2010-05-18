@@ -21,6 +21,8 @@ import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
 
+import cocoa.plaf.basic.SeparatorSkin;
+
 import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
@@ -117,6 +119,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["Scrollbar.track.v.off"] = borders[scrollbarBorderPosition + 12];
 		data["Scrollbar.track.h.off"] = borders[scrollbarBorderPosition + 13];
+
+		data["VSeparator"] = SeparatorSkin;
+		data["HSeparator"] = SeparatorSkin;
 	}
 
 	private static function initAssets():void
