@@ -27,8 +27,7 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
-public class
-AquaLookAndFeel extends AbstractLookAndFeel
+public class AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
 	private static var assetsDataClass:Class;
@@ -43,8 +42,6 @@ AquaLookAndFeel extends AbstractLookAndFeel
 	protected function initialize():void
 	{
 		initAssets();
-
-		const scrollbarBorderPosition:int = 9;
 
 		data["SystemFont"] = AquaFonts.SYSTEM_FONT;
 		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
@@ -63,8 +60,8 @@ AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["Dialog"] = WindowSkin;
 		data["HUDWindow"] = HUDWindowSkin;
-		data["Window.border"] = borders[scrollbarBorderPosition + 14];
-		data["Window.border.toolbar"] = borders[scrollbarBorderPosition + 15];
+		data["Window.border"] = borders[BorderPosition.scrollbar + 14];
+		data["Window.border.toolbar"] = borders[BorderPosition.scrollbar + 15];
 		data["Window.bottomBar.application"] = borders[6];
 
 		data["SourceListView"] = SourceListViewSkin;
@@ -100,26 +97,26 @@ AquaLookAndFeel extends AbstractLookAndFeel
 		data["SegmentItem.border"] = borders[7];
 		Scale1BitmapBorder(borders[7]).frameInsets = new FrameInsets(0, 0, 0, -3);
 
-		data["Scrollbar.track.v"] = borders[scrollbarBorderPosition];
-		data["Scrollbar.track.h"] = borders[scrollbarBorderPosition + 1];
+		data["Scrollbar.track.v"] = borders[BorderPosition.scrollbar];
+		data["Scrollbar.track.h"] = borders[BorderPosition.scrollbar + 1];
 
-		data["Scrollbar.decrementButton.h"] = borders[scrollbarBorderPosition + 2];
-		data["Scrollbar.decrementButton.h.highlighted"] = borders[scrollbarBorderPosition + 3];
+		data["Scrollbar.decrementButton.h"] = borders[BorderPosition.scrollbar + 2];
+		data["Scrollbar.decrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 3];
 
-		data["Scrollbar.incrementButton.h"] = borders[scrollbarBorderPosition + 4];
-		data["Scrollbar.incrementButton.h.highlighted"] = borders[scrollbarBorderPosition + 5];
+		data["Scrollbar.incrementButton.h"] = borders[BorderPosition.scrollbar + 4];
+		data["Scrollbar.incrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 5];
 
-		data["Scrollbar.decrementButton.v"] = borders[scrollbarBorderPosition + 6];
-		data["Scrollbar.decrementButton.v.highlighted"] = borders[scrollbarBorderPosition + 7];
+		data["Scrollbar.decrementButton.v"] = borders[BorderPosition.scrollbar + 6];
+		data["Scrollbar.decrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 7];
 
-		data["Scrollbar.incrementButton.v"] = borders[scrollbarBorderPosition + 8];
-		data["Scrollbar.incrementButton.v.highlighted"] = borders[scrollbarBorderPosition + 9];
+		data["Scrollbar.incrementButton.v"] = borders[BorderPosition.scrollbar + 8];
+		data["Scrollbar.incrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 9];
 
-		data["Scrollbar.thumb.v"] = borders[scrollbarBorderPosition + 10];
-		data["Scrollbar.thumb.h"] = borders[scrollbarBorderPosition + 11];
+		data["Scrollbar.thumb.v"] = borders[BorderPosition.scrollbar + 10];
+		data["Scrollbar.thumb.h"] = borders[BorderPosition.scrollbar + 11];
 
-		data["Scrollbar.track.v.off"] = borders[scrollbarBorderPosition + 12];
-		data["Scrollbar.track.h.off"] = borders[scrollbarBorderPosition + 13];
+		data["Scrollbar.track.v.off"] = borders[BorderPosition.scrollbar + 12];
+		data["Scrollbar.track.h.off"] = borders[BorderPosition.scrollbar + 13];
 
 		data["VSeparator"] = SeparatorSkin;
 		data["HSeparator"] = SeparatorSkin;
@@ -197,6 +194,7 @@ import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BezelStyle;
 
+import cocoa.plaf.aqua.HUDPushButtonSkin;
 import cocoa.plaf.aqua.HUDTextInputSkin;
 import cocoa.plaf.aqua.SeparatorBorder;
 
@@ -233,13 +231,22 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont"] = AquaFonts.SYSTEM_FONT_HUD;
 		data["ViewFont"] = AquaFonts.VIEW_FONT_HUD;
 
-		data["Window.border"] = borders[9 + 16];
+		data["Window.border"] = borders[BorderPosition.scrollbar + 16];
 
 		data["TextInput"] = HUDTextInputSkin;
 		data["TextInput.border"] = new TextInputBorder();
 
 		data["HSeparator.border"] = new SeparatorBorder();
+
+		data["PushButton"] = HUDPushButtonSkin;
+		data["PushButton.border"] = borders[BorderPosition.hudButton];
 	}
+}
+
+final class BorderPosition
+{
+	public static const scrollbar:int = 9;
+	public static const hudButton:int = BorderPosition.scrollbar + 17;
 }
 
 final class AquaFonts

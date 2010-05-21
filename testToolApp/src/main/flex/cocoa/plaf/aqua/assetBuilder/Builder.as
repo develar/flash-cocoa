@@ -62,9 +62,23 @@ public class Builder
 	[Embed(source="/segmentedControl4.texturedRounded.png")]
 	private static var segmentedControl4TRClass:Class;
 
+	[Embed(source="/hud/button.off.left.png")]
+	private static var hudButtonOffLeft:Class;
+	[Embed(source="/hud/button.off.center.png")]
+	private static var hudButtonOffCenter:Class;
+	[Embed(source="/hud/button.off.right.png")]
+	private static var hudButtonOffRight:Class;
+
+	[Embed(source="/hud/button.on.left.png")]
+	private static var hudButtonOnLeft:Class;
+	[Embed(source="/hud/button.on.center.png")]
+	private static var hudButtonOnCenter:Class;
+	[Embed(source="/hud/button.on.right.png")]
+	private static var hudButtonOnRight:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
-	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)));
+	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
 	// textured rounded push button
 	buttonRowsInfo[1] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(0, -1, 0, 0), new Insets(10, NaN, 10, 6)));
 	// rounded pop up button
@@ -79,9 +93,15 @@ public class Builder
 		}
 	}
 
+	public function addHUDButton():void
+	{
+
+	}
+
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ + 3 /* title bar, titleBarAndToolbarAndContent, hudTitleBarAndContentClass */, true);
+		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ +
+														  3 /* title bar, titleBarAndToolbarAndContent, hudTitleBarAndContentClass */ + 1 /* hud buttons */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
@@ -103,6 +123,10 @@ public class Builder
 		compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
 		compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
 		compoundImageReader.readScale9(hudTitleBarAndContentClass, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
+
+		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)),
+														new <Class>[hudButtonOffLeft, hudButtonOffCenter, hudButtonOffRight,
+															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight]);
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

@@ -39,6 +39,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 		super();
 
 		mouseEnabledWhereTransparent = false;
+		mouseEnabled = false;
 	}
 
 	protected var _resourceBundle:String;

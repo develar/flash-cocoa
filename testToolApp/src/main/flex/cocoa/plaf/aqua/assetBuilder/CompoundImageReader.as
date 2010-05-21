@@ -11,6 +11,7 @@ import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -51,13 +52,35 @@ internal final class CompoundImageReader
 			assertSiblings(frameRectangle, row);
 
 			var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, rowInfo.top, false, false);
-			var bitmaps:Vector.<BitmapData> = slice3HGrid(frameRectangle, sliceSize, rowInfo);
-			Scale3EdgeHBitmapBorder(rowInfo.border).configure(bitmaps);
+			var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize, rowInfo.top, rowInfo.width, 3 /* off, on, disabled */);
 
-			borders[position + row] = rowInfo.border;
+			borders[position + row] = Scale3EdgeHBitmapBorder(rowInfo.border).configure(bitmaps);
 		}
 
 		position += rowsInfo.length;
+	}
+
+	public function readButtonAdditionalBitmaps(border:Scale3EdgeHBitmapBorder, additionalBitmaps:Vector.<Class>):void
+	{
+		additionalBitmaps.fixed = true;
+		var n:int = additionalBitmaps.length;
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(n - (n / 3), true);
+		for (var i:int = 0, bitmapIndex:int = 0; i < n; i += 3)
+		{
+			var left:BitmapData = Bitmap(new additionalBitmaps[i]).bitmapData;
+			var bitmapData:BitmapData = new BitmapData(left.width + 1, left.height, true, 0);
+			bitmapData.copyPixels(left, left.rect, sharedPoint, null, null, true);
+
+			sharedPoint.x += left.width;
+			var right:BitmapData = Bitmap(new additionalBitmaps[i + 1]).bitmapData;
+			bitmapData.copyPixels(right, right.rect, sharedPoint, null, null, true);
+			sharedPoint.x = 0;
+
+			bitmaps[bitmapIndex++] = bitmapData;
+			bitmaps[bitmapIndex++] = Bitmap(new additionalBitmaps[i + 2]).bitmapData;
+		}
+
+		borders[position++] = border.configure(bitmaps);
 	}
 
 	public function readScale3(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder):void
@@ -294,11 +317,6 @@ internal final class CompoundImageReader
 		var bitmapData:BitmapData = new BitmapData(sourceRectangle.width, sourceRectangle.height, true, 0);
 		bitmapData.copyPixels(compoundBitmapData, sourceRectangle, sharedPoint, null, null, true);
 		return bitmapData;
-	}
-
-	private function slice3HGrid(frameRectangle:Rectangle, sliceSize:Insets, rowInfo:RowInfo):Vector.<BitmapData>
-	{
-		return slice3H(frameRectangle, sliceSize, rowInfo.top, rowInfo.width, 3);
 	}
 
 	private function slice3H(frameRectangle:Rectangle, sliceSize:Insets, rowTop:Number = 0, rowWidth:Number = NaN, count:int = 1):Vector.<BitmapData>
