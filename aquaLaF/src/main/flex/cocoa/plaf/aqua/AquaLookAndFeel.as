@@ -27,7 +27,8 @@ import flash.utils.ByteArray;
 
 import mx.core.ClassFactory;
 
-public class AquaLookAndFeel extends AbstractLookAndFeel
+public class
+AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
 	private static var assetsDataClass:Class;
@@ -196,6 +197,8 @@ import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BezelStyle;
 
+import cocoa.plaf.aqua.SeparatorBorder;
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontWeight;
@@ -228,6 +231,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["ViewFont"] = AquaFonts.VIEW_FONT_HUD;
 
 		data["Window.border"] = borders[9 + 16];
+
+		data["HSeparator.border"] = new SeparatorBorder();
 	}
 }
 

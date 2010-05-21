@@ -3,6 +3,7 @@ package cocoa.plaf.basic
 import cocoa.Border;
 import cocoa.plaf.AbstractSkin;
 
+import flash.display.BlendMode;
 import flash.display.Graphics;
 
 public class SeparatorSkin extends AbstractSkin
@@ -14,6 +15,10 @@ public class SeparatorSkin extends AbstractSkin
 		super.createChildren();
 
 		border = laf.getBorder(component.lafPrefix + ".border");
+		if (border.layoutWidth < 0)
+		{
+			percentWidth = -border.layoutWidth;
+		}
 	}
 
 	override protected function measure():void

@@ -7,6 +7,7 @@ import cocoa.View;
 
 import flash.display.Graphics;
 
+// border может указать layoutWidth/layoutHeight как отрицательные — некий компонент может интерпретировать это как в процентах (то есть -50 это 50%), а не в px
 public class AbstractBorder implements Border
 {
 	protected static const EMPTY_FRAME_INSETS:FrameInsets = new FrameInsets();

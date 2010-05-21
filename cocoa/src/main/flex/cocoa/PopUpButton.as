@@ -66,6 +66,10 @@ public class PopUpButton extends AbstractControl implements Cell
 	{
 		return _menu.selectedItem;
 	}
+	public function set selectedItem(value:Object):void
+	{
+		_menu.selectedItem = value;
+	}
 
 	public function get selectedIndex():int
 	{
