@@ -1,5 +1,6 @@
 package cocoa.plaf.aqua
 {
+import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.LabelHelper;
@@ -9,6 +10,7 @@ import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
+import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 import cocoa.ui;
 
@@ -139,7 +141,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	private function mouseDownHandler(event:MouseEvent):void
 	{
 		const targetIsNotTextLine:Boolean = !(event.target is TextLine);
-		if (event.target != this && targetIsNotTextLine)
+		if (event.target != this && (targetIsNotTextLine || TextLine(event.target).parent is Skin))
 		{
 			return;
 		}
@@ -148,7 +150,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		{
 			var mouseY:Number = event.localY;
 			var mouseX:Number = event.localX;
-			if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (mouseY > contentInsets.top && mouseY < (height - contentInsets.bottom)))
+			if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (!mouseDownOnContentViewCanMoveWindow && mouseY > contentInsets.top && mouseY < (height - contentInsets.bottom)))
 			{
 				return;
 			}
@@ -170,6 +172,11 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			mover = new WindowMover();
 		}
 		mover.move(event, this, titleBarHeight);
+	}
+
+	protected function get mouseDownOnContentViewCanMoveWindow():Boolean
+	{
+		return false;
 	}
 
 	public function childCanSkipMeasurement(element:ILayoutElement):Boolean

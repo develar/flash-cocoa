@@ -1,62 +1,64 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Border;
-
-import cocoa.plaf.LookAndFeelProvider;
+import cocoa.RichEditableText;
+import cocoa.plaf.AbstractSkin;
 
 import flash.display.Graphics;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.FontLookup;
 
-import flashx.textLayout.formats.VerticalAlign;
+import flashx.textLayout.formats.LineBreak;
 
-import mx.core.UIComponent;
-
-import spark.components.RichEditableText;
-
-public class HUDTextInputSkin extends UIComponent
+public class HUDTextInputSkin extends AbstractSkin
 {
-	public var textDisplay:RichEditableText;
+	private var textDisplay:RichEditableText;
 
 	private var border:Border;
-
-	override public function set currentState(value:String):void
-    {
-		// skip
-	}
 
 	override protected function createChildren():void
 	{
 		super.createChildren();
 
+		border = getBorder("border");
+		height = border.layoutHeight;
+		var font:ElementFormat = getFont("SystemFont");
+
 		textDisplay = new RichEditableText();
-		textDisplay.setStyle("color", 0x1e395b);
-		textDisplay.setStyle("fontFamily", "SegoeUI");
-		textDisplay.setStyle("fontLookup", "embeddedCFF");
-		textDisplay.setStyle("verticalAlign", VerticalAlign.MIDDLE);
+		textDisplay.setStyle("color", font.color);
+		textDisplay.setStyle("fontFamily", font.fontDescription.fontName);
+		textDisplay.setStyle("fontSize", font.fontSize);
+		textDisplay.setStyle("fontLookup", FontLookup.DEVICE);
+		
+		textDisplay.setStyle("lineBreak", LineBreak.EXPLICIT);
+		textDisplay.setStyle("paddingTop", 2);
+
+		textDisplay.setStyle("focusedTextSelectionColor", 0xb5b5b5);
 
 		textDisplay.multiline = false;
-		textDisplay.x = 1;
-		textDisplay.y = 1;
+		textDisplay.heightInLines = 1;
+		textDisplay.x = border.contentInsets.left;
+		textDisplay.y = border.contentInsets.top;
+		textDisplay.maxHeight = textDisplay.height = border.layoutHeight - border.contentInsets.height;
+
 		addChild(textDisplay);
 
-		border = LookAndFeelProvider(parent).laf.getBorder("border");
+		component.uiPartAdded("textDisplay", textDisplay);
 	}
 
 	override protected function measure():void
 	{
 		measuredWidth = textDisplay.getPreferredBoundsWidth() + border.contentInsets.width;
-		measuredHeight = textDisplay.getPreferredBoundsHeight() + border.contentInsets.height;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		super.updateDisplayList(w, h);
-
 		var g:Graphics = graphics;
 		g.clear();
 
 		border.draw(null, g, w, h);
 
-		textDisplay.setLayoutBoundsSize(w - 2, h - 1);
+		textDisplay.setLayoutBoundsSize(w - border.contentInsets.width, NaN);
 	}
 }
 }

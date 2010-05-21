@@ -11,7 +11,7 @@ public class SeparatorBorder extends AbstractBorder
 {
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
-		g.lineStyle(1, 0xffffff, 0.2, false, LineScaleMode.NORMAL, CapsStyle.NONE);
+		g.lineStyle(1, 0xffffff, 0.3, false, LineScaleMode.NORMAL, CapsStyle.NONE);
 		g.moveTo(0, h);
 		g.lineTo(w, h);
 	}

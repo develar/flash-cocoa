@@ -37,6 +37,14 @@ public class Label extends TextBase
 {
 	private var laf:LookAndFeel;
 
+	public function Label()
+	{
+		super();
+
+		mouseEnabled = false;
+		mouseChildren = false;
+	}
+
 	override protected function createChildren():void
 	{
 		super.createChildren();

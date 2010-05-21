@@ -3,12 +3,19 @@ package cocoa.plaf.basic
 import cocoa.Border;
 import cocoa.plaf.AbstractSkin;
 
-import flash.display.BlendMode;
 import flash.display.Graphics;
 
 public class SeparatorSkin extends AbstractSkin
 {
 	private var border:Border;
+
+	public function SeparatorSkin()
+	{
+		super();
+		
+		mouseEnabled = false;
+		mouseChildren = false;
+	}
 
 	override protected function createChildren():void
 	{

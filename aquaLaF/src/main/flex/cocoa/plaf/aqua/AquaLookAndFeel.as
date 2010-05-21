@@ -197,7 +197,10 @@ import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BezelStyle;
 
+import cocoa.plaf.aqua.HUDTextInputSkin;
 import cocoa.plaf.aqua.SeparatorBorder;
+
+import cocoa.plaf.aqua.TextInputBorder;
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
@@ -231,6 +234,9 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["ViewFont"] = AquaFonts.VIEW_FONT_HUD;
 
 		data["Window.border"] = borders[9 + 16];
+
+		data["TextInput"] = HUDTextInputSkin;
+		data["TextInput.border"] = new TextInputBorder();
 
 		data["HSeparator.border"] = new SeparatorBorder();
 	}

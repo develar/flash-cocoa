@@ -19,5 +19,7 @@ public interface View extends Viewable, IUIComponent, IInvalidating
 	function get initialized():Boolean;
 
 	function setFocus():void;
+
+	function set mouseEnabled(value:Boolean):void;
 }
 }

@@ -60,6 +60,7 @@
 								<class>**.AbstractSkin</class>
 								<class>**.*?Button</class>
 								<class>**.Label</class>
+								<class>**.TextInput</class>
 								<class>**.*ApplicationImpl</class>
 								<class>**.ViewStack</class>
 								<class>**.*Group</class>

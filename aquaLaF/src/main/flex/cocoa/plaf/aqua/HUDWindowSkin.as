@@ -46,6 +46,12 @@ public class HUDWindowSkin extends AbstractWindowSkin
 		{
 			LookAndFeelProvider(value).laf = laf;
 		}
+		value.mouseEnabled = false; // контейнеру не нужно быть mouseEnabled — это помешает перемещать окно (HUD окно таскается не только за хром, но и за все, где не перекрывается content view controls)
+	}
+
+	override protected function get mouseDownOnContentViewCanMoveWindow():Boolean
+	{
+		return true;
 	}
 }
 }
