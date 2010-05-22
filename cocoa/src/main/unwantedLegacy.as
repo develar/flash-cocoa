@@ -1,4 +1,10 @@
 import cocoa.AbstractView;
+import flash.errors.IllegalOperationError;
+
+override public function setStyle(styleProp:String, newValue:*):void
+{
+	throw new IllegalOperationError();
+}
 
 override public function regenerateStyleCache(recursive:Boolean):void
 {

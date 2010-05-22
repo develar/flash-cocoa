@@ -6,40 +6,39 @@ import cocoa.plaf.AbstractSkin;
 
 import flash.display.Graphics;
 import flash.text.engine.ElementFormat;
-import flash.text.engine.FontLookup;
 
 import flashx.textLayout.formats.LineBreak;
 
 public class HUDTextInputSkin extends AbstractSkin
 {
-	private var textDisplay:RichEditableText;
+	protected var textDisplay:RichEditableText;
 
 	private var border:Border;
+
+	protected function setAdditionalTextStyle():void
+	{
+		textDisplay.setStyle("paddingTop", 2);
+		textDisplay.setStyle("focusedTextSelectionColor", 0xb5b5b5);
+	}
 
 	override protected function createChildren():void
 	{
 		super.createChildren();
 
 		border = getBorder("border");
-		height = border.layoutHeight;
 		var font:ElementFormat = getFont("SystemFont");
 
 		textDisplay = new RichEditableText();
-		textDisplay.setStyle("color", font.color);
-		textDisplay.setStyle("fontFamily", font.fontDescription.fontName);
-		textDisplay.setStyle("fontSize", font.fontSize);
-		textDisplay.setStyle("fontLookup", FontLookup.DEVICE);
+		textDisplay.font = font;
 		
 		textDisplay.setStyle("lineBreak", LineBreak.EXPLICIT);
-		textDisplay.setStyle("paddingTop", 2);
-
-		textDisplay.setStyle("focusedTextSelectionColor", 0xb5b5b5);
+		setAdditionalTextStyle();
 
 		textDisplay.multiline = false;
 		textDisplay.heightInLines = 1;
 		textDisplay.x = border.contentInsets.left;
 		textDisplay.y = border.contentInsets.top;
-		textDisplay.maxHeight = textDisplay.height = border.layoutHeight - border.contentInsets.height;
+		textDisplay.height = border.layoutHeight - border.contentInsets.height;
 
 		addChild(textDisplay);
 
@@ -49,6 +48,7 @@ public class HUDTextInputSkin extends AbstractSkin
 	override protected function measure():void
 	{
 		measuredWidth = textDisplay.getPreferredBoundsWidth() + border.contentInsets.width;
+		measuredHeight = border.layoutHeight;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void
@@ -56,7 +56,7 @@ public class HUDTextInputSkin extends AbstractSkin
 		var g:Graphics = graphics;
 		g.clear();
 
-		border.draw(null, g, w, h);
+		border.draw(this, g, w, h);
 
 		textDisplay.setLayoutBoundsSize(w - border.contentInsets.width, NaN);
 	}

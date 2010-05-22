@@ -21,7 +21,7 @@ public class TextInputBorder extends AbstractBorder
 	{
 		g.lineStyle(1, 0xbebebe);
 		g.beginFill(0x373737, 0.95);
-		g.drawRect(0, 0, w, h);
+		g.drawRect(0.5, 0.5, w - 1, h - 1);
 		g.endFill();
 
 		g.lineStyle(1, 0x404040);

@@ -1,38 +1,359 @@
 package cocoa
 {
-import flash.text.engine.ElementFormat;
-import flash.text.engine.FontDescription;
+import cocoa.plaf.LookAndFeelProvider;
+
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.events.FocusEvent;
+import flash.events.KeyboardEvent;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 
 import mx.core.IUIComponent;
 import mx.core.mx_internal;
+import mx.events.FlexEvent;
 
 import org.flyti.util.StringUtil;
 
-import spark.components.NumericStepper;
+import spark.components.Spinner;
 
 use namespace mx_internal;
+use namespace ui;
 
-[Style(name="focusVisible", format="Boolean")]
-
-[SkinState("over")]
-public class NumericStepper extends spark.components.NumericStepper
+public class NumericStepper extends Spinner
 {
-	private var focusVisible:Boolean = true;
-	private var focusVisibleChanged:Boolean;
+	public function NumericStepper()
+	{
+		super();
 
-	public function $getCurrentSkinState():String
-    {
-		return super.getCurrentSkinState();
+		maximum = 10;
+	}
+
+	[SkinPart(required="true")]
+	public var textDisplay:TextInput;
+
+	private var maxChanged:Boolean = false;
+
+	/**
+	 *  Number which represents the maximum value possible for
+	 *  <code>value</code>. If the values for either
+	 *  <code>minimum</code> or <code>value</code> are greater
+	 *  than <code>maximum</code>, they will be changed to
+	 *  reflect the new <code>maximum</code>
+	 *
+	 *  @default 10
+	 */
+	override public function set maximum(value:Number):void
+	{
+		maxChanged = true;
+		super.maximum = value;
+	}
+
+	private var stepSizeChanged:Boolean = false;
+	override public function set stepSize(value:Number):void
+	{
+		stepSizeChanged = true;
+		super.stepSize = value;
+	}
+
+	private var _maxChars:int = 0;
+	private var maxCharsChanged:Boolean = false;
+
+	/**
+	 *  The maximum number of characters that can be entered in the field.
+	 *  A value of 0 means that any number of characters can be entered.
+	 *
+	 *  @default 0
+	 */
+	public function get maxChars():int
+	{
+		return _maxChars;
+	}
+	public function set maxChars(value:int):void
+	{
+		if (value == _maxChars)
+		{
+			return;
+		}
+
+		_maxChars = value;
+		maxCharsChanged = true;
+
+		invalidateProperties();
+	}
+
+	private var _valueFormatFunction:Function;
+	private var valueFormatFunctionChanged:Boolean;
+
+	/**
+	 *  Callback function that formats the value displayed
+	 *  in the skin's <code>textDisplay</code> property.
+	 *  The function takes a single Number as an argument
+	 *  and returns a formatted String.
+	 *
+	 *  <p>The function has the following signature:</p>
+	 *  <pre>
+	 *  funcName(value:Number):String
+	 *  </pre>
+
+	 *  @default undefined
+	 */
+	public function get valueFormatFunction():Function
+	{
+		return _valueFormatFunction;
+	}
+	public function set valueFormatFunction(value:Function):void
+	{
+		_valueFormatFunction = value;
+		valueFormatFunctionChanged = true;
+		invalidateProperties();
+	}
+
+	private var _valueParseFunction:Function;
+	private var valueParseFunctionChanged:Boolean;
+
+	/**
+	 *  Callback function that extracts the numeric
+	 *  value from the displayed value in the
+	 *  skin's <code>textDisplay</code> field.
+	 *
+	 *  The function takes a single String as an argument
+	 *  and returns a Number.
+	 *
+	 *  <p>The function has the following signature:</p>
+	 *  <pre>
+	 *  funcName(value:String):Number
+	 *  </pre>
+
+	 *  @default undefined
+	 */
+	public function get valueParseFunction():Function
+	{
+		return _valueParseFunction;
+	}
+
+	public function set valueParseFunction(value:Function):void
+	{
+		_valueParseFunction = value;
+		valueParseFunctionChanged = true;
+		invalidateProperties();
+	}
+
+	private var _imeMode:String = null;
+
+	[Inspectable(defaultValue="")]
+
+	/**
+	 *  @private
+	 */ private var imeModeChanged:Boolean = false;
+
+	/**
+	 *  Specifies the IME (Input Method Editor) mode.
+	 *  The IME enables users to enter text in Chinese, Japanese, and Korean.
+	 *  Flex sets the specified IME mode when the control gets the focus
+	 *  and sets it back to previous value when the control loses the focus.
+	 *
+	 * <p>The flash.system.IMEConversionMode class defines constants for the
+	 *  valid values for this property.
+	 *  You can also specify <code>null</code> to specify no IME.</p>
+	 *
+	 *  @see flash.system.IMEConversionMode
+	 *
+	 *  @default null
+	 */
+	public function get imeMode():String
+	{
+		return _imeMode;
+	}
+
+	public function set imeMode(value:String):void
+	{
+		_imeMode = value;
+		imeModeChanged = true;
+		invalidateProperties();
+	}
+
+	override protected function commitProperties():void
+	{
+		super.commitProperties();
+
+		if (maxChanged || stepSizeChanged || valueFormatFunctionChanged)
+		{
+			if (isNaN(explicitWidth))
+			{
+				textDisplay.width = calculateTextWidth() + 2;
+			}
+
+			maxChanged = false;
+			stepSizeChanged = false;
+
+			if (valueFormatFunctionChanged)
+			{
+				applyDisplayFormatFunction();
+
+				valueFormatFunctionChanged = false;
+			}
+		}
+
+		if (valueParseFunctionChanged)
+		{
+			commitTextInput(false);
+			valueParseFunctionChanged = false;
+		}
+
+		if (maxCharsChanged)
+		{
+			textDisplay.textDisplay.maxChars = _maxChars;
+			maxCharsChanged = false;
+		}
+
+		if (imeModeChanged)
+		{
+			textDisplay.textDisplay.imeMode = _imeMode;
+			imeModeChanged = false;
+		}
+	}
+
+	override protected function partAdded(partName:String, instance:Object):void
+	{
+		super.partAdded(partName, instance);
+
+		if (instance == textDisplay)
+		{
+			var richEditableText:RichEditableText = textDisplay.textDisplay;
+			richEditableText.addEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
+			richEditableText.addEventListener(FocusEvent.FOCUS_OUT, textDisplay_focusOutHandler);
+			richEditableText.maxChars = _maxChars;
+			// Restrict to digits, minus sign, decimal point, and comma
+			richEditableText.restrict = "0-9\\-\\.\\,";
+			textDisplay.text = value.toString();
+		}
+	}
+
+	override protected function partRemoved(partName:String, instance:Object):void
+	{
+		super.partRemoved(partName, instance);
+
+		if (instance == textDisplay)
+		{
+			textDisplay.textDisplay.removeEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
+		}
+	}
+
+	override public function setFocus():void
+	{
+		if (stage)
+		{
+			stage.focus = textDisplay.textDisplay;
+
+			// Since the API ignores the visual editable and selectable
+			// properties make sure the selection should be set first.
+			if (textDisplay.textDisplay && (textDisplay.textDisplay.editable || textDisplay.textDisplay.selectable))
+			{
+				textDisplay.textDisplay.selectAll();
+			}
+		}
+	}
+
+	override protected function isOurFocus(target:DisplayObject):Boolean
+	{
+		return target == textDisplay.textDisplay;
+	}
+
+	override protected function setValue(newValue:Number):void
+	{
+		super.setValue(newValue);
+
+		applyDisplayFormatFunction();
+	}
+
+	/**
+	 *  Calls commitTextInput() before stepping.
+	 */
+	override public function changeValueByStep(increase:Boolean = true):void
+	{
+		commitTextInput();
+
+		super.changeValueByStep(increase);
+	}
+
+	/**
+	 *  @private
+	 *  Commits the current text of <code>textDisplay</code>
+	 *  to the <code>value</code> property.
+	 *  This method uses the <code>nearestValidValue()</code> method
+	 *  to round the input value to the closest valid value.
+	 *  Valid values are defined by the sum of the minimum
+	 *  with integer multiples of the snapInterval. It is also
+	 *  constrained by and includes the <code>maximum</code> property.
+	 */
+	private function commitTextInput(dispatchChange:Boolean = false):void
+	{
+		var inputValue:Number = valueParseFunction != null ? valueParseFunction(textDisplay.text) : Number(textDisplay.text);
+		var prevValue:Number = value;
+
+		if ((textDisplay.text && textDisplay.text.length != value.toString().length) || textDisplay.text == "" || (inputValue != value && (Math.abs(inputValue - value) >= 0.000001 || isNaN(inputValue))))
+		{
+			setValue(nearestValidValue(inputValue, snapInterval));
+
+			// Dispatch valueCommit if the display needs to change.
+			if (value == prevValue && inputValue != prevValue)
+			{
+				dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+			}
+		}
+
+		if (dispatchChange && value != prevValue)
+		{
+			dispatchEvent(new Event(Event.CHANGE));
+		}
+	}
+
+	private function applyDisplayFormatFunction():void
+	{
+		textDisplay.text = valueFormatFunction == null ? value.toString() : valueFormatFunction(value);
+	}
+
+	override protected function focusInHandler(event:FocusEvent):void
+	{
+		super.focusInHandler(event);
+
+		addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler, true);
+	}
+
+	override protected function focusOutHandler(event:FocusEvent):void
+	{
+		super.focusOutHandler(event);
+
+		removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler, true);
+	}
+
+	/**
+	 *  @private
+	 *  When the enter key is pressed, NumericStepper commits the
+	 *  text currently displayed.
+	 */
+	private function textDisplay_enterHandler(event:Event):void
+	{
+		commitTextInput(true);
+	}
+
+	/**
+	 *  @private
+	 *  When the enter key is pressed, NumericStepper commits the
+	 *  text currently displayed.
+	 */
+	private function textDisplay_focusOutHandler(event:Event):void
+	{
+		commitTextInput(true);
 	}
 
 	/**
 	 * WA. По логике, сам NumericStepper при изменении enabled должен менять состояние своих skinParts, как VideoPlayer, но этого пока что нет, так что мы сами
 	 */
 	override public function set enabled(value:Boolean):void
-    {
-        super.enabled = value;
+	{
+		super.enabled = value;
 
 		if (skinParts != null)
 		{
@@ -45,49 +366,16 @@ public class NumericStepper extends spark.components.NumericStepper
 				}
 			}
 		}
-    }
+	}
 
 	public override function drawFocus(isFocused:Boolean):void
 	{
-		if (focusVisible)
-		{
-			super.drawFocus(isFocused);
-		}
-	}
-
-	public override function styleChanged(styleProp:String):void
-	{
-		super.styleChanged(styleProp);
-
-		if (styleProp == null || styleProp == "focusVisible")
-		{
-			focusVisibleChanged = true;
-		}
-	}
-
-	protected override function commitProperties():void
-	{
-		super.commitProperties();
-
-		if (textWidthAffected)
-		{
-			if (isNaN(explicitWidth))
-			{
-				textDisplay.width = calculateTextWidth() + 2;
-			}
-			textWidthAffected = false;
-		}
-
-		if (focusVisibleChanged)
-		{
-			focusVisibleChanged = false;
-			focusVisible = getStyle("focusVisible");
-		}
+		// skip
 	}
 
 	private function calculateWidestText():String
-    {
-        var widestNumber:Number = minimum.toString().length > maximum.toString().length ? minimum : maximum;
+	{
+		var widestNumber:Number = minimum.toString().length > maximum.toString().length ? minimum : maximum;
 		var widestText:String;
 		if (widestNumber < 0)
 		{
@@ -98,61 +386,25 @@ public class NumericStepper extends spark.components.NumericStepper
 			widestText = StringUtil.repeat("9", widestNumber.toString().length);
 		}
 
-        if (valueFormatFunction != null)
+		if (valueFormatFunction != null)
 		{
-            return valueFormatFunction(Number(widestText));
+			return valueFormatFunction(Number(widestText));
 		}
-        else
+		else
 		{
 			return widestText;
 		}
-    }
+	}
 
 	private static const textElement:TextElement = new TextElement();
 	private static const textBlock:TextBlock = new TextBlock(textElement);
 
 	private function calculateTextWidth():Number
 	{
-		var fontDescription:FontDescription = new FontDescription(textDisplay.textDisplay.getStyle("fontFamily"));
-		fontDescription.fontLookup = textDisplay.textDisplay.getStyle("fontLookup");
-
-		var elementFormat:ElementFormat = new ElementFormat();
-		elementFormat.fontDescription = fontDescription;
-		elementFormat.fontSize = textDisplay.textDisplay.getStyle("fontSize");
-
-		textElement.elementFormat = elementFormat;
+		textElement.elementFormat = textDisplay.textDisplay.font;
 		textElement.text = calculateWidestText();
 		return Math.ceil(textBlock.createTextLine().width);
 	}
-
-	private var textWidthAffected:Boolean = true;
-
-	override public function set valueFormatFunction(value:Function):void
-    {
-		if (isNaN(explicitWidth))
-		{
-			textWidthAffected = true;
-		}
-        super.valueFormatFunction = value;
-    }
-
-	override public function set stepSize(value:Number):void
-	{
-		if (isNaN(explicitWidth))
-		{
-			textWidthAffected = true;
-		}
-		super.stepSize = value;
-	}
-
-    override public function set maximum(value:Number):void
-    {
-		if (isNaN(explicitWidth))
-		{
-        	textWidthAffected = true;
-		}
-        super.maximum = value;
-    }
 
 	override protected function nearestValidValue(value:Number, interval:Number):Number
 	{
@@ -188,5 +440,33 @@ public class NumericStepper extends spark.components.NumericStepper
 		var upper:Number = Math.min(maxValue, Math.floor((value + interval) / interval) * interval);
 		return (((value - lower) >= ((upper - lower) / 2)) ? upper : lower) / scale;
 	}
+
+	private var skinClass:Class;
+	override protected function createChildren():void
+	{
+		skinClass = LookAndFeelProvider(parent).laf.getClass("NumericStepper");
+		
+		super.createChildren();
+	}
+
+	override public function getStyle(styleProp:String):*
+	{
+		if (styleProp == "skinClass")
+		{
+			return skinClass;
+		}
+		else if (styleProp == "layoutDirection")
+		{
+			return layoutDirection;
+		}
+		else
+		{
+			return undefined;
+		}
+	}
+
+	// disable unwanted legacy
+	include "../../unwantedLegacy.as";
+	include "../../legacyConstraints.as";
 }
 }

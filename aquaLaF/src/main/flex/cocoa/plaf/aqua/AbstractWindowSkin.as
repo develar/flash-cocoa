@@ -1,6 +1,5 @@
 package cocoa.plaf.aqua
 {
-import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.LabelHelper;
@@ -10,7 +9,6 @@ import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
-import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 import cocoa.ui;
 

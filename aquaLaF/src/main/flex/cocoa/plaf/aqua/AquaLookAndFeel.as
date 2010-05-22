@@ -120,6 +120,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["VSeparator"] = SeparatorSkin;
 		data["HSeparator"] = SeparatorSkin;
+
+		data["NumericStepper"] = NumericStepperSkin;
 	}
 
 	private static function initAssets():void

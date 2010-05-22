@@ -58,7 +58,6 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 
 	override protected function createChildren():void
 	{
-		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
 		var p:DisplayObjectContainer = parent;
 		while (p != null)
 		{

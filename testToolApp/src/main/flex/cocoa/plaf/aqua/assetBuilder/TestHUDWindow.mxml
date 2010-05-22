@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<Container xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark">
+	<layout>
+		<s:VerticalLayout/>
+	</layout>
+
+	<Label text="URL"/>
+	<Container width="100%">
+		<layout>
+			<s:HorizontalLayout gap="12"/>
+		</layout>
+		<TextInput id="feedURITextInput" width="100%"/>
+		<PushButton label="Apply"/>
+	</Container>
+
+	<HSeparator/>
+
+	<Container>
+		<layout>
+			<CenterEqualizedLayout/>
+		</layout>
+
+		<!--<CheckBox id="showDateCheckBox" label="Show Date"/>-->
+		<!--<Label text="Article Length:"/>-->
+		<!--<HSlider id="articleLengthSlider" value="0.5"/>-->
+		<!--<Label text="Photo Size:"/>-->
+		<!--<HSlider id="photoSizeSlider" value="1"/>-->
+		<Label text="Number of Entries:"/>
+		<NumericStepper id="numberOfEntriesNumericStepper" minimum="1" maximum="100" value="10"/>
+	</Container>
+</Container>
