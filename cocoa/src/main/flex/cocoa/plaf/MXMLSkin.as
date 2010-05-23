@@ -132,7 +132,10 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 
 	override protected function commitProperties():void
 	{
-		component.commitProperties();
+		if (component != null) // будет если используется как mxml скин для flex-based компонента
+		{
+			component.commitProperties();
+		}
 		super.commitProperties();
 	}
 

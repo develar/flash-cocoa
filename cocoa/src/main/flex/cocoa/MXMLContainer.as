@@ -264,7 +264,6 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 
 	// disable unwanted legacy
 	include "../../unwantedLegacy.as";
-
 	include "../../legacyConstraints.as";
 
 	override public function parentChanged(p:DisplayObjectContainer):void

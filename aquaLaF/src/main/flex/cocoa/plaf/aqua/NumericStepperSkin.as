@@ -7,9 +7,14 @@ import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObject;
 
+import spark.components.Button;
+
 public class NumericStepperSkin extends LightFlexUIComponent
 {
 	public var textDisplay:TextInput;
+
+	public var incrementButton:Button;
+	public var decrementButton:Button;
 
 	public function NumericStepperSkin()
 	{
@@ -23,6 +28,8 @@ public class NumericStepperSkin extends LightFlexUIComponent
 		textDisplay = new TextInput();
 		var textInputSkin:DisplayObject = DisplayObject(textDisplay.createView(laf));
 		addChild(textInputSkin);
+
+		incrementButton = new Button();
 	}
 
 	override protected function measure():void

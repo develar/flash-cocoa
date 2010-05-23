@@ -135,7 +135,6 @@ public class ListView extends List implements Viewable, Control, UIPartControlle
 
 	// disable unwanted legacy
 	include "../../unwantedLegacy.as";
-
 	include "../../legacyConstraints.as";
 	
 	override public function getStyle(styleProp:String):*

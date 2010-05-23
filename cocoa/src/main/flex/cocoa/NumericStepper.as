@@ -1,5 +1,6 @@
 package cocoa
 {
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObject;
@@ -9,7 +10,7 @@ import flash.events.KeyboardEvent;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 
-import mx.core.IUIComponent;
+import mx.core.UIComponent;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
 
@@ -359,7 +360,7 @@ public class NumericStepper extends Spinner
 		{
 			for (var skinPartId:String in skinParts)
 			{
-				var skinPart:IUIComponent = this[skinPartId];
+				var skinPart:Object = this[skinPartId];
 				if (skinPart != null)
 				{
 					skinPart.enabled = value;
@@ -441,12 +442,36 @@ public class NumericStepper extends Spinner
 		return (((value - lower) >= ((upper - lower) / 2)) ? upper : lower) / scale;
 	}
 
+
+	private var mySkin:UIComponent;
+	override public function get skin():UIComponent
+	{
+		return mySkin;
+	}
+
 	private var skinClass:Class;
 	override protected function createChildren():void
 	{
-		skinClass = LookAndFeelProvider(parent).laf.getClass("NumericStepper");
+		var laf:LookAndFeel = LookAndFeelProvider(parent).laf;
+		skinClass = laf.getClass("NumericStepper");
+
+		mySkin = new skinClass();
+		if (mySkin is LookAndFeelProvider)
+		{
+			LookAndFeelProvider(mySkin).laf = laf;
+		}
+
+		addingChild(mySkin);
+		$addChildAt(mySkin, 0);
+		childAdded(mySkin);
 		
 		super.createChildren();
+	}
+
+	override protected function attachSkin():void
+	{
+		findSkinParts();
+		invalidateSkinState();
 	}
 
 	override public function getStyle(styleProp:String):*
