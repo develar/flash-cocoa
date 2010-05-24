@@ -21,7 +21,7 @@ import spark.components.Spinner;
 use namespace mx_internal;
 use namespace ui;
 
-public class NumericStepper extends Spinner
+public class NumericStepper extends Spinner implements UIPartController
 {
 	public function NumericStepper()
 	{
@@ -464,7 +464,7 @@ public class NumericStepper extends Spinner
 		$addChildAt(mySkin, 0);
 		childAdded(mySkin);
 
-		if (!(mySkin is UIPartController))
+		if (!(mySkin is UIPartProvider))
 		{
 			findSkinParts();
 			invalidateSkinState();
@@ -495,5 +495,11 @@ public class NumericStepper extends Spinner
 	// disable unwanted legacy
 	include "../../unwantedLegacy.as";
 	include "../../legacyConstraints.as";
+
+	public function uiPartAdded(id:String, instance:Object):void
+	{
+		this[id] = instance;
+		partAdded(id, instance);
+	}
 }
 }

@@ -1,12 +1,13 @@
 package cocoa.plaf.scrollbar
 {
+import cocoa.AbstractFlexButton;
 import cocoa.VScrollBar;
 import cocoa.plaf.LookAndFeel;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-internal final class ArrowButton extends AbstractButton
+internal final class ArrowButton extends AbstractFlexButton
 {
 	private var laf:LookAndFeel;
 	private var styleKey:String;

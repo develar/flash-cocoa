@@ -1,7 +1,6 @@
-package cocoa.plaf.scrollbar
+package cocoa
 {
-import cocoa.Border;
-import cocoa.Bordered;
+import cocoa.plaf.Scale1BitmapBorder;
 
 import flash.display.Graphics;
 
@@ -12,12 +11,16 @@ import spark.components.Button;
 
 use namespace mx_internal;
 
-internal class AbstractButton extends Button implements Bordered
+public class AbstractFlexButton extends Button
 {
 	protected var _border:Border;
 	public function get border():Border
 	{
 		return _border;
+	}
+	public function set border(value:Border):void
+	{
+		_border = value;
 	}
 
 	override public function getStyle(styleProp:String):*
@@ -68,9 +71,18 @@ internal class AbstractButton extends Button implements Bordered
 
 	override public function invalidateSkinState():void
 	{
+		if (_border != null)
+		{
+			Scale1BitmapBorder(_border).bitmapIndex = (mouseCaptured && hovered) ? 1 : 0;
+			invalidateDisplayList();
+		}
 	}
 
 	// disable unwanted legacy
-	include "../../../../unwantedLegacy.as";
+	include "../../unwantedLegacy.as";
+
+	override public function setCurrentState(stateName:String, playTransition:Boolean = true):void
+	{
+	}
 }
 }

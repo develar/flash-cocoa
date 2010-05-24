@@ -37,7 +37,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 
 	override protected function track_mouseDownHandler(event:MouseEvent):void
 	{
-		if (event.localY >= Bordered(track).border.contentInsets.top)
+		if (event.localY >= AbstractFlexButton(track).border.contentInsets.top)
 		{
 			super.track_mouseDownHandler(event);
 		}
@@ -68,7 +68,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 			skin.invalidateDisplayList();
 		}
 
-		var thumbTopPadding:Number = Bordered(track).border.contentInsets.top;
+		var thumbTopPadding:Number = AbstractFlexButton(track).border.contentInsets.top;
 		trackSize -= thumbTopPadding;
 
 		var thumbSize:Number = Math.max(thumb.minHeight, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));

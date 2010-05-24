@@ -16,6 +16,7 @@ import cocoa.plaf.Scale3HBitmapBorder;
 import cocoa.plaf.Scale3VBitmapBorder;
 import cocoa.plaf.Scale9BitmapBorder;
 import cocoa.plaf.aqua.AquaLookAndFeel;
+import cocoa.plaf.aqua.BorderPosition;
 import cocoa.util.FileUtil;
 
 import flash.display.Bitmap;
@@ -76,6 +77,15 @@ public class Builder
 	[Embed(source="/hud/button.on.right.png")]
 	private static var hudButtonOnRight:Class;
 
+	[Embed(source="/hud/HUD-SpinnerTop-N.png")]
+	private static var hudSpinnerIncrementButtonOff:Class;
+	[Embed(source="/hud/HUD-SpinnerTop-P.png")]
+	private static var hudSpinnerIncrementButtonOn:Class;
+	[Embed(source="/hud/HUD-SpinnerBottom-N.png")]
+	private static var hudSpinnerDecrementButtonOff:Class;
+	[Embed(source="/hud/HUD-SpinnerBottom-P.png")]
+	private static var hudSpinnerDecrementButtonOn:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
 	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
@@ -93,24 +103,38 @@ public class Builder
 		}
 	}
 
-	public function addHUDButton():void
+	/**
+	 * 2 border — 1) top (2 bitmaps — off and highlighted) 2) bottom (2 bitmaps — off and highlighted)
+	 */
+	public function addSpinnerButtons():void
 	{
-
+		borders[BorderPosition.spinnerButtonBorder] = createSpinnerButtonBorder(hudSpinnerIncrementButtonOff, hudSpinnerIncrementButtonOn);
+		borders[BorderPosition.spinnerButtonBorder + 1] = createSpinnerButtonBorder(hudSpinnerDecrementButtonOff, hudSpinnerDecrementButtonOn);
 	}
+
+	private function createSpinnerButtonBorder(off:Class, on:Class):Scale1BitmapBorder
+	{
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(2, true);
+		bitmaps[0] = Bitmap(new off()).bitmapData;
+		bitmaps[1] = Bitmap(new on()).bitmapData;
+		return Scale1BitmapBorder.create(bitmaps, null, new FrameInsets(-1, 0, -1, on == hudSpinnerIncrementButtonOn ? 0 : -2));
+	}
+
+	private var borders:Vector.<Border>;
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		var borders:Vector.<Border> = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ +
-														  3 /* title bar, titleBarAndToolbarAndContent, hudTitleBarAndContentClass */ + 1 /* hud buttons */, true);
+		borders = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ +
+														  3 /* title bar, titleBarAndToolbarAndContent, hudTitleBarAndContentClass */ + 1 /* hud buttons */ +
+														  2 /* hud spinner buttons */, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
-
-		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
 		compoundImageReader.read(assetsClass, buttonRowsInfo);
 		// image view bezel border (imagewell border)
 		borders[compoundImageReader.position++] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
 
+		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 
 		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
@@ -127,6 +151,8 @@ public class Builder
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)),
 														new <Class>[hudButtonOffLeft, hudButtonOffCenter, hudButtonOffRight,
 															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight]);
+
+		addSpinnerButtons();
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

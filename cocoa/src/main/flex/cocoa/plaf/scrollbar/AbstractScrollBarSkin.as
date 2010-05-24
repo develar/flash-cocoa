@@ -3,13 +3,14 @@ package cocoa.plaf.scrollbar
 import cocoa.Border;
 import cocoa.LightFlexUIComponent;
 import cocoa.UIPartController;
+import cocoa.UIPartProvider;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
 
-internal class AbstractScrollBarSkin extends LightFlexUIComponent
+internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIPartProvider
 {
 	protected var track:TrackOrThumbButton;
 	protected var thumb:TrackOrThumbButton;

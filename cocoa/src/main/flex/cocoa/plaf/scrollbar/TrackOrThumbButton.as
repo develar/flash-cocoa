@@ -1,15 +1,17 @@
 package cocoa.plaf.scrollbar
 {
+import cocoa.AbstractFlexButton;
 import cocoa.Border;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-internal final class TrackOrThumbButton extends AbstractButton
+internal final class TrackOrThumbButton extends AbstractFlexButton
 {
-	public function set border(value:Border):void
+	override public function set border(value:Border):void
 	{
-		_border = value;
+		super.border = value;
+		
 		minHeight = _border.layoutHeight;
 		minWidth = _border.layoutWidth;
 	}
@@ -28,6 +30,10 @@ internal final class TrackOrThumbButton extends AbstractButton
 		{
 			super.mouseEventHandler(event);
 		}
+	}
+
+	override public function invalidateSkinState():void
+	{
 	}
 }
 }

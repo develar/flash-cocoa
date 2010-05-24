@@ -23,3 +23,5 @@ screencapture -ic
 2) при сохранении (обычном, не for web) — Color Management: Advanced, sRGB IEC61966-2.1 без конвертации pixels.
 
 При Save picture of sreen as a file просто Color Management: Advanced, sRGB IEC61966-2.1 с Convert pixels to selected profile
+
+mogrify -format png  *.tiff

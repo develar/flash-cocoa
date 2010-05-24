@@ -190,7 +190,7 @@ internal class TextLayoutFormat implements ITextLayoutFormat
 
 	public function get textAlign():*
 	{
-		return undefined;
+		return client.getStyle("textAlign");
 	}
 
 	public function get textAlignLast():*

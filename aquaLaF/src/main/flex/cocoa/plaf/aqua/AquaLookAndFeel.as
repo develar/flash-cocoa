@@ -20,7 +20,6 @@ import cocoa.plaf.SliderNumericStepperSkin;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
-
 import cocoa.plaf.basic.SeparatorSkin;
 
 import flash.utils.ByteArray;
@@ -195,11 +194,11 @@ import cocoa.Border;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BezelStyle;
-
+import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
 import cocoa.plaf.aqua.HUDTextInputSkin;
+import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
-
 import cocoa.plaf.aqua.TextInputBorder;
 
 import flash.text.engine.ElementFormat;
@@ -242,13 +241,13 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 		data["PushButton"] = HUDPushButtonSkin;
 		data["PushButton.border"] = borders[BorderPosition.hudButton];
-	}
-}
 
-final class BorderPosition
-{
-	public static const scrollbar:int = 9;
-	public static const hudButton:int = BorderPosition.scrollbar + 17;
+		data["NumericStepper.TextInput"] = HUDTextInputSkin;
+		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
+
+		data["NumericStepper.incrementButton.border"] = borders[BorderPosition.spinnerButtonBorder];
+		data["NumericStepper.decrementButton.border"] = borders[BorderPosition.spinnerButtonBorder + 1];
+	}
 }
 
 final class AquaFonts
