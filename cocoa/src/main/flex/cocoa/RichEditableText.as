@@ -1,6 +1,7 @@
 package cocoa
 {
 import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
 
 import flashx.textLayout.formats.BlockProgression;
 
@@ -25,9 +26,13 @@ public class RichEditableText extends spark.components.RichEditableText
 	public function set font(value:ElementFormat):void
 	{
 		_font = value;
+		var fontDescription:FontDescription = _font.fontDescription;
 		nonInheritingStyles = {color: _font.color,
-			fontFamily: _font.fontDescription.fontName, fontSize: _font.fontSize, fontLookup: _font.fontDescription.fontLookup,
-			blockProgression: BlockProgression.TB};
+			fontFamily: fontDescription.fontName, fontSize: _font.fontSize, fontLookup: fontDescription.fontLookup,
+			blockProgression: BlockProgression.TB, focusedTextSelectionColor: 0xa8c6ee, fontWeight: fontDescription.fontWeight, fontStyle: fontDescription.fontPosture,
+			cffHinting: _font.fontDescription.cffHinting};
+
+		textContainerManager.hostFormat = new TextLayoutFormat(this, _font);
 	}
 
 	override public function regenerateStyleCache(recursive:Boolean):void
@@ -37,6 +42,10 @@ public class RichEditableText extends spark.components.RichEditableText
 
 	override public function getStyle(styleProp:String):*
 	{
+		if (!(styleProp in nonInheritingStyles))
+		{
+			trace('unknown ' + styleProp);
+		}
 		return nonInheritingStyles[styleProp];
 	}
 
@@ -66,6 +75,11 @@ public class RichEditableText extends spark.components.RichEditableText
 	}
 
 	override public function notifyStyleChangeInChildren(styleProp:String, recursive:Boolean):void
+	{
+
+	}
+
+	override public function stylesInitialized():void
 	{
 
 	}

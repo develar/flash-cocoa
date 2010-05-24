@@ -23,7 +23,6 @@ import flashx.textLayout.compose.TextLineRecycler;
 import flashx.textLayout.formats.LineBreak;
 import flashx.textLayout.formats.TextAlign;
 import flashx.textLayout.formats.TextJustify;
-
 import flashx.textLayout.formats.VerticalAlign;
 
 import mx.core.IFlexModuleFactory;
@@ -35,7 +34,21 @@ use namespace mx_internal;
 
 public class Label extends TextBase
 {
+	private static const staticTextBlock:TextBlock = new TextBlock();
+	private static const staticTextElement:TextElement = new TextElement();
+	private static const staticSpaceJustifier:SpaceJustifier = new SpaceJustifier();
+	private static const staticEastAsianJustifier:EastAsianJustifier = new EastAsianJustifier();
+
+	private static var recreateTextLine:Function;
+	if ("recreateTextLine" in staticTextBlock)
+	{
+		recreateTextLine = staticTextBlock["recreateTextLine"];
+	}
+
+	private var elementFormat:ElementFormat;
 	private var laf:LookAndFeel;
+
+	private var embeddedFontContext:IFlexModuleFactory;
 
 	public function Label()
 	{
@@ -70,50 +83,6 @@ public class Label extends TextBase
 			p = p.parent;
 		}
 	}
-
-	private static function initClass():void
-	{
-		staticTextBlock = new TextBlock();
-		staticTextElement = new TextElement();
-		staticSpaceJustifier = new SpaceJustifier();
-		staticEastAsianJustifier = new EastAsianJustifier();
-
-		if ("recreateTextLine" in staticTextBlock)
-		{
-			recreateTextLine = staticTextBlock["recreateTextLine"];
-		}
-	}
-
-	initClass();
-
-	private static var staticTextBlock:TextBlock;
-	private static var staticTextElement:TextElement;
-	private static var staticSpaceJustifier:SpaceJustifier;
-	private static var staticEastAsianJustifier:EastAsianJustifier;
-
-	private static var recreateTextLine:Function;
-
-	/**
-	 *  @private
-	 *  Holds the last recorded value of the module factory
-	 *  used to create the font.
-	 */
-	private var embeddedFontContext:IFlexModuleFactory;
-
-	/**
-	 *  @private
-	 *  When we render the text using FTE, this object represents the formatting
-	 *  for our text element(s). Every time format related styles change, this
-	 *  object is released because it is invalid. It is regenerated just in time
-	 *  to render the text.
-	 */
-	private var elementFormat:ElementFormat;
-
-	//--------------------------------------------------------------------------
-	//
-	//  Overridden methods: TextBase
-	//
-	//--------------------------------------------------------------------------
 
 	/**
 	 *  @private

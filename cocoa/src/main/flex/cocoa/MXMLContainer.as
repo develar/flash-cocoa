@@ -3,14 +3,12 @@ package cocoa
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
-
 import cocoa.plaf.Skin;
 
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
-import flash.errors.IllegalOperationError;
 
 import mx.core.IVisualElement;
 import mx.core.IVisualElementContainer;

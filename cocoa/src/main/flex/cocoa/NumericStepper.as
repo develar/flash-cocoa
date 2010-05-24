@@ -182,7 +182,7 @@ public class NumericStepper extends Spinner
 		{
 			if (isNaN(explicitWidth))
 			{
-				textDisplay.width = calculateTextWidth() + 2;
+				textDisplay.textDisplay.width = calculateTextWidth();
 			}
 
 			maxChanged = false;
@@ -399,7 +399,6 @@ public class NumericStepper extends Spinner
 
 	private static const textElement:TextElement = new TextElement();
 	private static const textBlock:TextBlock = new TextBlock(textElement);
-
 	private function calculateTextWidth():Number
 	{
 		textElement.elementFormat = textDisplay.textDisplay.font;
@@ -464,14 +463,17 @@ public class NumericStepper extends Spinner
 		addingChild(mySkin);
 		$addChildAt(mySkin, 0);
 		childAdded(mySkin);
-		
-		super.createChildren();
+
+		if (!(mySkin is UIPartController))
+		{
+			findSkinParts();
+			invalidateSkinState();
+		}
 	}
 
 	override protected function attachSkin():void
 	{
-		findSkinParts();
-		invalidateSkinState();
+
 	}
 
 	override public function getStyle(styleProp:String):*
