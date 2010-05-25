@@ -1,5 +1,6 @@
 package cocoa.plaf.aqua
 {
+import cocoa.AbstractButton;
 import cocoa.CellState;
 import cocoa.plaf.Scale1BitmapBorder;
 import cocoa.plaf.basic.PushButtonSkin;
@@ -16,7 +17,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin
 
 	protected function calculateBitmapIndex():int
 	{
-		return myComponent.isMouseDown ? (myComponent.state == CellState.ON ? 1 : 3) : (myComponent.state == CellState.ON ? 2 : 0);
+		return AbstractButton(myComponent).isMouseDown ? (myComponent.state == CellState.ON ? 1 : 3) : (myComponent.state == CellState.ON ? 2 : 0);
 	}
 }
 }

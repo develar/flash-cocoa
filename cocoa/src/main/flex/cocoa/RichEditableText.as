@@ -42,10 +42,10 @@ public class RichEditableText extends spark.components.RichEditableText
 
 	override public function getStyle(styleProp:String):*
 	{
-		if (!(styleProp in nonInheritingStyles))
-		{
-			trace('unknown ' + styleProp);
-		}
+//		if (!(styleProp in nonInheritingStyles))
+//		{
+//			trace('unknown ' + styleProp);
+//		}
 		return nonInheritingStyles[styleProp];
 	}
 
