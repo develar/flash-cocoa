@@ -2122,17 +2122,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	//----------------------------------
-	//  alpha
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Storage for the alpha property.
-	 */
-	private var _alpha:Number = 1.0;
-
-	[Bindable("alphaChanged")]
+	private var _alpha:Number = 1;
+	//[Bindable("alphaChanged")]
 	[Inspectable(defaultValue="1.0", category="General", verbose="1", minValue="0.0", maxValue="1.0")]
 
 	override public function get alpha():Number
@@ -2144,13 +2135,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	override public function set alpha(value:Number):void
 	{
-		if (_alpha != value)
+		if (value != _alpha)
 		{
 			_alpha = value;
-
 			$alpha = value;
-
-			dispatchEvent(new Event("alphaChanged"));
+			//dispatchEvent(new Event("alphaChanged"));
 		}
 	}
 

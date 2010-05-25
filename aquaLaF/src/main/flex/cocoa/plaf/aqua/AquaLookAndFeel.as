@@ -121,7 +121,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["HSeparator"] = SeparatorSkin;
 
 		data["NumericStepper"] = NumericStepperSkin;
-
+		data["CheckBox"] = CheckBoxSkin;
 		data["HSlider"] = HSliderSkin;
 	}
 
@@ -252,6 +252,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 		data["Slider.thumb"] = borders[BorderPosition.sliderThumb];
 		data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
+
+		data["CheckBox.border"] = borders[BorderPosition.checkBox];
 	}
 }
 

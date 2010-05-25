@@ -177,6 +177,10 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
     }
 
 	protected var _enabled:Boolean = true;
+	public function get enabled():Boolean
+	{
+		return _enabled;
+	}
 	public function set enabled(value:Boolean):void
 	{
 		_enabled = value;

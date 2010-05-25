@@ -127,7 +127,7 @@ public class CenterEqualizedLayout extends LayoutBase
 						skipAdd = true;
 					}
 					// isRightAlignLabel для HUD, ему это не нужно
-					else if (!isRightAlignLabel && element is CheckBox && (i + 1) < numElements && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
+					else if (!isRightAlignLabel && isCheckBox(element) && (i + 1) < numElements && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
 					{
 						column.auxiliaryElement = element;
 						column.isAuxiliaryElementFirst = true;
@@ -181,7 +181,12 @@ public class CenterEqualizedLayout extends LayoutBase
 	private function isStartElement(element:ILayoutElement):Boolean
 	{
 		return element is Label /* control не может состоять только из Label, поэтому дальше явно часть текущего control, а не новый */ ||
-			   (element is CheckBox && CheckBox(element).label.length > 0);
+			   (isCheckBox(element) && CheckBox(Skin(element).component).label.length > 0);
+	}
+
+	private function isCheckBox(element:ILayoutElement):Boolean
+	{
+		return element is Skin && Skin(element).component is CheckBox;
 	}
 
 	override public function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void

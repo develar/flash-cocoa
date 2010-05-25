@@ -98,6 +98,15 @@ public class Builder
 	[Embed(source="/hud/HUD-SliderTrack-RightCap.png")]
 	private static var hudSliderTrackRightCap:Class;
 
+	[Embed(source="/hud/HUD-Checkbox_Off-N.png")]
+	private static var hudCheckBoxOff:Class;
+	[Embed(source="/hud/HUD-Checkbox_Off-P.png")]
+	private static var hudCheckBoxOffH:Class;
+	[Embed(source="/hud/HUD-Checkbox_On-N.png")]
+	private static var hudCheckBoxOn:Class;
+	[Embed(source="/hud/HUD-Checkbox_On-P.png")]
+	private static var hudCheckBoxOnH:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
 	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
@@ -132,11 +141,23 @@ public class Builder
 		return Scale1BitmapBorder.create(bitmaps, null, frameInsets == null ? new FrameInsets(-1, 0, -1, on == hudSpinnerIncrementButtonOn ? 0 : -2) : frameInsets);
 	}
 
+	private function bitmapClassesToBitmaps(bitmapClasses:Vector.<Class>):Vector.<BitmapData>
+	{
+		bitmapClasses.fixed = true;
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(bitmapClasses.length, true);
+		for (var i:int = 0; i < bitmapClasses.length; i++)
+		{
+			bitmaps[i] = Bitmap(new bitmapClasses[i]).bitmapData;
+		}
+
+		return bitmaps;
+	}
+
 	private var borders:Vector.<Border>;
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		borders = new Vector.<Border>(BorderPosition.sliderTrack + 1, true);
+		borders = new Vector.<Border>(BorderPosition.checkBox + 1, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
@@ -169,6 +190,10 @@ public class Builder
 		// HUD Slider Track
 		compoundImageReader.position = BorderPosition.sliderTrack;
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(), new <Class>[hudSliderTrackLeftCap, hudSliderTrackFill, hudSliderTrackRightCap]);
+
+		// HUD CheckBox
+		borders[BorderPosition.checkBox] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudCheckBoxOff, hudCheckBoxOffH, hudCheckBoxOn, hudCheckBoxOnH]),
+																		new Insets(12 + 6, 0, 0, 2), new FrameInsets(-1, 0, -1, -1));
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

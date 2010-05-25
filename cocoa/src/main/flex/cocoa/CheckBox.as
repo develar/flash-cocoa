@@ -1,29 +1,10 @@
 package cocoa
 {
-import cocoa.keyboard.KeyboardManagerClient;
-import cocoa.keyboard.KeyboardManagerClientHelper;
-
-import spark.components.CheckBox;
-
-public class CheckBox extends spark.components.CheckBox implements KeyboardManagerClient
+public class CheckBox extends TogglePushButton
 {
-	private var shortcutHelper:KeyboardManagerClientHelper;
-
-	public function CheckBox()
+	override protected function get defaultLaFPrefix():String
 	{
-		shortcutHelper = new KeyboardManagerClientHelper(this);
-
-		super();
-	}
-
-	public function set shortcut(value:String):void
-	{
-		shortcutHelper.shortcut = value;
-	}
-
-	override public function set toolTip(value:String):void
-	{
-		super.toolTip = shortcutHelper.adjustRawToolTip(value);
+		return "CheckBox";
 	}
 }
 }
