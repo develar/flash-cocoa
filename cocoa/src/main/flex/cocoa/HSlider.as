@@ -1,8 +1,16 @@
 package cocoa
 {
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
+
+import mx.core.UIComponent;
+import mx.core.mx_internal;
+
 import spark.components.HSlider;
 
-public class HSlider extends spark.components.HSlider
+use namespace mx_internal;
+
+public class HSlider extends spark.components.HSlider implements UIPartController
 {
 	override protected function nearestValidValue(value:Number, interval:Number):Number
 	{
@@ -37,6 +45,66 @@ public class HSlider extends spark.components.HSlider
 		var lower:Number = Math.max(minValue, Math.floor(value / interval) * interval);
 		var upper:Number = Math.min(maxValue, Math.floor((value + interval) / interval) * interval);
 		return (((value - lower) >= ((upper - lower) / 2)) ? upper : lower) / scale;
+	}
+
+	// disable unwanted legacy
+	include "../../unwantedLegacy.as";
+	include "../../legacyConstraints.as";
+
+	private var mySkin:UIComponent;
+	override public function get skin():UIComponent
+	{
+		return mySkin;
+	}
+
+	private var skinClass:Class;
+	override protected function createChildren():void
+	{
+		var laf:LookAndFeel = LookAndFeelProvider(parent).laf;
+		skinClass = laf.getClass("HSlider");
+
+		mySkin = new skinClass();
+		if (mySkin is LookAndFeelProvider)
+		{
+			LookAndFeelProvider(mySkin).laf = laf;
+		}
+
+		addingChild(mySkin);
+		$addChildAt(mySkin, 0);
+		childAdded(mySkin);
+
+		if (!(mySkin is UIPartProvider))
+		{
+			findSkinParts();
+			invalidateSkinState();
+		}
+	}
+
+	override protected function attachSkin():void
+	{
+
+	}
+
+	override public function getStyle(styleProp:String):*
+	{
+		if (styleProp == "skinClass")
+		{
+			return skinClass;
+		}
+		else if (styleProp == "layoutDirection")
+		{
+			return layoutDirection;
+		}
+		else
+		{
+			return undefined;
+		}
+	}
+
+	public function uiPartAdded(id:String, instance:Object):void
+	{
+		this[id] = instance;
+		partAdded(id, instance);
 	}
 }
 }

@@ -1,6 +1,6 @@
 package cocoa.plaf.aqua
 {
-import cocoa.AbstractFlexButton;
+import cocoa.FlexButton;
 import cocoa.LightFlexUIComponent;
 import cocoa.TextInput;
 import cocoa.UIPartController;
@@ -19,15 +19,13 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 {
 	private var textDisplay:TextInput;
 
-	private var incrementButton:AbstractFlexButton;
-	private var decrementButton:AbstractFlexButton;
+	private var incrementButton:FlexButton;
+	private var decrementButton:FlexButton;
 
 	private static const PADDING_BETWEEN_TEXT_AND_SPINNER:int = 7;
 
 	override protected function createChildren():void
 	{
-		super.createChildren();
-
 		var laf:LookAndFeel = LookAndFeelProvider(parent.parent).laf;
 		textDisplay = new TextInput();
 		textDisplay.lafPrefix = "NumericStepper.TextInput";
@@ -44,10 +42,10 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 		decrementButton.y = incrementButton.border.layoutHeight;
 	}
 
-	private function createSpinnerButton(id:String, laf:LookAndFeel):AbstractFlexButton
+	private function createSpinnerButton(id:String, laf:LookAndFeel):FlexButton
 	{
-		var button:AbstractFlexButton = new AbstractFlexButton();
-		button.border = laf.getBorder("NumericStepper." + id + ".border");
+		var button:FlexButton = new FlexButton();
+		button.border = laf.getBorder("NumericStepper." + id);
 		addChild(button);
 		UIPartController(parent).uiPartAdded(id, button);
 		return button;

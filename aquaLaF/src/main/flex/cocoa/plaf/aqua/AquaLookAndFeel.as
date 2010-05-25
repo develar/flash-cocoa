@@ -121,6 +121,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["HSeparator"] = SeparatorSkin;
 
 		data["NumericStepper"] = NumericStepperSkin;
+
+		data["HSlider"] = HSliderSkin;
 	}
 
 	private static function initAssets():void
@@ -245,8 +247,11 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["NumericStepper.TextInput"] = HUDTextInputSkin;
 		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
 
-		data["NumericStepper.incrementButton.border"] = borders[BorderPosition.spinnerButtonBorder];
-		data["NumericStepper.decrementButton.border"] = borders[BorderPosition.spinnerButtonBorder + 1];
+		data["NumericStepper.incrementButton"] = borders[BorderPosition.spinnerButton];
+		data["NumericStepper.decrementButton"] = borders[BorderPosition.spinnerButton + 1];
+
+		data["Slider.thumb"] = borders[BorderPosition.sliderThumb];
+		data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
 	}
 }
 

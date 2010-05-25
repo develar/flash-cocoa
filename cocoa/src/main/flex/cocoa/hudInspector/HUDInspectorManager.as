@@ -95,7 +95,7 @@ public class HUDInspectorManager
 			y = sharedPoint.y + elementView.height + windowHeightWithPadding;
 		}
 
-		inspectorView.move(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2), y);
+		inspectorView.move(Math.round(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
 	}
 
 	public function hide(element:Object, relatedElement:Object):void

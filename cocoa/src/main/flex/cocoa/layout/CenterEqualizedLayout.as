@@ -14,7 +14,10 @@ public class CenterEqualizedLayout extends LayoutBase
 {
 	private var columns:Vector.<Column>;
 
-	private var _fieldGap:Number = 3;
+	private var _fieldGap:Number = 8;
+	/**
+	 * Расстояние вертикальное между полями
+	 */
     public function get fieldGap():Number
     {
         return _fieldGap;

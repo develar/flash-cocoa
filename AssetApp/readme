@@ -25,3 +25,6 @@ screencapture -ic
 При Save picture of sreen as a file просто Color Management: Advanced, sRGB IEC61966-2.1 с Convert pixels to selected profile
 
 mogrify -format png  *.tiff
+
+
+HUD-SliderKnob_round-P — N это off, P это on.

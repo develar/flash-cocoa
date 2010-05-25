@@ -1,12 +1,12 @@
 package cocoa.plaf.scrollbar
 {
-import cocoa.AbstractFlexButton;
+import cocoa.FlexButton;
 import cocoa.Border;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-internal final class TrackOrThumbButton extends AbstractFlexButton
+internal final class TrackOrThumbButton extends FlexButton
 {
 	override public function set border(value:Border):void
 	{

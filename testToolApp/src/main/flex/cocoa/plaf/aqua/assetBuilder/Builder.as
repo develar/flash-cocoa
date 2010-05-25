@@ -63,18 +63,18 @@ public class Builder
 	[Embed(source="/segmentedControl4.texturedRounded.png")]
 	private static var segmentedControl4TRClass:Class;
 
-	[Embed(source="/hud/button.off.left.png")]
+	[Embed(source="/hud/HUD-ButtonLeft-N.png")]
 	private static var hudButtonOffLeft:Class;
-	[Embed(source="/hud/button.off.center.png")]
+	[Embed(source="/hud/HUD-ButtonFill-N.png")]
 	private static var hudButtonOffCenter:Class;
-	[Embed(source="/hud/button.off.right.png")]
+	[Embed(source="/hud/HUD-ButtonRight-N.png")]
 	private static var hudButtonOffRight:Class;
 
-	[Embed(source="/hud/button.on.left.png")]
+	[Embed(source="/hud/HUD-ButtonLeft-P.png")]
 	private static var hudButtonOnLeft:Class;
-	[Embed(source="/hud/button.on.center.png")]
+	[Embed(source="/hud/HUD-ButtonFill-P.png")]
 	private static var hudButtonOnCenter:Class;
-	[Embed(source="/hud/button.on.right.png")]
+	[Embed(source="/hud/HUD-ButtonRight-P.png")]
 	private static var hudButtonOnRight:Class;
 
 	[Embed(source="/hud/HUD-SpinnerTop-N.png")]
@@ -85,6 +85,18 @@ public class Builder
 	private static var hudSpinnerDecrementButtonOff:Class;
 	[Embed(source="/hud/HUD-SpinnerBottom-P.png")]
 	private static var hudSpinnerDecrementButtonOn:Class;
+
+	[Embed(source="/hud/HUD-SliderKnob_round-N.png")]
+	private static var hudSliderThumbOff:Class;
+	[Embed(source="/hud/HUD-SliderKnob_round-P.png")]
+	private static var hudSliderThumbOn:Class;
+
+	[Embed(source="/hud/HUD-SliderTrack-Fill.png")]
+	private static var hudSliderTrackFill:Class;
+	[Embed(source="/hud/HUD-SliderTrack-LeftCap.png")]
+	private static var hudSliderTrackLeftCap:Class;
+	[Embed(source="/hud/HUD-SliderTrack-RightCap.png")]
+	private static var hudSliderTrackRightCap:Class;
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
@@ -106,27 +118,25 @@ public class Builder
 	/**
 	 * 2 border — 1) top (2 bitmaps — off and highlighted) 2) bottom (2 bitmaps — off and highlighted)
 	 */
-	public function addSpinnerButtons():void
+	private function addSpinnerButtons():void
 	{
-		borders[BorderPosition.spinnerButtonBorder] = createSpinnerButtonBorder(hudSpinnerIncrementButtonOff, hudSpinnerIncrementButtonOn);
-		borders[BorderPosition.spinnerButtonBorder + 1] = createSpinnerButtonBorder(hudSpinnerDecrementButtonOff, hudSpinnerDecrementButtonOn);
+		borders[BorderPosition.spinnerButton] = createFlexButtonBorder(hudSpinnerIncrementButtonOff, hudSpinnerIncrementButtonOn);
+		borders[BorderPosition.spinnerButton + 1] = createFlexButtonBorder(hudSpinnerDecrementButtonOff, hudSpinnerDecrementButtonOn);
 	}
 
-	private function createSpinnerButtonBorder(off:Class, on:Class):Scale1BitmapBorder
+	private function createFlexButtonBorder(off:Class, on:Class, frameInsets:FrameInsets = null):Scale1BitmapBorder
 	{
 		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(2, true);
 		bitmaps[0] = Bitmap(new off()).bitmapData;
 		bitmaps[1] = Bitmap(new on()).bitmapData;
-		return Scale1BitmapBorder.create(bitmaps, null, new FrameInsets(-1, 0, -1, on == hudSpinnerIncrementButtonOn ? 0 : -2));
+		return Scale1BitmapBorder.create(bitmaps, null, frameInsets == null ? new FrameInsets(-1, 0, -1, on == hudSpinnerIncrementButtonOn ? 0 : -2) : frameInsets);
 	}
 
 	private var borders:Vector.<Border>;
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		borders = new Vector.<Border>(buttonRowsInfo.length + 3 + 1 + 2 /* rounded and textured rounded segmented control */ + 14 /* scrollbars */ +
-														  3 /* title bar, titleBarAndToolbarAndContent, hudTitleBarAndContentClass */ + 1 /* hud buttons */ +
-														  2 /* hud spinner buttons */, true);
+		borders = new Vector.<Border>(BorderPosition.sliderTrack + 1, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
@@ -148,11 +158,17 @@ public class Builder
 		compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
 		compoundImageReader.readScale9(hudTitleBarAndContentClass, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
 
+		// HUD PushButton
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)),
 														new <Class>[hudButtonOffLeft, hudButtonOffCenter, hudButtonOffRight,
 															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight]);
 
 		addSpinnerButtons();
+		borders[BorderPosition.sliderThumb] = createFlexButtonBorder(hudSliderThumbOff, hudSliderThumbOn, new FrameInsets(-1, 0, -1, -2));
+
+		// HUD Slider Track
+		compoundImageReader.position = BorderPosition.sliderTrack;
+		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(), new <Class>[hudSliderTrackLeftCap, hudSliderTrackFill, hudSliderTrackRightCap]);
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

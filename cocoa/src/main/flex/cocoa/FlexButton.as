@@ -11,7 +11,7 @@ import spark.components.Button;
 
 use namespace mx_internal;
 
-public class AbstractFlexButton extends Button
+public class FlexButton extends Button
 {
 	protected var _border:Border;
 	public function get border():Border
@@ -71,9 +71,9 @@ public class AbstractFlexButton extends Button
 
 	override public function invalidateSkinState():void
 	{
-		if (_border != null)
+		if (_border is Scale1BitmapBorder)
 		{
-			Scale1BitmapBorder(_border).bitmapIndex = (mouseCaptured && hovered) ? 1 : 0;
+			Scale1BitmapBorder(_border).bitmapIndex = ((mouseCaptured && (hovered || stickyHighlighting))) ? 1 : 0;
 			invalidateDisplayList();
 		}
 	}
