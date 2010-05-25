@@ -23,6 +23,9 @@ use namespace ui;
 
 public class NumericStepper extends Spinner implements UIPartController
 {
+	private static const textElement:TextElement = new TextElement();
+	private static const textBlock:TextBlock = new TextBlock(textElement);
+
 	public function NumericStepper()
 	{
 		super();
@@ -55,32 +58,6 @@ public class NumericStepper extends Spinner implements UIPartController
 	{
 		stepSizeChanged = true;
 		super.stepSize = value;
-	}
-
-	private var _maxChars:int = 0;
-	private var maxCharsChanged:Boolean = false;
-
-	/**
-	 *  The maximum number of characters that can be entered in the field.
-	 *  A value of 0 means that any number of characters can be entered.
-	 *
-	 *  @default 0
-	 */
-	public function get maxChars():int
-	{
-		return _maxChars;
-	}
-	public function set maxChars(value:int):void
-	{
-		if (value == _maxChars)
-		{
-			return;
-		}
-
-		_maxChars = value;
-		maxCharsChanged = true;
-
-		invalidateProperties();
 	}
 
 	private var _valueFormatFunction:Function;
@@ -180,10 +157,7 @@ public class NumericStepper extends Spinner implements UIPartController
 
 		if (maxChanged || stepSizeChanged || valueFormatFunctionChanged)
 		{
-			if (isNaN(explicitWidth))
-			{
-				textDisplay.textDisplay.width = calculateTextWidth();
-			}
+			adjustTextWidthAndMaxChars();
 
 			maxChanged = false;
 			stepSizeChanged = false;
@@ -202,12 +176,6 @@ public class NumericStepper extends Spinner implements UIPartController
 			valueParseFunctionChanged = false;
 		}
 
-		if (maxCharsChanged)
-		{
-			textDisplay.textDisplay.maxChars = _maxChars;
-			maxCharsChanged = false;
-		}
-
 		if (imeModeChanged)
 		{
 			textDisplay.textDisplay.imeMode = _imeMode;
@@ -224,20 +192,10 @@ public class NumericStepper extends Spinner implements UIPartController
 			var richEditableText:RichEditableText = textDisplay.textDisplay;
 			richEditableText.addEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
 			richEditableText.addEventListener(FocusEvent.FOCUS_OUT, textDisplay_focusOutHandler);
-			richEditableText.maxChars = _maxChars;
+
 			// Restrict to digits, minus sign, decimal point, and comma
 			richEditableText.restrict = "0-9\\-\\.\\,";
 			textDisplay.text = value.toString();
-		}
-	}
-
-	override protected function partRemoved(partName:String, instance:Object):void
-	{
-		super.partRemoved(partName, instance);
-
-		if (instance == textDisplay)
-		{
-			textDisplay.textDisplay.removeEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
 		}
 	}
 
@@ -387,23 +345,20 @@ public class NumericStepper extends Spinner implements UIPartController
 			widestText = StringUtil.repeat("9", widestNumber.toString().length);
 		}
 
-		if (valueFormatFunction != null)
-		{
-			return valueFormatFunction(Number(widestText));
-		}
-		else
-		{
-			return widestText;
-		}
+		return valueFormatFunction == null ? widestText : valueFormatFunction(Number(widestText));
 	}
 
-	private static const textElement:TextElement = new TextElement();
-	private static const textBlock:TextBlock = new TextBlock(textElement);
-	private function calculateTextWidth():Number
+	private function adjustTextWidthAndMaxChars():void
 	{
-		textElement.elementFormat = textDisplay.textDisplay.font;
-		textElement.text = calculateWidestText();
-		return Math.ceil(textBlock.createTextLine().width);
+		var widestText:String = calculateWidestText();
+		textDisplay.textDisplay.maxChars = widestText.length;
+
+		if (isNaN(explicitWidth))
+		{
+			textElement.elementFormat = textDisplay.textDisplay.font;
+			textElement.text = widestText;
+			textDisplay.textDisplay.width = Math.ceil(textBlock.createTextLine().width);
+		}
 	}
 
 	override protected function nearestValidValue(value:Number, interval:Number):Number

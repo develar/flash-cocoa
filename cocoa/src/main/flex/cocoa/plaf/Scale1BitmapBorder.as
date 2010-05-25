@@ -46,7 +46,7 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 		sharedMatrix.ty = _frameInsets.top;
 
 		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
-		g.drawRect(_frameInsets.left, _frameInsets.top, w, h - _frameInsets.bottom);
+		g.drawRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - -_frameInsets.top - _frameInsets.bottom);
 		g.endFill();
 	}
 
