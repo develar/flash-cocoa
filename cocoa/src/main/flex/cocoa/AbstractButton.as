@@ -14,9 +14,10 @@ public class AbstractButton extends AbstractControl implements Cell
 	{
 		return state == CellState.ON;
 	}
+
 	public function set selected(value:Boolean):void
 	{
-		if (value && state != CellState.ON)
+		if (value != selected)
 		{
 			state = value ? CellState.ON : CellState.OFF;
 		}
@@ -63,7 +64,7 @@ public class AbstractButton extends AbstractControl implements Cell
 
 		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
 		mySkin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
-		
+
 		if (event.target == mySkin)
 		{
 			// может быть уже отвалидировано в roll over/out
