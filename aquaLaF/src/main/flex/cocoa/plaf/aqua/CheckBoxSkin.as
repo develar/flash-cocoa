@@ -19,5 +19,18 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin
 	{
 		return AbstractButton(myComponent).isMouseDown ? (myComponent.state == CellState.ON ? 1 : 3) : (myComponent.state == CellState.ON ? 2 : 0);
 	}
+
+	override protected function measure():void
+	{
+		if (labelHelper == null || !labelHelper.hasText)
+		{
+			measuredWidth = border.layoutWidth;
+			measuredHeight = border.layoutHeight;
+		}
+		else
+		{
+			super.measure();
+		}
+	}
 }
 }

@@ -16,7 +16,10 @@ public class AbstractControl extends AbstractComponent implements Control
 	public function set state(value:int):void
 	{
 		_state = value;
-		skin.invalidateDisplayList();
+		if (skin != null)
+		{
+			skin.invalidateDisplayList();
+		}
 	}
 
 	public function get objectValue():Object

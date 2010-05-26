@@ -94,8 +94,8 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 
 		labelHelper.validate();
 
-		measuredMinWidth = measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
-		measuredMinHeight = measuredHeight = border.layoutHeight;
+		measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
+		measuredHeight = border.layoutHeight;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

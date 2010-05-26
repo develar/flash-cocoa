@@ -43,7 +43,7 @@ public class CenterEqualizedLayout extends LayoutBase
 	/**
 	 * Промежуток между controls в колонке
 	 */
-	private var _controlGap:Number = 0;
+	private var _controlGap:Number = 3;
     public function set controlGap(value:Number):void
     {
         if (value != _controlGap)
@@ -181,7 +181,7 @@ public class CenterEqualizedLayout extends LayoutBase
 	private function isStartElement(element:ILayoutElement):Boolean
 	{
 		return element is Label /* control не может состоять только из Label, поэтому дальше явно часть текущего control, а не новый */ ||
-			   (isCheckBox(element) && CheckBox(Skin(element).component).label.length > 0);
+			   (isCheckBox(element) && CheckBox(Skin(element).component).label != null);
 	}
 
 	private function isCheckBox(element:ILayoutElement):Boolean
