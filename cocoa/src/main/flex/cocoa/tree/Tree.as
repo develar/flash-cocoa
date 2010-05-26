@@ -485,7 +485,7 @@ public class Tree extends mx.controls.Tree implements IEditable, View
 		var r:IListItemRenderer = mouseEventToRenderer(event);
 		//click on disclosure icon shouldn't select the item
 		//this is temporary solution to fix it
-		if (r == null || ( event.target != r['openIcon'] && event.target != r['closeIcon']))
+		if (r == null || !dataDescriptor.isBranch(r.data) || ( event.target != r['openIcon'] && event.target != r['closeIcon']))
 		{
 			super.mouseDownHandler(event);
 		}
