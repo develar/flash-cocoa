@@ -29,7 +29,7 @@
 
 		private function creationCompleteHandler():void
 		{
-			build();
+//			build();
 			//
 			//			 var a:Sprite = new Sprite();
 			//				 a.x = 50;

@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.text.EditableTextView;
+
 import flash.utils.Dictionary;
 
 use namespace ui;
@@ -13,7 +15,7 @@ public class TextInput extends AbstractComponent
 		return _skinParts;
 	}
 
-	ui var textDisplay:RichEditableText;
+	ui var textDisplay:EditableTextView;
 
 	private var _text:String;
 	public function get text():String

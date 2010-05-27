@@ -22,7 +22,10 @@ import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.SeparatorSkin;
 
+import flash.display.BlendMode;
 import flash.utils.ByteArray;
+
+import flashx.textLayout.edit.SelectionFormat;
 
 import mx.core.ClassFactory;
 
@@ -49,6 +52,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["ViewFont"] = AquaFonts.VIEW_FONT;
 		data["ViewFont.highlighted"] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
+
+		data["SelectionFormat"] = new SelectionFormat(0xa8c6ee, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
 		data["ImageView.border"] = borders[3];
 
@@ -193,19 +198,25 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 }
 
 import cocoa.Border;
+import cocoa.text.TextFormat;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BezelStyle;
 import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
-import cocoa.plaf.aqua.HUDTextInputSkin;
+import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.TextInputBorder;
 
+import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontWeight;
+
+import flashx.textLayout.edit.SelectionFormat;
+import flashx.textLayout.formats.LineBreak;
+import flashx.textLayout.formats.TextAlign;
 
 final class WindowFrameLookAndFeel extends AbstractLookAndFeel
 {
@@ -233,19 +244,26 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 	{
 		data["SystemFont"] = AquaFonts.SYSTEM_FONT_HUD;
 		data["ViewFont"] = AquaFonts.VIEW_FONT_HUD;
+		data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
 		data["Window.border"] = borders[BorderPosition.scrollbar + 16];
 
-		data["TextInput"] = HUDTextInputSkin;
+		data["TextInput"] = TextInputSkin;
 		data["TextInput.border"] = new TextInputBorder();
+
+		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
 		data["HSeparator.border"] = new SeparatorBorder();
 
 		data["PushButton"] = HUDPushButtonSkin;
 		data["PushButton.border"] = borders[BorderPosition.hudButton];
 
-		data["NumericStepper.TextInput"] = HUDTextInputSkin;
+		data["NumericStepper.TextInput"] = TextInputSkin;
 		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
+
+		var numericStepperTextFormat:TextFormat = createDefaultTextFormat();
+		numericStepperTextFormat.$textAlign = TextAlign.END;
+		data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
 
 		data["NumericStepper.incrementButton"] = borders[BorderPosition.spinnerButton];
 		data["NumericStepper.decrementButton"] = borders[BorderPosition.spinnerButton + 1];
@@ -254,6 +272,14 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
 
 		data["CheckBox.border"] = borders[BorderPosition.checkBox];
+	}
+
+	private function createDefaultTextFormat():TextFormat
+	{
+		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT_HUD);
+		textInputTextFormat.$paddingTop = 2;
+		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
+		return textInputTextFormat;
 	}
 }
 

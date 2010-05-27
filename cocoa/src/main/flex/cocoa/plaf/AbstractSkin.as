@@ -12,6 +12,8 @@ import com.asfusion.mate.events.InjectorEvent;
 import flash.geom.Point;
 import flash.text.engine.ElementFormat;
 
+import flashx.textLayout.formats.ITextLayoutFormat;
+
 import mx.core.IFactory;
 
 import org.flyti.plexus.Injectable;
@@ -36,17 +38,22 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 		return laf.getFont(key);
 	}
 
-	protected function getBorder(key:String):Border
+	protected final function getTextFormat(key:String):ITextLayoutFormat
+	{
+		return laf.getTextFormat(_component.lafPrefix + "." + key);
+	}
+
+	protected final function getBorder(key:String):Border
 	{
 		return laf.getBorder(_component.lafPrefix + "." + key);
 	}
 
-	protected function getIcon(key:String):Icon
+	protected final function getIcon(key:String):Icon
 	{
 		return laf.getIcon(_component.lafPrefix + "." + key);
 	}
 
-	protected function getFactory(key:String):IFactory
+	protected final function getFactory(key:String):IFactory
 	{
 		return laf.getFactory(_component.lafPrefix + "." + key);
 	}

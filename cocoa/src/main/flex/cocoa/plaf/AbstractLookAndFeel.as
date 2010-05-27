@@ -6,6 +6,9 @@ import cocoa.Icon;
 import flash.text.engine.ElementFormat;
 import flash.utils.Dictionary;
 
+import flashx.textLayout.edit.SelectionFormat;
+import flashx.textLayout.formats.ITextLayoutFormat;
+
 import mx.core.DeferredInstanceFromClass;
 import mx.core.IFactory;
 
@@ -72,6 +75,40 @@ public class AbstractLookAndFeel implements LookAndFeel
 		else
 		{
 			return _parent.getFont(key);
+		}
+	}
+
+	public function getTextFormat(key:String):ITextLayoutFormat
+	{
+		var value:ITextLayoutFormat = data[key];
+		if (value != null)
+		{
+			return value;
+		}
+		else if (_parent == null)
+		{
+			throw new ArgumentError("Unknown " + key);
+		}
+		else
+		{
+			return _parent.getTextFormat(key);
+		}
+	}
+
+	public function getSelectionFormat(key:String):SelectionFormat
+	{
+		var value:SelectionFormat = data[key];
+		if (value != null)
+		{
+			return value;
+		}
+		else if (_parent == null)
+		{
+			throw new ArgumentError("Unknown " + key);
+		}
+		else
+		{
+			return _parent.getSelectionFormat(key);
 		}
 	}
 

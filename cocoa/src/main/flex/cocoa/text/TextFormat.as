@@ -1,36 +1,47 @@
-package cocoa
+package cocoa.text
 {
+import flash.text.engine.BreakOpportunity;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 
+import flashx.textLayout.formats.BackgroundColor;
+import flashx.textLayout.formats.BaselineOffset;
 import flashx.textLayout.formats.BlockProgression;
+import flashx.textLayout.formats.Direction;
+import flashx.textLayout.formats.FormatValue;
 import flashx.textLayout.formats.ITextLayoutFormat;
+import flashx.textLayout.formats.LeadingModel;
+import flashx.textLayout.formats.LineBreak;
+import flashx.textLayout.formats.TextAlign;
+import flashx.textLayout.formats.TextDecoration;
+import flashx.textLayout.formats.TextJustify;
+import flashx.textLayout.formats.VerticalAlign;
+import flashx.textLayout.formats.WhiteSpaceCollapse;
 
-import mx.styles.IStyleClient;
-
-internal class TextLayoutFormat implements ITextLayoutFormat
+public class TextFormat implements ITextLayoutFormat
 {
-	private var elementFormat:ElementFormat;
 	private var fontDescription:FontDescription;
 
-	private var client:IStyleClient;
-
-	public function TextLayoutFormat(client:IStyleClient, elementFormat:ElementFormat)
+	public function TextFormat(elementFormat:ElementFormat)
 	{
-		this.client = client;
-
-		this.elementFormat = elementFormat;
+		this._elementFormat = elementFormat;
 		fontDescription = elementFormat.fontDescription;
+	}
+
+	private var _elementFormat:ElementFormat;
+	public function get elementFormat():ElementFormat
+	{
+		return _elementFormat;
 	}
 
 	public function get color():*
 	{
-		return elementFormat.color;
+		return _elementFormat.color;
 	}
 
 	public function get backgroundColor():*
 	{
-		return undefined;
+		return BackgroundColor.TRANSPARENT;
 	}
 
 	public function get lineThrough():*
@@ -40,82 +51,82 @@ internal class TextLayoutFormat implements ITextLayoutFormat
 
 	public function get textAlpha():*
 	{
-		return elementFormat.alpha;
+		return _elementFormat.alpha;
 	}
 
 	public function get backgroundAlpha():*
 	{
-		return undefined;
+		return 1;
 	}
 
 	public function get fontSize():*
 	{
-		return elementFormat.fontSize;
+		return _elementFormat.fontSize;
 	}
 
 	public function get baselineShift():*
 	{
-		return elementFormat.baselineShift;
+		return _elementFormat.baselineShift;
 	}
 
 	public function get trackingLeft():*
 	{
-		return elementFormat.trackingLeft;
+		return _elementFormat.trackingLeft;
 	}
 
 	public function get trackingRight():*
 	{
-		return elementFormat.trackingRight;
+		return _elementFormat.trackingRight;
 	}
 
 	public function get lineHeight():*
 	{
-		return undefined;
+		return "120%";
 	}
 
 	public function get breakOpportunity():*
 	{
-		return null;
+		return BreakOpportunity.AUTO;
 	}
 
 	public function get digitCase():*
 	{
-		return elementFormat.digitCase;
+		return _elementFormat.digitCase;
 	}
 
 	public function get digitWidth():*
 	{
-		return elementFormat.digitWidth;
+		return _elementFormat.digitWidth;
 	}
 
 	public function get dominantBaseline():*
 	{
-		return elementFormat.dominantBaseline;
+		return _elementFormat.dominantBaseline;
 	}
 
 	public function get kerning():*
 	{
-		return elementFormat.kerning;
+		return _elementFormat.kerning;
 	}
 
 	public function get ligatureLevel():*
 	{
-		return elementFormat.ligatureLevel;
+		return _elementFormat.ligatureLevel;
 	}
 
 	public function get alignmentBaseline():*
 	{
-		return elementFormat.alignmentBaseline;
+		return _elementFormat.alignmentBaseline;
 	}
 
 	public function get locale():*
 	{
-		return elementFormat.locale;
+		return _elementFormat.locale;
 	}
 
 	public function get typographicCase():*
 	{
-		return elementFormat.typographicCase;
+		return _elementFormat.typographicCase;
 	}
 
 	public function get fontFamily():*
@@ -125,7 +136,7 @@ internal class TextLayoutFormat implements ITextLayoutFormat
 
 	public function get textDecoration():*
 	{
-		return undefined;
+		return TextDecoration.NONE;
 	}
 
 	public function get fontWeight():*
@@ -140,7 +151,7 @@ internal class TextLayoutFormat implements ITextLayoutFormat
 
 	public function get whiteSpaceCollapse():*
 	{
-		return undefined;
+		return WhiteSpaceCollapse.COLLAPSE;
 	}
 
 	public function get renderingMode():*
@@ -160,117 +171,132 @@ internal class TextLayoutFormat implements ITextLayoutFormat
 
 	public function get textRotation():*
 	{
-		return elementFormat.textRotation;
+		return _elementFormat.textRotation;
 	}
 
 	public function get textIndent():*
 	{
-		return undefined;
+		return 0;
 	}
 
 	public function get paragraphStartIndent():*
 	{
-		return undefined;
+		return 0;
 	}
 
 	public function get paragraphEndIndent():*
 	{
-		return undefined;
+		return 0;
 	}
 
 	public function get paragraphSpaceBefore():*
 	{
-		return undefined;
+		return 0;
 	}
 
 	public function get paragraphSpaceAfter():*
 	{
-		return undefined;
+		return 0;
 	}
 
+	private var _textAlign:String = TextAlign.START;
 	public function get textAlign():*
 	{
-		return client.getStyle("textAlign");
+		return _textAlign;
+	}
+	public function set $textAlign(value:String):void
+	{
+		_textAlign = value;
 	}
 
 	public function get textAlignLast():*
 	{
-		return undefined;
+		return TextAlign.START;
 	}
 
 	public function get textJustify():*
 	{
-		return undefined;
+		return TextJustify.INTER_WORD;
 	}
 
 	public function get justificationRule():*
 	{
-		return undefined;
+		return FormatValue.AUTO;
 	}
 
 	public function get justificationStyle():*
 	{
-		return undefined;
+		return FormatValue.AUTO;
 	}
 
 	public function get direction():*
 	{
-		return undefined;
+		return Direction.LTR;
 	}
 
 	public function get tabStops():*
 	{
-		return undefined;
+		return null;
 	}
 
 	public function get leadingModel():*
 	{
-		return undefined;
+		return LeadingModel.AUTO;
 	}
 
 	public function get columnGap():*
 	{
-		return undefined;
+		return 20;
 	}
 
 	public function get paddingLeft():*
 	{
-		return client.getStyle("paddingLeft");
+		return 0;
 	}
 
+	private var _paddingTop:Number = 0;
 	public function get paddingTop():*
 	{
-		return client.getStyle("paddingTop");
+		return _paddingTop;
+	}
+	public function set $paddingTop(value:Number):void
+	{
+		_paddingTop = value;
 	}
 
 	public function get paddingRight():*
 	{
-		return client.getStyle("paddingRight");
+		return 0;
 	}
 
 	public function get paddingBottom():*
 	{
-		return client.getStyle("paddingBottom");
+		return 0;
 	}
 
 	public function get columnCount():*
 	{
-		return undefined;
+		return FormatValue.AUTO;
 	}
 
 	public function get columnWidth():*
 	{
-		return undefined;
+		return FormatValue.AUTO;
 	}
 
 	public function get firstBaselineOffset():*
 	{
-		return undefined;
+		return BaselineOffset.AUTO;
 	}
 
+	private var _verticalAlign:String = VerticalAlign.TOP;
 	public function get verticalAlign():*
 	{
-		return client.getStyle("verticalAlign");
+		return _verticalAlign;
+	}
+	public function set $verticalAlign(value:String):void
+	{
+		_verticalAlign = value;
 	}
 
 	public function get blockProgression():*
@@ -278,9 +304,14 @@ internal class TextLayoutFormat implements ITextLayoutFormat
 		return BlockProgression.TB;
 	}
 
+	private var _lineBreak:String = LineBreak.TO_FIT;
 	public function get lineBreak():*
 	{
-		return client.getStyle("lineBreak");
+		return _lineBreak;
+	}
+	public function set $lineBreak(value:String):void
+	{
+		_lineBreak = value;
 	}
 }
 }

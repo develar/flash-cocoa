@@ -3,12 +3,12 @@ package cocoa
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
+import cocoa.text.EditableTextView;
+
 import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
-import flash.text.engine.TextBlock;
-import flash.text.engine.TextElement;
 
 import mx.core.UIComponent;
 import mx.core.mx_internal;
@@ -23,9 +23,6 @@ use namespace ui;
 
 public class NumericStepper extends Spinner implements UIPartController
 {
-	private static const textElement:TextElement = new TextElement();
-	private static const textBlock:TextBlock = new TextBlock(textElement);
-
 	public function NumericStepper()
 	{
 		super();
@@ -189,7 +186,7 @@ public class NumericStepper extends Spinner implements UIPartController
 
 		if (instance == textDisplay)
 		{
-			var richEditableText:RichEditableText = textDisplay.textDisplay;
+			var richEditableText:EditableTextView = textDisplay.textDisplay;
 			richEditableText.addEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
 			richEditableText.addEventListener(FocusEvent.FOCUS_OUT, textDisplay_focusOutHandler);
 
@@ -355,9 +352,7 @@ public class NumericStepper extends Spinner implements UIPartController
 
 		if (isNaN(explicitWidth))
 		{
-			textElement.elementFormat = textDisplay.textDisplay.font;
-			textElement.text = widestText;
-			textDisplay.textDisplay.width = Math.ceil(textBlock.createTextLine().width);
+			textDisplay.textDisplay.width = Math.ceil(textDisplay.textDisplay.measureText(widestText).width);
 		}
 	}
 

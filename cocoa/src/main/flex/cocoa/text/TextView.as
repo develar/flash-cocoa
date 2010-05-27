@@ -14,12 +14,13 @@ import flashx.textLayout.events.CompositionCompleteEvent;
 import spark.core.IViewport;
 import spark.core.NavigationUnit;
 
+/**
+ * Not editable text view, only display
+ */
 public class TextView extends AbstractView implements IViewport
 {
-
 	private var container:Sprite;
 	private var containerController:ContainerController;
-
 
 	private var _textFlow:TextFlow;
 	public function get textFlow():TextFlow

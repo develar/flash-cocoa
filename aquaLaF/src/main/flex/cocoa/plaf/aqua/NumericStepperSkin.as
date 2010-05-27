@@ -11,8 +11,6 @@ import cocoa.ui;
 
 import flash.display.DisplayObject;
 
-import flashx.textLayout.formats.TextAlign;
-
 use namespace ui;
 
 public class NumericStepperSkin extends LightFlexUIComponent implements UIPartProvider
@@ -31,8 +29,6 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 		textDisplay.lafPrefix = "NumericStepper.TextInput";
 		var textInputSkin:DisplayObject = DisplayObject(textDisplay.createView(laf));
 		addChild(textInputSkin);
-
-		textDisplay.textDisplay.setStyle("textAlign", TextAlign.END);
 
 		UIPartController(parent).uiPartAdded("textDisplay", textDisplay);
 
