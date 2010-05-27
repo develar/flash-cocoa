@@ -1,10 +1,10 @@
 package cocoa.dialog
 {
-import cocoa.KeyCode;
 import cocoa.PushButton;
 import cocoa.ViewContainer;
 import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
+import cocoa.keyboard.KeyCode;
 import cocoa.resources.ResourceManager;
 import cocoa.ui;
 

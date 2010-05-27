@@ -549,16 +549,22 @@ internal final class EditableTextContainerManager extends TextContainerManager
 }
 }
 
+import cocoa.keyboard.KeyCode;
 import cocoa.text.EditableTextView;
 
+import flash.events.KeyboardEvent;
 import flash.events.TextEvent;
+import flash.system.Capabilities;
 
 import flashx.textLayout.edit.EditManager;
+import flashx.textLayout.elements.Configuration;
+import flashx.textLayout.tlf_internal;
 import flashx.undo.IUndoManager;
 
 import mx.core.mx_internal;
 
 use namespace mx_internal;
+use namespace tlf_internal;
 
 class EditableTextEditManager extends EditManager
 {
@@ -583,4 +589,25 @@ class EditableTextEditManager extends EditManager
 			flushPendingOperations();
 		}
     }
+
+	public override function keyDownHandler(event:KeyboardEvent):void
+	{
+		if (!hasSelection() || event.isDefaultPrevented())
+		{
+			return;
+		}
+
+		if (event.ctrlKey && event.shiftKey && event.keyCode == KeyCode.Z)
+		{
+			if (!Configuration.versionIsAtLeast(10, 1) && (Capabilities.os.search("Mac OS") > -1))
+			{
+				ignoreNextTextEvent = true;
+			}
+
+			redo();
+			event.preventDefault();
+		}
+
+		super.keyDownHandler(event);
+	}
 }

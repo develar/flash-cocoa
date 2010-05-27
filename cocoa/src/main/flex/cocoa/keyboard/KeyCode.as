@@ -1,4 +1,4 @@
-package cocoa
+package cocoa.keyboard
 {
 public final class KeyCode
 {
