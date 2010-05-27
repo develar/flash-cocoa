@@ -53,7 +53,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["ViewFont"] = AquaFonts.VIEW_FONT;
 		data["ViewFont.highlighted"] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
 
-		data["SelectionFormat"] = new SelectionFormat(0xa8c6ee, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
+		data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
 		data["ImageView.border"] = borders[3];
 
@@ -128,6 +128,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["NumericStepper"] = NumericStepperSkin;
 		data["CheckBox"] = CheckBoxSkin;
 		data["HSlider"] = HSliderSkin;
+		data["TextInput"] = TextInputSkin;
 	}
 
 	private static function initAssets():void
@@ -248,7 +249,6 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 		data["Window.border"] = borders[BorderPosition.scrollbar + 16];
 
-		data["TextInput"] = TextInputSkin;
 		data["TextInput.border"] = new TextInputBorder();
 
 		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();

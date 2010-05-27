@@ -189,7 +189,7 @@ public class CenterEqualizedLayout extends LayoutBase
 		return element is Skin && Skin(element).component is CheckBox;
 	}
 
-	override public function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+	override public function updateDisplayList(w:Number, h:Number):void
 	{
 		var layoutTarget:GroupBase = target;
 		if (layoutTarget == null)
@@ -197,7 +197,7 @@ public class CenterEqualizedLayout extends LayoutBase
 			return;
 		}
 
-		var x:Number = 0;
+		var x:Number = layoutTarget.measuredWidth == w ? 0 : ((w - layoutTarget.measuredWidth) / 2);
 		for each (var column:Column in columns)
 		{
 			var localY:Number = 0;

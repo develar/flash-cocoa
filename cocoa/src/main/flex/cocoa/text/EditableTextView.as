@@ -283,7 +283,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 	override public function get baselinePosition():Number
 	{
-		return _textFormat.paddingTop + ascent;
+		return effectiveTextFormat.paddingTop + ascent;
 	}
 
 	private var enabledChanged:Boolean = false;
@@ -1147,7 +1147,9 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		// as if it were set to the empty String
 		// (which is the default state).
 		if (value == null)
+		{
 			value = "";
+		}
 
 		// If value is the same as _text, make sure if was not produced from
 		// setting 'textFlow' or 'content'.  For example, if you set a TextFlow
@@ -1158,7 +1160,9 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		//
 		// Note: this is needed to stop two-binding from recursing.
 		if (source == sourceText && text == value)
+		{
 			return;
+		}
 
 		_text = value;
 		textChanged = true;
@@ -1821,15 +1825,16 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	{
 		var scrollR:Rectangle = scrollRect;
 		if (!scrollR)
+		{
 			return 0;
+		}
 
-		// maxDelta is the horizontalScrollPosition delta required
-		// to scroll to the RIGHT and minDelta scrolls to LEFT.
+		// maxDelta is the horizontalScrollPosition delta required to scroll to the RIGHT and minDelta scrolls to LEFT.
 		var maxDelta:Number = contentWidth - scrollR.right;
 		var minDelta:Number = -scrollR.left;
 
 		// Scroll by a "character" which is 1 em (matches widthInChars()).
-		var em:Number = _textFormat.fontSize;
+		var em:Number = effectiveTextFormat.fontSize;
 
 		switch (navigationUnit)
 		{
@@ -2251,14 +2256,19 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 	private function getEmbeddedFontContext():IFlexModuleFactory
 	{
-		if (_textFormat.fontLookup != FontLookup.DEVICE)
+		if (effectiveTextFormat.fontLookup != FontLookup.DEVICE)
 		{
-			return getFontContext(_textFormat.fontFamily, _textFormat.fontWeight == FontWeight.BOLD, _textFormat.fontStyle == FontPosture.ITALIC, true);
+			return getFontContext(effectiveTextFormat.fontFamily, effectiveTextFormat.fontWeight == FontWeight.BOLD, effectiveTextFormat.fontStyle == FontPosture.ITALIC, true);
 		}
 		else
 		{
 			return null;
 		}
+	}
+
+	private function get effectiveTextFormat():ITextLayoutFormat
+	{
+		return _textFormat == null ? _textFlow.computedFormat : _textFormat;
 	}
 
 	/**
@@ -2267,7 +2277,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 */
 	mx_internal function isMeasureFixed():Boolean
 	{
-		if (_textContainerManager.hostFormat.blockProgression != BlockProgression.TB)
+		if (effectiveTextFormat.blockProgression != BlockProgression.TB)
 		{
 			return true;
 		}
@@ -2326,7 +2336,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		{
 			// Empty text flow.  One Em wide so there
 			// is a place to put the insertion cursor.
-			bounds.width = bounds.width + _textFormat.fontSize;
+			bounds.width = bounds.width + effectiveTextFormat.fontSize;
 		}
 
 		//trace("measureTextSize", composeWidth, "->", bounds.width, composeHeight, "->", bounds.height);
@@ -2407,7 +2417,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 */
 	private function calculateFontMetrics():void
 	{
-		textElement.elementFormat = TextFormat(_textFormat).elementFormat;
+		textElement.elementFormat = TextFormat(effectiveTextFormat).elementFormat;
 		var textLine:TextLine = measureText("M");
 		ascent = textLine.ascent;
 		descent = textLine.descent;
@@ -2429,20 +2439,20 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 	private function calculateWidthInChars():Number
 	{
-		var em:Number = _textFormat.fontSize;
-
 		var effectiveWidthInChars:int;
-
-		// If both height and width are NaN use 10 chars.  Otherwise if only
-		// width is NaN, use 1.
+		// If both height and width are NaN use 10 chars.  Otherwise if only width is NaN, use 1.
 		if (isNaN(_widthInChars))
+		{
 			effectiveWidthInChars = isNaN(_heightInLines) ? 10 : 1;
+		}
 		else
+		{
 			effectiveWidthInChars = _widthInChars;
+		}
 
 		// Without the explicit casts, if padding values are non-zero, the
 		// returned width is a very large number.
-		return _textFormat.paddingLeft + effectiveWidthInChars * em + _textFormat.paddingRight;
+		return effectiveTextFormat.paddingLeft + (effectiveWidthInChars * effectiveTextFormat.fontSize) + effectiveTextFormat.paddingRight;
 	}
 
 	/**
@@ -2451,7 +2461,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 */
 	private function calculateHeightInLines():Number
 	{
-		var height:Number = _textFormat.paddingTop + _textFormat.paddingBottom;
+		var height:Number = effectiveTextFormat.paddingTop + effectiveTextFormat.paddingBottom;
 
 		if (_heightInLines == 0)
 			return height;
@@ -2466,7 +2476,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			effectiveHeightInLines = _heightInLines;
 
 		// Position of the baseline of first line in the container.
-		value = _textFormat.firstBaselineOffset;
+		value = effectiveTextFormat.firstBaselineOffset;
 		if (value == lineHeight)
 			height += lineHeight; else if (value is Number)
 			height += Number(value);
@@ -2477,12 +2487,12 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		// or +/- percent (in form "120%") or "undefined".
 		if (effectiveHeightInLines > 1)
 		{
-			var value:Object = _textFormat.lineHeight;
-			var lineHeight:Number = TextUtil.getNumberOrPercentOf(value, _textFormat.fontSize);
+			var value:Object = effectiveTextFormat.lineHeight;
+			var lineHeight:Number = TextUtil.getNumberOrPercentOf(value, effectiveTextFormat.fontSize);
 
 			// Default is 120%
 			if (isNaN(lineHeight))
-				lineHeight = _textFormat.fontSize * 1.2;
+				lineHeight = effectiveTextFormat.fontSize * 1.2;
 
 			height += (effectiveHeightInLines - 1) * lineHeight;
 		}
@@ -2500,17 +2510,18 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		if (content is TextFlow)
 		{
 			textFlow = content as TextFlow;
-		} else if (content is Array)
+		}
+		else if (content is Array)
 		{
 			textFlow = new TextFlow();
-			textFlow.whiteSpaceCollapse = _textFormat.whiteSpaceCollapse;
+			textFlow.whiteSpaceCollapse = effectiveTextFormat.whiteSpaceCollapse;
 			textFlow.mxmlChildren = content as Array;
 			textFlow.whiteSpaceCollapse = undefined;
 		}
 		else
 		{
 			textFlow = new TextFlow();
-			textFlow.whiteSpaceCollapse = _textFormat.whiteSpaceCollapse;
+			textFlow.whiteSpaceCollapse = effectiveTextFormat.whiteSpaceCollapse;
 			textFlow.mxmlChildren = [ content ];
 			textFlow.whiteSpaceCollapse = undefined;
 		}
@@ -2871,7 +2882,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		{
 			if (bounds.width < _contentWidth)
 			{
-				if (_textFormat.lineBreak == LineBreak.TO_FIT)
+				if (effectiveTextFormat.lineBreak == LineBreak.TO_FIT)
 				{
 					if (bounds.height < _contentHeight)
 					{

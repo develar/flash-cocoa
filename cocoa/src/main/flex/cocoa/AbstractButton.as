@@ -10,6 +10,7 @@ public class AbstractButton extends AbstractControl implements Cell
 
 	private var oldState:int = -1;
 
+	[Bindable(event="selectedChanged")]
 	public function get selected():Boolean
 	{
 		return state == CellState.ON;

@@ -319,7 +319,9 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		{
 			// make sure we set it back on systemManager b/c it may have been overridden by now
 			if (systemManager is InteractiveObject)
+			{
 				InteractiveObject(systemManager).contextMenu = contextMenu;
+			}
 			return;
 		}
 
@@ -330,7 +332,9 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		contextMenu = defaultMenu;
 
 		if (systemManager is InteractiveObject)
+		{
 			InteractiveObject(systemManager).contextMenu = defaultMenu;
+		}
 	}
 
 	/**

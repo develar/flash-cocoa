@@ -74,7 +74,6 @@ internal final class EditableTextContainerManager extends TextContainerManager
         if (isNaN(height))
             height = contentBounds.bottom;
 
-        // TODO:(cframpto)  Adjust for RL text.
         // See ContainerController.updateVisibleRectangle().
         // (effectiveBlockProgression == BlockProgression.RL) ? -width : 0;
         var xOrigin:Number = 0;
@@ -129,13 +128,6 @@ internal final class EditableTextContainerManager extends TextContainerManager
      */
     override tlf_internal function getContextMenu():ContextMenu
     {
-        // ToDo(cframpto): can't differentiate between the user removing the
-        // context menu because they don't want it and TLF removing it and
-        // it is requesting it again.  Need additional API to support
-        // contextMenus correctly.  Ideally could specify the context
-        // menu on the TextArea or the TextInput and it wouldn't be obscured
-        // by TLF's context menu.
-
         if (textDisplay.contextMenu != null)
 		{
 			userContextMenu = textDisplay.contextMenu;
@@ -145,7 +137,7 @@ internal final class EditableTextContainerManager extends TextContainerManager
             userContextMenu = super.getContextMenu();
 		}
 
-        return userContextMenu;
+		return userContextMenu;
     }
 
     override protected function getUndoManager():IUndoManager
