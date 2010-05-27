@@ -1,11 +1,9 @@
 package cocoa.tree
 {
-import cocoa.IEditable;
 import cocoa.View;
 
 import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
-import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.utils.setInterval;
@@ -34,7 +32,7 @@ use namespace mx_internal;
 [Exclude(name="borderThickness", kind="style")]
 
 [Style(name="pageIcon", type="Class", format="EmbeddedFile")]
-public class Tree extends mx.controls.Tree implements IEditable, View
+public class Tree extends mx.controls.Tree implements View
 {
 	public function Tree()
 	{
@@ -43,16 +41,6 @@ public class Tree extends mx.controls.Tree implements IEditable, View
 		dataDescriptor = new TreeDataDescriptor();
 	}
 
-	private var _editMode:Boolean = false;
-	public function get editMode():Boolean
-	{
-		return _editMode;
-	}
-
-	public function set editMode(value:Boolean):void
-	{
-		_editMode = value;
-	}
 
 	[Bindable("collectionChange")]
 	[Inspectable(category="Data", defaultValue="null")]
@@ -431,14 +419,10 @@ public class Tree extends mx.controls.Tree implements IEditable, View
 		return index;
 	}
 
-	override protected function keyDownHandler(event:KeyboardEvent):void
-	{
-		if (_editMode)
-		{
-			return;
-		}
-		super.keyDownHandler(event);
-	}
+	/*override protected function keyDownHandler(event:KeyboardEvent):void
+	 {
+	 super.keyDownHandler(event);
+	 }*/
 
 	public function mouseEventToRenderer(event:MouseEvent):IListItemRenderer
 	{
@@ -485,7 +469,8 @@ public class Tree extends mx.controls.Tree implements IEditable, View
 		var r:IListItemRenderer = mouseEventToRenderer(event);
 		//click on disclosure icon shouldn't select the item
 		//this is temporary solution to fix it
-		if (r == null || !dataDescriptor.isBranch(r.data) || ( event.target != r['openIcon'] && event.target != r['closeIcon']))
+		if (r == null || !dataDescriptor.isBranch(r.data) || !('openIcon' in r) ||
+				( event.target != r['openIcon'] && event.target != r['closeIcon']))
 		{
 			super.mouseDownHandler(event);
 		}

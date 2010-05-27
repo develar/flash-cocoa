@@ -1,7 +1,5 @@
 package cocoa.tree
 {
-import cocoa.EditableItemRenderer;
-
 import flash.events.MouseEvent;
 
 import mx.controls.listClasses.IDropInListItemRenderer;
@@ -89,11 +87,8 @@ public class TreeWithDragDrop extends Tree
 		if (event.isDefaultPrevented())
 			return;
 
-		var item:IListItemRenderer = selectedItem ? itemToItemRenderer(selectedItem) : null;
-		if (item && item is EditableItemRenderer && EditableItemRenderer(item).editMode)
-		{
-			return;
-		}
+		//var item:IListItemRenderer = selectedItem ? itemToItemRenderer(selectedItem) : null;
+
 
 		var dragSource:DragSource = new DragSource();
 
