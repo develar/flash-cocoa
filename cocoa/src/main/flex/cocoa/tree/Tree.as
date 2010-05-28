@@ -9,6 +9,7 @@ import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
+import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.utils.setInterval;
