@@ -16,7 +16,7 @@ public class CompoundBorder extends AbstractBorder
 		_contentInsets = contentInsets;
 		_insideBorder = insideBorder;
 
-		_layoutHeight = layoutHeight;
+		_layoutHeight = isNaN(layoutHeight) ? insideBorder.layoutHeight : layoutHeight;
 	}
 
 	private var _insideBorder:Border;

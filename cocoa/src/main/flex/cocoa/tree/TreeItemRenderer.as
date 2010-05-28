@@ -29,7 +29,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 	private var listDataChanged:Boolean;
 
-	private var _listData:TreeListData;
+	protected var _listData:TreeListData;
 	public function get listData():BaseListData
 	{
 		return _listData;
@@ -149,12 +149,22 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		{
 			return;
 		}
-		var itemX:Number = _listData.indent + 16;
-		icon.x = itemX;
-		itemX += 16;
+		icon.x = _listData.indent + 16;
 
+		if (_listData.open)
+		{
+			if (disclosureOpenIcon != null && disclosureOpenIcon.visible)
+			{
+				layoutDisclosureIcon(disclosureOpenIcon);
+			}
+		}
+		else if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
+		{
+			layoutDisclosureIcon(disclosureCloseIcon);
+		}
+		
 		labelHelper.validate();
-		labelHelper.move(itemX + 1, h - 5);
+		labelHelper.moveByInsets(h, Tree(owner).$border.contentInsets, Tree(owner).$border.frameInsets);
 	}
 
 	private var _data:Object;
@@ -174,14 +184,32 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	private function createDisclosureIcon(clazz:Class):DisplayObject
 	{
 		var disclosureIcon:DisplayObject = new clazz();
+		addDisplayObject(disclosureIcon);
+		return disclosureIcon;
+	}
+
+	private function isDisclosureIconClicked(disclosureIcon:DisplayObject, event:MouseEvent):Boolean
+	{
+		return disclosureIcon != null && disclosureIcon.visible && disclosureIcon.hitTestPoint(event.stageX, event.stageY);
+	}
+
+	public function checkDisclosure(event:MouseEvent):Boolean
+	{
+		if ((_listData.open && isDisclosureIconClicked(disclosureOpenIcon, event)) || isDisclosureIconClicked(disclosureCloseIcon, event))
+		{
+			disclosureIconClickHandler(event);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	protected function layoutDisclosureIcon(disclosureIcon:DisplayObject):void
+	{
 		disclosureIcon.x = _listData.indent;
 		disclosureIcon.y = 2;
-
-		addChild(disclosureIcon);
-
-		disclosureIcon.addEventListener(MouseEvent.CLICK, disclosureIconClickHandler);
-
-		return disclosureIcon;
 	}
 
 	private function disclosureIconClickHandler(event:MouseEvent):void

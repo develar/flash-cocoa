@@ -1,8 +1,13 @@
 package cocoa.tree
 {
+import cocoa.Border;
 import cocoa.View;
+import cocoa.plaf.LookAndFeelProvider;
+import cocoa.plaf.Scale3EdgeHBitmapBorder;
 
 import flash.display.DisplayObject;
+import flash.display.Graphics;
+import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
 import flash.events.MouseEvent;
 import flash.geom.Point;
@@ -11,12 +16,15 @@ import flash.utils.setInterval;
 import mx.collections.ICollectionView;
 import mx.collections.IViewCursor;
 import mx.controls.Tree;
+import mx.controls.listClasses.BaseListData;
 import mx.controls.listClasses.IDropInListItemRenderer;
 import mx.controls.listClasses.IListItemRenderer;
+import mx.controls.listClasses.ListBaseContentHolder;
 import mx.controls.treeClasses.TreeListData;
 import mx.core.DragSource;
 import mx.core.EdgeMetrics;
 import mx.core.IFlexDisplayObject;
+import mx.core.IInvalidating;
 import mx.core.IUIComponent;
 import mx.core.mx_internal;
 import mx.events.DragEvent;
@@ -39,8 +47,18 @@ public class Tree extends mx.controls.Tree implements View
 		super();
 
 		dataDescriptor = new TreeDataDescriptor();
+
+		setStyle("paddingTop", 0);
+		setStyle("paddingBottom", 0);
+		setStyle("paddingLeft", 3);
+		setStyle("paddingRight", 3);
 	}
 
+	private var _border:Border;
+	public function get $border():Border
+	{
+		return _border;
+	}
 
 	[Bindable("collectionChange")]
 	[Inspectable(category="Data", defaultValue="null")]
@@ -273,7 +291,7 @@ public class Tree extends mx.controls.Tree implements View
 
 	private function updateDropData(event:DragEvent):void
 	{
-		var rowCount:int = rowInfo.length;
+//		var rowCount:int = rowInfo.length;
 		var rowNum:int = 0;
 		var yy:int = rowInfo[rowNum].height;
 		var pt:Point = globalToLocal(new Point(event.stageX, event.stageY));
@@ -332,7 +350,7 @@ public class Tree extends mx.controls.Tree implements View
 				emptyFolder = true;
 			}
 		}
-		else if (!topItem && !rowNum == rowCount)
+		else if (topItem == null) // WTF? && !rowNum == rowCount
 		{
 			parent = collection ? getParentItem(bottomItem) : null;
 			index = bottomItem ? getChildIndexInParent(parent, bottomItem) : 0;
@@ -474,6 +492,136 @@ public class Tree extends mx.controls.Tree implements View
 		{
 			super.mouseDownHandler(event);
 		}
+	}
+
+	protected override function createChildren():void
+	{
+		_border = LookAndFeelProvider(parent).laf.getBorder("Tree.border");
+		rowHeight = _border.layoutHeight;
+		
+		super.createChildren();
+	}
+
+	override protected function drawItem(item:IListItemRenderer, selected:Boolean = false, highlighted:Boolean = false, caret:Boolean = false, transition:Boolean = false):void
+	{
+		if (!item)
+		{
+			return;
+		}
+
+		if (!(item is TreeItemRenderer))
+		{
+			super.drawItem(item, selected, highlighted, caret, transition);
+			return;
+		}
+
+		var contentHolder:ListBaseContentHolder = DisplayObject(item).parent as ListBaseContentHolder;
+		if (!contentHolder)
+		{
+			return;
+		}
+
+		var rowInfo:Array = contentHolder.rowInfo;
+		var rowData:BaseListData = rowMap[item.name];
+		// this can happen due to race conditions when using data effects
+		if (!rowData)
+		{
+			return;
+		}
+
+		if (highlighted && (highlightItemRenderer == null || highlightUID != rowData.uid))
+		{
+			drawItemBorder(item.width, rowInfo[rowData.rowIndex].height, item, 0);
+
+			lastHighlightItemRenderer = highlightItemRenderer = item;
+			highlightUID = rowData.uid;
+		}
+		else if (highlightItemRenderer && (rowData && highlightUID == rowData.uid))
+		{
+			clearHighlightIndicator(highlightIndicator, item);
+			highlightItemRenderer = null;
+			highlightUID = null;
+		}
+
+		if (selected)
+		{
+			drawItemBorder(item.width, rowInfo[rowData.rowIndex].height, item, 2);
+		}
+		else if (!highlighted)
+		{
+			TreeItemRenderer(item).graphics.clear();
+		}
+
+		if (caret) // && (!caretItemRenderer || caretUID != rowData.uid))
+		{
+			// Only draw the caret if there has been keyboard navigation.
+			if (showCaret)
+			{
+				//drawCaretIndicator(o, item.x, rowInfo[rowData.rowIndex].y, item.width, rowInfo[rowData.rowIndex].height, getStyle("selectionColor"), item);
+
+				var oldCaretItemRenderer:IListItemRenderer = caretItemRenderer;
+				caretItemRenderer = item;
+				caretUID = rowData.uid;
+				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
+				{
+					IInvalidating(oldCaretItemRenderer).invalidateDisplayList();
+					IInvalidating(oldCaretItemRenderer).validateNow();
+				}
+			}
+		}
+		else if (caretItemRenderer != null && caretUID == rowData.uid)
+		{
+			clearCaretIndicator(caretIndicator, item);
+			caretItemRenderer = null;
+			caretUID = "";
+		}
+
+		if (item is IFlexDisplayObject && item is IInvalidating)
+		{
+			IInvalidating(item).invalidateDisplayList();
+			IInvalidating(item).validateNow();
+		}
+	}
+
+	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int):void
+	{
+		var border:Scale3EdgeHBitmapBorder = Scale3EdgeHBitmapBorder(_border);
+		border.bitmapIndex = index;
+
+		var oldFrameX:Number = border.frameInsets.left;
+		border.frameInsets.left += TreeListData(TreeItemRenderer(itemRenderer).listData).indent;
+
+		var g:Graphics = TreeItemRenderer(itemRenderer).graphics;
+        g.clear();
+		_border.draw(null, g, width, height);
+
+		border.frameInsets.left = oldFrameX;
+	}
+
+	override protected function drawRowBackgrounds():void
+    {
+		
+	}
+
+	override protected function drawCaretIndicator(
+                                indicator:Sprite, x:Number, y:Number,
+                                width:Number, height:Number, color:uint,
+                                itemRenderer:IListItemRenderer):void
+    {
+
+	}
+
+	protected override function mouseClickHandler(event:MouseEvent):void
+	{
+		if (event.target is TreeItemRenderer)
+		{
+			if (TreeItemRenderer(event.target).checkDisclosure(event))
+			{
+				return;
+			}
+		}
+
+		super.mouseClickHandler(event);
 	}
 }
 }

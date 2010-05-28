@@ -31,7 +31,9 @@ public class SidebarLayout extends LayoutBase implements AdvancedLayout
 			}
 		}
 
-		var elementHeight:Number = height / numActiveElements;
+		const elementHeight:Number = Math.round(height / numActiveElements);
+		var firstElementHeight:Number = elementHeight + (height - (elementHeight * numActiveElements));
+		var efffectiveElementHeight:Number;
 		var y:Number = 0;
 		for (i = 0; i < numElements; i++)
 		{
@@ -42,9 +44,18 @@ public class SidebarLayout extends LayoutBase implements AdvancedLayout
 			}
 
 			layoutElement.setLayoutBoundsPosition(0, y);
-			layoutElement.setLayoutBoundsSize(width, elementHeight);
+			if (!isNaN(firstElementHeight))
+			{
+				efffectiveElementHeight = firstElementHeight;
+				firstElementHeight = NaN;
+			}
+			else
+			{
+				efffectiveElementHeight = elementHeight;
+			}
 
-			y += elementHeight;
+			layoutElement.setLayoutBoundsSize(width, efffectiveElementHeight);
+			y += efffectiveElementHeight;
 		}
 	}
 
