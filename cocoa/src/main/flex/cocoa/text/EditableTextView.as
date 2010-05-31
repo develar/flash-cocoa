@@ -607,7 +607,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *
 	 *  @default true
 	 *
-	 *  @see spark.components.RichEditableText#selectable
+	 *  @see #selectable
 	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
@@ -725,7 +725,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *
 	 *  @default NaN
 	 *
-	 *  @see spark.components.RichEditableText#widthInChars
+	 *  @see #widthInChars
 	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
@@ -939,7 +939,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *
 	 *  @default -1
 	 *
-	 *  @see spark.components.RichEditableText#selectionAnchorPosition
+	 *  @see #selectionAnchorPosition
 	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
@@ -979,7 +979,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *
 	 *  @default -1
 	 *
-	 *  @see spark.components.RichEditableText#selectionActivePosition
+	 *  @see #selectionActivePosition
 	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
@@ -1102,11 +1102,11 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *
 	 *  @default ""
 	 *
-	 *  @see spark.components.RichEditableText#textFlow
-	 *  @see spark.components.RichEditableText#horizontalScrollPosition
-	 *  @see spark.components.RichEditableText#verticalScrollPosition
-	 *  @see spark.components.RichEditableText#selectionAnchorPosition
-	 *  @see spark.components.RichEditableText#selectionActivePosition
+	 *  @see #textFlow
+	 *  @see #horizontalScrollPosition
+	 *  @see #verticalScrollPosition
+	 *  @see #selectionAnchorPosition
+	 *  @see #selectionActivePosition
 	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
@@ -1269,7 +1269,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *
 	 *  @see spark.utils.TextFlowUtil.importFromString()
 	 *  @see spark.utils.TextFlowUtil.importFromXML()
-	 *  @see spark.components.RichEditableText#text
+	 *  @see #text
 	 */
 	public function get textFlow():TextFlow
 	{

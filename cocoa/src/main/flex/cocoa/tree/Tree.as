@@ -631,5 +631,21 @@ public class Tree extends mx.controls.Tree implements View
 		itemEditorInstance.move(indent + _border.contentInsets.left, y);
 		itemEditorInstance.setActualSize(item.width - _border.contentInsets.left - indent + item.x, h);
 	}
+
+	override protected function moveIndicatorsVertically(uid:String, moveBlockDistance:Number):void
+	{
+		if (highlightIndicator != null)
+		{
+			super.moveIndicatorsVertically(uid, moveBlockDistance);
+		}
+	}
+
+	override protected function moveIndicatorsHorizontally(uid:String, moveBlockDistance:Number):void
+	{
+		if (highlightIndicator != null)
+		{
+			super.moveIndicatorsHorizontally(uid, moveBlockDistance);
+		}
+	}
 }
 }
