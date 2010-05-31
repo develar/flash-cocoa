@@ -55,6 +55,7 @@ public class Tree extends mx.controls.Tree implements View
 	}
 
 	private var _border:Border;
+
 	public function get $border():Border
 	{
 		return _border;
@@ -291,7 +292,7 @@ public class Tree extends mx.controls.Tree implements View
 
 	private function updateDropData(event:DragEvent):void
 	{
-//		var rowCount:int = rowInfo.length;
+		//		var rowCount:int = rowInfo.length;
 		var rowNum:int = 0;
 		var yy:int = rowInfo[rowNum].height;
 		var pt:Point = globalToLocal(new Point(event.stageX, event.stageY));
@@ -486,9 +487,7 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		var r:IListItemRenderer = mouseEventToRenderer(event);
 		//click on disclosure icon shouldn't select the item
-		//this is temporary solution to fix it
-		if (r == null || !dataDescriptor.isBranch(r.data) || !('openIcon' in r) ||
-				( event.target != r['openIcon'] && event.target != r['closeIcon']))
+		if (r == null || !dataDescriptor.isBranch(r.data) || !TreeItemRenderer(r).checkDisclosure(event, false))
 		{
 			super.mouseDownHandler(event);
 		}
@@ -498,7 +497,7 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		_border = LookAndFeelProvider(parent).laf.getBorder("Tree.border");
 		rowHeight = _border.layoutHeight;
-		
+
 		super.createChildren();
 	}
 
@@ -592,22 +591,22 @@ public class Tree extends mx.controls.Tree implements View
 		border.frameInsets.left += TreeListData(TreeItemRenderer(itemRenderer).listData).indent;
 
 		var g:Graphics = TreeItemRenderer(itemRenderer).graphics;
-        g.clear();
+		g.clear();
 		_border.draw(null, g, width, height);
 
 		border.frameInsets.left = oldFrameX;
 	}
 
 	override protected function drawRowBackgrounds():void
-    {
-		
+	{
+
 	}
 
 	override protected function drawCaretIndicator(
-                                indicator:Sprite, x:Number, y:Number,
-                                width:Number, height:Number, color:uint,
-                                itemRenderer:IListItemRenderer):void
-    {
+			indicator:Sprite, x:Number, y:Number,
+			width:Number, height:Number, color:uint,
+			itemRenderer:IListItemRenderer):void
+	{
 
 	}
 

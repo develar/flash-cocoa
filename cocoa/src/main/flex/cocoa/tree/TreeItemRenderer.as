@@ -44,7 +44,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 		_listData = TreeListData(value);
 		listDataChanged = true;
-		
+
 		invalidateProperties();
 		invalidateDisplayList();
 	}
@@ -162,7 +162,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		{
 			layoutDisclosureIcon(disclosureCloseIcon);
 		}
-		
+
 		labelHelper.validate();
 		labelHelper.moveByInsetsWithXOffseet(h, Tree(owner).$border.contentInsets, Tree(owner).$border.frameInsets, _listData.indent);
 	}
@@ -193,17 +193,22 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		return disclosureIcon != null && disclosureIcon.visible && disclosureIcon.hitTestPoint(event.stageX, event.stageY);
 	}
 
-	public function checkDisclosure(event:MouseEvent):Boolean
+	public function checkDisclosure(event:MouseEvent, dispatchOpenEvent:Boolean = true):Boolean
 	{
-		if ((_listData.open && isDisclosureIconClicked(disclosureOpenIcon, event)) || isDisclosureIconClicked(disclosureCloseIcon, event))
+		if (dispatchOpenEvent)
 		{
-			disclosureIconClickHandler(event);
-			return true;
+			if ((_listData.open && isDisclosureIconClicked(disclosureOpenIcon, event)) || isDisclosureIconClicked(disclosureCloseIcon, event))
+			{
+				disclosureIconClickHandler(event);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
-		else
-		{
-			return false;
-		}
+
+		return isDisclosureIconClicked(disclosureOpenIcon, event) || isDisclosureIconClicked(disclosureCloseIcon, event);
 	}
 
 	protected function layoutDisclosureIcon(disclosureIcon:DisplayObject):void
