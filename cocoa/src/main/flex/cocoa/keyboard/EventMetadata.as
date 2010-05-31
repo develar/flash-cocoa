@@ -10,6 +10,8 @@ public final class EventMetadata
 	public var clazz:Class;
 	public var type:String;
 
+	public var useContainerChain:Boolean;
+
 	public function EventMetadata(clazz:Class = null, type:String = null)
 	{
 		this.clazz = clazz;

@@ -625,20 +625,11 @@ public class Tree extends mx.controls.Tree implements View
 
 	override protected function layoutEditor(x:int, y:int, w:int, h:int):void
 	{
-		var indent:int = rowMap[editedItemRenderer.name].indent;
-		itemEditorInstance.move(x + indent + _border.contentInsets.left, y);
-		itemEditorInstance.setActualSize(w - indent, h);
-	}
-
-	override public function createItemEditor(colIndex:int, rowIndex:int):void
-	{
-		super.createItemEditor(colIndex, rowIndex);
-
-		var item:TreeItemRenderer = listItems[rowIndex][0] as TreeItemRenderer;
-		if (item != null)
-		{
-			item.graphics.clear();
-		}
+		var data:TreeListData = rowMap[editedItemRenderer.name];
+		var item:IListItemRenderer = listItems[data.rowIndex][0];
+		var indent:int = data.indent;
+		itemEditorInstance.move(indent + _border.contentInsets.left, y);
+		itemEditorInstance.setActualSize(item.width - _border.contentInsets.left - indent + item.x, h);
 	}
 }
 }

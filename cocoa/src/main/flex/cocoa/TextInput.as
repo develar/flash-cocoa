@@ -20,7 +20,7 @@ public class TextInput extends AbstractComponent
 	private var _text:String;
 	public function get text():String
 	{
-		return _text;
+		return textDisplay == null ? _text : textDisplay.text;
 	}
 	public function set text(value:String):void
 	{

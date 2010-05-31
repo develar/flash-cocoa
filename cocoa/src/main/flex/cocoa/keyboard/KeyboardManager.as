@@ -1,12 +1,15 @@
 package cocoa.keyboard
 {
+import cocoa.text.EditableTextView;
+
+import com.asfusion.mate.events.ContextEventDispatcher;
+
 import flash.display.InteractiveObject;
 import flash.events.KeyboardEvent;
+import flash.ui.Keyboard;
 import flash.utils.Dictionary;
 
-import spark.components.RichEditableText;
-
-public class KeyboardManager
+public class KeyboardManager extends ContextEventDispatcher
 {
 	private var commandShortcuts:Dictionary;
 	private var commandShiftShortcuts:Dictionary;
@@ -89,9 +92,13 @@ public class KeyboardManager
 				items = commandShortcuts[event.keyCode];
 			}
 		}
-		else if (!(event.target is RichEditableText && RichEditableText(event.target).editable))
+		else
 		{
-            items = shortcuts[event.keyCode];
+			var editableText:EditableTextView = event.target as EditableTextView;
+			if (editableText == null || !editableText.editable || (!editableText.multiline && event.keyCode == Keyboard.ESCAPE))
+			{
+            	items = shortcuts[event.keyCode];
+			}
 		}
 
 		if (items != null)
@@ -110,7 +117,14 @@ public class KeyboardManager
 
 	private function dispatch(item:KeymapItem, target:InteractiveObject):void
 	{
-		target.dispatchEvent(item.event.create());
+		if (item.event.useContainerChain)
+		{
+			dispatchContextEvent(item.event.create());
+		}
+		else
+		{
+			target.dispatchEvent(item.event.create());
+		}
 	}
 }
 }
