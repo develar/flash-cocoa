@@ -9,7 +9,6 @@ import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
-import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.utils.setInterval;
@@ -623,6 +622,24 @@ public class Tree extends mx.controls.Tree implements View
 		}
 
 		super.mouseClickHandler(event);
+	}
+
+	override protected function layoutEditor(x:int, y:int, w:int, h:int):void
+	{
+		var indent:int = rowMap[editedItemRenderer.name].indent;
+		itemEditorInstance.move(x + indent + _border.contentInsets.left, y);
+		itemEditorInstance.setActualSize(w - indent, h);
+	}
+
+	override public function createItemEditor(colIndex:int, rowIndex:int):void
+	{
+		super.createItemEditor(colIndex, rowIndex);
+
+		var item:TreeItemRenderer = listItems[rowIndex][0] as TreeItemRenderer;
+		if (item != null)
+		{
+			item.graphics.clear();
+		}
 	}
 }
 }

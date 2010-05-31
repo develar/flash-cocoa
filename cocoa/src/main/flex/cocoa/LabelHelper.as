@@ -133,6 +133,17 @@ public class LabelHelper
 		textLine.y = h - contentInsets.bottom + frameInsets.top;
 	}
 
+	public function moveByInsetsWithXOffseet(h:Number, contentInsets:Insets, frameInsets:FrameInsets, xOffset:Number):void
+	{
+		if (textLine == null)
+		{
+			return;
+		}
+
+		textLine.x = contentInsets.left + frameInsets.left + xOffset;
+		textLine.y = h - contentInsets.bottom;
+	}
+
 	public function adjustWidth(newWidth:Number):void
 	{
 		if (isNaN(newWidth))

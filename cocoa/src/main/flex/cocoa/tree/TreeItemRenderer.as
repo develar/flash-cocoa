@@ -164,7 +164,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		}
 		
 		labelHelper.validate();
-		labelHelper.moveByInsets(h, Tree(owner).$border.contentInsets, Tree(owner).$border.frameInsets);
+		labelHelper.moveByInsetsWithXOffseet(h, Tree(owner).$border.contentInsets, Tree(owner).$border.frameInsets, _listData.indent);
 	}
 
 	private var _data:Object;
