@@ -48,9 +48,10 @@
 			laf = new AquaLookAndFeel();
 			createDeferredContent();
 
-			//			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
+						MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));
 			//			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog()));
 
+			return;
 			var hudWindow:HUDWindow = new HUDWindow();
 			hudWindow.resizable = false;
 			hudWindow.title = "Test";

@@ -6,7 +6,6 @@ import cocoa.Component;
 import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.TextInsets;
-import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.PushButtonSkin;
@@ -81,8 +80,6 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 		{
 			border = getBorder("border");
 		}
-
-		adjustTitleWidth();
 	}
 
 	override protected function measure():void
@@ -102,6 +99,12 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 	{
 		if (labelHelper != null)
 		{
+			if (border != null)
+			{
+				var titleInsets:Insets = border.contentInsets;
+				labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
+			}
+
 			labelHelper.font = getFont(enabled ? "SystemFont" : "SystemFont.disabled");
 			labelHelper.validate();
 			labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
@@ -117,27 +120,6 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 		super.enabled = value;
 
 		mouseEnabled = value;
-	}
-
-	override public function set explicitWidth(value:Number):void
-	{
-		super.explicitWidth = value;
-		adjustTitleWidth();
-	}
-
-	override public function set layoutMetrics(value:LayoutMetrics):void
-	{
-		super.layoutMetrics = value;
-		adjustTitleWidth();
-	}
-
-	private function adjustTitleWidth():void
-	{
-		if (border != null && labelHelper != null)
-		{
-			var titleInsets:Insets = border.contentInsets;
-			labelHelper.adjustWidth(_layoutMetrics.width - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
-		}
 	}
 
 	public function drawFocus(isFocused:Boolean):void

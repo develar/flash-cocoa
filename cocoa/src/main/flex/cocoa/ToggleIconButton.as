@@ -20,19 +20,6 @@ public class ToggleIconButton extends IconButton implements ToggleButton
 		}
 	}
 
-	private var _alternateToolTip:String;
-	public function set alternateToolTip(value:String):void
-	{
-		if (value != _alternateToolTip)
-		{
-			_alternateToolTip = value;
-			if (mySkin != null && state == CellState.ON)
-			{
-				mySkin.toolTip = _alternateToolTip;
-			}
-		}
-	}
-
 	private var _alternateIcon:Icon;
 	public function get alternateIcon():Icon
 	{
@@ -70,10 +57,6 @@ public class ToggleIconButton extends IconButton implements ToggleButton
 		if (_alternateIcon != null)
 		{
 			IconButtonSkin(mySkin).icon = value == CellState.ON ? _alternateIcon : icon;
-		}
-		if (_alternateToolTip != null)
-		{
-			mySkin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
 		}
 
 		super.state = value;

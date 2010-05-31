@@ -37,6 +37,19 @@ public class PushButton extends AbstractButton
 		}
 	}
 
+	private var _alternateToolTip:String;
+	public function set alternateToolTip(value:String):void
+	{
+		if (value != _alternateToolTip)
+		{
+			_alternateToolTip = value;
+			if (mySkin != null && state == CellState.ON)
+			{
+				mySkin.toolTip = _alternateToolTip;
+			}
+		}
+	}
+
 	override protected function skinAttachedHandler():void
     {
 		super.skinAttachedHandler();
@@ -51,6 +64,16 @@ public class PushButton extends AbstractButton
 	override public function get objectValue():Object
 	{
 		return label;
+	}
+
+	override public function set state(value:int):void
+	{
+		if (_alternateToolTip != null)
+		{
+			mySkin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
+		}
+
+		super.state = value;
 	}
 }
 }

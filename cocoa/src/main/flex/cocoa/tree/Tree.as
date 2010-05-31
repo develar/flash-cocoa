@@ -508,11 +508,11 @@ public class Tree extends mx.controls.Tree implements View
 			return;
 		}
 
-		if (!(item is TreeItemRenderer))
-		{
-			super.drawItem(item, selected, highlighted, caret, transition);
-			return;
-		}
+//		if (!(item is TreeItemRenderer))
+//		{
+//			super.drawItem(item, selected, highlighted, caret, transition);
+//			return;
+//		}
 
 		var contentHolder:ListBaseContentHolder = DisplayObject(item).parent as ListBaseContentHolder;
 		if (!contentHolder)
@@ -548,7 +548,7 @@ public class Tree extends mx.controls.Tree implements View
 		}
 		else if (!highlighted)
 		{
-			TreeItemRenderer(item).graphics.clear();
+			Sprite(item).graphics.clear();
 		}
 
 		if (caret) // && (!caretItemRenderer || caretUID != rowData.uid))
@@ -588,9 +588,9 @@ public class Tree extends mx.controls.Tree implements View
 		border.bitmapIndex = index;
 
 		var oldFrameX:Number = border.frameInsets.left;
-		border.frameInsets.left += TreeListData(TreeItemRenderer(itemRenderer).listData).indent;
+		border.frameInsets.left += TreeListData(IDropInListItemRenderer(itemRenderer).listData).indent;
 
-		var g:Graphics = TreeItemRenderer(itemRenderer).graphics;
+		var g:Graphics = Sprite(itemRenderer).graphics;
 		g.clear();
 		_border.draw(null, g, width, height);
 
@@ -602,10 +602,7 @@ public class Tree extends mx.controls.Tree implements View
 
 	}
 
-	override protected function drawCaretIndicator(
-			indicator:Sprite, x:Number, y:Number,
-			width:Number, height:Number, color:uint,
-			itemRenderer:IListItemRenderer):void
+	override protected function drawCaretIndicator(indicator:Sprite, x:Number, y:Number, width:Number, height:Number, color:uint, itemRenderer:IListItemRenderer):void
 	{
 
 	}
