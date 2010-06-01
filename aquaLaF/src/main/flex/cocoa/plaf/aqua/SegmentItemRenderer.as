@@ -84,11 +84,11 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 		if (isFirst)
 		{
 			border.bitmapIndex = leftIndex + offset;
-			var leftWidth:Number = bitmaps[leftIndex + offset].width;
-			border.draw(null, g, leftWidth, h);
+			var leftFrameWidth:Number = bitmaps[leftIndex + offset].width;
+			border.draw(null, g, leftFrameWidth + frameInsets.left + frameInsets.right, h);
 
-			backgroundWidth = w - leftWidth - frameInsets.left;
-			frameInsets.left += leftWidth;
+			backgroundWidth = w - leftFrameWidth - frameInsets.left;
+			frameInsets.left += leftFrameWidth;
 		}
 		else
 		{
@@ -96,7 +96,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 			{
 				frameInsets.left = -1;
 				border.bitmapIndex = computedSepatatorIndex;
-				border.draw(null, g, 1, h - 3);
+				border.draw(null, g, 1 + frameInsets.left + frameInsets.right, h - 3);
 				frameInsets.left = 0;
 			}
 
@@ -113,23 +113,23 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 
 		frameInsets.top = h;
 		border.bitmapIndex = shadowIndex;
-		border.draw(null, g, isLast ? backgroundWidth : (backgroundWidth + 1), 0);
+		border.draw(null, g, (isLast ? backgroundWidth : (backgroundWidth + 1)) + frameInsets.left + frameInsets.right, h);
 		frameInsets.top = 0;
 
 		border.bitmapIndex = middleIndex + offset;
-		border.draw(null, g, backgroundWidth, h - 3);
+		border.draw(null, g, backgroundWidth + frameInsets.left + frameInsets.right, h - 3);
 
 		if (isLast)
 		{
 			frameInsets.left = backgroundWidth;
 			border.bitmapIndex = rightIndex + offset;
-			border.draw(null, g, rightWidth, h);
+			border.draw(null, g, rightWidth + frameInsets.left + frameInsets.right, h);
 		}
 		else
 		{
 			frameInsets.left = w;
 			border.bitmapIndex = computedSepatatorIndex;
-			border.draw(null, g, 1, h - 3);
+			border.draw(null, g, 1 + frameInsets.left + frameInsets.right, h - 3);
 		}
 	}
 }

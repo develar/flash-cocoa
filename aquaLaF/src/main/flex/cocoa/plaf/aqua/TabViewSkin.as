@@ -30,7 +30,7 @@ public class TabViewSkin extends AbstractTabViewSkin
 			contentBorder = new contentBorderClass();
 			contentBorder.y = 10;
 			contentBorder.mouseEnabled = false;
-			addDisplayObject(contentBorder);
+			addDisplayObject(contentBorder, 0);
 		}
 	}
 

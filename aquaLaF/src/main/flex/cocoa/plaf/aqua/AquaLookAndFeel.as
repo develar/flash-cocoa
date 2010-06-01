@@ -98,8 +98,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
-		data["SegmentItem.border"] = borders[7];
-		Scale1BitmapBorder(borders[7]).frameInsets = new FrameInsets(0, 0, 0, -3);
+		data["SegmentItem.border"] = borders[BorderPosition.segmentItem];
+		Scale1BitmapBorder(borders[BorderPosition.segmentItem]).frameInsets = new FrameInsets(0, 0, 0, -3);
 
 		data["Scrollbar.track.v"] = borders[BorderPosition.scrollbar];
 		data["Scrollbar.track.h"] = borders[BorderPosition.scrollbar + 1];

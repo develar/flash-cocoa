@@ -2,6 +2,7 @@ package cocoa.plaf.aqua
 {
 public final class BorderPosition
 {
+	public static const segmentItem:int = 7;
 	public static const scrollbar:int = 9;
 	public static const hudButton:int = scrollbar + 17;
 	public static const spinnerButton:int = hudButton + 1;

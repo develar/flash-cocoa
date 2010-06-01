@@ -170,6 +170,7 @@ public class Builder
 
 		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
 
+		compoundImageReader.position = BorderPosition.segmentItem;
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
 		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlTRClass, segmentedControl2TRClass, segmentedControl3TRClass, segmentedControl4TRClass);
 
