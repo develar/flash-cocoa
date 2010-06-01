@@ -6,6 +6,7 @@ import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 
+import flash.events.Event;
 import flash.events.IEventDispatcher;
 
 import org.flyti.plexus.Injectable;
@@ -14,9 +15,10 @@ import org.flyti.plexus.Injectable;
 public class Window extends AbstractComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher
 {
 	protected var mySkin:WindowSkin;
-	protected var flags:uint = RESIZABLE;
+	protected var flags:uint = RESIZABLE | CLOSABLE;
 
-	public static const RESIZABLE:uint = 1 << 0;
+	protected static const RESIZABLE:uint = 1 << 0;
+	protected static const CLOSABLE:uint = 1 << 1;
 
 	public function Window()
 	{
@@ -44,6 +46,18 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		}
 	}
 
+	public function get closable():Boolean
+	{
+		return (flags & CLOSABLE) != 0;
+	}
+	public function set closable(value:Boolean):void
+	{
+		if (value == ((flags & CLOSABLE) == 0))
+		{
+			value ? flags |= CLOSABLE : flags ^= CLOSABLE;
+		}
+	}
+
 	private var _title:String;
 	public function set title(value:String):void
 	{
@@ -67,6 +81,11 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 	public function set resourceBundle(value:String):void
 	{
 		_resourceBundle = value;
+	}
+
+	public function close():void
+	{
+		dispatchEvent(new Event(Event.CLOSE));
 	}
 
 	override protected function skinAttachedHandler():void

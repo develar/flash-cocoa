@@ -11,6 +11,8 @@ import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
 
+import flash.events.Event;
+
 import mx.core.FlexGlobals;
 import mx.managers.PopUpManager;
 
@@ -32,8 +34,7 @@ public class DialogManager
 			}
 		}
 
-		window.addEventListener(DialogEvent.OK, okOrCancelHandler);
-		window.addEventListener(DialogEvent.CANCEL, okOrCancelHandler);
+		window.addEventListener(Event.CLOSE, closeHandler);
 
 		if (window is DeferredSkinOwner && !DeferredSkinOwner(window).isReadyToCreateSkin)
 		{
@@ -79,8 +80,7 @@ public class DialogManager
 
 	public function close(window:Window):void
 	{
-		window.removeEventListener(DialogEvent.OK, okOrCancelHandler);
-		window.removeEventListener(DialogEvent.CANCEL, okOrCancelHandler);
+		window.removeEventListener(Event.CLOSE, closeHandler);
 
 		window.dispatchEvent(new DialogEvent(DialogEvent.CLOSING));
 
@@ -91,7 +91,7 @@ public class DialogManager
 		PopUpManager.removePopUp(window.skin);
 	}
 
-	private function okOrCancelHandler(event:DialogEvent):void
+	private function closeHandler(event:Event):void
 	{
 		close(Window(event.currentTarget));
 	}

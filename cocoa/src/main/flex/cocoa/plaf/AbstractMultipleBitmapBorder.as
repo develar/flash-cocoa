@@ -13,6 +13,11 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder
 		_bitmapIndex = value;
 	}
 
+	public function set stateIndex(value:int):void
+	{
+		throw new Error("abstract");
+	}
+
 	override public function readExternal(input:ByteArray):void
 	{
 		var n:int = input.readUnsignedByte();

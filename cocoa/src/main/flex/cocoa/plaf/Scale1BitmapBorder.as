@@ -73,5 +73,10 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 	{
 		_frameInsets = value;
 	}
+
+	override public function set stateIndex(value:int):void
+	{
+		_bitmapIndex = value;
+	}
 }
 }

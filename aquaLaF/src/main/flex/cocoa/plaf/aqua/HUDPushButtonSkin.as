@@ -8,7 +8,7 @@ public class HUDPushButtonSkin extends cocoa.plaf.basic.PushButtonSkin
 {
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		Scale3EdgeHBitmapBorder(border).bitmapIndex = (myComponent.state == CellState.OFF ? 0 : 1) << 1;
+		Scale3EdgeHBitmapBorder(border).stateIndex = myComponent.state == CellState.OFF ? 0 : 1;
 
 		super.updateDisplayList(w, h);
 	}

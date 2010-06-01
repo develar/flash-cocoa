@@ -263,7 +263,7 @@ public class Tree extends mx.controls.Tree implements View
 
 		if (selected)
 		{
-			drawItemBorder(item.width, rowInfo[rowData.rowIndex].height, item, 2);
+			drawItemBorder(item.width, rowInfo[rowData.rowIndex].height, item, 1);
 		}
 		else if (!highlighted)
 		{
@@ -304,7 +304,7 @@ public class Tree extends mx.controls.Tree implements View
 	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int):void
 	{
 		var border:Scale3EdgeHBitmapBorder = Scale3EdgeHBitmapBorder(_border);
-		border.bitmapIndex = index;
+		border.stateIndex = index;
 
 		var oldFrameX:Number = border.frameInsets.left;
 		border.frameInsets.left += TreeListData(IDropInListItemRenderer(itemRenderer).listData).indent;

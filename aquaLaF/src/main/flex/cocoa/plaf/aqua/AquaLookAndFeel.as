@@ -239,8 +239,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 {
 	public function HUDLookAndFeel(borders:Vector.<Border>, parent:AquaLookAndFeel)
 	{
-		initialize(borders);
 		this.parent = parent;
+		initialize(borders);
 	}
 
 	private function initialize(borders:Vector.<Border>):void
@@ -274,6 +274,9 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
 
 		data["CheckBox.border"] = borders[BorderPosition.checkBox];
+
+		data["TitleBar.PushButton"] = _parent.getClass("PushButton");
+		data["TitleBar.PushButton.border"] = borders[BorderPosition.hudTitleBarCloseButton];
 	}
 
 	private function createDefaultTextFormat():TextFormat

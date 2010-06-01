@@ -8,6 +8,7 @@ import cocoa.keyboard.KeyCode;
 import cocoa.resources.ResourceManager;
 import cocoa.ui;
 
+import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 import flash.utils.Dictionary;
@@ -29,6 +30,13 @@ public class Dialog extends Window
 	override protected function get skinParts():Dictionary
 	{
 		return _skinParts;
+	}
+
+	public function Dialog()
+	{
+		super();
+
+		flags ^= CLOSABLE;
 	}
 
 	ui var controlBar:ViewContainer;
@@ -109,11 +117,13 @@ public class Dialog extends Window
 	protected function cancel():void
 	{
 		dispatchEvent(new DialogEvent(DialogEvent.CANCEL));
+		close();
 	}
 
 	protected function ok():void
 	{
 		dispatchEvent(new DialogEvent(DialogEvent.OK));
+		close();
 	}
 
 	private function createControlButton(label:String, actionHandler:Function):PushButton

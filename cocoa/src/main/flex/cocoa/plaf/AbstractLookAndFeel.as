@@ -21,7 +21,7 @@ public class AbstractLookAndFeel implements LookAndFeel
 		return data;
 	}
 
-	private var _parent:LookAndFeel;
+	protected var _parent:LookAndFeel;
 	public function set parent(value:LookAndFeel):void
 	{
 		_parent = value;

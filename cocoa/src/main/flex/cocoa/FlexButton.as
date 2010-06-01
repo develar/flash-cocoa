@@ -73,7 +73,7 @@ public class FlexButton extends Button
 	{
 		if (_border is Scale1BitmapBorder)
 		{
-			Scale1BitmapBorder(_border).bitmapIndex = ((mouseCaptured && (hovered || stickyHighlighting))) ? 1 : 0;
+			Scale1BitmapBorder(_border).stateIndex = ((mouseCaptured && (hovered || stickyHighlighting))) ? 1 : 0;
 			invalidateDisplayList();
 		}
 	}

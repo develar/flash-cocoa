@@ -3,6 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.LabelHelper;
+import cocoa.PushButton;
 import cocoa.Toolbar;
 import cocoa.View;
 import cocoa.Window;
@@ -15,10 +16,12 @@ import cocoa.ui;
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.events.MouseEvent;
+import flash.system.Capabilities;
 import flash.text.engine.TextLine;
 
 import mx.core.IFlexDisplayObject;
 import mx.core.ILayoutElement;
+import mx.core.IUIComponent;
 import mx.core.mx_internal;
 import mx.managers.IFocusManagerContainer;
 
@@ -45,6 +48,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	private static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
 	private var resizeGripper:DisplayObject;
+	private var closeButton:PushButton;
 
 	private var border:Border;
 
@@ -133,9 +137,23 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			addDisplayObject(resizeGripper);
 		}
 
+		if (Window(component).closable)
+		{
+			closeButton = new PushButton();
+			closeButton.lafPrefix = "TitleBar.PushButton";
+			closeButton.action = Window(component).close;
+			var closeButtonSkin:DisplayObject = DisplayObject(closeButton.createView(laf));
+			if (Capabilities.os.indexOf("Mac OS") != -1)
+			{
+				closeButtonSkin.x = 4;
+				closeButtonSkin.y = 3;
+			}
+			addChild(closeButtonSkin);
+		}
+
 		addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 	}
-
+	
 	private function mouseDownHandler(event:MouseEvent):void
 	{
 		const targetIsNotTextLine:Boolean = !(event.target is TextLine);
@@ -232,6 +250,16 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		{
 			resizeGripper.x = w - 11 - 4;
 			resizeGripper.y = h - 11 - 4;
+		}
+
+		if (Window(component).closable)
+		{
+			var closeButtonSkin:IUIComponent = closeButton.skin;
+			closeButtonSkin.setActualSize(closeButtonSkin.getExplicitOrMeasuredWidth(), closeButtonSkin.getExplicitOrMeasuredHeight());
+			if (Capabilities.os.indexOf("Mac OS") == -1)
+			{
+				closeButtonSkin.x = w - 4 - closeButtonSkin.getExplicitOrMeasuredWidth();
+			}
 		}
 	}
 

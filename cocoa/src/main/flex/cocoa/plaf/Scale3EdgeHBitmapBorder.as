@@ -50,5 +50,10 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder
 	{
 		return 0;
 	}
+
+	override public function set stateIndex(value:int):void
+	{
+		_bitmapIndex = value << 1;
+	}
 }
 }

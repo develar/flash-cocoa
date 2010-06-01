@@ -7,6 +7,7 @@ import cocoa.dialog.DialogManager;
 import cocoa.pane.PaneItem;
 import cocoa.resources.ResourceManager;
 
+import flash.events.Event;
 import flash.geom.Point;
 import flash.utils.Dictionary;
 
@@ -18,7 +19,7 @@ use namespace plexus;
 
 public class HUDInspectorManager
 {
-	private static const WIDOW_PADDING:Number = 10;
+	private static const WINDOW_PADDING:Number = 10;
 
 	private static var sharedPoint:Point = new Point();
 
@@ -33,6 +34,7 @@ public class HUDInspectorManager
 	}
 
 	private var dialogManager:DialogManager;
+	//noinspection InfiniteRecursionJS
 	plexus function set dialogManager(value:DialogManager):void
 	{
 		dialogManager = value;
@@ -68,9 +70,12 @@ public class HUDInspectorManager
 			{
 				currentInspector = new HUDWindow();
 				currentInspector.resizable = false;
+				currentInspector.resizable = false;
 				currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
 				inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
 				cache[inspectorItem] = currentInspector;
+
+				currentInspector.addEventListener(Event.CLOSE, userCloseHandler, false, 1);
 			}
 
 			inspectorContentView = inspectorItem.view
@@ -88,7 +93,7 @@ public class HUDInspectorManager
 		sharedPoint = elementView.parent.localToGlobal(sharedPoint);
 
 		var inspectorView:IUIComponent = currentInspector.skin;
-		var windowHeightWithPadding:Number = inspectorView.height + WIDOW_PADDING;
+		var windowHeightWithPadding:Number = inspectorView.height + WINDOW_PADDING;
 		var y:Number = sharedPoint.y - windowHeightWithPadding;
 		if (y < 0)
 		{
@@ -98,6 +103,13 @@ public class HUDInspectorManager
 		inspectorView.move(Math.round(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
 	}
 
+	private function userCloseHandler(event:Event):void
+	{
+		event.stopImmediatePropagation();
+
+		close();
+	}
+
 	public function hide(element:Object, relatedElement:Object):void
 	{
 		if (currentInspector == null || (relatedElement != null && element.constructor == relatedElement.constructor))
@@ -105,6 +117,11 @@ public class HUDInspectorManager
 			return;
 		}
 
+		close();
+	}
+
+	private function close():void
+	{
 		if (currentInspector.contentView is ElementRecipient)
 		{
 			ElementRecipient(currentInspector.contentView).element = null;

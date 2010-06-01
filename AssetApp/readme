@@ -27,4 +27,4 @@ screencapture -ic
 mogrify -format png  *.tiff
 
 
-HUD-SliderKnob_round-P — N это off, P это on.
+HUD-SliderKnob_round-P — N это off (Normal), P это on (Pressed).

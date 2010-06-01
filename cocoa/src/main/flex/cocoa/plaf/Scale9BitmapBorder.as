@@ -93,5 +93,10 @@ public final class Scale9BitmapBorder extends AbstractMultipleBitmapBorder
 
 		writeFrameInsets(output);
 	}
+
+	override public function set stateIndex(value:int):void
+	{
+		_bitmapIndex = value << 2;
+	}
 }
 }
