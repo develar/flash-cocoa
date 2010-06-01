@@ -1,9 +1,8 @@
 package cocoa.tree
 {
 import cocoa.AbstractView;
-import cocoa.Application;
 import cocoa.LabelHelper;
-import cocoa.plaf.MXMLSkin;
+import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObject;
 import flash.events.MouseEvent;
@@ -12,7 +11,6 @@ import mx.controls.listClasses.BaseListData;
 import mx.controls.listClasses.IDropInListItemRenderer;
 import mx.controls.listClasses.IListItemRenderer;
 import mx.controls.treeClasses.TreeListData;
-import mx.core.FlexGlobals;
 import mx.core.mx_internal;
 import mx.events.TreeEvent;
 
@@ -28,6 +26,11 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	protected var labelHelper:LabelHelper;
 
 	private var listDataChanged:Boolean;
+
+	public function TreeItemRenderer()
+	{
+		mouseChildren = false;
+	}
 
 	protected var _listData:TreeListData;
 	public function get listData():BaseListData
@@ -61,7 +64,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			addDisplayObject(icon);
 		}
 
-		labelHelper = new LabelHelper(this, MXMLSkin(Application(FlexGlobals.topLevelApplication).getSubviewAt(0)).laf.getFont("SystemFont"));
+		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont("SystemFont"));
 	}
 
 	override protected function measure():void
@@ -217,7 +220,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		disclosureIcon.y = 2;
 	}
 
-	private function disclosureIconClickHandler(event:MouseEvent):void
+	protected function disclosureIconClickHandler(event:MouseEvent):void
 	{
 		// stop this event from bubbling up because the click is for item selection
 		// and clicking on the disclosureIcon doesn't select the items (only expands/closes them).

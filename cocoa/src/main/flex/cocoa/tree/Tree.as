@@ -23,6 +23,7 @@ import mx.controls.listClasses.ListBaseContentHolder;
 import mx.controls.treeClasses.TreeListData;
 import mx.core.DragSource;
 import mx.core.EdgeMetrics;
+import mx.core.IFactory;
 import mx.core.IFlexDisplayObject;
 import mx.core.IInvalidating;
 import mx.core.IUIComponent;
@@ -597,21 +598,22 @@ public class Tree extends mx.controls.Tree implements View
 		border.frameInsets.left = oldFrameX;
 	}
 
-	override protected function drawRowBackgrounds():void
-	{
-
-	}
+//	override protected function drawRowBackgrounds():void
+//	{
+//
+//	}
 
 	override protected function drawCaretIndicator(indicator:Sprite, x:Number, y:Number, width:Number, height:Number, color:uint, itemRenderer:IListItemRenderer):void
 	{
 
 	}
 
-	protected override function mouseClickHandler(event:MouseEvent):void
+	override protected function mouseClickHandler(event:MouseEvent):void
 	{
-		if (event.target is TreeItemRenderer)
+		var item:TreeItemRenderer = mouseEventToItemRenderer(event) as TreeItemRenderer;
+		if (item != null)
 		{
-			if (TreeItemRenderer(event.target).checkDisclosure(event))
+			if (item.checkDisclosure(event))
 			{
 				return;
 			}
@@ -643,6 +645,13 @@ public class Tree extends mx.controls.Tree implements View
 		{
 			super.moveIndicatorsHorizontally(uid, moveBlockDistance);
 		}
+	}
+
+	public var itemRendererFunction:Function;
+
+	override public function getItemRendererFactory(data:Object):IFactory
+	{
+		return itemRendererFunction == null ? super.getItemRendererFactory(data) : itemRendererFunction(data);
 	}
 }
 }

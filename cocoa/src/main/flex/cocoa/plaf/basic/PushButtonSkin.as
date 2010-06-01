@@ -91,7 +91,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 
 		labelHelper.validate();
 
-		measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
+		measuredWidth = Math.ceil(labelHelper.textWidth) + border.contentInsets.width;
 		measuredHeight = border.layoutHeight;
 	}
 
@@ -99,7 +99,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 	{
 		if (labelHelper != null)
 		{
-			if (border != null)
+			if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth)))
 			{
 				var titleInsets:Insets = border.contentInsets;
 				labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));

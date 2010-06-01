@@ -178,7 +178,7 @@ public class LabelHelper
 			textElement.elementFormat = _font;
 			textElement.text = _text;
 			textLine = textBlock.createTextLine(null, availableWidth);
-			trace(container + " " + this + " " + textBlock.textLineCreationResult, textLine.width, availableWidth);
+//			trace(container + " " + this + " " + textBlock.textLineCreationResult, textLine.width, availableWidth);
 			if (textLine == null)
 			{
 				trace(container + " " + this + " " + textBlock.textLineCreationResult);
