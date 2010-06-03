@@ -47,7 +47,10 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 		_listData = TreeListData(value);
 		listDataChanged = true;
-
+		if (_listData == null)
+		{
+			return;
+		}
 		invalidateProperties();
 		invalidateDisplayList();
 	}
@@ -80,7 +83,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 	protected function getLabel():String
 	{
-		return _listData.label;
+		return _listData == null ? "?":_listData.label;
 	}
 
 	override protected function commitProperties():void

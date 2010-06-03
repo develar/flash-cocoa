@@ -115,15 +115,23 @@ public class Tree extends mx.controls.Tree implements View
 		}
 	}
 
+	private var _isDragging:Boolean;
+	public function get isDragging():Boolean
+	{
+		return _isDragging;
+	}
+
 	override protected function dragEnterHandler(event:DragEvent):void
 	{
 		//should be handled by external manager
+		lastDragEvent = event;
 	}
 
 	override protected function dragOverHandler(event:DragEvent):void
 	{
 		//should be handled by external manager
 		lastDragEvent = event;
+		_isDragging = true;
 	}
 
 
@@ -139,6 +147,7 @@ public class Tree extends mx.controls.Tree implements View
 		isPressed = false;
 		clearSelected(false);
 		resetDragScrolling();
+		_isDragging = false;
 	}
 
 	override protected function addDragData(ds:Object):void // actually a DragSource
@@ -191,7 +200,7 @@ public class Tree extends mx.controls.Tree implements View
 	}
 
 	/**
-	 * since the mouse down on a disclosure icon is prevented and clicked item doesn't selected
+	 * since the mouse down on a disclosure icon is prevented and clicked item not selected
 	 * last clicked itemRenderer stored here for handle dragStart
 	 */
 	private var _lastMouseDownItemRenderer:IListItemRenderer;
@@ -204,7 +213,7 @@ public class Tree extends mx.controls.Tree implements View
 	protected override function mouseDownHandler(event:MouseEvent):void
 	{
 		var r:IListItemRenderer = mouseEventToRenderer(event);
-		//click on disclosure icon shouldn't select the item
+		//click on a disclosure icon shouldn't select the item
 		if (r == null || !dataDescriptor.isBranch(r.data) || !TreeItemRenderer(r).checkDisclosure(event, false))
 		{
 			super.mouseDownHandler(event);
@@ -280,11 +289,11 @@ public class Tree extends mx.controls.Tree implements View
 				var oldCaretItemRenderer:IListItemRenderer = caretItemRenderer;
 				caretItemRenderer = item;
 				caretUID = rowData.uid;
-				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
-				{
-					IInvalidating(oldCaretItemRenderer).invalidateDisplayList();
-					IInvalidating(oldCaretItemRenderer).validateNow();
-				}
+//				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
+//				{
+//					IInvalidating(oldCaretItemRenderer).invalidateDisplayList();
+//					IInvalidating(oldCaretItemRenderer).validateNow();
+//				}
 			}
 		}
 		else if (caretItemRenderer != null && caretUID == rowData.uid)
@@ -294,11 +303,11 @@ public class Tree extends mx.controls.Tree implements View
 			caretUID = "";
 		}
 
-		if (item is IFlexDisplayObject && item is IInvalidating)
-		{
-			IInvalidating(item).invalidateDisplayList();
-			IInvalidating(item).validateNow();
-		}
+//		if (item is IFlexDisplayObject && item is IInvalidating)
+//		{
+//			IInvalidating(item).invalidateDisplayList();
+//			IInvalidating(item).validateNow();
+//		}
 	}
 
 	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int):void
