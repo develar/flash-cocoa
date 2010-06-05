@@ -91,6 +91,10 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		{
 			return skinClass;
 		}
+		else if (styleProp == "liveDragging")
+		{
+			return true;
+		}
 		else if (styleProp == "layoutDirection")
 		{
 			return layoutDirection;

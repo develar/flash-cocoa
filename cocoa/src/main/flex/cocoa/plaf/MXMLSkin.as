@@ -22,6 +22,10 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 	}
 
 	protected var _resourceBundle:String;
+	public function get resourceBundle():String
+	{
+		return _resourceBundle;
+	}
 	public function set resourceBundle(value:String):void
 	{
 		_resourceBundle = value;
