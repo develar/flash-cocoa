@@ -9,7 +9,6 @@ import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
-import flash.errors.IllegalOperationError;
 
 import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;

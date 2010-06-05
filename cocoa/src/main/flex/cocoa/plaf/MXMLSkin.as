@@ -29,7 +29,7 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient
 
 	protected function l(key:String):String
 	{
-		return _resourceBundle == null ? key : resourceManager.getString(_resourceBundle, key);
+		return resourceManager.getString(_resourceBundle, key);
 	}
 
 	public function set layoutMetrics(value:LayoutMetrics):void
