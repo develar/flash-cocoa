@@ -11,6 +11,7 @@ import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
 import flash.events.MouseEvent;
 import flash.geom.Point;
+import flash.utils.setInterval;
 
 import mx.controls.Tree;
 import mx.controls.listClasses.BaseListData;
@@ -20,8 +21,6 @@ import mx.controls.listClasses.ListBaseContentHolder;
 import mx.controls.treeClasses.TreeListData;
 import mx.core.DragSource;
 import mx.core.IFactory;
-import mx.core.IFlexDisplayObject;
-import mx.core.IInvalidating;
 import mx.core.IUIComponent;
 import mx.core.mx_internal;
 import mx.events.DragEvent;
@@ -132,6 +131,11 @@ public class Tree extends mx.controls.Tree implements View
 		//should be handled by external manager
 		lastDragEvent = event;
 		_isDragging = true;
+		if (collection)
+		{
+			if (dragScrollingInterval == 0)
+				dragScrollingInterval = setInterval(dragScroll, 15);
+		}
 	}
 
 
@@ -289,11 +293,11 @@ public class Tree extends mx.controls.Tree implements View
 				var oldCaretItemRenderer:IListItemRenderer = caretItemRenderer;
 				caretItemRenderer = item;
 				caretUID = rowData.uid;
-//				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
-//				{
-//					IInvalidating(oldCaretItemRenderer).invalidateDisplayList();
-//					IInvalidating(oldCaretItemRenderer).validateNow();
-//				}
+				//				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
+				//				{
+				//					IInvalidating(oldCaretItemRenderer).invalidateDisplayList();
+				//					IInvalidating(oldCaretItemRenderer).validateNow();
+				//				}
 			}
 		}
 		else if (caretItemRenderer != null && caretUID == rowData.uid)
@@ -303,11 +307,11 @@ public class Tree extends mx.controls.Tree implements View
 			caretUID = "";
 		}
 
-//		if (item is IFlexDisplayObject && item is IInvalidating)
-//		{
-//			IInvalidating(item).invalidateDisplayList();
-//			IInvalidating(item).validateNow();
-//		}
+		//		if (item is IFlexDisplayObject && item is IInvalidating)
+		//		{
+		//			IInvalidating(item).invalidateDisplayList();
+		//			IInvalidating(item).validateNow();
+		//		}
 	}
 
 	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int):void
