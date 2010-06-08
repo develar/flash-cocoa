@@ -69,12 +69,17 @@ public class FlexButton extends Button
 		return this;
 	}
 
+	private var _hoverable:Boolean;
+	public function set hoverable(value:Boolean):void
+	{
+		_hoverable = value;
+	}
+
 	override public function invalidateSkinState():void
 	{
 		if (_border is Scale1BitmapBorder)
 		{
-			alpha = enabled ? 1 : 0.5;
-			Scale1BitmapBorder(_border).stateIndex = ((mouseCaptured && (hovered || stickyHighlighting))) ? 1 : 0;
+			Scale1BitmapBorder(_border).stateIndex = ((mouseCaptured && (hovered || stickyHighlighting))) ? 1 : (_hoverable && hovered ? 2 : 0);
 			invalidateDisplayList();
 		}
 	}

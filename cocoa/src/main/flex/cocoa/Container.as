@@ -380,5 +380,10 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 	{
 		throw new IllegalOperationError();
 	}
+
+	override public function getStyle(styleProp:String):*
+	{
+		return styleProp == "disabledAlpha" ? 0.5 : undefined;
+	}
 }
 }

@@ -38,7 +38,7 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 		decrementButton.y = incrementButton.border.layoutHeight;
 	}
 
-	private function createSpinnerButton(id:String, laf:LookAndFeel):FlexButton
+	protected function createSpinnerButton(id:String, laf:LookAndFeel):FlexButton
 	{
 		var button:FlexButton = new FlexButton();
 		button.border = laf.getBorder("NumericStepper." + id);
@@ -70,14 +70,7 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 		if (enabled != value)
 		{
 			super.enabled = value;
-
-			if (textDisplay != null)
-			{
-				textDisplay.textDisplay.visible = value;
-
-				incrementButton.enabled = value;
-				decrementButton.enabled = value;
-			}
+			alpha = enabled ? 1 : 0.5;
 		}
 	}
 }
