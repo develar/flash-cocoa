@@ -2,7 +2,7 @@ package cocoa.plaf.aqua.assetBuilder
 {
 import cocoa.Border;
 import cocoa.Insets;
-import cocoa.plaf.Scale1BitmapBorder;
+import cocoa.border.Scale1BitmapBorder;
 
 import flash.display.BitmapData;
 import flash.geom.Point;

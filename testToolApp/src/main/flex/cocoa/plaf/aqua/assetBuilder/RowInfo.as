@@ -1,6 +1,6 @@
 package cocoa.plaf.aqua.assetBuilder
 {
-import cocoa.plaf.AbstractBitmapBorder;
+import cocoa.border.AbstractBitmapBorder;
 
 internal class RowInfo
 {

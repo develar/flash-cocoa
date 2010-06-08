@@ -1,4 +1,4 @@
-package cocoa.plaf
+package cocoa.border
 {
 internal class AbstractControlBitmapBorder extends AbstractMultipleBitmapBorder
 {

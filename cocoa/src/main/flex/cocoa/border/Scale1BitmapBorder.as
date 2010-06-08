@@ -1,4 +1,4 @@
-package cocoa.plaf
+package cocoa.border
 {
 import cocoa.Border;
 import cocoa.FrameInsets;

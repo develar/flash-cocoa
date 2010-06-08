@@ -4,7 +4,7 @@ import cocoa.AbstractButton;
 import cocoa.CellState;
 import cocoa.Insets;
 import cocoa.TextInsets;
-import cocoa.plaf.Scale1BitmapBorder;
+import cocoa.border.Scale1BitmapBorder;
 import cocoa.plaf.basic.PushButtonSkin;
 
 import flash.display.Graphics;

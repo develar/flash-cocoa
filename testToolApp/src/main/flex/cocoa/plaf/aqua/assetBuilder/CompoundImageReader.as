@@ -5,11 +5,11 @@ import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
 import cocoa.plaf.BitmapIcon;
-import cocoa.plaf.OneBitmapBorder;
-import cocoa.plaf.Scale3EdgeHBitmapBorder;
-import cocoa.plaf.Scale3HBitmapBorder;
-import cocoa.plaf.Scale3VBitmapBorder;
-import cocoa.plaf.Scale9BitmapBorder;
+import cocoa.border.OneBitmapBorder;
+import cocoa.border.Scale3EdgeHBitmapBorder;
+import cocoa.border.Scale3HBitmapBorder;
+import cocoa.border.Scale3VBitmapBorder;
+import cocoa.border.Scale9BitmapBorder;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;

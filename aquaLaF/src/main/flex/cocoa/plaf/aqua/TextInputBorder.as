@@ -2,7 +2,7 @@ package cocoa.plaf.aqua
 {
 import cocoa.Insets;
 import cocoa.View;
-import cocoa.plaf.AbstractBorder;
+import cocoa.border.AbstractBorder;
 
 import flash.display.Graphics;
 

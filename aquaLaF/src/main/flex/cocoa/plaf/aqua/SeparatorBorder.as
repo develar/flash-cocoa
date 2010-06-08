@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.View;
-import cocoa.plaf.AbstractBorder;
+import cocoa.border.AbstractBorder;
 
 import flash.display.CapsStyle;
 import flash.display.Graphics;

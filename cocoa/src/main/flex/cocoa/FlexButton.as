@@ -1,6 +1,6 @@
 package cocoa
 {
-import cocoa.plaf.Scale1BitmapBorder;
+import cocoa.border.Scale1BitmapBorder;
 
 import flash.display.Graphics;
 
@@ -73,6 +73,7 @@ public class FlexButton extends Button
 	{
 		if (_border is Scale1BitmapBorder)
 		{
+			alpha = enabled ? 1 : 0.5;
 			Scale1BitmapBorder(_border).stateIndex = ((mouseCaptured && (hovered || stickyHighlighting))) ? 1 : 0;
 			invalidateDisplayList();
 		}

@@ -3,7 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.FrameInsets;
 import cocoa.plaf.LabeledItemRenderer;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Scale1BitmapBorder;
+import cocoa.border.Scale1BitmapBorder;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;

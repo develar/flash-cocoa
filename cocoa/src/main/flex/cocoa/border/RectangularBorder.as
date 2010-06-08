@@ -1,4 +1,4 @@
-package cocoa.plaf
+package cocoa.border
 {
 import cocoa.Insets;
 import cocoa.View;
@@ -9,10 +9,10 @@ public class RectangularBorder extends AbstractBorder
 {
 	private var _layoutHeight:Number;
 
-	private var fillColor:uint;
+	private var fillColor:Number;
 	private var strokeColor:Number;
 
-	public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:uint, strokeColor:Number = NaN)
+	public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:Number, strokeColor:Number = NaN)
 	{
 		super();
 		
@@ -31,9 +31,17 @@ public class RectangularBorder extends AbstractBorder
 			g.lineStyle(1, strokeColor, alpha);
 		}
 
-		g.beginFill(fillColor, alpha);
+		if (!isNaN(fillColor))
+		{
+			g.beginFill(fillColor, alpha);
+		}
+
 		g.drawRect(0.5, 0.5, w - 1, h - 1);
-		g.endFill();
+
+		if (!isNaN(fillColor))
+		{
+			g.endFill();
+		}
 	}
 
 	override public function get layoutHeight():Number

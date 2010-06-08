@@ -15,10 +15,10 @@ use namespace ui;
 
 public class NumericStepperSkin extends LightFlexUIComponent implements UIPartProvider
 {
-	private var textDisplay:TextInput;
+	protected var textDisplay:TextInput;
 
-	private var incrementButton:FlexButton;
-	private var decrementButton:FlexButton;
+	protected var incrementButton:FlexButton;
+	protected var decrementButton:FlexButton;
 
 	private static const PADDING_BETWEEN_TEXT_AND_SPINNER:int = 7;
 
@@ -63,6 +63,22 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 
 		incrementButton.x = w - spinnerWidth;
 		decrementButton.x = w - spinnerWidth;
+	}
+
+	override public function set enabled(value:Boolean):void
+	{
+		if (enabled != value)
+		{
+			super.enabled = value;
+
+			if (textDisplay != null)
+			{
+				textDisplay.textDisplay.visible = value;
+
+				incrementButton.enabled = value;
+				decrementButton.enabled = value;
+			}
+		}
 	}
 }
 }

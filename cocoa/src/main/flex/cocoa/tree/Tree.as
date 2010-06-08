@@ -3,7 +3,7 @@ package cocoa.tree
 import cocoa.Border;
 import cocoa.View;
 import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.Scale3EdgeHBitmapBorder;
+import cocoa.border.Scale3EdgeHBitmapBorder;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;

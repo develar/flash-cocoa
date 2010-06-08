@@ -304,27 +304,16 @@ public class NumericStepper extends Spinner implements UIPartController
 		commitTextInput(true);
 	}
 
-	/**
-	 * WA. По логике, сам NumericStepper при изменении enabled должен менять состояние своих skinParts, как VideoPlayer, но этого пока что нет, так что мы сами
-	 */
 	override public function set enabled(value:Boolean):void
 	{
 		super.enabled = value;
-
-		if (skinParts != null)
+		if (skin != null)
 		{
-			for (var skinPartId:String in skinParts)
-			{
-				var skinPart:Object = this[skinPartId];
-				if (skinPart != null)
-				{
-					skinPart.enabled = value;
-				}
-			}
+			skin.enabled = value;
 		}
 	}
 
-	public override function drawFocus(isFocused:Boolean):void
+	override public function drawFocus(isFocused:Boolean):void
 	{
 		// skip
 	}
@@ -417,7 +406,6 @@ public class NumericStepper extends Spinner implements UIPartController
 		if (!(mySkin is UIPartProvider))
 		{
 			findSkinParts();
-			invalidateSkinState();
 		}
 	}
 
@@ -450,6 +438,10 @@ public class NumericStepper extends Spinner implements UIPartController
 	{
 		this[id] = instance;
 		partAdded(id, instance);
+	}
+
+	override public function invalidateSkinState():void
+	{
 	}
 }
 }

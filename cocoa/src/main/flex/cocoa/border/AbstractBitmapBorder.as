@@ -1,8 +1,9 @@
-package cocoa.plaf
+package cocoa.border
 {
 import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.TextInsets;
+import cocoa.plaf.*;
 
 import flash.geom.Matrix;
 import flash.utils.ByteArray;

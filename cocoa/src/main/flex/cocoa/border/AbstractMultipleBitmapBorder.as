@@ -1,4 +1,4 @@
-package cocoa.plaf
+package cocoa.border
 {
 import flash.display.BitmapData;
 import flash.utils.ByteArray;
