@@ -10,11 +10,16 @@ import mx.core.ILayoutElement;
  */
 internal final class Column
 {
-	private var currentComposition:Vector.<ILayoutElement>;
-	public const compositions:Vector.<Vector.<ILayoutElement>> = new Vector.<Vector.<ILayoutElement>>;
+	private var currentRowWidth:Number = 0;
 
-	public const widths:Vector.<Number> = new Vector.<Number>;
-	public const heights:Vector.<Number> = new Vector.<Number>;
+	private var maxControlLengthInComposition:int = 0;
+
+	private var currentComposition:Vector.<ILayoutElement>;
+	public const compositions:Vector.<Vector.<ILayoutElement>> = new Vector.<Vector.<ILayoutElement>>();
+
+	private var rowMaxWidth:Number = 0;
+
+	public const heights:Vector.<Number> = new Vector.<Number>();
 
 	public var separator:Skin;
 
@@ -23,7 +28,13 @@ internal final class Column
 	 */
 	public var auxiliaryElement:ILayoutElement;
 
-	public var isAuxiliaryElementFirst:Boolean = false;
+	public var isAuxiliaryElementFirst:Boolean;
+
+	private var _labelMaxWidth:Number = 0;
+	public function get labelMaxWidth():Number
+	{
+		return _labelMaxWidth;
+	}
 
 	public function get finalized():Boolean
 	{
@@ -38,15 +49,10 @@ internal final class Column
 
 	public function calculateTotalWidth(labelGap:Number, controlGap:Number):Number
 	{
-		_totalWidth = 0;
-		for each (var number:Number in widths)
+		_totalWidth = _labelMaxWidth + rowMaxWidth;
+		if (maxControlLengthInComposition > 1)
 		{
-			_totalWidth += number;
-		}
-
-		if (compositions[0].length > 1)
-		{
-			_totalWidth += labelGap + ((compositions.length - 2) * controlGap);
+			_totalWidth += labelGap + ((maxControlLengthInComposition - 2) * controlGap);
 		}
 
 		if (auxiliaryElement != null)
@@ -96,13 +102,16 @@ internal final class Column
 		const columnIndex:int = currentComposition.push(element) - 1;
 
 		const width:Number = element.getPreferredBoundsWidth();
-		if (widths.length == columnIndex)
+		if (columnIndex == 0)
 		{
-			widths.push(width);
+			if (width > _labelMaxWidth)
+			{
+				_labelMaxWidth = width;
+			}
 		}
-		else if (width > widths[columnIndex])
+		else
 		{
-			widths[columnIndex] = width;
+			currentRowWidth += width;
 		}
 
 		const height:Number = element.getPreferredBoundsHeight();
@@ -122,13 +131,22 @@ internal final class Column
 		currentComposition = null;
 
 		compositions.fixed = true;
-		widths.fixed = true;
 		heights.fixed = true;
 	}
 
 	private function finalizeCurrentComposition():void
 	{
 		currentComposition.fixed = true;
+		if (currentComposition.length > maxControlLengthInComposition)
+		{
+			maxControlLengthInComposition = currentComposition.length;
+		}
+
+		if (currentRowWidth > rowMaxWidth)
+		{
+			rowMaxWidth = currentRowWidth;
+		}
+		currentRowWidth = 0;
 	}
 }
 }

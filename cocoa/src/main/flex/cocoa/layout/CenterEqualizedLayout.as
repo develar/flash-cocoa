@@ -239,7 +239,7 @@ public class CenterEqualizedLayout extends LayoutBase
 
 					if (elementIndex == 0)
 					{
-						var columnPartWidth:Number = column.widths[0];
+						var columnPartWidth:Number = column.labelMaxWidth;
 						if (isRightAlignLabel)
 						{
 							element.setLayoutBoundsPosition(composition.length == 1 ? (localX + columnPartWidth + _labelGap) : (localX + columnPartWidth - element.getPreferredBoundsWidth()),
