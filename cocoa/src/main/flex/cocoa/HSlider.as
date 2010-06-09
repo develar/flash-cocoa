@@ -101,7 +101,6 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		}
 		else
 		{
-			trace(styleProp);
 			return undefined;
 		}
 	}
