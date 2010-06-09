@@ -32,7 +32,7 @@ import spark.components.supportClasses.TextBase;
 
 use namespace mx_internal;
 
-public class Label extends TextBase
+public class Label extends TextBase implements Viewable
 {
 	private static const staticTextBlock:TextBlock = new TextBlock();
 	private static const staticTextElement:TextElement = new TextElement();
@@ -74,10 +74,17 @@ public class Label extends TextBase
 					break;
 				}
 			}
-			else if (p is Skin && Skin(p).component is LookAndFeelProvider)
+			else
 			{
-				laf = LookAndFeelProvider(Skin(p).component).laf;
-				break;
+				if (p is
+						Skin && Skin(p).component
+						is
+						LookAndFeelProvider
+						)
+				{
+					laf = LookAndFeelProvider(Skin(p).component).laf;
+					break;
+				}
 			}
 
 			p = p.parent;
@@ -187,7 +194,9 @@ public class Label extends TextBase
 			}
 		}
 		if (justificationStyle == "auto")
+		{
 			justificationStyle = "pushInKinsoku";
+		}
 
 		// Set the TextBlock's content.
 		// Note: If there is no text, we do what TLF does and compose
@@ -261,14 +270,16 @@ public class Label extends TextBase
 		var textDecoration:String = "none";
 		var verticalAlign:String = _verticalAlign;
 
-//		var innerWidth:Number = bounds.width - paddingLeft - paddingRight;
+		//		var innerWidth:Number = bounds.width - paddingLeft - paddingRight;
 		var innerWidth:Number = bounds.width;
-//		var innerHeight:Number = bounds.height - paddingTop - paddingBottom;
+		//		var innerHeight:Number = bounds.height - paddingTop - paddingBottom;
 		var innerHeight:Number = bounds.height;
 
 		var measureWidth:Boolean = isNaN(innerWidth);
 		if (measureWidth)
+		{
 			innerWidth = maxWidth;
+		}
 
 		var maxLineWidth:Number = lineBreak == "explicit" ? TextLine.MAX_LINE_WIDTH : innerWidth;
 
@@ -284,14 +295,25 @@ public class Label extends TextBase
 		if (lineHeight is Number)
 		{
 			actualLineHeight = Number(lineHeight);
-		} else if (lineHeight is String)
+		} else
 		{
-			var len:int = lineHeight.length;
-			var percent:Number = Number(String(lineHeight).substring(0, len - 1));
-			actualLineHeight = percent / 100 * fontSize;
+			if (lineHeight is
+					String
+					)
+			{
+				var len
+						:
+						int = lineHeight.length;
+				var percent
+						:
+						Number = Number(String(lineHeight).substring(0, len - 1));
+				actualLineHeight = percent / 100 * fontSize;
+			}
 		}
 		if (isNaN(actualLineHeight))
+		{
 			actualLineHeight = 1.2 * fontSize;
+		}
 
 		var maxTextWidth:Number = 0;
 		var totalTextHeight:Number = 0;
@@ -357,9 +379,13 @@ public class Label extends TextBase
 			{
 				// make an extra line so we can compute truncation
 				if (!extraLine)
+				{
 					extraLine = true;
+				}
 				else
+				{
 					break;
+				}
 			}
 
 			// We'll keep this line. Put it into the textLines array.
@@ -385,9 +411,13 @@ public class Label extends TextBase
 				var elementFormat:ElementFormat = TextElement(textBlock.content).elementFormat;
 				var fontMetrics:FontMetrics;
 				if (embeddedFontContext)
+				{
 					fontMetrics = embeddedFontContext.callInContext(elementFormat.getFontMetrics, elementFormat, null);
+				}
 				else
+				{
 					fontMetrics = elementFormat.getFontMetrics();
+				}
 
 				var shape:Shape = new Shape();
 				var g:Graphics = shape.graphics;
@@ -413,8 +443,8 @@ public class Label extends TextBase
 
 		if (n == 0)
 		{
-//			bounds.width = paddingLeft + paddingRight;
-//			bounds.height = paddingTop + paddingBottom;
+			//			bounds.width = paddingLeft + paddingRight;
+			//			bounds.height = paddingTop + paddingBottom;
 			return false;
 		}
 
@@ -422,23 +452,27 @@ public class Label extends TextBase
 		// alignment is done over the innerWidth not over the width of the
 		// text that was just composed.
 		if (measureWidth)
+		{
 			innerWidth = maxTextWidth;
+		}
 
 		if (isNaN(bounds.height))
+		{
 			innerHeight = textLine.y + textLine.descent;
+		}
 
 		var leftAligned:Boolean = textAlign == "start" || textAlign == "left" || textAlign == "justify";
 		var centerAligned:Boolean = textAlign == "center";
 		var rightAligned:Boolean = textAlign == "end" || textAlign == "right";
 
 		// Calculate loop constants for horizontal alignment.
-//		var leftOffset:Number = bounds.left + paddingLeft;
+		//		var leftOffset:Number = bounds.left + paddingLeft;
 		var leftOffset:Number = bounds.left;
 		var centerOffset:Number = leftOffset + innerWidth / 2;
 		var rightOffset:Number = leftOffset + innerWidth;
 
 		// Calculate loop constants for vertical alignment.
-//		var topOffset:Number = bounds.top + paddingTop;
+		//		var topOffset:Number = bounds.top + paddingTop;
 		var topOffset:Number = bounds.top;
 		var bottomOffset:Number = innerHeight - (textLine.y + textLine.descent);
 		var middleOffset:Number = bottomOffset / 2;
@@ -474,28 +508,49 @@ public class Label extends TextBase
 			}
 
 			if (leftAligned)
-				textLine.x = leftOffset; else if (centerAligned)
-				textLine.x = centerOffset - textLine.textWidth / 2; else if (rightAligned)
-				textLine.x = rightOffset - textLine.textWidth;
+			{
+				textLine.x = leftOffset;
+			} else
+			{
+				if (centerAligned)
+				{
+					textLine.x = centerOffset - textLine.textWidth / 2;
+				} else
+				{
+					if (rightAligned)
+					{
+						textLine.x = rightOffset - textLine.textWidth;
+					}
+				}
+			}
 
 			if (verticalAlign == "top" || !createdAllLines || clipping)
 			{
 				textLine.y += topOffset;
-			} else if (verticalAlign == "middle")
+			} else
 			{
-				textLine.y += middleOffset;
-			} else if (verticalAlign == "bottom")
-			{
-				textLine.y += bottomOffset;
-			} else if (verticalAlign == "justify")
-			{
-				// Determine the natural baseline position for this line.
-				// Note: The y coordinate of a TextLine is the location
-				// of its baseline, not of its top.
-				y += i == 0 ? topOffset + textLine.ascent : previousTextLine.descent + leading + textLine.ascent;
+				if (verticalAlign == "middle")
+				{
+					textLine.y += middleOffset;
+				} else
+				{
+					if (verticalAlign == "bottom")
+					{
+						textLine.y += bottomOffset;
+					} else
+					{
+						if (verticalAlign == "justify")
+						{
+							// Determine the natural baseline position for this line.
+							// Note: The y coordinate of a TextLine is the location
+							// of its baseline, not of its top.
+							y += i == 0 ? topOffset + textLine.ascent : previousTextLine.descent + leading + textLine.ascent;
 
-				textLine.y = y;
-				previousTextLine = textLine;
+							textLine.y = y;
+							previousTextLine = textLine;
+						}
+					}
+				}
 			}
 
 			// Upper left corner of bounding box may not be 0,0 after
@@ -507,13 +562,13 @@ public class Label extends TextBase
 			maxX = Math.max(maxX, textLine.x + textLine.textWidth);
 		}
 
-//		bounds.x = minX - paddingLeft;
+		//		bounds.x = minX - paddingLeft;
 		bounds.x = minX;
-//		bounds.y = minY - paddingTop;
+		//		bounds.y = minY - paddingTop;
 		bounds.y = minY;
-//		bounds.right = maxX + paddingRight;
+		//		bounds.right = maxX + paddingRight;
 		bounds.right = maxX;
-//		bounds.bottom = textLine.y + textLine.descent + paddingBottom;
+		//		bounds.bottom = textLine.y + textLine.descent + paddingBottom;
 		bounds.bottom = textLine.y + textLine.descent;
 
 		return createdAllLines;
@@ -546,23 +601,31 @@ public class Label extends TextBase
 	{
 		// Not all text composed because it didn't fit within bounds.
 		if (!createdAllLines)
+		{
 			return false;
+		}
 
 		// More text lines than allowed lines.
 		if (lineCountLimit != -1 && textLines.length > lineCountLimit)
+		{
 			return false;
+		}
 
 		if (lineBreak == LineBreak.EXPLICIT)
 		{
 			// if explicit, if the right edge of any lines go outside the
 			// desired width
 			if (bounds.right > width)
+			{
 				return false;
+			}
 		}
 
 		// No lines or no height restriction.
 		if (!textLines.length || isNaN(height))
+		{
 			return true;
+		}
 
 		// Does the bottom of the last line fall within the bounds?
 		var lastLine:TextLine = TextLine(textLines[textLines.length - 1]);
@@ -669,7 +732,9 @@ public class Label extends TextBase
 					// No original content left to make room for
 					// truncation indicator.
 					if (truncateAtCharPosition == 0)
+					{
 						break;
+					}
 
 					// Try again by truncating at the beginning of the
 					// preceding atom.
@@ -677,7 +742,9 @@ public class Label extends TextBase
 					truncateAtCharPosition = getNextTruncationPosition(truncLineIndex, truncateAtCharPosition);
 					// check to see if we've run out of chars
 					if (oldCharPosition == truncateAtCharPosition)
+					{
 						break;
+					}
 				}
 				while (true);
 			}
@@ -765,7 +832,9 @@ public class Label extends TextBase
 		var truncationLineIndex:int = textLines.length - 1;
 		// return -1 if no textLines (usually because zero size)
 		if (truncationLineIndex < 0)
+		{
 			return truncationLineIndex;
+		}
 
 		if (!isNaN(height))
 		{
@@ -775,7 +844,9 @@ public class Label extends TextBase
 			{
 				var textLine:TextLine = TextLine(textLines[truncationLineIndex]);
 				if (textLine.y + textLine.descent <= height)
+				{
 					break;
+				}
 
 				truncationLineIndex--;
 			}
@@ -784,7 +855,9 @@ public class Label extends TextBase
 
 		// if line count limit is smaller, use that
 		if (lineCountLimit != -1 && lineCountLimit <= truncationLineIndex)
+		{
 			truncationLineIndex = lineCountLimit - 1;
+		}
 
 		return truncationLineIndex;
 	}
@@ -827,7 +900,9 @@ public class Label extends TextBase
 				var atomBounds:Rectangle = line.getAtomBounds(atomIndex);
 				consumedWidth += atomBounds.width;
 				if (consumedWidth > allowedWidth)
+				{
 					break;
+				}
 			}
 
 			charPosition = line.getAtomTextBlockEndIndex(atomIndex);
@@ -873,7 +948,9 @@ public class Label extends TextBase
 				// if we run out of chars, just return the same
 				// position to warn the caller to stop
 				if (truncationLineIndex < 0)
+				{
 					return truncateAtCharPosition;
+				}
 			}
 			else
 			{
@@ -881,7 +958,9 @@ public class Label extends TextBase
 				// if we run out of chars, just return the same
 				// position to warn the caller to stop
 				if (truncationLineIndex >= textLines.length)
+				{
 					return truncateAtCharPosition;
+				}
 			}
 
 			line = TextLine(textLines[truncationLineIndex]);
