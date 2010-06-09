@@ -101,6 +101,7 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		}
 		else
 		{
+			trace(styleProp);
 			return undefined;
 		}
 	}
@@ -109,6 +110,19 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 	{
 		this[id] = instance;
 		partAdded(id, instance);
+	}
+
+	/**
+	 * http://juick.com/develar/751830
+	 */
+	override public function get snapInterval():Number
+	{
+		return stepSize;
+	}
+
+	override public function set snapInterval(value:Number):void
+	{
+		assert(false, "http://juick.com/develar/751830");
 	}
 }
 }
