@@ -12,7 +12,11 @@ internal final class Column
 {
 	private var currentRowWidth:Number = 0;
 
-	private var maxControlLengthInComposition:int = 0;
+	private var _maxControlLengthInComposition:int = 0;
+	public function get maxControlLengthInComposition():int
+	{
+		return _maxControlLengthInComposition;
+	}
 
 	private var currentComposition:Vector.<ILayoutElement>;
 	public const compositions:Vector.<Vector.<ILayoutElement>> = new Vector.<Vector.<ILayoutElement>>();
@@ -50,9 +54,9 @@ internal final class Column
 	public function calculateTotalWidth(labelGap:Number, controlGap:Number):Number
 	{
 		_totalWidth = _labelMaxWidth + rowMaxWidth;
-		if (maxControlLengthInComposition > 1)
+		if (_maxControlLengthInComposition > 1)
 		{
-			_totalWidth += labelGap + ((maxControlLengthInComposition - 2) * controlGap);
+			_totalWidth += labelGap + ((_maxControlLengthInComposition - 2) * controlGap);
 		}
 
 		if (auxiliaryElement != null)
@@ -137,9 +141,9 @@ internal final class Column
 	private function finalizeCurrentComposition():void
 	{
 		currentComposition.fixed = true;
-		if (currentComposition.length > maxControlLengthInComposition)
+		if (currentComposition.length > _maxControlLengthInComposition)
 		{
-			maxControlLengthInComposition = currentComposition.length;
+			_maxControlLengthInComposition = currentComposition.length;
 		}
 
 		if (currentRowWidth > rowMaxWidth)

@@ -30,9 +30,14 @@ public class CenterEqualizedLayout extends LayoutBase
 		}
     }
 
-	protected function get maxRowCount():int
+	private var _maxRowCount:int = 99;
+	public function get maxRowCount():int
 	{
-		return 99;
+		return _maxRowCount;
+	}
+	public function set maxRowCount(value:int):void
+	{
+		_maxRowCount = value;
 	}
 
 	protected function get isRightAlignLabel():Boolean
@@ -85,7 +90,14 @@ public class CenterEqualizedLayout extends LayoutBase
 			return;
 		}
 
-		columns = new Vector.<Column>();
+		if (columns == null)
+		{
+			columns = new Vector.<Column>();
+		}
+		else
+		{
+			columns.length = 0;
+		}
 
 		var measuredWidth:Number = 0;
 		var measuredHeight:Number = 0;
@@ -93,14 +105,14 @@ public class CenterEqualizedLayout extends LayoutBase
 		var column:Column;
 		const numElements:int = target.numElements;
 		var i:int = 0;
-		var oldControlGroup:Column;
+		var oldColumn:Column;
 		while (true)
 		{
 			var element:ILayoutElement = layoutTarget.getElementAt(i++);
 			if (element is Skin && Skin(element).component is VSeparator)
 			{
 				column.separator = Skin(element);
-				oldControlGroup = column;
+				oldColumn = column;
 				column = null;
 
 				measuredWidth += element.getPreferredBoundsWidth();
@@ -116,11 +128,11 @@ public class CenterEqualizedLayout extends LayoutBase
 						{
 							measuredWidth += columnGap;
 						}
-						oldControlGroup = column;
+						oldColumn = column;
 						column = new Column();
 					}
 
-					if (column.compositions.length > 0 && column.compositions[0].length > 1 &&
+					if (column.maxControlLengthInComposition > 1 &&
 						(i == numElements || ((column.compositions.length + 1) == maxRowCount && isAnotherColumnElement(layoutTarget.getElementAt(i)))))
 					{
 						column.auxiliaryElement = element;
@@ -145,18 +157,18 @@ public class CenterEqualizedLayout extends LayoutBase
 				}
 			}
 
-			if (oldControlGroup != null || i == numElements)
+			if (i == numElements)
 			{
-				if (oldControlGroup == null)
-				{
-					oldControlGroup = column;
-				}
+				oldColumn = column;
+			}
 
-				columns.push(oldControlGroup);
-				oldControlGroup.finalize();
-				measuredWidth += oldControlGroup.calculateTotalWidth(_labelGap, _controlGap);
+			if (oldColumn != null)
+			{
+				columns.push(oldColumn);
+				oldColumn.finalize();
+				measuredWidth += oldColumn.calculateTotalWidth(_labelGap, _controlGap);
 
-				const currentHeight:Number = oldControlGroup.calculateTotalHeight(fieldGap);
+				const currentHeight:Number = oldColumn.calculateTotalHeight(fieldGap);
 				if (currentHeight > measuredHeight)
 				{
 					measuredHeight = currentHeight;
@@ -166,6 +178,9 @@ public class CenterEqualizedLayout extends LayoutBase
 				{
 					break;
 				}
+
+
+				oldColumn = null;
 			}
 		}
 
