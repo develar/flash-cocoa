@@ -65,6 +65,7 @@
 								<class>**.ViewStack</class>
 								<class>**.*Group</class>
 								<class>**.Container</class>
+								<class>**.MXMLContainer</class>
 								<class>**.LayoutlessContainer</class>
 								<class>**.BorderedContainer</class>
 								<class>**.*Stepper</class>
@@ -97,6 +98,10 @@
 								<class>
 									<name>MXMLSkin</name>
 									<id>Skin</id>
+								</class>
+								<class>
+									<name>MXMLContainer</name>
+									<id>GraphicContainer</id>
 								</class>
 								<class>
 									<name>BorderedMXMLSkin</name>

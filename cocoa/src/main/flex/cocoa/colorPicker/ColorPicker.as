@@ -1,5 +1,7 @@
 package cocoa.colorPicker
 {
+import cocoa.Viewable;
+
 import flash.display.Graphics;
 
 import mx.controls.ColorPicker;
@@ -7,7 +9,7 @@ import mx.core.mx_internal;
 
 use namespace mx_internal;
 
-public class ColorPicker extends mx.controls.ColorPicker
+public class ColorPicker extends mx.controls.ColorPicker implements Viewable
 {
 	public function get argb():uint
 	{

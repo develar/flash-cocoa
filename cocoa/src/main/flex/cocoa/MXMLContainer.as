@@ -134,48 +134,6 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 		return IVisualElement(element is Component ? Component(element).skin : element);
 	}
 
-	override public function addElementAt(element:IVisualElement, index:int):IVisualElement
-    {
-		assert(element != this);
-
-		var host:DisplayObject;
-		if (element is Component)
-		{
-			var view:Component = Component(element);
-			if (view.skin != null)
-			{
-				host = IVisualElement(view.skin).parent;
-			}
-		}
-		else
-		{
-			host = element.parent;
-		}
-
-		if (host is IVisualElementContainer)
-        {
-			assert(host != this);
-            // Remove the item from the group if that group isn't this group
-            IVisualElementContainer(host).removeElement(element);
-        }
-
-		if (_subviews == null)
-		{
-			_subviews = [element];
-		}
-		else
-		{
-			_subviews.splice(index, 0, element);
-		}
-
-		if (!elementsChanged)
-		{
-			subviewAdded(element, index);
-		}
-
-		return element;
-	}
-
 	override public function removeElementAt(index:int):IVisualElement
 	{
 		var element:IVisualElement = _subviews[index];
@@ -213,11 +171,61 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 		return super.canSkipMeasurement();
 	}
 
+	override public function addElementAt(view:IVisualElement, index:int):IVisualElement
+    {
+		addFlexOrCocoaView(view, index);
+		return view;
+	}
+
 	public function addSubview(view:Viewable, index:int = -1):void
+	{
+		addFlexOrCocoaView(view, index);
+	}
+
+	private function addFlexOrCocoaView(view:Object, index:int = -1):void
 	{
 		if (index == -1)
 		{
 			index = numElements;
+		}
+
+		var host:DisplayObject;
+		if (view is Component)
+		{
+			var component:Component = Component(view);
+			if (component.skin != null)
+			{
+				host = IVisualElement(component.skin).parent;
+			}
+		}
+		else
+		{
+			host = IVisualElement(view).parent;
+		}
+
+		if (host is IVisualElementContainer)
+        {
+			assert(host != this);
+
+            IVisualElementContainer(host).removeElement(IVisualElement(view));
+        }
+		else if (host is ViewContainer)
+		{
+			ViewContainer(host).removeSubview(Viewable(view));
+		}
+
+		if (_subviews == null)
+		{
+			_subviews = [view];
+		}
+		else
+		{
+			_subviews.splice(index, 0, view);
+		}
+
+		if (!elementsChanged)
+		{
+			subviewAdded(view, index);
 		}
 
 		subviewAdded(view, index);

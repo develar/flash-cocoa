@@ -2,6 +2,7 @@ package cocoa
 {
 import cocoa.plaf.PushButtonSkin;
 
+import flash.events.Event;
 import flash.events.MouseEvent;
 
 public class AbstractButton extends AbstractControl implements Cell
@@ -88,6 +89,11 @@ public class AbstractButton extends AbstractControl implements Cell
 				event.updateAfterEvent();
 			}
 
+			if (hasEventListener("selectedChanged"))
+			{
+				dispatchEvent(new Event("selectedChanged"));
+			}
+
 			if (_action != null)
 			{
 				_action();
@@ -107,6 +113,15 @@ public class AbstractButton extends AbstractControl implements Cell
 	{
 		state = oldState;
 		event.updateAfterEvent();
+	}
+
+	override public function set state(value:int):void
+	{
+		super.state = value;
+		if (oldState == -1 && hasEventListener("selectedChanged"))
+		{
+			dispatchEvent(new Event("selectedChanged"));
+		}
 	}
 }
 }

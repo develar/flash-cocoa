@@ -47,7 +47,6 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 		_resourceBundle = value;
 	}
 
-	//[Bindable(event="mChanged")]
 	protected function l(key:String):String
 	{
 		return resourceManager.getString(_resourceBundle, key);

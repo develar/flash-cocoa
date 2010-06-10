@@ -1,7 +1,5 @@
 package cocoa
 {
-import flash.events.Event;
-
 public class AbstractControl extends AbstractComponent implements Control
 {
 	protected var _action:Function;
@@ -21,11 +19,6 @@ public class AbstractControl extends AbstractComponent implements Control
 		if (skin != null)
 		{
 			skin.invalidateDisplayList();
-		}
-
-		if (hasEventListener("selectedChanged"))
-		{
-			dispatchEvent(new Event("selectedChanged"));
 		}
 	}
 

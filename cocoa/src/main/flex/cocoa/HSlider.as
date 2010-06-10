@@ -99,9 +99,13 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		{
 			return layoutDirection;
 		}
+		else if (styleProp == "slideDuration")
+		{
+			return 0;
+		}
 		else
 		{
-			return undefined;
+			throw new Error("unknow " + styleProp);
 		}
 	}
 
