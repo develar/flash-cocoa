@@ -15,7 +15,8 @@ internal final class Column
 	private var _maxControlLengthInComposition:int = 0;
 	public function get maxControlLengthInComposition():int
 	{
-		return _maxControlLengthInComposition;
+		// могут спросить до того как первая и единственная на этот момент композиция будет финализирована
+		return _maxControlLengthInComposition == 0 && currentComposition != null ? currentComposition.length : _maxControlLengthInComposition;
 	}
 
 	private var currentComposition:Vector.<ILayoutElement>;

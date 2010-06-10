@@ -16,7 +16,7 @@ import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
 import cocoa.plaf.SegmentedControlController;
-import cocoa.plaf.SliderNumericStepperSkin;
+import cocoa.plaf.basic.SliderNumericStepperSkin;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;

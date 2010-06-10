@@ -1,7 +1,8 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.HSlider;
 import cocoa.NumericStepper;
+import cocoa.plaf.AbstractSkin;
 
 public class SliderNumericStepperSkin extends AbstractSkin
 {
@@ -42,14 +43,13 @@ public class SliderNumericStepperSkin extends AbstractSkin
 	{
 		var stepperW:Number = stepper.getExplicitOrMeasuredWidth();
 		var stepperH:Number = stepper.getExplicitOrMeasuredHeight();
-		var sliderW:Number = w - stepperW;
 		var sliderH:Number = slider.getExplicitOrMeasuredHeight();
 
-		slider.setActualSize(sliderW, sliderH);
+		slider.setActualSize(w - stepperW - GAP, sliderH);
 		slider.y = (h - sliderH) / 2;
 
 		stepper.setActualSize(stepperW, stepperH);
-		stepper.move(sliderW + GAP, (h - stepperH) / 2);
+		stepper.move(w - stepperW, (h - stepperH) / 2);
 	}
 
 	override public function set enabled(value:Boolean):void

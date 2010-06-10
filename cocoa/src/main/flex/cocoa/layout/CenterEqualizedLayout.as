@@ -76,16 +76,9 @@ public class CenterEqualizedLayout extends LayoutBase
 	/**
 	 * Промежуток между колонками, игнорируется при явно вставленном разделителе
 	 */
-    public function get columnGap():int
-    {
-        return _columnGap;
-    }
     public function set columnGap(value:int):void
     {
-        if (value != _columnGap)
-		{
-            _columnGap = value;
-		}
+        _columnGap = value;
     }
 
 	override public function measure():void
@@ -108,6 +101,8 @@ public class CenterEqualizedLayout extends LayoutBase
 		var measuredWidth:Number = 0;
 		var measuredHeight:Number = 0;
 
+		var effectiveMaxRowCount:int = maxRowCount;
+
 		var column:Column;
 		const numElements:int = target.numElements;
 		var i:int = 0;
@@ -123,24 +118,26 @@ public class CenterEqualizedLayout extends LayoutBase
 				column = null;
 
 				measuredWidth += element.getPreferredBoundsWidth();
+
+				effectiveMaxRowCount = maxRowCount; // see about share first auxiliaryElement
 			}
 			else
 			{
 				var skipAdd:Boolean = false;
 				if (isStartElement(element))
 				{
-					if (column == null || column.compositions.length == maxRowCount)
+					if (column == null || column.compositions.length == effectiveMaxRowCount)
 					{
 						if (column != null && column.separator == null)
 						{
-							measuredWidth += columnGap;
+							measuredWidth += _columnGap;
 						}
 						oldColumn = column;
 						column = new Column();
 					}
 
 					if (column.maxControlLengthInComposition > 1 &&
-						(i == numElements || ((column.compositions.length + 1) == maxRowCount && isAnotherColumnElement(layoutTarget.getElementAt(i)))))
+						(i == numElements || ((column.compositions.length + 1) == effectiveMaxRowCount && isAnotherColumnElement(layoutTarget.getElementAt(i)))))
 					{
 						column.auxiliaryElement = element;
 						skipAdd = true;
@@ -151,6 +148,7 @@ public class CenterEqualizedLayout extends LayoutBase
 					{
 						column.auxiliaryElement = element;
 						column.isAuxiliaryElementFirst = true;
+						effectiveMaxRowCount--;
 						continue;
 					}
 					else
@@ -298,7 +296,7 @@ public class CenterEqualizedLayout extends LayoutBase
 			var separator:Skin = column.separator;
 			if (separator == null)
 			{
-				x += columnGap;
+				x += _columnGap;
 			}
 			else
 			{
@@ -343,6 +341,11 @@ public class CenterEqualizedLayout extends LayoutBase
 			for each (var elements:Vector.<ILayoutElement> in column.compositions)
 			{
 				IUIComponent(elements[1]).enabled = enabled; // только первый, в композиции Label: CheckBox ColorPicker мы отвечаем только за enable CheckBox
+			}
+
+			if (!column.isAuxiliaryElementFirst && column.auxiliaryElement != null)
+			{
+				IUIComponent(column.auxiliaryElement).enabled = enabled;
 			}
 		}
 	}
