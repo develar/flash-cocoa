@@ -183,10 +183,20 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	}
 	public function set enabled(value:Boolean):void
 	{
+		if (value == _enabled)
+		{
+			return;
+		}
+
 		_enabled = value;
 		if (_skin != null)
 		{
 			_skin.enabled = _enabled;
+		}
+
+		if (hasEventListener("enabledChanged"))
+		{
+			dispatchEvent(new Event("enabledChanged"));
 		}
 	}
 

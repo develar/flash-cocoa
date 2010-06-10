@@ -311,9 +311,15 @@ public class CenterEqualizedLayout extends LayoutBase
 			}
 		}
 
-		if (monitoredSelectionControl != null && lastFirstAuxiliaryElement != null && monitoredSelectionControl != lastFirstAuxiliaryElement.component)
+		if (lastFirstAuxiliaryElement != null && monitoredSelectionControl == lastFirstAuxiliaryElement.component)
+		{
+			return;
+		}
+
+		if (monitoredSelectionControl != null)
 		{
 			monitoredSelectionControl.removeEventListener("selectedChanged", selectionControlStateChanged);
+			monitoredSelectionControl.removeEventListener("enabledChanged", selectionControlStateChanged);
 			monitoredSelectionControl = null;
 		}
 
@@ -322,6 +328,7 @@ public class CenterEqualizedLayout extends LayoutBase
 		{
 			monitoredSelectionControl = CheckBox(lastFirstAuxiliaryElement.component);
 			monitoredSelectionControl.addEventListener("selectedChanged", selectionControlStateChanged);
+			monitoredSelectionControl.addEventListener("enabledChanged", selectionControlStateChanged);
 			selectionControlStateChanged();
 		}
 	}
