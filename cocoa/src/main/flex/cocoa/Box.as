@@ -7,8 +7,8 @@ import spark.layouts.supportClasses.LayoutBase;
 
 use namespace ui;
 
-[DefaultProperty("elements")]
-public class Box extends AbstractComponent
+[DefaultProperty("mxmlContent")]
+public class Box extends AbstractComponent implements ViewContainerProvider
 {
 	protected static const _skinParts:Dictionary = new Dictionary();
 	_skinParts.contentGroup = 0;
@@ -33,11 +33,7 @@ public class Box extends AbstractComponent
 		return "Box";
 	}
 
-	public function get elements():Array
-	{
-		return _elements;
-	}
-	public function set elements(value:Array):void
+	public function set mxmlContent(value:Array):void
 	{
 		_elements = value;
 	}
@@ -73,6 +69,11 @@ public class Box extends AbstractComponent
 	override protected function resourcesChanged():void
     {
     	dispatchEvent(new Event("lChanged"));
+	}
+
+	public function get viewContainer():ViewContainer
+	{
+		return contentGroup;
 	}
 }
 }

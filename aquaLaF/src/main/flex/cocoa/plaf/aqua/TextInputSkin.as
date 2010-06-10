@@ -19,6 +19,10 @@ public class TextInputSkin extends AbstractSkin
 		border = getBorder("border");
 
 		textDisplay = new EditableTextView();
+		if (!enabled)
+		{
+			textDisplay.enabled = false;
+		}
 		textDisplay.textFormat = getTextFormat("SystemTextFormat");
 		textDisplay.selectionFormat = laf.getSelectionFormat("SelectionFormat");
 
@@ -46,6 +50,18 @@ public class TextInputSkin extends AbstractSkin
 		border.draw(this, g, w, h);
 
 		textDisplay.setLayoutBoundsSize(w - border.contentInsets.width, NaN);
+	}
+
+	override public function set enabled(value:Boolean):void
+	{
+		if (value != enabled)
+		{
+			super.enabled = value;
+			if (textDisplay != null)
+			{
+				textDisplay.enabled = value;
+			}
+		}
 	}
 }
 }

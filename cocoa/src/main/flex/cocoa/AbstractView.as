@@ -2225,7 +2225,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	}
 
 	private var _enabled:Boolean = true;
-	[Inspectable(category="General", enumeration="true,false", defaultValue="true")]
 	public function get enabled():Boolean
 	{
 		return _enabled;

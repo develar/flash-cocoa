@@ -290,9 +290,12 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	override public function set enabled(value:Boolean):void
 	{
 		if (value == super.enabled)
+		{
 			return;
+		}
 
 		super.enabled = value;
+
 		enabledChanged = true;
 
 		invalidateProperties();
@@ -1485,8 +1488,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	{
 		super.commitProperties();
 
-		// EditingMode needs to be current before attempting to set a
-		// selection below.
+		// EditingMode needs to be current before attempting to set a selection below.
 		if (enabledChanged || selectableChanged || editableChanged)
 		{
 			updateEditingMode();
@@ -2522,7 +2524,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		{
 			textFlow = new TextFlow();
 			textFlow.whiteSpaceCollapse = effectiveTextFormat.whiteSpaceCollapse;
-			textFlow.mxmlChildren = [ content ];
+			textFlow.mxmlChildren = [content];
 			textFlow.whiteSpaceCollapse = undefined;
 		}
 

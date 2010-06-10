@@ -5,11 +5,17 @@ import cocoa.Label;
 import cocoa.VSeparator;
 import cocoa.plaf.Skin;
 
+import flash.events.Event;
+
 import mx.core.ILayoutElement;
+import mx.core.IUIComponent;
 
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
+/**
+ *
+ */
 public class CenterEqualizedLayout extends LayoutBase
 {
 	private var columns:Vector.<Column>;
@@ -109,6 +115,7 @@ public class CenterEqualizedLayout extends LayoutBase
 		while (true)
 		{
 			var element:ILayoutElement = layoutTarget.getElementAt(i++);
+			assert(element != null);
 			if (element is Skin && Skin(element).component is VSeparator)
 			{
 				column.separator = Skin(element);
@@ -139,7 +146,8 @@ public class CenterEqualizedLayout extends LayoutBase
 						skipAdd = true;
 					}
 					// isRightAlignLabel для HUD, ему это не нужно
-					else if (!isRightAlignLabel && isCheckBox(element) && (i + 1) < numElements && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
+					// проверка на first auxiliary element — в данный момент считаем что он должен быть первым в композиции
+					else if (!isRightAlignLabel && i == 1 && isCheckBox(element) && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
 					{
 						column.auxiliaryElement = element;
 						column.isAuxiliaryElementFirst = true;
@@ -179,7 +187,6 @@ public class CenterEqualizedLayout extends LayoutBase
 					break;
 				}
 
-
 				oldColumn = null;
 			}
 		}
@@ -212,6 +219,8 @@ public class CenterEqualizedLayout extends LayoutBase
 			return;
 		}
 
+		var lastFirstAuxiliaryElement:Skin;
+
 		var x:Number = layoutTarget.measuredWidth == w ? 0 : ((w - layoutTarget.measuredWidth) / 2);
 		for each (var column:Column in columns)
 		{
@@ -227,7 +236,12 @@ public class CenterEqualizedLayout extends LayoutBase
 				column.auxiliaryElement.setLayoutBoundsPosition(x, localY);
 				column.auxiliaryElement.setLayoutBoundsSize(NaN, NaN);
 
-				localY += column.auxiliaryElement.getPreferredBoundsHeight() + fieldGap;
+				lastFirstAuxiliaryElement = Skin(column.auxiliaryElement);
+			}
+
+			if (lastFirstAuxiliaryElement != null)
+			{
+				localY += lastFirstAuxiliaryElement.getPreferredBoundsHeight() + fieldGap;
 			}
 
 			for (var compositionIndex:int = 0; compositionIndex < columnCompositionsLength; compositionIndex++)
@@ -292,6 +306,36 @@ public class CenterEqualizedLayout extends LayoutBase
 				separator.setLayoutBoundsSize(NaN, NaN);
 
 				x += separator.getPreferredBoundsWidth();
+
+				lastFirstAuxiliaryElement = null;
+			}
+		}
+
+		if (monitoredSelectionControl != null && lastFirstAuxiliaryElement != null && monitoredSelectionControl != lastFirstAuxiliaryElement.component)
+		{
+			monitoredSelectionControl.removeEventListener("selectedChanged", selectionControlStateChanged);
+			monitoredSelectionControl = null;
+		}
+
+		// в настоящее время мы поддерживаем только валидация на один firstAuxiliaryElement для всех колонок
+		if (lastFirstAuxiliaryElement != null)
+		{
+			monitoredSelectionControl = CheckBox(lastFirstAuxiliaryElement.component);
+			monitoredSelectionControl.addEventListener("selectedChanged", selectionControlStateChanged);
+			selectionControlStateChanged();
+		}
+	}
+
+	private var monitoredSelectionControl:CheckBox;
+
+	private function selectionControlStateChanged(event:Event = null):void
+	{
+		var enabled:Boolean = monitoredSelectionControl.selected && monitoredSelectionControl.enabled;
+		for each (var column:Column in columns)
+		{
+			for each (var elements:Vector.<ILayoutElement> in column.compositions)
+			{
+				IUIComponent(elements[1]).enabled = enabled; // только первый, в композиции Label: CheckBox ColorPicker мы отвечаем только за enable CheckBox
 			}
 		}
 	}
