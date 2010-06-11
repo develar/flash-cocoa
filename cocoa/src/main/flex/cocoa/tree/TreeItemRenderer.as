@@ -61,13 +61,13 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 		if (icon == null)
 		{
-			var iconClass:Class = Tree(owner).getStyle("pageIcon");
-			icon = new iconClass();
-			icon.y = 2;
-			addDisplayObject(icon);
+//			var iconClass:Class = Tree(owner).getStyle("pageIcon");
+//			icon = new iconClass();
+//			icon.y = 2;
+//			addDisplayObject(icon);
 		}
 
-		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont("SystemFont"));
+		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont("SmallSystemFont"));
 	}
 
 	override protected function measure():void
@@ -155,7 +155,11 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		{
 			return;
 		}
-		icon.x = _listData.indent + 16;
+
+		if (icon != null)
+		{
+			icon.x = _listData.indent + 16;
+		}
 
 		if (_listData.open)
 		{

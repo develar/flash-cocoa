@@ -48,6 +48,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["SystemFont"] = AquaFonts.SYSTEM_FONT;
 		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
 		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
+		data["SmallSystemFont"] = AquaFonts.SMALL_SYSTEM_FONT;
 		data["SmallSystemFont.emphasized"] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
 
 		data["ViewFont"] = AquaFonts.VIEW_FONT;
@@ -132,6 +133,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["NumericStepper.TextInput"] = TextInputSkin;
 
 		data["HSeparator.border"] = new SeparatorBorder();
+
+		data["Tree.border"] = borders[BorderPosition.treeItem];
+		data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 15, useRollOver: false};
 	}
 
 	private static function initAssets():void
@@ -295,6 +299,8 @@ final class AquaFonts
 
 	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
 	public static const SYSTEM_FONT_HUD:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
+
+	public static const SMALL_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11);
 
 	public static const MENU_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 14);
 

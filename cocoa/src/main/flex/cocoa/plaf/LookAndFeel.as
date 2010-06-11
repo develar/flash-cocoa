@@ -30,5 +30,7 @@ public interface LookAndFeel
 	function getCursor(cursorType:int):CursorData;
 
 	function getColors(key:String):Vector.<uint>;
+
+	function getObject(key:String):Object;
 }
 }

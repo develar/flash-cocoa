@@ -114,6 +114,9 @@ public class Builder
 	[Embed(source="/hud/HUDCloseButtonDisabled.png")]
 	private static var hudTitleBarCloseButtonDisabled:Class;
 
+	[Embed(source="/Tree.border.png")]
+	private static var treeBorder:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
 	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
@@ -164,7 +167,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		borders = new Vector.<Border>(BorderPosition.hudTitleBarCloseButton + 1, true);
+		borders = new Vector.<Border>(BorderPosition.treeItem + 1, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
@@ -204,6 +207,8 @@ public class Builder
 																		new Insets(12 + 6, 0, 0, 2), new FrameInsets(-1, 0, -1, -1));
 
 		borders[BorderPosition.hudTitleBarCloseButton] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudTitleBarCloseButtonOff, hudTitleBarCloseButtonOn, hudTitleBarCloseButtonDisabled]));
+
+		borders[BorderPosition.treeItem] = OneBitmapBorder.create(Bitmap(new treeBorder()).bitmapData, new Insets(30, 0, 7, 6));
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);

@@ -11,5 +11,7 @@ public final class BorderPosition
 	public static const checkBox:int = sliderTrack + 1;
 
 	public static const hudTitleBarCloseButton:int = checkBox + 1;
+
+	public static const treeItem:int = hudTitleBarCloseButton + 1;
 }
 }

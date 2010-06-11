@@ -1,9 +1,11 @@
 package cocoa.tree
 {
+import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.View;
+import cocoa.border.AbstractMultipleBitmapBorder;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
-import cocoa.border.Scale3EdgeHBitmapBorder;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;
@@ -20,12 +22,14 @@ import mx.controls.listClasses.IListItemRenderer;
 import mx.controls.listClasses.ListBaseContentHolder;
 import mx.controls.treeClasses.TreeListData;
 import mx.core.DragSource;
+import mx.core.EdgeMetrics;
 import mx.core.IFactory;
 import mx.core.IUIComponent;
 import mx.core.mx_internal;
 import mx.events.DragEvent;
 import mx.events.ListEvent;
 import mx.managers.DragManager;
+import mx.styles.StyleProtoChain;
 
 use namespace mx_internal;
 
@@ -37,17 +41,13 @@ use namespace mx_internal;
 [Style(name="pageIcon", type="Class", format="EmbeddedFile")]
 public class Tree extends mx.controls.Tree implements View
 {
+	private var lafDefaults:Object;
 
 	public function Tree()
 	{
 		super();
 
 		dataDescriptor = new TreeDataDescriptor();
-
-		setStyle("paddingTop", 0);
-		setStyle("paddingBottom", 0);
-		setStyle("paddingLeft", 3);
-		setStyle("paddingRight", 3);
 	}
 
 	private var _border:Border;
@@ -138,7 +138,6 @@ public class Tree extends mx.controls.Tree implements View
 		}
 	}
 
-
 	protected override function dragDropHandler(event:DragEvent):void
 	{
 		//should be handled by external manager
@@ -158,11 +157,6 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		ds.addData([_lastMouseDownItemRenderer.data], _customItemType);
 	}
-
-	/*override protected function keyDownHandler(event:KeyboardEvent):void
-	 {
-	 super.keyDownHandler(event);
-	 }*/
 
 	public function mouseEventToRenderer(event:MouseEvent):IListItemRenderer
 	{
@@ -227,7 +221,9 @@ public class Tree extends mx.controls.Tree implements View
 
 	protected override function createChildren():void
 	{
-		_border = LookAndFeelProvider(parent).laf.getBorder("Tree.border");
+		var laf:LookAndFeel = LookAndFeelProvider(parent).laf;
+		lafDefaults = laf.getObject("Tree.defaults");
+		_border = laf.getBorder("Tree.border");
 		rowHeight = _border.layoutHeight;
 
 		super.createChildren();
@@ -290,7 +286,6 @@ public class Tree extends mx.controls.Tree implements View
 			{
 				//drawCaretIndicator(o, item.x, rowInfo[rowData.rowIndex].y, item.width, rowInfo[rowData.rowIndex].height, getStyle("selectionColor"), item);
 
-				var oldCaretItemRenderer:IListItemRenderer = caretItemRenderer;
 				caretItemRenderer = item;
 				caretUID = rowData.uid;
 				//				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
@@ -316,17 +311,22 @@ public class Tree extends mx.controls.Tree implements View
 
 	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int):void
 	{
-		var border:Scale3EdgeHBitmapBorder = Scale3EdgeHBitmapBorder(_border);
-		border.stateIndex = index;
-
-		var oldFrameX:Number = border.frameInsets.left;
-		border.frameInsets.left += TreeListData(IDropInListItemRenderer(itemRenderer).listData).indent;
-
+		// в Cocoa нет hover state и border отрисовывается на всю ширину дерева, не на ширину элемента (listData.indent) — нам пока не с руки делать это через конфигурацию
 		var g:Graphics = Sprite(itemRenderer).graphics;
-		g.clear();
-		_border.draw(null, g, width, height);
-
-		border.frameInsets.left = oldFrameX;
+		if (_border is AbstractMultipleBitmapBorder)
+		{
+			g.clear();
+			AbstractMultipleBitmapBorder(_border).stateIndex = index;
+			var oldFrameX:Number = _border.frameInsets.left;
+			_border.frameInsets.left += TreeListData(IDropInListItemRenderer(itemRenderer).listData).indent;
+			_border.draw(null, g, width, height);
+			_border.frameInsets.left = oldFrameX;
+		}
+		else if (index != 0)
+		{
+			g.clear();
+			_border.draw(null, g, width, height);
+		}
 	}
 
 	override protected function drawCaretIndicator(indicator:Sprite, x:Number, y:Number, width:Number, height:Number, color:uint, itemRenderer:IListItemRenderer):void
@@ -379,5 +379,102 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		return itemRendererFunction == null ? super.getItemRendererFactory(data) : itemRendererFunction(data);
 	}
+
+	// disable unwanted legacy
+
+	override public function setStyle(styleProp:String, newValue:*):void
+	{
+		if (nonInheritingStyles == StyleProtoChain.STYLE_UNINITIALIZED)
+		{
+			nonInheritingStyles = {};
+		}
+
+		nonInheritingStyles[styleProp] = newValue;
+	}
+
+	override public function regenerateStyleCache(recursive:Boolean):void
+	{
+
+	}
+
+	override public function styleChanged(styleProp:String):void
+	{
+
+	}
+
+	override protected function resourcesChanged():void
+	{
+
+	}
+
+	override public function get layoutDirection():String
+	{
+		return AbstractView.LAYOUT_DIRECTION_LTR;
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+	{
+
+	}
+
+	override public function notifyStyleChangeInChildren(styleProp:String, recursive:Boolean):void
+	{
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+	{
+		return true;
+	}
+
+	include "../../../legacyConstraints.as";
+
+	override public function getStyle(styleProp:String):*
+	{
+		if (styleProp in nonInheritingStyles)
+		{
+			return nonInheritingStyles[styleProp];
+		}
+		else if (styleProp in lafDefaults)
+		{
+			return lafDefaults[styleProp];
+		}
+		else if (styleProp == "verticalAlign")
+		{
+			return "top";
+		}
+		else
+		{
+//			throw new Error("unknown " + styleProp);
+			trace(styleProp);
+			return undefined;
+		}
+	}
+
+	override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+	{
+		if ("borderColor" in lafDefaults)
+		{
+			var g:Graphics = graphics;
+			g.clear();
+			g.lineStyle(1, lafDefaults.borderColor);
+			g.beginFill(0xffffff);
+			g.drawRect(0, 0, unscaledWidth, unscaledHeight);
+			g.endFill();
+		}
+
+		super.updateDisplayList(unscaledWidth, unscaledHeight);
+	}
+
+	override protected function createBorder():void
+    {
+
+	}
+
+	private static const BORDER_METRICS:EdgeMetrics = new EdgeMetrics(1, 1, 1, 1);
+	override public function get borderMetrics():EdgeMetrics
+    {
+        return "borderColor" in lafDefaults ? BORDER_METRICS : EdgeMetrics.EMPTY;
+    }
 }
 }
