@@ -2,7 +2,7 @@ package cocoa.resources
 {
 import flash.utils.Dictionary;
 
-public class ResourceMetadata
+public final class ResourceMetadata
 {
 	private static const instances:Dictionary = new Dictionary();
 
