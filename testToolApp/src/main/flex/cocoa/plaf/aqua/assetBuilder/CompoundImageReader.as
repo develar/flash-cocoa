@@ -4,12 +4,14 @@ import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
-import cocoa.plaf.BitmapIcon;
 import cocoa.border.OneBitmapBorder;
+import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
+import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.aqua.BorderPosition;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -319,6 +321,53 @@ internal final class CompoundImageReader
 		return bitmapData;
 	}
 
+	private function crop(bitmapData:BitmapData):BitmapData
+	{
+		var frameRectangle:Rectangle = bitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
+		if (frameRectangle.width != bitmapData.width || frameRectangle.height != bitmapData.height)
+		{
+			compoundBitmapData = bitmapData;
+			bitmapData = createBitmapData(frameRectangle);
+			compoundBitmapData = assetsBitmapData;
+		}
+
+		return bitmapData;
+	}
+
+	public function readTreeIcons(bitmapDataClass:Class, openFrameInsets:FrameInsets, closeFrameInsets:FrameInsets):void
+	{
+		compoundBitmapData = assetsBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
+
+		var sourceBitmaps:Vector.<BitmapData> = sliceH(15);
+		borders[BorderPosition.treeDisclosureSideBar] = Scale1BitmapBorder.create(createTreeDisclosureIcon(sourceBitmaps, false), null, openFrameInsets);
+		borders[BorderPosition.treeDisclosureSideBar + 1] = Scale1BitmapBorder.create(createTreeDisclosureIcon(sourceBitmaps, true), null, closeFrameInsets);
+	}
+
+	// off, off h, on, on h
+	// skip open/close on h
+	private function createTreeDisclosureIcon(input:Vector.<BitmapData>, expanded:Boolean):Vector.<BitmapData>
+	{
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
+		var offset:int = expanded ? 6 : 0;
+		bitmaps[0] = input[offset];
+		bitmaps[1] = input[expanded ? 14 : 12];
+		bitmaps[2] = input[offset + 2];
+		return bitmaps;
+	}
+
+	private function sliceH(count:int):Vector.<BitmapData>
+	{
+		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(count, true);
+		var rowWidth:Number = compoundBitmapData.width / count;
+		var rectangle:Rectangle = new Rectangle(0, 0, rowWidth, compoundBitmapData.height);
+		for (var i:int = 0, n:int = bitmaps.length; i < n; i++, rectangle.x += rowWidth)
+		{
+			bitmaps[i] = crop(createBitmapData(rectangle));
+		}
+
+		return bitmaps;
+	}
+
 	private function slice3H(frameRectangle:Rectangle, sliceSize:Insets, rowTop:Number = 0, rowWidth:Number = NaN, count:int = 1):Vector.<BitmapData>
 	{
 		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(count * 2, true);
@@ -329,22 +378,13 @@ internal final class CompoundImageReader
 		var leftWithCenterRectangle:Rectangle = new Rectangle(0, top, sliceSize.left + 1, frameRectangle.height);
 		var rightRectangle:Rectangle = new Rectangle(0, top, sliceSize.right, frameRectangle.height);
 
-		var bitmapData:BitmapData;
-
 		var x:Number = frameRectangle.left;
 		for (var i:int = 0, n:int = bitmaps.length; i < n; x += rowWidth)
 		{
 			leftWithCenterRectangle.x = x;
-
-			bitmapData = new BitmapData(leftWithCenterRectangle.width, leftWithCenterRectangle.height, true, 0);
-			bitmapData.copyPixels(compoundBitmapData, leftWithCenterRectangle, sharedPoint, null, null, true);
-			bitmaps[i++] = bitmapData;
-
+			bitmaps[i++] = createBitmapData(leftWithCenterRectangle);
 			rightRectangle.x = x + relativeRightBitmapX;
-
-			bitmapData = new BitmapData(rightRectangle.width, rightRectangle.height, true, 0);
-			bitmapData.copyPixels(compoundBitmapData, rightRectangle, sharedPoint, null, null, true);
-			bitmaps[i++] = bitmapData;
+			bitmaps[i++] = createBitmapData(rightRectangle);
 		}
 
 		return bitmaps;

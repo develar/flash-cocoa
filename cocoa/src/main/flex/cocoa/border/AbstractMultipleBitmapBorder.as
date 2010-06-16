@@ -3,7 +3,7 @@ package cocoa.border
 import flash.display.BitmapData;
 import flash.utils.ByteArray;
 
-public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder
+public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implements MultipleBorder
 {
 	protected var bitmaps:Vector.<BitmapData>;
 
@@ -24,9 +24,13 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder
 		bitmaps = new Vector.<BitmapData>(n, true);
 		for (var i:int = 0; i < n; i++)
 		{
-			var bitmapData:BitmapData = new BitmapData(input.readUnsignedByte(), input.readUnsignedByte(), true, 0);
-			bitmapData.setPixels(bitmapData.rect, input);
-			bitmaps[i] = bitmapData;
+			var width:int = input.readUnsignedByte();
+			if (width != 0)
+			{
+				var bitmapData:BitmapData = new BitmapData(width, input.readUnsignedByte(), true, 0);
+				bitmapData.setPixels(bitmapData.rect, input);
+				bitmaps[i] = bitmapData;
+			}
 		}
 
 		super.readExternal(input);
@@ -37,9 +41,16 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder
 		output.writeByte(bitmaps.length);
 		for each (var bitmap:BitmapData in bitmaps)
 		{
-			output.writeByte(bitmap.width);
-			output.writeByte(bitmap.height);
-			output.writeBytes(bitmap.getPixels(bitmap.rect));
+			if (bitmap == null)
+			{
+				output.writeByte(0);
+			}
+			else
+			{
+				output.writeByte(bitmap.width);
+				output.writeByte(bitmap.height);
+				output.writeBytes(bitmap.getPixels(bitmap.rect));
+			}
 		}
 
 		super.writeExternal(output);

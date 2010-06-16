@@ -2,6 +2,7 @@ package cocoa.tree
 {
 import cocoa.AbstractView;
 import cocoa.LabelHelper;
+import cocoa.border.MultipleBorder;
 import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObject;
@@ -18,9 +19,6 @@ use namespace mx_internal;
 
 public class TreeItemRenderer extends AbstractView implements IListItemRenderer, IDropInListItemRenderer
 {
-	protected var disclosureOpenIcon:DisplayObject;
-	protected var disclosureCloseIcon:DisplayObject;
-
 	protected var icon:DisplayObject;
 
 	protected var labelHelper:LabelHelper;
@@ -95,64 +93,6 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			listDataChanged = false;
 
 			labelHelper.text = getLabel();
-
-			if (_listData.hasChildren ? Tree(owner).dataDescriptor.hasChildren(_listData.item) : false)
-			{
-				if (_listData.open)
-				{
-					if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
-					{
-						disclosureCloseIcon.visible = false;
-					}
-
-					if (disclosureOpenIcon == null && _listData.disclosureIcon != null)
-					{
-						disclosureOpenIcon = createDisclosureIcon(_listData.disclosureIcon);
-					}
-
-					if (disclosureCloseIcon != null)
-					{
-						if (!disclosureOpenIcon.visible)
-						{
-							disclosureOpenIcon.visible = true;
-						}
-
-						disclosureOpenIcon.x = _listData.indent;
-					}
-				}
-				else
-				{
-					if (disclosureOpenIcon != null && disclosureOpenIcon.visible)
-					{
-						disclosureOpenIcon.visible = false;
-					}
-
-					if (disclosureCloseIcon == null && _listData.disclosureIcon != null)
-					{
-						disclosureCloseIcon = createDisclosureIcon(_listData.disclosureIcon);
-					}
-					if (disclosureCloseIcon != null)
-					{
-						if (!disclosureCloseIcon.visible)
-						{
-							disclosureCloseIcon.visible = true;
-						}
-
-						disclosureCloseIcon.x = _listData.indent;
-					}
-				}
-			}
-			else
-			{
-				if (disclosureOpenIcon != null)
-				{
-					disclosureOpenIcon.visible = false;
-				}
-				if (disclosureCloseIcon != null)
-				{
-					disclosureCloseIcon.visible = false;
-				}
-			}
 		}
 	}
 
@@ -168,20 +108,26 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			icon.x = _listData.indent + 16;
 		}
 
-		if (_listData.open)
+		if (_listData.hasChildren)
 		{
-			if (disclosureOpenIcon != null && disclosureOpenIcon.visible)
+			var disclosureBorder:MultipleBorder = MultipleBorder(LookAndFeelProvider(owner.parent).laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close")));
+			if (Tree(owner).isItemSelected(data))
 			{
-				layoutDisclosureIcon(disclosureOpenIcon);
+				disclosureBorder.stateIndex = 3;
 			}
 		}
-		else
-		{
-			if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
-			{
-				layoutDisclosureIcon(disclosureCloseIcon);
-			}
-		}
+
+//		if (_listData.open)
+//		{
+//			if (disclosureOpenIcon != null && disclosureOpenIcon.visible)
+//			{
+//				layoutDisclosureIcon(disclosureOpenIcon);
+//			}
+//		}
+//		else if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
+//		{
+//			layoutDisclosureIcon(disclosureCloseIcon);
+//		}
 
 		labelHelper.validate();
 		labelHelper.moveByInsetsWithXOffseet(h, Tree(owner).$border.contentInsets, Tree(owner).$border.frameInsets, _listData.indent);
@@ -201,13 +147,6 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		}
 	}
 
-	private function createDisclosureIcon(clazz:Class):DisplayObject
-	{
-		var disclosureIcon:DisplayObject = new clazz();
-		addDisplayObject(disclosureIcon);
-		return disclosureIcon;
-	}
-
 	private function isDisclosureIconClicked(disclosureIcon:DisplayObject, event:MouseEvent):Boolean
 	{
 		return disclosureIcon != null && disclosureIcon.visible && disclosureIcon.hitTestPoint(event.stageX, event.stageY);
@@ -217,18 +156,19 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	{
 		if (dispatchOpenEvent)
 		{
-			if ((_listData.open && isDisclosureIconClicked(disclosureOpenIcon, event)) || isDisclosureIconClicked(disclosureCloseIcon, event))
-			{
-				disclosureIconClickHandler(event);
-				return true;
-			}
-			else
-			{
+//			if ((_listData.open && isDisclosureIconClicked(disclosureOpenIcon, event)) || isDisclosureIconClicked(disclosureCloseIcon, event))
+//			{
+//				disclosureIconClickHandler(event);
+//				return true;
+//			}
+//			else
+//			{
 				return false;
-			}
+//			}
 		}
 
-		return isDisclosureIconClicked(disclosureOpenIcon, event) || isDisclosureIconClicked(disclosureCloseIcon, event);
+		return false;
+//		return isDisclosureIconClicked(disclosureOpenIcon, event) || isDisclosureIconClicked(disclosureCloseIcon, event);
 	}
 
 	protected function layoutDisclosureIcon(disclosureIcon:DisplayObject):void
@@ -250,7 +190,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 		var open:Boolean = _listData.open;
 		_listData.open = !open;
-		Tree(owner).dispatchTreeEvent(TreeEvent.ITEM_OPENING, data, this, event, !open);
+		Tree(owner).dispatchTreeEvent(TreeEvent.ITEM_OPENING, data, this, event, !open, false);
 	}
 
 	public function get styleName():Object

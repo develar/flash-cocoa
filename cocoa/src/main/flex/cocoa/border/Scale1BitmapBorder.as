@@ -40,13 +40,17 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 		return border;
 	}
 
+	/**
+	 * w и h могут быть NaN, в этом случае x/y = frameInsets.left/top и w/h = bitmap.width/height
+	 */
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
 	{
 		sharedMatrix.tx = _frameInsets.left;
 		sharedMatrix.ty = _frameInsets.top;
 
-		g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
-		g.drawRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.top - _frameInsets.bottom);
+		var bitmap:BitmapData = bitmaps[_bitmapIndex];
+		g.beginBitmapFill(bitmap, sharedMatrix, false);
+		g.drawRect(_frameInsets.left, _frameInsets.top, isNaN(w) ? bitmap.height : (w - _frameInsets.left - _frameInsets.right), isNaN(h) ? bitmap.height : (h - _frameInsets.top - _frameInsets.bottom));
 		g.endFill();
 	}
 
@@ -55,9 +59,9 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 		super.readExternal(input);
 
 		lazyReadFrameInsets(input);
-		
-		_layoutHeight = bitmaps[0].height + _frameInsets.top + _frameInsets.bottom;
+
 		_layoutWidth = bitmaps[0].width + _frameInsets.left + _frameInsets.right;
+		_layoutHeight = bitmaps[0].height + _frameInsets.top + _frameInsets.bottom;
 	}
 
 	override public function writeExternal(output:ByteArray):void

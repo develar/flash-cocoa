@@ -136,6 +136,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["Tree.border"] = borders[BorderPosition.treeItem];
 		data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 15, useRollOver: false};
+		data["Tree.disclosureIcon.open"] = borders[BorderPosition.treeDisclosureSideBar];
+		data["Tree.disclosureIcon.close"] = borders[BorderPosition.treeDisclosureSideBar + 1];
 	}
 
 	private static function initAssets():void

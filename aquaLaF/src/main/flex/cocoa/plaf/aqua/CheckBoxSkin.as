@@ -4,7 +4,7 @@ import cocoa.AbstractButton;
 import cocoa.CellState;
 import cocoa.Insets;
 import cocoa.TextInsets;
-import cocoa.border.Scale1BitmapBorder;
+import cocoa.border.MultipleBorder;
 import cocoa.plaf.basic.PushButtonSkin;
 
 import flash.display.Graphics;
@@ -13,7 +13,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin
 {
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		Scale1BitmapBorder(border).stateIndex = calculateBitmapIndex();
+		MultipleBorder(border).stateIndex = calculateBorderStateIndex();
 		alpha = enabled ? 1 : 0.5;
 
 		if (labelHelper != null && labelHelper.hasText)
@@ -33,7 +33,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin
 		border.draw(this, g, border.layoutWidth, h);
 	}
 
-	protected function calculateBitmapIndex():int
+	protected function calculateBorderStateIndex():int
 	{
 		return AbstractButton(myComponent).isMouseDown ? (myComponent.state == CellState.ON ? 1 : 3) : (myComponent.state == CellState.ON ? 2 : 0);
 	}

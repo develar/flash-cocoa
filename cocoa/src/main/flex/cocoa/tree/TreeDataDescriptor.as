@@ -22,7 +22,7 @@ public class TreeDataDescriptor extends DefaultDataDescriptor
 
 	override public function hasChildren(node:Object, model:Object = null):Boolean
     {
-		return node.children != null && IList(node.children).length > 0;
+		return "children" in node && node.children != null && IList(node.children).length > 0;
 	}
 
 	override public function isBranch(node:Object, model:Object = null):Boolean

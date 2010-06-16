@@ -7,14 +7,14 @@ import cocoa.Insets;
 import cocoa.TextInsets;
 import cocoa.border.AbstractBitmapBorder;
 import cocoa.border.AbstractMultipleBitmapBorder;
-import cocoa.plaf.BitmapIcon;
-import cocoa.plaf.ExternalizableResource;
 import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
+import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BorderPosition;
 import cocoa.util.FileUtil;
@@ -117,6 +117,9 @@ public class Builder
 	[Embed(source="/Tree.border.png")]
 	private static var treeBorder:Class;
 
+	[Embed(source="/Tree.sideBar.icons.png")]
+	private static var treeSideBarIcons:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
 	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
@@ -167,7 +170,7 @@ public class Builder
 
 	public function build(testContainer:DisplayObjectContainer):void
 	{
-		borders = new Vector.<Border>(BorderPosition.treeItem + 1, true);
+		borders = new Vector.<Border>(BorderPosition.totalLength, true);
 		var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
 		finalizeRowsInfo(buttonRowsInfo, 22);
@@ -177,7 +180,6 @@ public class Builder
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
-
 		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
 
 		compoundImageReader.position = BorderPosition.segmentItem;
@@ -209,6 +211,8 @@ public class Builder
 		borders[BorderPosition.hudTitleBarCloseButton] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudTitleBarCloseButtonOff, hudTitleBarCloseButtonOn, hudTitleBarCloseButtonDisabled]));
 
 		borders[BorderPosition.treeItem] = OneBitmapBorder.create(Bitmap(new treeBorder()).bitmapData, new Insets(30, 0, 7, 6));
+
+		compoundImageReader.readTreeIcons(treeSideBarIcons, new FrameInsets(10, 5), new FrameInsets(8, 6));
 
 		var data:ByteArray = new ByteArray();
 		data.writeByte(borders.length);
@@ -276,17 +280,25 @@ public class Builder
 				bitmaps = pendingBitmaps;
 			}
 
+			var lastHeight:Number;
 			for each (var bitmapData:BitmapData in bitmaps)
 			{
+				if (bitmapData == null)
+				{
+					continue;
+				}
+
 				var bitmap:Bitmap = new Bitmap(bitmapData);
 				bitmap.x = x;
 				bitmap.y = y;
 				displayObject.addChild(bitmap);
 				x += bitmapData.width + 4;
+
+				lastHeight = bitmapData.height;
 			}
 
 			x = 100;
-			y += bitmapData.height < 30 ? 30 : 100;
+			y += lastHeight < 30 ? 30 : 100;
 		}
 
 		y += 40;

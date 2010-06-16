@@ -4,6 +4,7 @@ import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.View;
 import cocoa.border.AbstractMultipleBitmapBorder;
+import cocoa.border.MultipleBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
@@ -208,30 +209,44 @@ public class Tree extends mx.controls.Tree implements View
 		return _lastMouseDownItemRenderer;
 	}
 
-	protected override function mouseDownHandler(event:MouseEvent):void
+	override protected function mouseDownHandler(event:MouseEvent):void
 	{
-		var r:IListItemRenderer = mouseEventToRenderer(event);
-		//click on a disclosure icon shouldn't select the item
-		if (r == null || !dataDescriptor.isBranch(r.data) || !TreeItemRenderer(r).checkDisclosure(event, false))
+		var renderer:IListItemRenderer = mouseEventToRenderer(event);
+		// click on a disclosure icon shouldn't select the item
+		if (renderer == null || !dataDescriptor.hasChildren(renderer.data) || !TreeItemRenderer(renderer).checkDisclosure(event, false))
 		{
 			super.mouseDownHandler(event);
 		}
-		_lastMouseDownItemRenderer = r;
+
+		_lastMouseDownItemRenderer = renderer;
 	}
 
-	protected override function createChildren():void
+	override protected function mouseUpHandler(event:MouseEvent):void
+	{
+		super.mouseUpHandler(event);
+	}
+
+	override protected function createChildren():void
 	{
 		var laf:LookAndFeel = LookAndFeelProvider(parent).laf;
 		lafDefaults = laf.getObject("Tree.defaults");
 		_border = laf.getBorder("Tree.border");
 		rowHeight = _border.layoutHeight;
 
+		listContent = new StylessListBaseContentHolder(this);
+		addChild(listContent);
+
 		super.createChildren();
 	}
 
-	override protected function drawItem(item:IListItemRenderer, selected:Boolean = false, highlighted:Boolean = false, caret:Boolean = false, transition:Boolean = false):void
+	public function isRendererHighlighted(item:IListItemRenderer):Boolean
 	{
-		if (!item)
+		return highlightItemRenderer == item;
+	}
+
+	override protected function drawItem(itemRenderer:IListItemRenderer, selected:Boolean = false, highlighted:Boolean = false, caret:Boolean = false, transition:Boolean = false):void
+	{
+		if (!itemRenderer)
 		{
 			return;
 		}
@@ -242,80 +257,63 @@ public class Tree extends mx.controls.Tree implements View
 		//			return;
 		//		}
 
-		var contentHolder:ListBaseContentHolder = DisplayObject(item).parent as ListBaseContentHolder;
-		if (!contentHolder)
+		var contentHolder:ListBaseContentHolder = DisplayObject(itemRenderer).parent as ListBaseContentHolder;
+		if (contentHolder == null)
 		{
 			return;
 		}
 
 		var rowInfo:Array = contentHolder.rowInfo;
-		var rowData:BaseListData = rowMap[item.name];
+		var rowData:TreeListData = rowMap[itemRenderer.name];
 		// this can happen due to race conditions when using data effects
-		if (!rowData)
+		if (rowData == null)
 		{
 			return;
 		}
 
 		if (highlighted && (highlightItemRenderer == null || highlightUID != rowData.uid))
 		{
-			drawItemBorder(item.width, rowInfo[rowData.rowIndex].height, item, 0);
+			drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, rowData, 0);
 
-			lastHighlightItemRenderer = highlightItemRenderer = item;
+			lastHighlightItemRenderer = highlightItemRenderer = itemRenderer;
 			highlightUID = rowData.uid;
 		}
-		else if (highlightItemRenderer && (rowData && highlightUID == rowData.uid))
+		else if (highlightItemRenderer != null && highlightUID == rowData.uid)
 		{
-			clearHighlightIndicator(highlightIndicator, item);
 			highlightItemRenderer = null;
 			highlightUID = null;
 		}
 
 		if (selected)
 		{
-			drawItemBorder(item.width, rowInfo[rowData.rowIndex].height, item, 1);
+			drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, rowData, 1);
 		}
 		else if (!highlighted)
 		{
-			Sprite(item).graphics.clear();
+			Sprite(itemRenderer).graphics.clear();
 		}
 
-		if (caret) // && (!caretItemRenderer || caretUID != rowData.uid))
+		if (caret && showCaret)
 		{
-			// Only draw the caret if there has been keyboard navigation.
-			if (showCaret)
-			{
-				//drawCaretIndicator(o, item.x, rowInfo[rowData.rowIndex].y, item.width, rowInfo[rowData.rowIndex].height, getStyle("selectionColor"), item);
-
-				caretItemRenderer = item;
-				caretUID = rowData.uid;
-				//				if (oldCaretItemRenderer is IFlexDisplayObject && oldCaretItemRenderer is IInvalidating)
-				//				{
-				//					IInvalidating(oldCaretItemRenderer).invalidateDisplayList();
-				//					IInvalidating(oldCaretItemRenderer).validateNow();
-				//				}
-			}
+			caretItemRenderer = itemRenderer;
+			caretUID = rowData.uid;
 		}
 		else if (caretItemRenderer != null && caretUID == rowData.uid)
 		{
-			clearCaretIndicator(caretIndicator, item);
+			clearCaretIndicator(caretIndicator, itemRenderer);
 			caretItemRenderer = null;
 			caretUID = "";
 		}
-
-		//		if (item is IFlexDisplayObject && item is IInvalidating)
-		//		{
-		//			IInvalidating(item).invalidateDisplayList();
-		//			IInvalidating(item).validateNow();
-		//		}
 	}
 
-	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int):void
+	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, rowData:TreeListData, index:int):void
 	{
 		// в Cocoa нет hover state и border отрисовывается на всю ширину дерева, не на ширину элемента (listData.indent) — нам пока не с руки делать это через конфигурацию
 		var g:Graphics = Sprite(itemRenderer).graphics;
+		g.clear();
+
 		if (_border is AbstractMultipleBitmapBorder)
 		{
-			g.clear();
 			AbstractMultipleBitmapBorder(_border).stateIndex = index;
 			var oldFrameX:Number = _border.frameInsets.left;
 			_border.frameInsets.left += TreeListData(IDropInListItemRenderer(itemRenderer).listData).indent;
@@ -324,8 +322,13 @@ public class Tree extends mx.controls.Tree implements View
 		}
 		else if (index != 0)
 		{
-			g.clear();
 			_border.draw(null, g, width, height);
+		}
+
+		if (rowData.hasChildren)
+		{
+			var disclosureBorder:MultipleBorder = MultipleBorder(LookAndFeelProvider(parent).laf.getBorder("Tree.disclosureIcon." + (rowData.open ? "open" : "close")));
+			disclosureBorder.draw(null, g, NaN, NaN);
 		}
 	}
 
@@ -476,5 +479,80 @@ public class Tree extends mx.controls.Tree implements View
     {
         return "borderColor" in lafDefaults ? BORDER_METRICS : EdgeMetrics.EMPTY;
     }
+
+	override protected function makeListData(item:Object, uid:String, rowNum:int):BaseListData
+	{
+		var treeListData:TreeListData = new TreeListData(itemToLabel(item), uid, this, rowNum);
+
+		treeListData.open = isItemOpen(item);
+		treeListData.hasChildren = _dataDescriptor.hasChildren(item, iterator.view);
+		treeListData.depth = getItemDepth(item, treeListData.rowIndex);
+		treeListData.indent = (treeListData.depth - 1) * getStyle("indentation");
+		treeListData.item = item;
+//		treeListData.icon = itemToIcon(item);
+
+		return treeListData;
+	}
+
+	override public function itemToIcon(item:Object):Class
+    {
+		// пока что никому не надо, а потом мы напишем реализацию отдачи иконки
+		return null;
+	}
 }
+}
+
+import cocoa.AbstractView;
+
+import mx.controls.listClasses.ListBase;
+import mx.controls.listClasses.ListBaseContentHolder;
+import mx.core.mx_internal;
+
+use namespace mx_internal;
+
+class StylessListBaseContentHolder extends ListBaseContentHolder
+{
+	public function StylessListBaseContentHolder(parentList:ListBase)
+	{
+		super(parentList);
+	}
+
+	override public function setStyle(styleProp:String, newValue:*):void
+	{
+	}
+
+	override public function regenerateStyleCache(recursive:Boolean):void
+	{
+
+	}
+
+	override public function styleChanged(styleProp:String):void
+	{
+
+	}
+
+	override protected function resourcesChanged():void
+	{
+
+	}
+
+	override public function get layoutDirection():String
+	{
+		return AbstractView.LAYOUT_DIRECTION_LTR;
+	}
+
+	override public function registerEffects(effects:Array /* of String */):void
+	{
+
+	}
+
+	override public function notifyStyleChangeInChildren(styleProp:String, recursive:Boolean):void
+	{
+
+	}
+
+	override mx_internal function initThemeColor():Boolean
+	{
+		return true;
+	}
 }

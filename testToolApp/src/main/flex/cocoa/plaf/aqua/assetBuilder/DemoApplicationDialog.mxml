@@ -17,6 +17,8 @@
 		private static const listData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8"]);
 		private static const shortListData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 3 Looooooooong"]);
 
+		private static const treeData:Array = ["Item 1", "Item 3 Looooooooong", {label: "dsfsdf", children: listData}];
+
 		[ResourceBundle("TestPane")]
 		private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
 			new PaneItem(new ResourceMetadata("a", "TestPane"), paneFactory("Pane A")),
@@ -71,6 +73,8 @@
 				<TileLayout rowHeight="25"/>
 			</layout>
 		</ListView>
+
+		<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}"/>
 
 		<!--<cocoa:SingleSelectionDataGroup dataProvider="{shortListData}" itemRenderer="{new ClassFactory(SegmentItemRenderer)}"/>-->
 	</Container>
