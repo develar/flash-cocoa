@@ -61,10 +61,10 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 		if (icon == null)
 		{
-//			var iconClass:Class = Tree(owner).getStyle("pageIcon");
-//			icon = new iconClass();
-//			icon.y = 2;
-//			addDisplayObject(icon);
+			//			var iconClass:Class = Tree(owner).getStyle("pageIcon");
+			//			icon = new iconClass();
+			//			icon.y = 2;
+			//			addDisplayObject(icon);
 		}
 
 		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont("SmallSystemFont"));
@@ -83,7 +83,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 	protected function getLabel():String
 	{
-		return _listData == null ? "?":_listData.label;
+		return _listData == null ? "?" : _listData.label;
 	}
 
 	override protected function commitProperties():void
@@ -105,16 +105,20 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 						disclosureCloseIcon.visible = false;
 					}
 
-					if (disclosureOpenIcon == null)
+					if (disclosureOpenIcon == null && _listData.disclosureIcon != null)
 					{
 						disclosureOpenIcon = createDisclosureIcon(_listData.disclosureIcon);
 					}
-					else if (!disclosureOpenIcon.visible)
-					{
-						disclosureOpenIcon.visible = true;
-					}
 
-					disclosureOpenIcon.x = _listData.indent;
+					if (disclosureCloseIcon != null)
+					{
+						if (!disclosureOpenIcon.visible)
+						{
+							disclosureOpenIcon.visible = true;
+						}
+
+						disclosureOpenIcon.x = _listData.indent;
+					}
 				}
 				else
 				{
@@ -123,16 +127,19 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 						disclosureOpenIcon.visible = false;
 					}
 
-					if (disclosureCloseIcon == null)
+					if (disclosureCloseIcon == null && _listData.disclosureIcon != null)
 					{
 						disclosureCloseIcon = createDisclosureIcon(_listData.disclosureIcon);
 					}
-					else if (!disclosureCloseIcon.visible)
+					if (disclosureCloseIcon != null)
 					{
-						disclosureCloseIcon.visible = true;
-					}
+						if (!disclosureCloseIcon.visible)
+						{
+							disclosureCloseIcon.visible = true;
+						}
 
-					disclosureCloseIcon.x = _listData.indent;
+						disclosureCloseIcon.x = _listData.indent;
+					}
 				}
 			}
 			else
@@ -168,9 +175,12 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 				layoutDisclosureIcon(disclosureOpenIcon);
 			}
 		}
-		else if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
+		else
 		{
-			layoutDisclosureIcon(disclosureCloseIcon);
+			if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
+			{
+				layoutDisclosureIcon(disclosureCloseIcon);
+			}
 		}
 
 		labelHelper.validate();
