@@ -61,5 +61,10 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implement
 	{
 		return bitmaps;
 	}
+
+	public function hasState(stateIndex:int):Boolean
+	{
+		return true;
+	}
 }
 }

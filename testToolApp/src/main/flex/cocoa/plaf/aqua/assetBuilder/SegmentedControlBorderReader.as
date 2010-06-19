@@ -2,6 +2,7 @@ package cocoa.plaf.aqua.assetBuilder
 {
 import cocoa.Border;
 import cocoa.Insets;
+import cocoa.border.BitmapBorderStateIndex;
 import cocoa.border.Scale1BitmapBorder;
 
 import flash.display.BitmapData;
@@ -16,11 +17,6 @@ import mx.core.BitmapAsset;
 public class SegmentedControlBorderReader
 {
 	private static const sharedPoint:Point = new Point(0, 0);
-
-	private static const offOffset:int = 0;
-	private static const onOffset:int = 1;
-	private static const highlightOffOffset:int = 2;
-	private static const highlightOnOffset:int = 3;
 
 	private static const leftIndex:int = 0;
 	private static const middleIndex:int = leftIndex + 4;
@@ -54,7 +50,7 @@ public class SegmentedControlBorderReader
 
 		var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
 
-		segmentBitmaps[leftIndex + onOffset] = readLeftSegment(frameRectangle, sliceSize);
+		segmentBitmaps[leftIndex + BitmapBorderStateIndex.ON] = readLeftSegment(frameRectangle, sliceSize);
 
 		segmentRectangle = new Rectangle(firstMiddleAbsoluteX, frameRectangle.bottom - 3, 1, 3);
 
@@ -63,23 +59,15 @@ public class SegmentedControlBorderReader
 		segmentRectangle.y = frameRectangle.top;
 		segmentRectangle.height = frameRectangle.height - 3;
 
-		segmentBitmaps[middleIndex + onOffset] = createBitmapData(segmentRectangle);
+		segmentBitmaps[middleIndex + BitmapBorderStateIndex.ON] = createBitmapData(segmentRectangle);
 		segmentRectangle.x += 1;
-		segmentBitmaps[separatorIndex + onOffset] = createBitmapData(segmentRectangle);
+		segmentBitmaps[separatorIndex + BitmapBorderStateIndex.ON] = createBitmapData(segmentRectangle);
 		segmentRectangle.x += 1;
-		segmentBitmaps[middleIndex + offOffset] = createBitmapData(segmentRectangle);
+		segmentBitmaps[middleIndex + BitmapBorderStateIndex.OFF] = createBitmapData(segmentRectangle);
 		segmentRectangle.x += 16;
-		segmentBitmaps[separatorIndex + offOffset] = createBitmapData(segmentRectangle);
+		segmentBitmaps[separatorIndex + BitmapBorderStateIndex.OFF] = createBitmapData(segmentRectangle);
 
-		segmentBitmaps[rightIndex + offOffset] = readRightSegment(frameRectangle, sliceSize);
-
-		// next row
-		compoundBitmapData = canvasBitmapData;
-		sourceRectangle.y += 30;
-		compoundBitmapData = createBitmapData(sourceRectangle);
-
-		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
-		segmentBitmaps[leftIndex + offOffset] = readLeftSegment(frameRectangle, sliceSize);
+		segmentBitmaps[rightIndex + BitmapBorderStateIndex.OFF] = readRightSegment(frameRectangle, sliceSize);
 
 		// next row
 		compoundBitmapData = canvasBitmapData;
@@ -87,10 +75,18 @@ public class SegmentedControlBorderReader
 		compoundBitmapData = createBitmapData(sourceRectangle);
 
 		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
-		segmentBitmaps[rightIndex + onOffset] = readRightSegment(frameRectangle, sliceSize);
+		segmentBitmaps[leftIndex + BitmapBorderStateIndex.OFF] = readLeftSegment(frameRectangle, sliceSize);
 
-		readHighlightedSegments(canvasBitmapData, BitmapAsset(new bitmapData2Class()).bitmapData, 3, 5, highlightOffOffset);
-		readHighlightedSegments(BitmapAsset(new bitmapData3Class()).bitmapData, BitmapAsset(new bitmapData4Class()).bitmapData, 6, 7, highlightOnOffset);
+		// next row
+		compoundBitmapData = canvasBitmapData;
+		sourceRectangle.y += 30;
+		compoundBitmapData = createBitmapData(sourceRectangle);
+
+		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
+		segmentBitmaps[rightIndex + BitmapBorderStateIndex.ON] = readRightSegment(frameRectangle, sliceSize);
+
+		readHighlightedSegments(canvasBitmapData, BitmapAsset(new bitmapData2Class()).bitmapData, 3, 5, BitmapBorderStateIndex.OFF_HIGHLIGHT);
+		readHighlightedSegments(BitmapAsset(new bitmapData3Class()).bitmapData, BitmapAsset(new bitmapData4Class()).bitmapData, 6, 7, BitmapBorderStateIndex.ON_HIGHLIGHT);
 
 		return Scale1BitmapBorder.create(segmentBitmaps, new Insets(10, NaN, 10, 4));
 	}

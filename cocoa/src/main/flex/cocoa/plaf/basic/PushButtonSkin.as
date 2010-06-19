@@ -7,6 +7,7 @@ import cocoa.Insets;
 import cocoa.LabelHelper;
 import cocoa.TextInsets;
 import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.FontID;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.PushButtonSkin;
 
@@ -54,7 +55,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 				return;
 			}
 
-			labelHelper = new LabelHelper(this, laf == null ? null : getFont("SystemFont"));
+			labelHelper = new LabelHelper(this, laf == null ? null : getFont(FontID.SYSTEM));
 		}
 		else if (value == labelHelper.text)
 		{
@@ -73,7 +74,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 
 		if (labelHelper != null)
 		{
-			labelHelper.font = getFont("SystemFont");
+			labelHelper.font = getFont(FontID.SYSTEM);
 		}
 
 		if (bordered)
@@ -108,7 +109,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 				labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
 			}
 
-			labelHelper.font = getFont(enabled ? "SystemFont" : "SystemFont.disabled");
+			labelHelper.font = getFont(enabled ? FontID.SYSTEM : FontID.SYSTEM_DISABLED);
 			labelHelper.validate();
 			labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
 		}

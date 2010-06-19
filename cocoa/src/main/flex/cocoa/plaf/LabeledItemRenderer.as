@@ -40,7 +40,7 @@ public class LabeledItemRenderer extends AbstractItemRenderer
 	override public function set laf(value:LookAndFeel):void
 	{
 		super.laf = value;
-		labelHelper.font = getFont("SystemFont");
+		labelHelper.font = getFont(FontID.SYSTEM);
 	}
 
 	override protected function measure():void

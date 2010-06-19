@@ -1,6 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.FrameInsets;
+import cocoa.border.BitmapBorderStateIndex;
 import cocoa.plaf.LabeledItemRenderer;
 import cocoa.plaf.LookAndFeel;
 import cocoa.border.Scale1BitmapBorder;
@@ -17,11 +18,6 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	private static const rightIndex:int = middleIndex + 4;
 	private static const separatorIndex:int = rightIndex + 4;
 	private static const shadowIndex:int = separatorIndex + 2;
-
-	private static const offOffset:int = 0;
-	private static const onOffset:int = 1;
-	private static const highlightOffOffset:int = 2;
-	private static const highlightOnOffset:int = 3;
 
 	override public function get lafPrefix():String
 	{
@@ -75,7 +71,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 		var g:Graphics = graphics;
 		g.clear();
 
-		const offset:int = ((state & HIGHLIGHTED) != 0) ? (selected ? highlightOnOffset : highlightOffOffset) : (selected ? onOffset : offOffset);
+		const offset:int = ((state & HIGHLIGHTED) != 0) ? (selected ? BitmapBorderStateIndex.ON_HIGHLIGHT : BitmapBorderStateIndex.OFF_HIGHLIGHT) : (selected ? BitmapBorderStateIndex.ON : BitmapBorderStateIndex.OFF);
 		const computedSepatatorIndex:int = separatorIndex + (offset % 2);
 
 		var bitmaps:Vector.<BitmapData> = border.getBitmaps();

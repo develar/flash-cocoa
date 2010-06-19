@@ -5,22 +5,23 @@ import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.SingletonClassFactory;
 import cocoa.border.AbstractBitmapBorder;
-import cocoa.plaf.AbstractLookAndFeel;
-import cocoa.plaf.BitmapIcon;
 import cocoa.border.LinearGradientBorder;
-import cocoa.plaf.MenuSkin;
 import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
+import cocoa.plaf.AbstractLookAndFeel;
+import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.FontID;
+import cocoa.plaf.MenuSkin;
 import cocoa.plaf.SegmentedControlController;
-import cocoa.plaf.basic.SliderNumericStepperSkin;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.SeparatorSkin;
+import cocoa.plaf.basic.SliderNumericStepperSkin;
 
 import flash.display.BlendMode;
 import flash.utils.ByteArray;
@@ -45,14 +46,16 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 	{
 		initAssets();
 
-		data["SystemFont"] = AquaFonts.SYSTEM_FONT;
-		data["SystemFont.disabled"] = AquaFonts.SYSTEM_FONT_DISABLED;
-		data["SystemFont.highlighted"] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
-		data["SmallSystemFont"] = AquaFonts.SMALL_SYSTEM_FONT;
-		data["SmallSystemFont.emphasized"] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
+		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT;
+		data[FontID.SYSTEM_DISABLED] = AquaFonts.SYSTEM_FONT_DISABLED;
+		data[FontID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
-		data["ViewFont"] = AquaFonts.VIEW_FONT;
-		data["ViewFont.highlighted"] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
+		data[FontID.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
+		data[FontID.SMALL_SYSTEM_EMPHASIZED] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
+		data[FontID.SMALL_SYSTEM_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
+
+		data[FontID.VIEW] = AquaFonts.VIEW_FONT;
+		data[FontID.VIEW_HIGHLIGHTED] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
 
 		data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
@@ -135,7 +138,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["HSeparator.border"] = new SeparatorBorder();
 
 		data["Tree.border"] = borders[BorderPosition.treeItem];
-		data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 15, useRollOver: false};
+		data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
 		data["Tree.disclosureIcon.open"] = borders[BorderPosition.treeDisclosureSideBar];
 		data["Tree.disclosureIcon.close"] = borders[BorderPosition.treeDisclosureSideBar + 1];
 	}
@@ -208,16 +211,17 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 }
 
 import cocoa.Border;
-import cocoa.text.TextFormat;
 import cocoa.plaf.AbstractLookAndFeel;
+import cocoa.plaf.FontID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BezelStyle;
 import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
-import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.TextInputBorder;
+import cocoa.plaf.aqua.TextInputSkin;
+import cocoa.text.TextFormat;
 
 import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
@@ -252,8 +256,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 	private function initialize(borders:Vector.<Border>):void
 	{
-		data["SystemFont"] = AquaFonts.SYSTEM_FONT_HUD;
-		data["ViewFont"] = AquaFonts.VIEW_FONT_HUD;
+		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
+		data[FontID.VIEW] = AquaFonts.VIEW_FONT_HUD;
 		data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
 		data["Window.border"] = borders[BorderPosition.scrollbar + 16];
@@ -295,28 +299,24 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 	}
 }
 
+/**
+ * http://developer.apple.com/mac/library/documentation/userexperience/conceptual/applehiguidelines/XHIGText/XHIGText.html
+ */
 final class AquaFonts
 {
 	private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
 
 	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
 	public static const SYSTEM_FONT_HUD:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
+	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13, 0xffffff);
+	public static const SYSTEM_FONT_DISABLED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13, 0x808080);
 
 	public static const SMALL_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11);
-
-	public static const MENU_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 14);
+	public static const SMALL_SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
+	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD), 11);
 
 	public static const VIEW_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 12);
 	public static const VIEW_FONT_HUD:ElementFormat = SYSTEM_FONT_HUD;
+	public static const VIEW_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 12, 0xffffff);
 
-	public static const SYSTEM_FONT_DISABLED:ElementFormat = SYSTEM_FONT.clone();
-	SYSTEM_FONT_DISABLED.color = 0x808080;
-
-	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = SYSTEM_FONT.clone();
-	SYSTEM_FONT_HIGHLIGHTED.color = 0xffffff;
-
-	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD), 11);
-
-	public static const VIEW_FONT_HIGHLIGHTED:ElementFormat = VIEW_FONT.clone();
-	VIEW_FONT_HIGHLIGHTED.color = 0xffffff;
 }

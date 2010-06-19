@@ -4,6 +4,7 @@ import cocoa.Border;
 import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.Insets;
+import cocoa.border.BitmapBorderStateIndex;
 import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
@@ -349,9 +350,9 @@ internal final class CompoundImageReader
 	{
 		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
 		var offset:int = expanded ? 6 : 0;
-		bitmaps[0] = input[offset];
-		bitmaps[1] = input[expanded ? 14 : 12];
-		bitmaps[2] = input[offset + 2];
+		bitmaps[BitmapBorderStateIndex.OFF] = input[offset];
+		bitmaps[BitmapBorderStateIndex.OFF_HIGHLIGHT] = input[expanded ? 14 : 12];
+		bitmaps[BitmapBorderStateIndex.ON] = input[offset + 2];
 		return bitmaps;
 	}
 

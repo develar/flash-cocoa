@@ -74,7 +74,7 @@
 			</layout>
 		</ListView>
 
-		<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}"/>
+		<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}" height="400"/>
 
 		<!--<cocoa:SingleSelectionDataGroup dataProvider="{shortListData}" itemRenderer="{new ClassFactory(SegmentItemRenderer)}"/>-->
 	</Container>

@@ -1,5 +1,6 @@
 package cocoa
 {
+import cocoa.plaf.FontID;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
@@ -107,7 +108,7 @@ public class Label extends TextBase implements Viewable
 
 		if (elementFormat == null)
 		{
-			elementFormat = laf.getFont("ViewFont");
+			elementFormat = laf.getFont(FontID.VIEW);
 		}
 
 		// Set the composition bounds to be used by createTextLines().

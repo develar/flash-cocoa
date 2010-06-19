@@ -210,8 +210,8 @@ public class Builder
 
 		borders[BorderPosition.hudTitleBarCloseButton] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudTitleBarCloseButtonOff, hudTitleBarCloseButtonOn, hudTitleBarCloseButtonDisabled]));
 
-		borders[BorderPosition.treeItem] = OneBitmapBorder.create(Bitmap(new treeBorder()).bitmapData, new Insets(30, 0, 7, 6));
-
+		// для tree content insets left это h gap между иконкой/текстом
+		borders[BorderPosition.treeItem] = OneBitmapBorder.create(Bitmap(new treeBorder()).bitmapData, new Insets(4, 0, 7, 6));
 		compoundImageReader.readTreeIcons(treeSideBarIcons, new FrameInsets(10, 5), new FrameInsets(8, 6));
 
 		var data:ByteArray = new ByteArray();

@@ -10,6 +10,7 @@ import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
 import cocoa.plaf.BottomBarStyle;
+import cocoa.plaf.FontID;
 import cocoa.plaf.WindowSkin;
 import cocoa.ui;
 
@@ -115,7 +116,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	{
 		super.createChildren();
 
-		labelHelper.font = getFont("SystemFont");
+		labelHelper.font = getFont(FontID.SYSTEM);
 
 		if (_toolbar == null)
 		{

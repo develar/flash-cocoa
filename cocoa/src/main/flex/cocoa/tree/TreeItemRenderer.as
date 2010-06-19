@@ -2,10 +2,14 @@ package cocoa.tree
 {
 import cocoa.AbstractView;
 import cocoa.LabelHelper;
+import cocoa.border.BitmapBorderStateIndex;
 import cocoa.border.MultipleBorder;
+import cocoa.plaf.FontID;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObject;
+import flash.display.Graphics;
 import flash.events.MouseEvent;
 
 import mx.controls.listClasses.BaseListData;
@@ -65,7 +69,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			//			addDisplayObject(icon);
 		}
 
-		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont("SmallSystemFont"));
+		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont(FontID.SMALL_SYSTEM));
 	}
 
 	override protected function measure():void
@@ -108,30 +112,49 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			icon.x = _listData.indent + 16;
 		}
 
+		var g:Graphics = graphics;
+		g.clear();
+
+		Tree(owner).drawItemBorder(w, h, this);
+		
+		var selected:Boolean = Tree(owner).isItemSelected(data);
+		var laf:LookAndFeel = LookAndFeelProvider(owner.parent).laf;
 		if (_listData.hasChildren)
 		{
-			var disclosureBorder:MultipleBorder = MultipleBorder(LookAndFeelProvider(owner.parent).laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close")));
-			if (Tree(owner).isItemSelected(data))
-			{
-				disclosureBorder.stateIndex = 3;
-			}
+			drawDisclosureIcon(laf, selected);
 		}
 
-//		if (_listData.open)
-//		{
-//			if (disclosureOpenIcon != null && disclosureOpenIcon.visible)
-//			{
-//				layoutDisclosureIcon(disclosureOpenIcon);
-//			}
-//		}
-//		else if (disclosureCloseIcon != null && disclosureCloseIcon.visible)
-//		{
-//			layoutDisclosureIcon(disclosureCloseIcon);
-//		}
+		// @todo optimize
+		if (isNaN(maxDisclosureIconWidth))
+		{
+			maxDisclosureIconWidth = Math.max(laf.getBorder("Tree.disclosureIcon.close").layoutWidth, laf.getBorder("Tree.disclosureIcon.open").layoutWidth);
+		}
 
+		labelHelper.font = laf.getFont(selected ? FontID.SMALL_SYSTEM_HIGHLIGHTED : FontID.SMALL_SYSTEM);
 		labelHelper.validate();
-		labelHelper.moveByInsetsWithXOffseet(h, Tree(owner).$border.contentInsets, Tree(owner).$border.frameInsets, _listData.indent);
+		labelHelper.move(_listData.indent + maxDisclosureIconWidth + Tree(owner).$border.contentInsets.left, h - Tree(owner).$border.contentInsets.bottom);
 	}
+
+	protected function drawDisclosureIcon(laf:LookAndFeel, selected:Boolean):void
+	{
+		var g:Graphics = graphics;
+		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "close" : "open")));
+		if (selected && disclosureBorder.hasState(BitmapBorderStateIndex.ON))
+		{
+			disclosureBorder.stateIndex = BitmapBorderStateIndex.ON;
+		}
+		else
+		{
+			disclosureBorder.stateIndex = BitmapBorderStateIndex.OFF;
+		}
+
+		var oldFrameX:Number = disclosureBorder.frameInsets.left;
+		disclosureBorder.frameInsets.left += _listData.indent;
+		disclosureBorder.draw(null, g, NaN, NaN);
+		disclosureBorder.frameInsets.left = oldFrameX;
+	}
+
+	private var maxDisclosureIconWidth:Number;
 
 	private var _data:Object;
 	public function get data():Object
@@ -147,34 +170,30 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		}
 	}
 
-	private function isDisclosureIconClicked(disclosureIcon:DisplayObject, event:MouseEvent):Boolean
+	private function isDisclosureIconClicked(event:MouseEvent):Boolean
 	{
-		return disclosureIcon != null && disclosureIcon.visible && disclosureIcon.hitTestPoint(event.stageX, event.stageY);
+		var laf:LookAndFeel = LookAndFeelProvider(owner.parent).laf;
+		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close")));
+		// 3 чтобы при щелчке не надо было быть снайпером
+		var localX:Number = event.localX  - _listData.indent;
+		return event.localY >= (disclosureBorder.frameInsets.top - 3) && event.localY <= (disclosureBorder.layoutHeight + 3) &&
+			   localX >= (disclosureBorder.frameInsets.left - 3) && localX <= (disclosureBorder.layoutWidth + 3);
 	}
 
 	public function checkDisclosure(event:MouseEvent, dispatchOpenEvent:Boolean = true):Boolean
 	{
-		if (dispatchOpenEvent)
+		if (isDisclosureIconClicked(event))
 		{
-//			if ((_listData.open && isDisclosureIconClicked(disclosureOpenIcon, event)) || isDisclosureIconClicked(disclosureCloseIcon, event))
-//			{
-//				disclosureIconClickHandler(event);
-//				return true;
-//			}
-//			else
-//			{
-				return false;
-//			}
+			if (dispatchOpenEvent)
+			{
+				disclosureIconClickHandler(event);
+			}
+			return true;
 		}
-
-		return false;
-//		return isDisclosureIconClicked(disclosureOpenIcon, event) || isDisclosureIconClicked(disclosureCloseIcon, event);
-	}
-
-	protected function layoutDisclosureIcon(disclosureIcon:DisplayObject):void
-	{
-		disclosureIcon.x = _listData.indent;
-		disclosureIcon.y = 2;
+		else
+		{
+			return false;
+		}
 	}
 
 	protected function disclosureIconClickHandler(event:MouseEvent):void

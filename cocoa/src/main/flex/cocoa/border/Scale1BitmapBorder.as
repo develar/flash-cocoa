@@ -82,5 +82,10 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
 	{
 		_bitmapIndex = value;
 	}
+
+	override public function hasState(stateIndex:int):Boolean
+	{
+		return bitmaps[stateIndex] != null;
+	}
 }
 }

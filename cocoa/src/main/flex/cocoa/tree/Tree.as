@@ -4,7 +4,6 @@ import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.View;
 import cocoa.border.AbstractMultipleBitmapBorder;
-import cocoa.border.MultipleBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
@@ -246,17 +245,6 @@ public class Tree extends mx.controls.Tree implements View
 
 	override protected function drawItem(itemRenderer:IListItemRenderer, selected:Boolean = false, highlighted:Boolean = false, caret:Boolean = false, transition:Boolean = false):void
 	{
-		if (!itemRenderer)
-		{
-			return;
-		}
-
-		//		if (!(item is TreeItemRenderer))
-		//		{
-		//			super.drawItem(item, selected, highlighted, caret, transition);
-		//			return;
-		//		}
-
 		var contentHolder:ListBaseContentHolder = DisplayObject(itemRenderer).parent as ListBaseContentHolder;
 		if (contentHolder == null)
 		{
@@ -271,10 +259,10 @@ public class Tree extends mx.controls.Tree implements View
 			return;
 		}
 
+		const isCustomRenderer:Boolean = !(itemRenderer is TreeItemRenderer);
+
 		if (highlighted && (highlightItemRenderer == null || highlightUID != rowData.uid))
 		{
-			drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, rowData, 0);
-
 			lastHighlightItemRenderer = highlightItemRenderer = itemRenderer;
 			highlightUID = rowData.uid;
 		}
@@ -284,13 +272,24 @@ public class Tree extends mx.controls.Tree implements View
 			highlightUID = null;
 		}
 
-		if (selected)
+		if (isCustomRenderer)
 		{
-			drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, rowData, 1);
+			if (selected)
+			{
+				drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, 1);
+			}
+			else if (!highlighted)
+			{
+				Sprite(itemRenderer).graphics.clear();
+			}
+			else
+			{
+				drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, 0);
+			}
 		}
-		else if (!highlighted)
+		else
 		{
-			Sprite(itemRenderer).graphics.clear();
+			TreeItemRenderer(itemRenderer).invalidateDisplayList();
 		}
 
 		if (caret && showCaret)
@@ -306,11 +305,29 @@ public class Tree extends mx.controls.Tree implements View
 		}
 	}
 
-	private function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, rowData:TreeListData, index:int):void
+	public function drawItemBorder(width:Number, height:Number, itemRenderer:IListItemRenderer, index:int = -1):void
 	{
-		// в Cocoa нет hover state и border отрисовывается на всю ширину дерева, не на ширину элемента (listData.indent) — нам пока не с руки делать это через конфигурацию
 		var g:Graphics = Sprite(itemRenderer).graphics;
-		g.clear();
+		if (index == -1)
+		{
+			if (isItemSelected(itemRenderer.data))
+			{
+				index = 1;
+			}
+			else if (highlightItemRenderer == itemRenderer)
+			{
+				index = 0;
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+		{
+			// в Cocoa нет hover state и border отрисовывается на всю ширину дерева, не на ширину элемента (listData.indent) — нам пока не с руки делать это через конфигурацию
+			g.clear();
+		}
 
 		if (_border is AbstractMultipleBitmapBorder)
 		{
@@ -323,12 +340,6 @@ public class Tree extends mx.controls.Tree implements View
 		else if (index != 0)
 		{
 			_border.draw(null, g, width, height);
-		}
-
-		if (rowData.hasChildren)
-		{
-			var disclosureBorder:MultipleBorder = MultipleBorder(LookAndFeelProvider(parent).laf.getBorder("Tree.disclosureIcon." + (rowData.open ? "open" : "close")));
-			disclosureBorder.draw(null, g, NaN, NaN);
 		}
 	}
 
