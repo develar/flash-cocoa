@@ -450,25 +450,19 @@ public class Tree extends mx.controls.Tree implements View
 		{
 			return nonInheritingStyles[styleProp];
 		}
+		else if (styleProp in lafDefaults)
+		{
+			return lafDefaults[styleProp];
+		}
+		else if (styleProp == "verticalAlign")
+		{
+			return "top";
+		}
 		else
 		{
-			if (styleProp in lafDefaults)
-			{
-				return lafDefaults[styleProp];
-			}
-			else
-			{
-				if (styleProp == "verticalAlign")
-				{
-					return "top";
-				}
-				else
-				{
-					//			throw new Error("unknown " + styleProp);
-					//			trace(styleProp);
-					return undefined;
-				}
-			}
+//			throw new Error("unknown " + styleProp);
+//			trace(styleProp);
+			return undefined;
 		}
 	}
 
