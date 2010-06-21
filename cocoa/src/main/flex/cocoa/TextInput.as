@@ -4,6 +4,8 @@ import cocoa.text.EditableTextView;
 
 import flash.utils.Dictionary;
 
+import spark.events.TextOperationEvent;
+
 use namespace ui;
 
 public class TextInput extends AbstractComponent
@@ -22,6 +24,7 @@ public class TextInput extends AbstractComponent
 	{
 		return textDisplay == null ? _text : textDisplay.text;
 	}
+
 	public function set text(value:String):void
 	{
 		if (value != _text)
@@ -37,6 +40,12 @@ public class TextInput extends AbstractComponent
 	ui function textDisplayAdded():void
 	{
 		textDisplay.text = _text;
+		textDisplay.addEventListener(TextOperationEvent.CHANGE, inputChangeHandler);
+	}
+
+	private function inputChangeHandler(event:TextOperationEvent):void
+	{
+		dispatchEvent(event);
 	}
 
 	override protected function get defaultLaFPrefix():String

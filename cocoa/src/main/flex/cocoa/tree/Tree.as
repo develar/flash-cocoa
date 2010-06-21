@@ -78,23 +78,15 @@ public class Tree extends mx.controls.Tree implements View
 		_customItemType = value;
 	}
 
-	protected var _previousSelectedItems:Array;
-	public function get previousSelectedItems():Array
-	{
-		return _previousSelectedItems;
-	}
-
-	public function set previousSelectedItems(value:Array):void
-	{
-		_previousSelectedItems = value;
-	}
-
 	override protected function get dragImage():IUIComponent
 	{
-		return null;
-		//        var image:Image = new Image();
-		//        image.source = getStyle("pageIcon");
-		//        return image;
+		var renderer:IListItemRenderer = createItemRenderer(lastMouseDownItem.data);
+		renderer.data = lastMouseDownItem.data;
+		if (renderer is IDropInListItemRenderer)
+		{
+			IDropInListItemRenderer(renderer).listData = IDropInListItemRenderer(lastMouseDownItem).listData;
+		}
+		return renderer;
 	}
 
 	override protected function dragStartHandler(event:DragEvent):void
@@ -114,12 +106,6 @@ public class Tree extends mx.controls.Tree implements View
 		}
 	}
 
-	private var _isDragging:Boolean;
-	public function get isDragging():Boolean
-	{
-		return _isDragging;
-	}
-
 	override protected function dragEnterHandler(event:DragEvent):void
 	{
 		//should be handled by external manager
@@ -130,11 +116,12 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		//should be handled by external manager
 		lastDragEvent = event;
-		_isDragging = true;
 		if (collection)
 		{
 			if (dragScrollingInterval == 0)
+			{
 				dragScrollingInterval = setInterval(dragScroll, 15);
+			}
 		}
 	}
 
@@ -150,7 +137,6 @@ public class Tree extends mx.controls.Tree implements View
 		isPressed = false;
 		clearSelected(false);
 		resetDragScrolling();
-		_isDragging = false;
 	}
 
 	override protected function addDragData(ds:Object):void // actually a DragSource
@@ -266,10 +252,13 @@ public class Tree extends mx.controls.Tree implements View
 			lastHighlightItemRenderer = highlightItemRenderer = itemRenderer;
 			highlightUID = rowData.uid;
 		}
-		else if (highlightItemRenderer != null && highlightUID == rowData.uid)
+		else
 		{
-			highlightItemRenderer = null;
-			highlightUID = null;
+			if (highlightItemRenderer != null && highlightUID == rowData.uid)
+			{
+				highlightItemRenderer = null;
+				highlightUID = null;
+			}
 		}
 
 		if (isCustomRenderer)
@@ -278,13 +267,16 @@ public class Tree extends mx.controls.Tree implements View
 			{
 				drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, 1);
 			}
-			else if (!highlighted)
-			{
-				Sprite(itemRenderer).graphics.clear();
-			}
 			else
 			{
-				drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, 0);
+				if (!highlighted)
+				{
+					Sprite(itemRenderer).graphics.clear();
+				}
+				else
+				{
+					drawItemBorder(itemRenderer.width, rowInfo[rowData.rowIndex].height, itemRenderer, 0);
+				}
 			}
 		}
 		else
@@ -297,11 +289,14 @@ public class Tree extends mx.controls.Tree implements View
 			caretItemRenderer = itemRenderer;
 			caretUID = rowData.uid;
 		}
-		else if (caretItemRenderer != null && caretUID == rowData.uid)
+		else
 		{
-			clearCaretIndicator(caretIndicator, itemRenderer);
-			caretItemRenderer = null;
-			caretUID = "";
+			if (caretItemRenderer != null && caretUID == rowData.uid)
+			{
+				clearCaretIndicator(caretIndicator, itemRenderer);
+				caretItemRenderer = null;
+				caretUID = "";
+			}
 		}
 	}
 
@@ -314,13 +309,16 @@ public class Tree extends mx.controls.Tree implements View
 			{
 				index = 1;
 			}
-			else if (highlightItemRenderer == itemRenderer)
-			{
-				index = 0;
-			}
 			else
 			{
-				return;
+				if (highlightItemRenderer == itemRenderer)
+				{
+					index = 0;
+				}
+				else
+				{
+					return;
+				}
 			}
 		}
 		else
@@ -337,9 +335,12 @@ public class Tree extends mx.controls.Tree implements View
 			_border.draw(null, g, width, height);
 			_border.frameInsets.left = oldFrameX;
 		}
-		else if (index != 0)
+		else
 		{
-			_border.draw(null, g, width, height);
+			if (index != 0)
+			{
+				_border.draw(null, g, width, height);
+			}
 		}
 	}
 
@@ -449,19 +450,25 @@ public class Tree extends mx.controls.Tree implements View
 		{
 			return nonInheritingStyles[styleProp];
 		}
-		else if (styleProp in lafDefaults)
-		{
-			return lafDefaults[styleProp];
-		}
-		else if (styleProp == "verticalAlign")
-		{
-			return "top";
-		}
 		else
 		{
-//			throw new Error("unknown " + styleProp);
-			trace(styleProp);
-			return undefined;
+			if (styleProp in lafDefaults)
+			{
+				return lafDefaults[styleProp];
+			}
+			else
+			{
+				if (styleProp == "verticalAlign")
+				{
+					return "top";
+				}
+				else
+				{
+					//			throw new Error("unknown " + styleProp);
+					//			trace(styleProp);
+					return undefined;
+				}
+			}
 		}
 	}
 
@@ -481,15 +488,16 @@ public class Tree extends mx.controls.Tree implements View
 	}
 
 	override protected function createBorder():void
-    {
+	{
 
 	}
 
 	private static const BORDER_METRICS:EdgeMetrics = new EdgeMetrics(1, 1, 1, 1);
+
 	override public function get borderMetrics():EdgeMetrics
-    {
-        return "borderColor" in lafDefaults ? BORDER_METRICS : EdgeMetrics.EMPTY;
-    }
+	{
+		return "borderColor" in lafDefaults ? BORDER_METRICS : EdgeMetrics.EMPTY;
+	}
 
 	override protected function makeListData(item:Object, uid:String, rowNum:int):BaseListData
 	{
@@ -500,13 +508,13 @@ public class Tree extends mx.controls.Tree implements View
 		treeListData.depth = getItemDepth(item, treeListData.rowIndex);
 		treeListData.indent = (treeListData.depth - 1) * getStyle("indentation");
 		treeListData.item = item;
-//		treeListData.icon = itemToIcon(item);
+		//		treeListData.icon = itemToIcon(item);
 
 		return treeListData;
 	}
 
 	override public function itemToIcon(item:Object):Class
-    {
+	{
 		// пока что никому не надо, а потом мы напишем реализацию отдачи иконки
 		return null;
 	}
