@@ -14,7 +14,7 @@ import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
 /**
- *
+ * https://astra.rit.com:8443/display/~v.krivosheev/Cocoa+lib+and+Aqua+LaF+for+Flex#CocoalibandAquaLaFforFlex-Layout
  */
 public class CenterEqualizedLayout extends LayoutBase
 {
@@ -81,6 +81,12 @@ public class CenterEqualizedLayout extends LayoutBase
         _columnGap = value;
     }
 
+	private var _useEnableCheckBox:Boolean = true;
+	public function set useEnableCheckBox(value:Boolean):void
+	{
+		_useEnableCheckBox = value;
+	}
+
 	override public function measure():void
 	{
 		var layoutTarget:GroupBase = target;
@@ -144,7 +150,7 @@ public class CenterEqualizedLayout extends LayoutBase
 					}
 					// isRightAlignLabel для HUD, ему это не нужно
 					// проверка на first auxiliary element — в данный момент считаем что он должен быть первым в композиции
-					else if (!isRightAlignLabel && i == 1 && isCheckBox(element) && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
+					else if (_useEnableCheckBox && i == 1 && isCheckBox(element) && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
 					{
 						column.auxiliaryElement = element;
 						column.isAuxiliaryElementFirst = true;
