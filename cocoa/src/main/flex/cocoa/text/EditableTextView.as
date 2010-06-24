@@ -993,13 +993,6 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		return _selectionAnchorPosition;
 	}
 
-	//----------------------------------
-	//  selectionHighlighting
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _selectionHighlighting:String = TextSelectionHighlighting.WHEN_FOCUSED;
 
 	/**
