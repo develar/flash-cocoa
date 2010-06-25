@@ -12,6 +12,7 @@ import flash.display.Shape;
 import flash.geom.Rectangle;
 import flash.text.engine.EastAsianJustifier;
 import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
 import flash.text.engine.FontMetrics;
 import flash.text.engine.LineJustification;
 import flash.text.engine.SpaceJustifier;
@@ -58,10 +59,94 @@ public class Label extends TextBase implements Viewable
 		mouseEnabled = false;
 		mouseChildren = false;
 	}
+	
+	private var _paddingLeft:Number = 0;
+	public function set paddingLeft(value:Number):void
+	{
+		_paddingLeft = value;
+	}
+	
+	private var _paddingRight:Number = 0;
+	public function set paddingRight(value:Number):void
+	{
+		_paddingRight = value;
+	}
+	
+	private var _paddingTop:Number = 0;
+	public function set paddingTop(value:Number):void
+	{
+		_paddingTop = value;
+	}
+	
+	private var _paddingBottom:Number = 0;
+	public function set paddingBottom(value:Number):void
+	{
+		_paddingBottom = value;
+	}
+
+	private var fontDescription:FontDescription;
+
+	public function get color():uint
+	{
+		return elementFormat.color;
+	}
+	public function set color(value:uint):void
+	{
+		if (elementFormat == null)
+		{
+			elementFormat = new ElementFormat();
+		}
+
+		elementFormat.color = value;
+		invalidateTextLines();
+		invalidateDisplayList();
+	}
+
+	public function set fontFamily(value:String):void
+	{
+		if (fontDescription == null)
+		{
+			fontDescription = new FontDescription();
+		}
+
+		fontDescription.fontName = value;
+		invalidateTextLines();
+		invalidateDisplayList();
+	}
+
+	public function set fontWeight(value:String):void
+	{
+		if (fontDescription == null)
+		{
+			fontDescription = new FontDescription();
+		}
+
+		fontDescription.fontWeight = value;
+		invalidateTextLines();
+		invalidateDisplayList();
+	}
+
+	public function set fontSize(value:Number):void
+	{
+		if (elementFormat == null)
+		{
+			elementFormat = new ElementFormat();
+		}
+
+		elementFormat.fontSize = value;
+		invalidateTextLines();
+		invalidateDisplayList();
+	}
 
 	override protected function createChildren():void
 	{
 		super.createChildren();
+
+		if (elementFormat != null)
+		{
+			elementFormat.fontDescription = fontDescription;
+			return;
+		}
 
 		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF
 		var p:DisplayObjectContainer = parent;
@@ -77,11 +162,7 @@ public class Label extends TextBase implements Viewable
 			}
 			else
 			{
-				if (p is
-						Skin && Skin(p).component
-						is
-						LookAndFeelProvider
-						)
+				if (p is Skin && Skin(p).component is LookAndFeelProvider)
 				{
 					laf = LookAndFeelProvider(Skin(p).component).laf;
 					break;
@@ -156,6 +237,12 @@ public class Label extends TextBase implements Viewable
 		return allLinesComposed;
 	}
 
+	private var _textAlign:String = TextAlign.START;
+	public function set textAlign(value:String):void
+	{
+		_textAlign = value;
+	}
+
 	/**
 	 *  @private
 	 *  Stuffs the specified text and formatting info into a TextBlock
@@ -168,7 +255,7 @@ public class Label extends TextBase implements Viewable
 		var direction:String = AbstractView.LAYOUT_DIRECTION_LTR;
 		var justificationRule:String = "auto";
 		var justificationStyle:String = "auto";
-		var textAlign:String = TextAlign.START;
+
 		var textAlignLast:String = TextAlign.START;
 		var textJustify:String = TextJustify.INTER_WORD;
 
@@ -214,7 +301,7 @@ public class Label extends TextBase implements Viewable
 
 		// And its justifier.
 		var lineJustification:String;
-		if (textAlign == "justify")
+		if (_textAlign == "justify")
 		{
 			lineJustification = textAlignLast == "justify" ? LineJustification.ALL_INCLUDING_LAST : LineJustification.ALL_BUT_LAST;
 		}
@@ -266,15 +353,13 @@ public class Label extends TextBase implements Viewable
 		var lineBreak:String = LineBreak.TO_FIT;
 		var lineHeight:Object = "120%";
 		var lineThrough:Boolean = false;
-		var textAlign:String = TextAlign.START;
 		var textAlignLast:String = TextAlign.START;
 		var textDecoration:String = "none";
 		var verticalAlign:String = _verticalAlign;
 
-		//		var innerWidth:Number = bounds.width - paddingLeft - paddingRight;
-		var innerWidth:Number = bounds.width;
-		//		var innerHeight:Number = bounds.height - paddingTop - paddingBottom;
-		var innerHeight:Number = bounds.height;
+		var innerWidth:Number = bounds.width - _paddingLeft - _paddingRight;
+		var innerHeight:Number = bounds.height - _paddingTop - _paddingBottom;
+//		var innerHeight:Number = bounds.height;
 
 		var measureWidth:Boolean = isNaN(innerWidth);
 		if (measureWidth)
@@ -296,21 +381,12 @@ public class Label extends TextBase implements Viewable
 		if (lineHeight is Number)
 		{
 			actualLineHeight = Number(lineHeight);
-		} else
-		{
-			if (lineHeight is
-					String
-					)
-			{
-				var len
-						:
-						int = lineHeight.length;
-				var percent
-						:
-						Number = Number(String(lineHeight).substring(0, len - 1));
-				actualLineHeight = percent / 100 * fontSize;
-			}
 		}
+		else if (lineHeight is String)
+		{
+			actualLineHeight = Number(String(lineHeight).substring(0, lineHeight.length - 1)) / 100 * fontSize;
+		}
+		
 		if (isNaN(actualLineHeight))
 		{
 			actualLineHeight = 1.2 * fontSize;
@@ -444,8 +520,8 @@ public class Label extends TextBase implements Viewable
 
 		if (n == 0)
 		{
-			//			bounds.width = paddingLeft + paddingRight;
-			//			bounds.height = paddingTop + paddingBottom;
+			bounds.width = _paddingLeft + _paddingRight;
+			bounds.height = _paddingTop + _paddingBottom;
 			return false;
 		}
 
@@ -462,19 +538,19 @@ public class Label extends TextBase implements Viewable
 			innerHeight = textLine.y + textLine.descent;
 		}
 
-		var leftAligned:Boolean = textAlign == "start" || textAlign == "left" || textAlign == "justify";
-		var centerAligned:Boolean = textAlign == "center";
-		var rightAligned:Boolean = textAlign == "end" || textAlign == "right";
+		var leftAligned:Boolean = _textAlign == "start" || _textAlign == "left" || _textAlign == "justify";
+		var centerAligned:Boolean = _textAlign == "center";
+		var rightAligned:Boolean = _textAlign == "end" || _textAlign == "right";
 
 		// Calculate loop constants for horizontal alignment.
-		//		var leftOffset:Number = bounds.left + paddingLeft;
-		var leftOffset:Number = bounds.left;
+				var leftOffset:Number = bounds.left + _paddingLeft;
+//		var leftOffset:Number = bounds.left;
 		var centerOffset:Number = leftOffset + innerWidth / 2;
 		var rightOffset:Number = leftOffset + innerWidth;
 
 		// Calculate loop constants for vertical alignment.
-		//		var topOffset:Number = bounds.top + paddingTop;
-		var topOffset:Number = bounds.top;
+				var topOffset:Number = bounds.top + _paddingTop;
+//		var topOffset:Number = bounds.top;
 		var bottomOffset:Number = innerHeight - (textLine.y + textLine.descent);
 		var middleOffset:Number = bottomOffset / 2;
 		bottomOffset += topOffset;
@@ -484,7 +560,7 @@ public class Label extends TextBase implements Viewable
 		var previousTextLine:TextLine;
 		var y:Number = 0;
 
-		var lastLineIsSpecial:Boolean = textAlign == "justify" && createdAllLines;
+		var lastLineIsSpecial:Boolean = _textAlign == "justify" && createdAllLines;
 
 		var minX:Number = innerWidth;
 		var minY:Number = innerHeight;
@@ -563,14 +639,14 @@ public class Label extends TextBase implements Viewable
 			maxX = Math.max(maxX, textLine.x + textLine.textWidth);
 		}
 
-		//		bounds.x = minX - paddingLeft;
-		bounds.x = minX;
-		//		bounds.y = minY - paddingTop;
-		bounds.y = minY;
-		//		bounds.right = maxX + paddingRight;
-		bounds.right = maxX;
-		//		bounds.bottom = textLine.y + textLine.descent + paddingBottom;
-		bounds.bottom = textLine.y + textLine.descent;
+				bounds.x = minX - _paddingLeft;
+//		bounds.x = minX;
+				bounds.y = minY - _paddingTop;
+//		bounds.y = minY;
+				bounds.right = maxX + _paddingRight;
+//		bounds.right = maxX;
+				bounds.bottom = textLine.y + textLine.descent + _paddingBottom;
+//		bounds.bottom = textLine.y + textLine.descent;
 
 		return createdAllLines;
 	}
