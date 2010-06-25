@@ -108,10 +108,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
 	override protected function createChildren():void
 	{
-//		if (creationPolicy == ContainerCreationPolicy.ALL)
-//		{
-//			super.createChildren();
-//		}
+		// для App не нужно искать LAF, так как он должен устанавливаться явно (так как app ведь корневой)
 	}
 
 	private function injectHandler(event:InjectorEvent):void
@@ -130,11 +127,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		// see comment in flex ChildManager: "During startup the top level window isn't added to the child list until late into the startup sequence."
 		// поэтому мы сами слушаем это событие и сразу направляем в главный контейнер — так как main app всегда адресует на него (MateManager.instance.container), так как является корневым display object
 		addEventListener(InjectorEvent.INJECT, injectHandler);
-
-//		if (creationPolicy == ContainerCreationPolicy.NONE)
-//		{
-//			super.createChildren();
-//		}
 
 		if (_mxmlContent != null)
 		{
