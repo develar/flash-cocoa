@@ -5,7 +5,6 @@ import cocoa.Border;
 import cocoa.Component;
 import cocoa.Icon;
 import cocoa.UIPartProvider;
-import cocoa.dialog.Dialog;
 
 import com.asfusion.mate.events.InjectorEvent;
 
@@ -68,7 +67,7 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 	{
 		// Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга,
 		// поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.
-		if (_component is Injectable && !(_component is Dialog)) // за инжектирование для диалога отвечает DialogManager
+		if (_component is Injectable)
 		{
 			dispatchEvent(new InjectorEvent(_component));
 		}

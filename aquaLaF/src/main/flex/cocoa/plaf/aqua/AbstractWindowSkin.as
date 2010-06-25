@@ -114,7 +114,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 	override protected function createChildren():void
 	{
-		super.createChildren();
+		// skip super.createChildren() так там только инжектирование, а за него отвечает DialogManager
 
 		labelHelper.font = getFont(FontID.SYSTEM);
 

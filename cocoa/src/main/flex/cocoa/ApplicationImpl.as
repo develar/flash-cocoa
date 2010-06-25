@@ -1,6 +1,7 @@
 package cocoa
 {
 import com.asfusion.mate.core.EventMap;
+import com.asfusion.mate.core.MateManager;
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
@@ -72,7 +73,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		invalidateProperties();
 	}
 
-	private var _creationPolicy:String;
+	private var _creationPolicy:String = ContainerCreationPolicy.ALL;
 	public function get creationPolicy():String
 	{
 		return _creationPolicy;
@@ -100,7 +101,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
 	override protected function childrenCreated():void
 	{
-		systemManager.dispatchEvent(new InjectorEvent(this));
+		MateManager.instance.container.checkInjectors(new InjectorEvent(this));
 
 		super.childrenCreated();
 	}
@@ -113,12 +114,22 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		}
 	}
 
+	private function injectHandler(event:InjectorEvent):void
+	{
+		event.stopImmediatePropagation();
+		MateManager.instance.container.checkInjectors(event);
+	}
+
 	public function createDeferredContent():void
 	{
 		if (mxmlContentCreated)
 		{
 			return;
 		}
+
+		// see comment in flex ChildManager: "During startup the top level window isn't added to the child list until late into the startup sequence."
+		// поэтому мы сами слушаем это событие и сразу направляем в главный контейнер — так как main app всегда адресует на него (MateManager.instance.container), так как является корневым display object
+		addEventListener(InjectorEvent.INJECT, injectHandler);
 
 		if (creationPolicy == ContainerCreationPolicy.NONE)
 		{
