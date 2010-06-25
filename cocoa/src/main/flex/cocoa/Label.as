@@ -142,7 +142,7 @@ public class Label extends TextBase implements Viewable
 	{
 		super.createChildren();
 
-		if (elementFormat != null)
+		if (elementFormat != null && fontDescription != null)
 		{
 			elementFormat.fontDescription = fontDescription;
 			return;
@@ -171,6 +171,19 @@ public class Label extends TextBase implements Viewable
 
 			p = p.parent;
 		}
+
+		if (fontDescription == null)
+		{
+			var lafElementFormat:ElementFormat = laf.getFont(FontID.VIEW);
+			if (elementFormat == null)
+			{
+				elementFormat = lafElementFormat;
+			}
+			else
+			{
+				elementFormat.fontDescription = lafElementFormat.fontDescription;
+			}
+		}
 	}
 
 	/**
@@ -186,11 +199,6 @@ public class Label extends TextBase implements Viewable
 	override mx_internal function composeTextLines(width:Number = NaN, height:Number = NaN):Boolean
 	{
 		super.composeTextLines(width, height);
-
-		if (elementFormat == null)
-		{
-			elementFormat = laf.getFont(FontID.VIEW);
-		}
 
 		// Set the composition bounds to be used by createTextLines().
 		// If the width or height is NaN, it will be computed by this method

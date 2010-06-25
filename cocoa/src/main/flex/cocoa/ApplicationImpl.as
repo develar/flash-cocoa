@@ -108,10 +108,10 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
 	override protected function createChildren():void
 	{
-		if (creationPolicy == ContainerCreationPolicy.ALL)
-		{
-			super.createChildren();
-		}
+//		if (creationPolicy == ContainerCreationPolicy.ALL)
+//		{
+//			super.createChildren();
+//		}
 	}
 
 	private function injectHandler(event:InjectorEvent):void
@@ -131,10 +131,10 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		// поэтому мы сами слушаем это событие и сразу направляем в главный контейнер — так как main app всегда адресует на него (MateManager.instance.container), так как является корневым display object
 		addEventListener(InjectorEvent.INJECT, injectHandler);
 
-		if (creationPolicy == ContainerCreationPolicy.NONE)
-		{
-			super.createChildren();
-		}
+//		if (creationPolicy == ContainerCreationPolicy.NONE)
+//		{
+//			super.createChildren();
+//		}
 
 		if (_mxmlContent != null)
 		{
