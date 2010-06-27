@@ -1,6 +1,9 @@
 package cocoa
 {
+import flash.events.Event;
 import flash.utils.Dictionary;
+
+import mx.events.CollectionEvent;
 
 import org.flyti.util.List;
 
@@ -64,10 +67,30 @@ public class Menu extends AbstractComponent
 	{
 		if (value != _items)
 		{
+			var dispatchChangeEvent:Boolean = _items != null;
+			if (_items != null)
+			{
+				_items.removeEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler);
+			}
 			_items = value;
 			itemsChanged = true;
 			invalidateProperties();
+
+			if (dispatchChangeEvent)
+			{
+				itemsChangeHandler();
+			}
 		}
+	}
+
+	private function itemsChangeHandler(event:CollectionEvent = null):void
+	{
+		AbstractView(skin).callLater(dispatchChangeEvent);
+	}
+
+	private function dispatchChangeEvent():void
+	{
+		dispatchEvent(new Event(Event.CHANGE));
 	}
 
 	public function get numberOfItems():int
@@ -90,6 +113,8 @@ public class Menu extends AbstractComponent
 			itemGroup.dataProvider = _items;
 			itemGroup.selectedIndex = pendingSelectedIndex;
 			pendingSelectedIndex = ListSelection.NO_SELECTION;
+
+			_items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler, false, -1 /* after itemGroup handler */);
 		}
 	}
 }

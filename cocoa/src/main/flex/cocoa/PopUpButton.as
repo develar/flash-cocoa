@@ -5,6 +5,8 @@ import cocoa.plaf.PopUpMenuController;
 import cocoa.plaf.PushButtonSkin;
 import cocoa.plaf.Skin;
 
+import flash.events.Event;
+
 import spark.utils.LabelUtil;
 
 use namespace ui;
@@ -28,7 +30,13 @@ public class PopUpButton extends AbstractControl implements Cell
 	{
 		if (value != _menu)
 		{
+			if (_menu != null)
+			{
+				_menu.removeEventListener(Event.CHANGE, updateLabelDisplay);
+			}
+
 			_menu = value;
+			_menu.addEventListener(Event.CHANGE, updateLabelDisplay);
 			if (menuController != null)
 			{
 				menuController.menu = _menu;
@@ -57,7 +65,7 @@ public class PopUpButton extends AbstractControl implements Cell
         }
     }
 
-	protected function updateLabelDisplay():void
+	protected function updateLabelDisplay(event:Event = null):void
 	{
 		PushButtonSkin(skin).label = selectedItem == null ? null : LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
 	}
