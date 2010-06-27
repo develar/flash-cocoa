@@ -96,6 +96,10 @@ public class Label extends TextBase implements Viewable
 		{
 			elementFormat = new ElementFormat();
 		}
+		else
+		{
+			elementFormat = elementFormat.clone();
+		}
 
 		elementFormat.color = value;
 		invalidateTextLines();
@@ -131,6 +135,10 @@ public class Label extends TextBase implements Viewable
 		if (elementFormat == null)
 		{
 			elementFormat = new ElementFormat();
+		}
+		else
+		{
+			elementFormat = elementFormat.clone();
 		}
 
 		elementFormat.fontSize = value;

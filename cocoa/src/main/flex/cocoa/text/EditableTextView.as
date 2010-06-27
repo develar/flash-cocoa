@@ -913,17 +913,9 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		invalidateDisplayList();
 	}
 
-	//----------------------------------
-	//  selectionActivePosition
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _selectionActivePosition:int = -1;
 
 	[Bindable("selectionChange")]
-
 	/**
 	 *  A character position, relative to the beginning of the
 	 *  <code>text</code> String, specifying the end of the selection
@@ -948,22 +940,15 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *  @playerversion Flash 10
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
-	 */ public function get selectionActivePosition():int
+	 */
+	public function get selectionActivePosition():int
 	{
 		return _selectionActivePosition;
 	}
 
-	//----------------------------------
-	//  selectionAnchorPosition
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _selectionAnchorPosition:int = -1;
 
 	[Bindable("selectionChange")]
-
 	/**
 	 *  A character position, relative to the beginning of the
 	 *  <code>text</code> String, specifying the end of the selection
@@ -988,7 +973,8 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *  @playerversion Flash 10
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
-	 */ public function get selectionAnchorPosition():int
+	 */
+	public function get selectionAnchorPosition():int
 	{
 		return _selectionAnchorPosition;
 	}
@@ -996,7 +982,6 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	private var _selectionHighlighting:String = TextSelectionHighlighting.WHEN_FOCUSED;
 
 	/**
-	 *  @private
 	 *  To indicate either selection highlighting or selection styles have
 	 *  changed.
 	 */
@@ -1035,34 +1020,22 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	{
 		return _selectionHighlighting;
 	}
-
-	/**
-	 *  @private
-	 */
 	public function set selectionHighlighting(value:String):void
 	{
 		if (value == _selectionHighlighting)
+		{
 			return;
+		}
 
 		_selectionHighlighting = value;
 		selectionFormatsChanged = true;
 
-		invalidateProperties();
-		invalidateDisplayList();
+		//  мы пока что никак не используем это свойство
+//		invalidateProperties();
+//		invalidateDisplayList();
 	}
 
-	//----------------------------------
-	//  text
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _text:String = "";
-
-	/**
-	 *  @private
-	 */
 	private var textChanged:Boolean = false;
 
 	[Bindable("change")]

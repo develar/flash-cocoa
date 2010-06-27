@@ -8,7 +8,6 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.ui.ContextMenu;
 
-import flashx.textLayout.container.ContainerController;
 import flashx.textLayout.container.TextContainerManager;
 import flashx.textLayout.edit.EditingMode;
 import flashx.textLayout.edit.ElementRange;
@@ -68,11 +67,15 @@ internal final class EditableTextContainerManager extends TextContainerManager
 
         // If measuring width, use the content width.
         if (isNaN(width))
-            width = contentBounds.right;
+		{
+			width = contentBounds.right;
+		}
 
         // If measuring height, use the content height.
         if (isNaN(height))
-            height = contentBounds.bottom;
+		{
+			height = contentBounds.bottom;
+		}
 
         // See ContainerController.updateVisibleRectangle().
         // (effectiveBlockProgression == BlockProgression.RL) ? -width : 0;
@@ -81,12 +84,8 @@ internal final class EditableTextContainerManager extends TextContainerManager
         // If autoSize, and lineBreak="toFit" there should never be
         // a scroll rect but if lineBreak="explicit" the text may need
         // to be clipped.
-        if (scrollX == 0 && scrollY == 0 &&
-            contentBounds.left >= xOrigin &&
-            contentBounds.right <= width &&
-            contentBounds.top >= 0 &&
-            contentBounds.bottom <= height)
-        {
+		if (scrollX == 0 && scrollY == 0 && contentBounds.left >= xOrigin && contentBounds.right <= width && contentBounds.top >= 0 && contentBounds.bottom <= height)
+		{
             // skip the scrollRect
             if (hasScrollRect)
             {
@@ -180,51 +179,33 @@ internal final class EditableTextContainerManager extends TextContainerManager
         // this is done in our focusIn handler by making sure there is a
         // selection.  Test this by clicking an arrow in the NumericStepper
         // and then entering a number without clicking on the input field first.
-        if (editingMode != EditingMode.READ_ONLY &&
-            textDisplay.getFocus() == textDisplay)
+        if (editingMode != EditingMode.READ_ONLY && textDisplay.getFocus() == textDisplay)
         {
             // this will ensure a text flow with a comopser
             var im:ISelectionManager = beginInteraction();
-
-            var controller:ContainerController =
-                getTextFlow().flowComposer.getControllerAt(0);
-
-            controller.requiredFocusInHandler(null);
-
+            getTextFlow().flowComposer.getControllerAt(0).requiredFocusInHandler(null);
             im.selectRange(0, 0);
-
             endInteraction();
         }
     }
 
     /**
-     *  @private
      *  To apply a format to a selection in a textFlow without using the
      *  selection manager.
      */
-    mx_internal function applyFormatOperation(
-                            leafFormat:ITextLayoutFormat,
-                            paragraphFormat:ITextLayoutFormat,
-                            containerFormat:ITextLayoutFormat,
-                            anchorPosition:int,
-                            activePosition:int):Boolean
-    {
-        // Nothing to do.
+	mx_internal function applyFormatOperation(leafFormat:ITextLayoutFormat, paragraphFormat:ITextLayoutFormat, containerFormat:ITextLayoutFormat, anchorPosition:int, activePosition:int):Boolean
+	{
+		// Nothing to do.
         if (anchorPosition == -1 || activePosition == -1)
-            return true;
+		{
+			return true;
+		}
 
         var textFlow:TextFlow = getTextFlowWithComposer();
-
-        var operationState:SelectionState =
-            new SelectionState(textFlow, anchorPosition, activePosition);
-
+        var operationState:SelectionState = new SelectionState(textFlow, anchorPosition, activePosition);
         // On point selection remember pendling formats for next char typed.
         operationState.selectionManagerOperationState = true;
-
-        var op:ApplyFormatOperation =
-            new ApplyFormatOperation(
-                operationState, leafFormat, paragraphFormat, containerFormat);
-
+        var op:ApplyFormatOperation = new ApplyFormatOperation(operationState, leafFormat, paragraphFormat, containerFormat);
         var success:Boolean = op.doOperation();
         if (success)
         {
@@ -241,121 +222,95 @@ internal final class EditableTextContainerManager extends TextContainerManager
      *  The method should be kept in sync with the version in the
      *  SelectionManager.
      */
-    mx_internal function getCommonCharacterFormat(
-                                        anchorPosition:int,
-                                        activePosition:int):ITextLayoutFormat
-    {
-        if (anchorPosition == -1 || activePosition == -1)
-            return null;
+	mx_internal function getCommonCharacterFormat(anchorPosition:int, activePosition:int):ITextLayoutFormat
+	{
+		if (anchorPosition == -1 || activePosition == -1)
+		{
+			return null;
+		}
 
-        var textFlow:TextFlow = getTextFlowWithComposer();
+		var textFlow:TextFlow = getTextFlowWithComposer();
+		var selRange:ElementRange = ElementRange.createElementRange(textFlow, getAbsoluteStart(anchorPosition, activePosition), getAbsoluteEnd(anchorPosition, activePosition));
+		var leaf:FlowLeafElement = selRange.firstLeaf;
+		var attr:TextLayoutFormat = new TextLayoutFormat(leaf.computedFormat);
 
-        var absoluteStart:int = getAbsoluteStart(anchorPosition, activePosition);
-        var absoluteEnd:int = getAbsoluteEnd(anchorPosition, activePosition);
+		// If there is a insertion point, see if there is an interaction
+		// manager with a pending point format.
+		if (anchorPosition != -1 && anchorPosition == activePosition)
+		{
+			if (textFlow.interactionManager)
+			{
+				var selectionState:SelectionState = textFlow.interactionManager.getSelectionState();
+				if (selectionState.pointFormat)
+				{
+					attr.apply(selectionState.pointFormat);
+				}
+			}
+		}
+		else
+		{
+			while (true)
+			{
+				if (leaf == selRange.lastLeaf)
+				{
+					break;
+				}
+				leaf = leaf.getNextLeaf();
+				attr.removeClashing(leaf.computedFormat);
+			}
+		}
 
-        var selRange:ElementRange =
-            ElementRange.createElementRange(textFlow, absoluteStart, absoluteEnd);
+		return Property.extractInCategory(TextLayoutFormat, TextLayoutFormat.description, attr, Category.CHARACTER) as ITextLayoutFormat;
+	}
 
-        var leaf:FlowLeafElement = selRange.firstLeaf;
-        var attr:TextLayoutFormat = new TextLayoutFormat(leaf.computedFormat);
-
-        // If there is a insertion point, see if there is an interaction
-        // manager with a pending point format.
-        if (anchorPosition != -1 && anchorPosition == activePosition)
-        {
-            if (textFlow.interactionManager)
-            {
-                var selectionState:SelectionState =
-                    textFlow.interactionManager.getSelectionState();
-                if (selectionState.pointFormat)
-                    attr.apply(selectionState.pointFormat);
-            }
-        }
-        else
-        {
-            for (;;)
-            {
-                if (leaf == selRange.lastLeaf)
-                    break;
-                leaf = leaf.getNextLeaf();
-                attr.removeClashing(leaf.computedFormat);
-            }
-        }
-
-        return Property.extractInCategory(
-                    TextLayoutFormat,
-                    TextLayoutFormat.description,
-                    attr, Category.CHARACTER) as ITextLayoutFormat;
-    }
-
-    /**
-     *  @private
+	/**
      *  To get the format of the container without using a SelectionManager.
      *  The method should be kept in sync with the version in the
      *  SelectionManager.
      */
-    mx_internal function getCommonContainerFormat():ITextLayoutFormat
-    {
-        var textFlow:TextFlow = getTextFlowWithComposer();
+	mx_internal function getCommonContainerFormat():ITextLayoutFormat
+	{
+		return Property.extractInCategory(TextLayoutFormat, TextLayoutFormat.description, getTextFlowWithComposer().flowComposer.getControllerAt(0).computedFormat, Category.CONTAINER) as ITextLayoutFormat;
+	}
 
-        var controller:ContainerController =
-            textFlow.flowComposer.getControllerAt(0);
-
-        return Property.extractInCategory(
-                    TextLayoutFormat, TextLayoutFormat.description,
-                    controller.computedFormat,
-                    Category.CONTAINER) as ITextLayoutFormat;
-    }
-
-    /**
-     *  @private
+	/**
      *  To get the format of a paragraph without using a SelectionManager.
      *  The method should be kept in sync with the version in the
      *  SelectionManager.
-     */
-    mx_internal function getCommonParagraphFormat(
-                                        anchorPosition:int,
-                                        activePosition:int):ITextLayoutFormat
-    {
-        if (anchorPosition == -1 || activePosition == -1)
-            return null;
+	 */
+	mx_internal function getCommonParagraphFormat(anchorPosition:int, activePosition:int):ITextLayoutFormat
+	{
+		if (anchorPosition == -1 || activePosition == -1)
+		{
+			return null;
+		}
 
-        var textFlow:TextFlow = getTextFlowWithComposer();
+		var textFlow:TextFlow = getTextFlowWithComposer();
+		var selRange:ElementRange = ElementRange.createElementRange(textFlow, getAbsoluteStart(anchorPosition, activePosition), getAbsoluteEnd(anchorPosition, activePosition));
+		var para:ParagraphElement = selRange.firstParagraph;
+		var attr:TextLayoutFormat = new TextLayoutFormat(para.computedFormat);
+		while(true)
+		{
+			if (para == selRange.lastParagraph)
+			{
+				break;
+			}
 
-        var absoluteStart:int = getAbsoluteStart(anchorPosition, activePosition);
-        var absoluteEnd:int = getAbsoluteEnd(anchorPosition, activePosition);
+			para = textFlow.findAbsoluteParagraph(para.getAbsoluteStart() + para.textLength);
+			attr.removeClashing(para.computedFormat);
+		}
 
-        var selRange:ElementRange =
-            ElementRange.createElementRange(textFlow, absoluteStart, absoluteEnd);
-
-        var para:ParagraphElement = selRange.firstParagraph;
-        var attr:TextLayoutFormat = new TextLayoutFormat(para.computedFormat);
-        for (;;)
-        {
-            if (para == selRange.lastParagraph)
-                break;
-
-            para = textFlow.findAbsoluteParagraph(
-                            para.getAbsoluteStart() + para.textLength);
-            attr.removeClashing(para.computedFormat);
-        }
-
-        return Property.extractInCategory(TextLayoutFormat,
-                    TextLayoutFormat.description,
-                    attr, Category.PARAGRAPH) as ITextLayoutFormat;
-    }
+		return Property.extractInCategory(TextLayoutFormat, TextLayoutFormat.description, attr, Category.PARAGRAPH) as ITextLayoutFormat;
+	}
 
     /**
-     *  @private
      *  Insert or append text to the textFlow without using an EditManager.
      *  If there is a SelectionManager or EditManager its selection will be
      *  updated at the end of the operation to keep it in sync.
      */
-    mx_internal function insertTextOperation(insertText:String,
-                                             anchorPosition:int,
-                                             activePosition:int):Boolean
-    {
-        // No insertion point.
+	mx_internal function insertTextOperation(insertText:String, anchorPosition:int, activePosition:int):Boolean
+	{
+		// No insertion point.
         if (anchorPosition == -1 || activePosition == -1)
 		{
 			return false;
@@ -366,51 +321,33 @@ internal final class EditableTextContainerManager extends TextContainerManager
         var absoluteStart:int = getAbsoluteStart(anchorPosition, activePosition);
         var absoluteEnd:int = getAbsoluteEnd(anchorPosition, activePosition);
 
-        // Need to get the format of the insertion point so that the inserted
-        // text will have this format.
+        // Need to get the format of the insertion point so that the inserted text will have this format.
         var pointFormat:ITextLayoutFormat = getCommonCharacterFormat(absoluteStart, absoluteStart);
         var operationState:SelectionState = new SelectionState(textFlow, absoluteStart, absoluteEnd, pointFormat);
-
         // If there is an interaction manager, this keeps it in sync with
         // the results of this operation.
         operationState.selectionManagerOperationState = true;
-
         var op:InsertTextOperation = new InsertTextOperation(operationState, insertText);
-
         // Generations don't seem to be used in this code path since we
-        // aren't doing composite, merge or undo operations so they were
-        // optimized out.
+        // aren't doing composite, merge or undo operations so they were optimized out.
 
-        var success:Boolean = op.doOperation();
-        if (success)
-        {
-            textFlow.normalize();
+		var success:Boolean = op.doOperation();
+		if (success)
+		{
+			textFlow.normalize();
+			textFlow.flowComposer.updateAllControllers();
+			var insertPt:int = absoluteEnd - (absoluteEnd - absoluteStart) + + insertText.length;
+			// No point format.
+			textFlow.dispatchEvent(new SelectionEvent(SelectionEvent.SELECTION_CHANGE, false, false, new SelectionState(textFlow, insertPt, insertPt)));
+			scrollToRange(insertPt, insertPt);
+		}
 
-            textFlow.flowComposer.updateAllControllers();
-
-            var insertPt:int = absoluteEnd - (absoluteEnd - absoluteStart) +
-                                    + insertText.length;
-
-            // No point format.
-            var selectionState:SelectionState =
-                new SelectionState(textFlow, insertPt, insertPt);
-
-            var selectionEvent:SelectionEvent =
-                new SelectionEvent(SelectionEvent.SELECTION_CHANGE,
-                                   false, false, selectionState);
-
-            textFlow.dispatchEvent(selectionEvent);
-
-            scrollToRange(insertPt, insertPt);
-        }
-
-        return success;
+		return success;
     }
 
     mx_internal function getTextFlowWithComposer():TextFlow
     {
         var textFlow:TextFlow = getTextFlow();
-
         // Make sure there is a text flow with a flow composer.  There will
         // not be an interaction manager if editingMode is read-only.  If
         // there is an interaction manager flush any pending inserts into the
@@ -535,6 +472,16 @@ internal final class EditableTextContainerManager extends TextContainerManager
     }
 
 	override protected function getFocusedSelectionFormat():SelectionFormat
+	{
+		return textDisplay._selectionFormat;
+	}
+
+	override protected function getUnfocusedSelectionFormat():SelectionFormat
+	{
+		return textDisplay._selectionFormat;
+	}
+
+	override protected function getInactiveSelectionFormat():SelectionFormat
 	{
 		return textDisplay._selectionFormat;
 	}
