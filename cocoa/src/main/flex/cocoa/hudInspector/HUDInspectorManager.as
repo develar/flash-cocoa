@@ -12,6 +12,7 @@ import flash.geom.Point;
 import flash.utils.Dictionary;
 
 import mx.core.IUIComponent;
+import mx.core.IVisualElement;
 
 import org.flyti.plexus.plexus;
 
@@ -38,6 +39,14 @@ public class HUDInspectorManager
 	plexus function set dialogManager(value:DialogManager):void
 	{
 		dialogManager = value;
+	}
+
+	public function changeCurrentVisibility(visible:Boolean):void
+	{
+		if (currentInspector != null)
+		{
+			IVisualElement(currentInspector.skin).visible = visible;
+		}
 	}
 
 	public function show(element:Object, elementView:View):void
