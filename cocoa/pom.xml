@@ -60,7 +60,10 @@
 								<class>**.AbstractSkin</class>
 								<class>**.*?Button</class>
 								<class>**.Label</class>
+
 								<class>**.TextInput</class>
+								<class>**.*TextView</class>
+
 								<class>**.*ApplicationImpl</class>
 								<class>**.ViewStack</class>
 								<class>**.*Group</class>
@@ -89,7 +92,10 @@
 								<class>cocoa.tree.Tree</class>
 
 								<class>cocoa.graphics.*</class>
+
 								<class>cocoa.*Separator</class>
+								
+								<class>**.*ScrollView</class>
 							</includes>
 							<excludes>
 								<class>cocoa.plaf.scrollbar.*</class>

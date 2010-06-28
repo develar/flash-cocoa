@@ -21,6 +21,7 @@ import spark.core.IViewport;
  * При скиновании может потребоваться чтобы thumb гулял не на всем track — как в Cocoa для вертикальной полосы прокрутки отступ сверху 7px —
  * для этого установите у track border соответствующий contentInsets.
  */
+[DefaultProperty("documentView")]
 public class ScrollView extends AbstractView implements IFocusManagerComponent
 {
 	private var horizontalScrollBar:HScrollBar;
