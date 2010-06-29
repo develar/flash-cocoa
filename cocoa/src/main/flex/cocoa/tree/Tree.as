@@ -198,7 +198,7 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		var renderer:IListItemRenderer = mouseEventToRenderer(event);
 		// click on a disclosure icon shouldn't select the item
-		if (renderer == null || !dataDescriptor.hasChildren(renderer.data) || !TreeItemRenderer(renderer).checkDisclosure(event, false))
+		if (renderer == null || !MouseEventPreventer(renderer).preventMouseDown(event, false))
 		{
 			super.mouseDownHandler(event);
 		}
@@ -206,9 +206,13 @@ public class Tree extends mx.controls.Tree implements View
 		_lastMouseDownItemRenderer = renderer;
 	}
 
-	override protected function mouseUpHandler(event:MouseEvent):void
+	override protected function mouseClickHandler(event:MouseEvent):void
 	{
-		super.mouseUpHandler(event);
+		var item:MouseEventPreventer = mouseEventToItemRenderer(event) as MouseEventPreventer;
+		if (item != null && !item.preventMouseDown(event))
+		{
+			super.mouseClickHandler(event);
+		}
 	}
 
 	override protected function createChildren():void
@@ -347,20 +351,6 @@ public class Tree extends mx.controls.Tree implements View
 	override protected function drawCaretIndicator(indicator:Sprite, x:Number, y:Number, width:Number, height:Number, color:uint, itemRenderer:IListItemRenderer):void
 	{
 
-	}
-
-	override protected function mouseClickHandler(event:MouseEvent):void
-	{
-		var item:TreeItemRenderer = mouseEventToItemRenderer(event) as TreeItemRenderer;
-		if (item != null)
-		{
-			if (item.checkDisclosure(event))
-			{
-				return;
-			}
-		}
-
-		super.mouseClickHandler(event);
 	}
 
 	override protected function layoutEditor(x:int, y:int, w:int, h:int):void

@@ -21,7 +21,7 @@ import mx.events.TreeEvent;
 
 use namespace mx_internal;
 
-public class TreeItemRenderer extends AbstractView implements IListItemRenderer, IDropInListItemRenderer
+public class TreeItemRenderer extends AbstractView implements IListItemRenderer, IDropInListItemRenderer, MouseEventPreventer
 {
 	protected var icon:DisplayObject;
 
@@ -180,7 +180,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			   localX >= (disclosureBorder.frameInsets.left - 3) && localX <= (disclosureBorder.layoutWidth + 3);
 	}
 
-	public function checkDisclosure(event:MouseEvent, dispatchOpenEvent:Boolean = true):Boolean
+	public function preventMouseDown(event:MouseEvent, dispatchOpenEvent:Boolean = true):Boolean
 	{
 		if (isDisclosureIconClicked(event))
 		{
