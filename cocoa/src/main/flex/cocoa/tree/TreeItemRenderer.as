@@ -85,7 +85,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 	protected function getLabel():String
 	{
-		return _listData == null ? "?" : _listData.label;
+		return _listData.label;
 	}
 
 	override protected function commitProperties():void

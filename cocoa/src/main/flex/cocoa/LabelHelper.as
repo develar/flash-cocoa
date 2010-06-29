@@ -133,6 +133,18 @@ public class LabelHelper
 		textLine.y = h - contentInsets.bottom + frameInsets.top;
 	}
 
+	public function moveByVerticalInsets(h:Number, contentInsets:Insets, frameInsets:FrameInsets, x:Number):void
+	{
+		if (textLine == null)
+		{
+			return;
+		}
+
+		// прибавление frameInsets.top нужно, так как если real bounds y полученный в результате отрисовки не будет 0, то и текст будет отпозиционирован согласно такому parent y
+		textLine.x = x;
+		textLine.y = h - contentInsets.bottom + frameInsets.top;
+	}
+
 	public function moveByInsetsWithXOffseet(h:Number, contentInsets:Insets, frameInsets:FrameInsets, xOffset:Number):void
 	{
 		if (textLine == null)
