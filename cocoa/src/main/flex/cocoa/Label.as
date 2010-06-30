@@ -59,6 +59,11 @@ public class Label extends TextBase implements Viewable
 		mouseEnabled = false;
 		mouseChildren = false;
 	}
+
+	public function set _elementFormat(value:ElementFormat):void
+	{
+		elementFormat = value;
+	}
 	
 	private var _paddingLeft:Number = 0;
 	public function set paddingLeft(value:Number):void
@@ -112,10 +117,20 @@ public class Label extends TextBase implements Viewable
 		{
 			fontDescription = new FontDescription();
 		}
+		else
+		{
+			fontDescription = fontDescription.clone();
+		}
 
 		fontDescription.fontName = value;
 		invalidateTextLines();
 		invalidateDisplayList();
+
+		if (elementFormat != null && elementFormat.fontDescription != null && elementFormat.fontDescription != fontDescription)
+		{
+			elementFormat = elementFormat.clone();
+			elementFormat.fontDescription = fontDescription;
+		}
 	}
 
 	public function set fontWeight(value:String):void
@@ -124,10 +139,20 @@ public class Label extends TextBase implements Viewable
 		{
 			fontDescription = new FontDescription();
 		}
+		else
+		{
+			fontDescription = fontDescription.clone();
+		}
 
 		fontDescription.fontWeight = value;
 		invalidateTextLines();
 		invalidateDisplayList();
+
+		if (elementFormat != null && elementFormat.fontDescription != null && elementFormat.fontDescription != fontDescription)
+		{
+			elementFormat = elementFormat.clone();
+			elementFormat.fontDescription = fontDescription;
+		}
 	}
 
 	public function set fontSize(value:Number):void
