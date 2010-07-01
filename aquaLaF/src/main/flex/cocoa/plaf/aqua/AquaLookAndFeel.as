@@ -47,7 +47,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		initAssets();
 
 		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT;
-		data[FontID.SYSTEM_DISABLED] = AquaFonts.SYSTEM_FONT_DISABLED;
+//		data[FontID.SYSTEM_DISABLED] = AquaFonts.SYSTEM_FONT_DISABLED;
 		data[FontID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
 		data[FontID.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
@@ -271,6 +271,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["PushButton"] = HUDPushButtonSkin;
 		data["PushButton.border"] = borders[BorderPosition.hudButton];
 
+		data["PopUpButton.border"] = borders[BorderPosition.hudPopUpButton];
+
 		data["NumericStepper.TextInput"] = TextInputSkin;
 		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
 
@@ -309,7 +311,6 @@ final class AquaFonts
 	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
 	public static const SYSTEM_FONT_HUD:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
 	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13, 0xffffff);
-	public static const SYSTEM_FONT_DISABLED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13, 0x808080);
 
 	public static const SMALL_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11);
 	public static const SMALL_SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);

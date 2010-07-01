@@ -47,6 +47,14 @@ public class LabelHelper
 		return textLine.textWidth;
 	}
 
+	public function set alpha(value:Number):void
+	{
+		if (textLine != null)
+		{
+			textLine.alpha = value;
+		}
+	}
+
 	private var _font:ElementFormat;
 	public function set font(value:ElementFormat):void
 	{

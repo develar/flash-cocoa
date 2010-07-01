@@ -12,7 +12,7 @@ import spark.utils.LabelUtil;
 use namespace ui;
 
 /**
- * http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
+ * @see http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
 [DefaultProperty("menu")]
 public class PopUpButton extends AbstractControl implements Cell

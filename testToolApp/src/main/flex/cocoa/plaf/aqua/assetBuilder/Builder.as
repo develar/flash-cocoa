@@ -77,6 +77,27 @@ public class Builder
 	[Embed(source="/hud/HUD-ButtonRight-P.png")]
 	private static var hudButtonOnRight:Class;
 
+	[Embed(source="/hud/HUD-PopupLeft-N.png")]
+	private static var hudPopUpButtonOffLeft:Class;
+	[Embed(source="/hud/HUD-PopupFill-N.png")]
+	private static var hudPopUpButtonOffCenter:Class;
+	[Embed(source="/hud/HUD-PopupRight-N.png")]
+	private static var hudPopUpButtonOffRight:Class;
+
+	[Embed(source="/hud/HUD-PopupLeft-P.png")]
+	private static var hudPopUpButtonOnLeft:Class;
+	[Embed(source="/hud/HUD-PopupFill-P.png")]
+	private static var hudPopUpButtonOnCenter:Class;
+	[Embed(source="/hud/HUD-PopupRight-P.png")]
+	private static var hudPopUpButtonOnRight:Class;
+
+	[Embed(source="/hud/HUD-PopupLeft-D.png")]
+	private static var hudPopUpButtonDisabledLeft:Class;
+	[Embed(source="/hud/HUD-PopupFill-D.png")]
+	private static var hudPopUpButtonDisabledCenter:Class;
+	[Embed(source="/hud/HUD-PopupRight-D.png")]
+	private static var hudPopUpButtonDisabledRight:Class;
+
 	[Embed(source="/hud/HUD-SpinnerTop-N.png")]
 	private static var hudSpinnerIncrementButtonOff:Class;
 	[Embed(source="/hud/HUD-SpinnerTop-P.png")]
@@ -196,6 +217,10 @@ public class Builder
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)),
 														new <Class>[hudButtonOffLeft, hudButtonOffCenter, hudButtonOffRight,
 															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight]);
+		// HUD PopUpButton
+		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1, -2), new TextInsets(7, NaN, 7 + 18 /* width of double-arrow area */, 5, 18)),
+														new <Class>[hudPopUpButtonOffLeft, hudPopUpButtonOffCenter, hudPopUpButtonOffRight,
+															hudPopUpButtonOnLeft, hudPopUpButtonOnCenter, hudPopUpButtonOnRight, hudPopUpButtonDisabledLeft, hudPopUpButtonDisabledCenter, hudPopUpButtonDisabledRight]);
 
 		addSpinnerButtons();
 		borders[BorderPosition.sliderThumb] = createFlexButtonBorder(hudSliderThumbOff, hudSliderThumbOn, new FrameInsets(-1, 0, -1, -2));

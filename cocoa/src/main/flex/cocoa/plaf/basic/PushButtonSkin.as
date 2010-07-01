@@ -109,8 +109,8 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 				labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
 			}
 
-			labelHelper.font = getFont(enabled ? FontID.SYSTEM : FontID.SYSTEM_DISABLED);
 			labelHelper.validate();
+			labelHelper.alpha = enabled ? 1 : 0.5;
 			labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
 		}
 

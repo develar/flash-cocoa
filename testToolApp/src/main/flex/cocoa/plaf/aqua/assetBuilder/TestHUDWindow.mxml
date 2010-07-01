@@ -4,6 +4,14 @@
 		<s:VerticalLayout/>
 	</layout>
 
+	<fx:Script><![CDATA[
+		import cocoa.MenuItem;
+
+		import org.flyti.util.ArrayList;
+
+		private static const testData2:ArrayList = new ArrayList(new <Object>["Grid", "Mosaic", MenuItem.createSeparatorItem(), "Carousel"]);
+		]]></fx:Script>
+
 	<Label text="URL"/>
 	<Container width="100%">
 		<layout>
@@ -30,5 +38,12 @@
 		
 		<Label text="Number of Entries:"/>
 		<NumericStepper id="numberOfEntriesNumericStepper" minimum="1" maximum="999" value="10"/>
+
+		<Label text="Layout:"/>
+		<PopUpButton>
+			<Menu>
+				<items>{testData2}</items>
+			</Menu>
+		</PopUpButton>
 	</Container>
 </Container>
