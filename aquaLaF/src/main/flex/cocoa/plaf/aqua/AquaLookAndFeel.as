@@ -47,7 +47,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		initAssets();
 
 		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT;
-//		data[FontID.SYSTEM_DISABLED] = AquaFonts.SYSTEM_FONT_DISABLED;
 		data[FontID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
 		data[FontID.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
@@ -56,6 +55,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data[FontID.VIEW] = AquaFonts.VIEW_FONT;
 		data[FontID.VIEW_HIGHLIGHTED] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
+
+		data[FontID.MENU] = AquaFonts.SYSTEM_FONT;
+		data[FontID.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
 		data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
@@ -68,9 +70,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["Dialog"] = WindowSkin;
 		data["HUDWindow"] = HUDWindowSkin;
-		data["Window.border"] = borders[BorderPosition.scrollbar + 14];
-		data["Window.border.toolbar"] = borders[BorderPosition.scrollbar + 15];
-		data["Window.bottomBar.application"] = borders[6];
+		data["Window.border"] = borders[BorderPosition.window];
+		data["Window.border.toolbar"] = borders[BorderPosition.windowWithToolbar];
+		data["Window.bottomBar.application"] = borders[BorderPosition.windowApplicationBottomBar];
 
 		data["SourceListView"] = SourceListViewSkin;
 		data["ListView"] = ListViewSkin;
@@ -81,23 +83,23 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["TabView.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
 
 		data["PushButton"] = PushButtonSkin;
-		data["PushButton.border"] = borders[BezelStyle.rounded.ordinal];
+		data["PushButton.border"] = borders[BorderPosition.pushButtonRounded];
 
 		data["IconButton"] = IconButtonSkin;
 
 		data["PopUpButton"] = PushButtonSkin;
-		data["PopUpButton.border"] = borders[2 + BezelStyle.rounded.ordinal];
+		data["PopUpButton.border"] = borders[BorderPosition.popUpButtonTexturedRounded];
 		data["PopUpButton.menuController"] = new ClassFactory(PopUpMenuController);
 		
 		data["Menu"] = MenuSkin;
-		data["Menu.border"] = borders[4];
+		data["Menu.border"] = borders[BorderPosition.menu];
 		data["Menu.itemFactory"] = new ClassFactory(MenuItemRenderer);
 
 		data["MenuItem.onStateIcon"] = icons[0];
 		data["MenuItem.onStateIcon.highlighted"] = icons[1];
 
-		data["MenuItem.border"] = new MenuItemBorder(borders[5].contentInsets);
-		data["MenuItem.border.highlighted"] = borders[5];
+		data["MenuItem.border"] = new MenuItemBorder(borders[BorderPosition.menuItem]);
+		data["MenuItem.border.highlighted"] = borders[BorderPosition.menuItem];
 		data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
 		data["SliderNumericStepper"] = SliderNumericStepperSkin;
@@ -214,9 +216,9 @@ import cocoa.Border;
 import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.FontID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
-import cocoa.plaf.aqua.BezelStyle;
 import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
+import cocoa.plaf.aqua.MenuItemBorder;
 import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.TextInputBorder;
@@ -242,7 +244,7 @@ final class WindowFrameLookAndFeel extends AbstractLookAndFeel
 
 	private function initialize(borders:Vector.<Border>):void
 	{
-		data["PushButton.border"] = borders[BezelStyle.texturedRounded.ordinal];
+		data["PushButton.border"] = borders[BorderPosition.pushButtonTexturedRounded];
 	}
 }
 
@@ -257,13 +259,17 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 	private function initialize(borders:Vector.<Border>):void
 	{
 		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
+		data[FontID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HUD_HIGHLIGHTED;
 		data[FontID.VIEW] = AquaFonts.VIEW_FONT_HUD;
+
+		data[FontID.MENU] = AquaFonts.SMALL_SYSTEM_FONT;
+		data[FontID.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
+
 		data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
-		data["Window.border"] = borders[BorderPosition.scrollbar + 16];
+		data["Window.border"] = borders[BorderPosition.hudWindow];
 
 		data["TextInput.border"] = new TextInputBorder();
-
 		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
 		data["HSeparator.border"] = new SeparatorBorder();
@@ -272,6 +278,9 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["PushButton.border"] = borders[BorderPosition.hudButton];
 
 		data["PopUpButton.border"] = borders[BorderPosition.hudPopUpButton];
+
+		data["MenuItem.border"] = new MenuItemBorder(borders[BorderPosition.hudMenuItem]);
+		data["MenuItem.border.highlighted"] = borders[BorderPosition.hudMenuItem];
 
 		data["NumericStepper.TextInput"] = TextInputSkin;
 		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
@@ -307,14 +316,16 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 final class AquaFonts
 {
 	private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
+	private static const FONT_BOLD_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD);
 
 	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
 	public static const SYSTEM_FONT_HUD:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
 	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13, 0xffffff);
+	public static const SYSTEM_FONT_HUD_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
 
 	public static const SMALL_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11);
 	public static const SMALL_SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
-	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD), 11);
+	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_BOLD_DESCRIPTION, 11);
 
 	public static const VIEW_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 12);
 	public static const VIEW_FONT_HUD:ElementFormat = SYSTEM_FONT_HUD;

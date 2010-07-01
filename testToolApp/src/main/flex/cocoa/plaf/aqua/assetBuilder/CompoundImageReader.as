@@ -28,7 +28,7 @@ internal final class CompoundImageReader
 	private var rowsInfo:Vector.<RowInfo>;
 	private var compoundBitmapData:BitmapData;
 
-	public var position:int = 0;
+//	private var position:int = 0;
 
 	private var borders:Vector.<Border>;
 
@@ -57,13 +57,11 @@ internal final class CompoundImageReader
 			var sliceSize:Insets = sliceCalculator.calculate(compoundBitmapData, frameRectangle, rowInfo.top, false, false);
 			var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize, rowInfo.top, rowInfo.width, 3 /* off, on, disabled */);
 
-			borders[position + row] = Scale3EdgeHBitmapBorder(rowInfo.border).configure(bitmaps);
+			borders[rowInfo.index] = Scale3EdgeHBitmapBorder(rowInfo.border).configure(bitmaps);
 		}
-
-		position += rowsInfo.length;
 	}
 
-	public function readButtonAdditionalBitmaps(border:Scale3EdgeHBitmapBorder, additionalBitmaps:Vector.<Class>):void
+	public function readButtonAdditionalBitmaps(border:Scale3EdgeHBitmapBorder, additionalBitmaps:Vector.<Class>, borderPosition:int):void
 	{
 		additionalBitmaps.fixed = true;
 		var n:int = additionalBitmaps.length;
@@ -83,7 +81,7 @@ internal final class CompoundImageReader
 			bitmaps[bitmapIndex++] = Bitmap(new additionalBitmaps[i + 2]).bitmapData;
 		}
 
-		borders[position++] = border.configure(bitmaps);
+		borders[borderPosition] = border.configure(bitmaps);
 	}
 
 	public function readScale3(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder):void
@@ -95,10 +93,10 @@ internal final class CompoundImageReader
 		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
 		border.configure(bitmaps);
 
-		borders[position++] = border;
+		borders[BorderPosition.windowApplicationBottomBar] = border;
 	}
 
-	public function readTitleBarAndContent(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder):void
+	public function readTitleBarAndContent(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder, borderPosition:int):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -109,7 +107,7 @@ internal final class CompoundImageReader
 		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
 		border.configure(bitmaps);
 
-		borders[position++] = border;
+		borders[borderPosition] = border;
 	}
 
 	/**
@@ -134,6 +132,8 @@ internal final class CompoundImageReader
 		const decrementArrowLocalPosition:Number = 61;
 
 		const scrollViewAbsoluteY:Number = 192;
+
+		var position:int = BorderPosition.scrollbar;
 
 		// v track
 		var itemRectangle:Rectangle = new Rectangle(vArrowLocalPosition, scrollViewAbsoluteY, thickness, 25);
@@ -251,7 +251,7 @@ internal final class CompoundImageReader
 		const firstItemY:Number = -listBorder.frameInsets.top + listBorder.contentInsets.top + frameRectangle.top;
 		const itemX:Number = -listBorder.frameInsets.left + listBorder.contentInsets.left + frameRectangle.x;
 		var itemRectangle:Rectangle = new Rectangle(itemX, firstItemY, 1, itemHeight);
-		borders[position + 1] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(21, NaN, 21, 5));
+		borders[BorderPosition.menuItem] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(21, NaN, 21, 5));
 
 		// checkmarks
 		itemRectangle.x += 5;
@@ -270,12 +270,10 @@ internal final class CompoundImageReader
 		compoundBitmapData.fillRect(itemRectangle, 0);
 
 		listBorder.configure(parseScale9Grid(frameRectangle));
-		borders[position] = listBorder;
-
-		position += 2;
+		borders[BorderPosition.menu] = listBorder;
 	}
 
-	public function readScale9(bitmapDataClass:Class, border:Scale9BitmapBorder, equalLength:int = -1):void
+	public function readScale9(bitmapDataClass:Class, borderPosition:int, border:Scale9BitmapBorder, equalLength:int = -1):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -283,7 +281,7 @@ internal final class CompoundImageReader
 		var bitmaps:Vector.<BitmapData> = parseScale9Grid(frameRectangle, null, equalLength);
 		border.configure(bitmaps);
 
-		borders[position++] = border;
+		borders[borderPosition] = border;
 	}
 
 	public function parseScale9Grid(frameRectangle:Rectangle, sliceSize:Insets = null, equalLength:int = -1):Vector.<BitmapData>

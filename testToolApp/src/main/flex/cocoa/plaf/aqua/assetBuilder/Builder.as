@@ -141,13 +141,16 @@ public class Builder
 	[Embed(source="/Tree.sideBar.icons.png")]
 	private static var treeSideBarIcons:Class;
 
+	[Embed(source="/hud/menuItem.h.png")]
+	private static var hudMenuItemH:Class;
+
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
-	buttonRowsInfo[0] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
+	buttonRowsInfo[0] = new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
 	// textured rounded push button
-	buttonRowsInfo[1] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(0, -1, 0, 0), new Insets(10, NaN, 10, 6)));
+	buttonRowsInfo[1] = new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, -1, 0, 0), new Insets(10, NaN, 10, 6)));
 	// rounded pop up button
-	buttonRowsInfo[2] = new RowInfo(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
+	buttonRowsInfo[2] = new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
 	{
@@ -197,37 +200,37 @@ public class Builder
 		finalizeRowsInfo(buttonRowsInfo, 22);
 		compoundImageReader.read(assetsClass, buttonRowsInfo);
 		// image view bezel border (imagewell border)
-		borders[compoundImageReader.position++] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
+		borders[BorderPosition.imageView] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+		borders[BorderPosition.hudMenuItem] = OneBitmapBorder.create(Bitmap(new hudMenuItemH()).bitmapData, new Insets(21, NaN, 21, 4));
+
 		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
 
-		compoundImageReader.position = BorderPosition.segmentItem;
-		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
-		borders[compoundImageReader.position++] = new SegmentedControlBorderReader().read(segmentedControlTRClass, segmentedControl2TRClass, segmentedControl3TRClass, segmentedControl4TRClass);
+		borders[BorderPosition.segmentItem] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
+		borders[BorderPosition.segmentItem + 1] = new SegmentedControlBorderReader().read(segmentedControlTRClass, segmentedControl2TRClass, segmentedControl3TRClass, segmentedControl4TRClass);
 
 		compoundImageReader.readScrollbar();
 
-		compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
-		compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)));
-		compoundImageReader.readScale9(hudTitleBarAndContentClass, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
+		compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.window);
+		compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.windowWithToolbar);
+		compoundImageReader.readScale9(hudTitleBarAndContentClass, BorderPosition.hudWindow, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
 
 		// HUD PushButton
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)),
 														new <Class>[hudButtonOffLeft, hudButtonOffCenter, hudButtonOffRight,
-															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight]);
+															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight], BorderPosition.hudButton);
 		// HUD PopUpButton
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1, -2), new TextInsets(7, NaN, 7 + 18 /* width of double-arrow area */, 5, 18)),
 														new <Class>[hudPopUpButtonOffLeft, hudPopUpButtonOffCenter, hudPopUpButtonOffRight,
-															hudPopUpButtonOnLeft, hudPopUpButtonOnCenter, hudPopUpButtonOnRight, hudPopUpButtonDisabledLeft, hudPopUpButtonDisabledCenter, hudPopUpButtonDisabledRight]);
+															hudPopUpButtonOnLeft, hudPopUpButtonOnCenter, hudPopUpButtonOnRight, hudPopUpButtonDisabledLeft, hudPopUpButtonDisabledCenter, hudPopUpButtonDisabledRight], BorderPosition.hudPopUpButton);
 
 		addSpinnerButtons();
 		borders[BorderPosition.sliderThumb] = createFlexButtonBorder(hudSliderThumbOff, hudSliderThumbOn, new FrameInsets(-1, 0, -1, -2));
 
 		// HUD Slider Track
-		compoundImageReader.position = BorderPosition.sliderTrack;
-		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(), new <Class>[hudSliderTrackLeftCap, hudSliderTrackFill, hudSliderTrackRightCap]);
+		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(), new <Class>[hudSliderTrackLeftCap, hudSliderTrackFill, hudSliderTrackRightCap], BorderPosition.sliderTrack);
 
 		// HUD CheckBox
 		borders[BorderPosition.checkBox] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudCheckBoxOff, hudCheckBoxOffH, hudCheckBoxOn, hudCheckBoxOnH]),
@@ -243,6 +246,7 @@ public class Builder
 		data.writeByte(borders.length);
 		for each (var border:ExternalizableResource in borders)
 		{
+			assert(borders.indexOf(border) == borders.lastIndexOf(border));
 			border.writeExternal(data);
 		}
 

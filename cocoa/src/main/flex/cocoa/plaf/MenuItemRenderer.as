@@ -50,7 +50,7 @@ public class MenuItemRenderer extends LabeledItemRenderer implements Highlightab
 			border = getBorder(highlighted ? "border.highlighted" : "border");
 		}
 
-		labelHelper.font = getFont(highlighted ? FontID.SYSTEM_HIGHLIGHTED : FontID.SYSTEM);
+		labelHelper.font = getFont(highlighted ? FontID.MENU_HIGHLIGHTED : FontID.MENU);
 		labelHelper.validate();
 		labelHelper.moveByInset(h, border.contentInsets);
 		

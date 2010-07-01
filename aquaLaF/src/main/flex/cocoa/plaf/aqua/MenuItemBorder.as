@@ -1,21 +1,24 @@
 package cocoa.plaf.aqua
 {
-import cocoa.border.AbstractBorder;
-import cocoa.Insets;
+import cocoa.Border;
 import cocoa.View;
+import cocoa.border.AbstractBorder;
 
 import flash.display.Graphics;
 
-internal class MenuItemBorder extends AbstractBorder
+public final class MenuItemBorder extends AbstractBorder
 {
-	public function MenuItemBorder(contentInsets:Insets)
+	private var _layoutHeight:Number;
+
+	public function MenuItemBorder(higlightedBorder:Border)
 	{
-		_contentInsets = contentInsets;
+		_contentInsets = higlightedBorder.contentInsets;
+		_layoutHeight = higlightedBorder.layoutHeight
 	}
 
 	override public function get layoutHeight():Number
 	{
-		return 18;
+		return _layoutHeight;
 	}
 
 	override public function draw(view:View, g:Graphics, w:Number, h:Number):void
