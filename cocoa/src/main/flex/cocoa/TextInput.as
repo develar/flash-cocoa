@@ -8,6 +8,7 @@ import spark.events.TextOperationEvent;
 
 use namespace ui;
 
+[Event(name="change", type="spark.events.TextOperationEvent")]
 public class TextInput extends AbstractComponent
 {
 	protected static const _skinParts:Dictionary = new Dictionary();
@@ -46,6 +47,8 @@ public class TextInput extends AbstractComponent
 	private function inputChangeHandler(event:TextOperationEvent):void
 	{
 		dispatchEvent(event);
+		//_text property must be actual because set text checks (value != _text) 
+		_text = textDisplay.text;
 	}
 
 	override protected function get defaultLaFPrefix():String

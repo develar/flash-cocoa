@@ -23,10 +23,14 @@ import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
 
+import cocoa.text.TextFormat;
+
 import flash.display.BlendMode;
 import flash.utils.ByteArray;
 
 import flashx.textLayout.edit.SelectionFormat;
+
+import flashx.textLayout.formats.LineBreak;
 
 import mx.core.ClassFactory;
 
@@ -135,6 +139,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["CheckBox"] = CheckBoxSkin;
 		data["HSlider"] = HSliderSkin;
 		data["TextInput"] = TextInputSkin;
+		data["TextInput.border"] = new TextInputBorder();
+		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 		data["NumericStepper.TextInput"] = TextInputSkin;
 
 		data["HSeparator.border"] = new SeparatorBorder();
@@ -208,6 +214,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 			hudLookAndFeel = new HUDLookAndFeel(borders, this);
 		}
 		return hudLookAndFeel;
+	}
+
+	private function createDefaultTextFormat():TextFormat
+	{
+		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT_HUD);
+		textInputTextFormat.$paddingTop = 2;
+		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
+		return textInputTextFormat;
 	}
 }
 }
