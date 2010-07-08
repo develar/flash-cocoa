@@ -3,7 +3,6 @@ package cocoa.text
 import cocoa.AbstractView;
 
 import flash.display.Sprite;
-
 import flash.geom.Rectangle;
 
 import flashx.textLayout.container.ContainerController;
@@ -50,13 +49,40 @@ public class TextView extends AbstractView implements IViewport
 					createController();
 				}
 				_textFlow.flowComposer.addController(containerController);
-				if (_textFlow.interactionManager == null)
-				{
-					_textFlow.interactionManager = new SelectionManager();
-				}
+				setSelectionManager();
 			}
 			invalidateProperties();
 			invalidateDisplayList();
+		}
+	}
+
+	private var _selectable:Boolean = true;
+	public function set selectable(value:Boolean):void
+	{
+		if (value != _selectable)
+		{
+			_selectable = value;
+			if (_textFlow != null)
+			{
+				setSelectionManager();
+				invalidateDisplayList();
+			}
+		}
+	}
+
+	public function get selectable():Boolean
+	{
+		return _selectable;
+	}
+
+	private function setSelectionManager():void
+	{
+		if (_selectable && _textFlow.interactionManager == null)
+		{
+			_textFlow.interactionManager = new SelectionManager();
+		} else if (!_selectable && _textFlow.interactionManager != null)
+		{
+			_textFlow.interactionManager = null;
 		}
 	}
 
@@ -72,8 +98,7 @@ public class TextView extends AbstractView implements IViewport
 		var oldContentWidth:Number = _contentWidth;
 		var oldContentHeight:Number = _contentHeight;
 
-		var newContentBounds:Rectangle =
-				containerController.getContentBounds();
+		var newContentBounds:Rectangle = containerController.getContentBounds();
 
 		var newContentWidth:Number = newContentBounds.width;
 		var newContentHeight:Number = newContentBounds.height;
@@ -120,8 +145,7 @@ public class TextView extends AbstractView implements IViewport
 			var oldHorizontalScrollPosition:Number = containerController.horizontalScrollPosition;
 			containerController.horizontalScrollPosition = _horizontalScrollPosition;
 
-			dispatchPropertyChangeEvent("horizontalScrollPosition",
-					oldHorizontalScrollPosition, _horizontalScrollPosition);
+			dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, _horizontalScrollPosition);
 
 			horizontalScrollPositionChanged = false;
 		}
@@ -131,8 +155,7 @@ public class TextView extends AbstractView implements IViewport
 			var oldVerticalScrollPosition:Number = containerController.verticalScrollPosition;
 			containerController.verticalScrollPosition = _verticalScrollPosition;
 
-			dispatchPropertyChangeEvent("verticalScrollPosition",
-					oldVerticalScrollPosition, _verticalScrollPosition);
+			dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, _verticalScrollPosition);
 
 			verticalScrollPositionChanged = false;
 		}
@@ -145,8 +168,7 @@ public class TextView extends AbstractView implements IViewport
 		if (!isNaN(explicitWidth))
 		{
 			measuredWidth = explicitWidth;
-		}
-		else if (_textFlow != null)
+		} else if (_textFlow != null)
 		{
 			measuredWidth = containerController.compositionWidth;
 		}
@@ -154,8 +176,7 @@ public class TextView extends AbstractView implements IViewport
 		if (!isNaN(explicitHeight))
 		{
 			measuredHeight = explicitHeight;
-		}
-		else if (_textFlow != null)
+		} else if (_textFlow != null)
 		{
 			measuredHeight = containerController.compositionHeight;
 		}
