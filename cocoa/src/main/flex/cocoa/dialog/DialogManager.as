@@ -10,7 +10,6 @@ import cocoa.plaf.Skin;
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.display.DisplayObject;
-
 import flash.events.Event;
 
 import mx.core.FlexGlobals;
@@ -18,19 +17,15 @@ import mx.managers.PopUpManager;
 
 public class DialogManager
 {
-	private var modalBoxExists:Boolean;
+	private var modalWindowSkin:Skin;
 
 	public function open(window:Window, modal:Boolean = true, autoCenter:Boolean = true):void
 	{
 		if (modal)
 		{
-			if (modalBoxExists)
+			if (modalWindowSkin != null)
 			{
-				//throw new Error("modal window already opened");
-			}
-			else
-			{
-				modalBoxExists = true;
+				throw new Error("modal window already opened");
 			}
 		}
 
@@ -64,8 +59,14 @@ public class DialogManager
 			}
 		}
 
-		//		skin.addEventListener(ResizeEvent.RESIZE, dialogCreationCompleteHandler);
-		PopUpManager.addPopUp(skin, DisplayObject(FlexGlobals.topLevelApplication), modal);
+		var popUpLayerParent:DisplayObject = DisplayObject(FlexGlobals.topLevelApplication);
+		if (modal)
+		{
+			modalWindowSkin = skin;
+			popUpLayerParent.stage.addEventListener(Event.RESIZE, stageResizeHandler);
+		}
+
+		PopUpManager.addPopUp(skin, popUpLayerParent, modal);
 		if (autoCenter)
 		{
 			PopUpManager.centerPopUp(skin);
@@ -73,10 +74,10 @@ public class DialogManager
 		skin.setFocus();
 	}
 
-//	private function dialogCreationCompleteHandler(event:ResizeEvent):void
-//	{
-//		PopUpManager.centerPopUp(Skin(event.currentTarget));
-//	}
+	private function stageResizeHandler(event:Event):void
+	{
+		PopUpManager.centerPopUp(modalWindowSkin);
+	}
 
 	public function close(window:Window):void
 	{
@@ -84,9 +85,10 @@ public class DialogManager
 
 		window.dispatchEvent(new DialogEvent(DialogEvent.CLOSING));
 
-		if (modalBoxExists)
+		if (modalWindowSkin != null)
 		{
-			modalBoxExists = false;
+			modalWindowSkin = null;
+			modalWindowSkin.stage.removeEventListener(Event.RESIZE, stageResizeHandler);
 		}
 		PopUpManager.removePopUp(window.skin);
 	}
