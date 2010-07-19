@@ -10,7 +10,7 @@ public class TextInputSkin extends AbstractSkin
 {
 	protected var textDisplay:EditableTextView;
 
-	private var border:Border;
+	protected var border:Border;
 
 	override protected function createChildren():void
 	{
@@ -26,14 +26,19 @@ public class TextInputSkin extends AbstractSkin
 		textDisplay.textFormat = getTextFormat("SystemTextFormat");
 		textDisplay.selectionFormat = laf.getSelectionFormat("SelectionFormat");
 
-		textDisplay.multiline = false;
 		textDisplay.x = border.contentInsets.left;
 		textDisplay.y = border.contentInsets.top;
-		textDisplay.height = border.layoutHeight - border.contentInsets.height;
+		configureTextDisplay();
 
 		addChild(textDisplay);
 
 		component.uiPartAdded("textDisplay", textDisplay);
+	}
+
+	protected function configureTextDisplay():void
+	{
+		textDisplay.multiline = false;
+		textDisplay.height = border.layoutHeight - border.contentInsets.height;
 	}
 
 	override protected function measure():void

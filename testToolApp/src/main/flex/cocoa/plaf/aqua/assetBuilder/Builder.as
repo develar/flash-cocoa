@@ -37,6 +37,9 @@ public class Builder
 
 	[Embed(source="/Window.bottomBar.application.png")]
 	private static var bottomBarApplicationClass:Class;
+	[Embed(source="/Window.bottomBar.chooseDialog.png")]
+	private static var bottomBarChooseDialogClass:Class;
+
 	[Embed(source="/Window.titleBarAndContent.png")]
 	private static var titleBarAndContentClass:Class;
 	[Embed(source="/Window.titleBarAndToolbarAndContent.png")]
@@ -202,11 +205,15 @@ public class Builder
 		// image view bezel border (imagewell border)
 		borders[BorderPosition.imageView] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
 
+		borders[BorderPosition.textArea] = Scale9BitmapBorder.create(null, new Insets(4, 3, 4, 2)).configure(compoundImageReader.parseScale9Grid(new Rectangle(120, 332, 100, 100)));
+
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
 		borders[BorderPosition.hudMenuItem] = OneBitmapBorder.create(Bitmap(new hudMenuItemH()).bitmapData, new Insets(21, NaN, 21, 4));
 
-		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, 0, -33, -48)));
+		var windowBottomBarFrameInsets:FrameInsets = new FrameInsets(-33, 0, -33, -48);
+		compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(windowBottomBarFrameInsets), BorderPosition.windowApplicationBottomBar);
+		compoundImageReader.readScale3(bottomBarChooseDialogClass, Scale3EdgeHBitmapBorder.create(windowBottomBarFrameInsets), BorderPosition.windowChooseDialogBottomBar);
 
 		borders[BorderPosition.segmentItem] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
 		borders[BorderPosition.segmentItem + 1] = new SegmentedControlBorderReader().read(segmentedControlTRClass, segmentedControl2TRClass, segmentedControl3TRClass, segmentedControl4TRClass);

@@ -157,13 +157,13 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-		const targetIsNotTextLine:Boolean = !(event.target is TextLine);
-		if (event.target != this && (targetIsNotTextLine || TextLine(event.target).parent.mouseEnabled))
+		const targetAsTextLine:TextLine = event.target as TextLine;
+		if (event.target != this && (targetAsTextLine == null || (targetAsTextLine.parent != this /* так как window skin (то есть this) должен иметь mouseEnabled равный true */ && targetAsTextLine.parent.mouseEnabled)))
 		{
 			return;
 		}
 
-		if (targetIsNotTextLine)
+		if (targetAsTextLine == null)
 		{
 			var mouseY:Number = event.localY;
 			var mouseX:Number = event.localX;

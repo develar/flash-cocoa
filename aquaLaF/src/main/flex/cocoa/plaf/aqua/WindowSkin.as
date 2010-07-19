@@ -31,7 +31,7 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 		{
 			controlBar = new BorderedContainer();
 			controlBar.height = BOTTOM_BAR_HEIGHT;
-			controlBar.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
+			controlBar.laf = _bottomBarStyle == BottomBarStyle.application ? AquaLookAndFeel(laf).createWindowFrameLookAndFeel() : laf;
 			controlBar.border = laf.getBorder("Window.bottomBar." + _bottomBarStyle.name);
 			controlBar.mouseEnabled = false;
 

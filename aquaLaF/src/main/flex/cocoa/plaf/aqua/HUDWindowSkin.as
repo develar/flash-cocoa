@@ -4,7 +4,6 @@ import cocoa.Component;
 import cocoa.Insets;
 import cocoa.View;
 import cocoa.plaf.LookAndFeel;
-
 import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.Graphics;

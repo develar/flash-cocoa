@@ -20,6 +20,8 @@ public class CenterEqualizedLayout extends LayoutBase
 {
 	private var columns:Vector.<Column>;
 
+	protected var useFluentTopHack:Boolean;
+
 	private var _fieldGap:Number = 8;
 	/**
 	 * Расстояние вертикальное между полями
@@ -35,6 +37,12 @@ public class CenterEqualizedLayout extends LayoutBase
             _fieldGap = value;
 		}
     }
+
+	private var _useWindowGap:Boolean;
+	public function set useWindowGap(value:Boolean):void
+	{
+		_useWindowGap = value;
+	}
 
 	private var _maxRowCount:int = 99;
 	public function get maxRowCount():int
@@ -195,8 +203,8 @@ public class CenterEqualizedLayout extends LayoutBase
 			}
 		}
 
-		layoutTarget.measuredWidth = measuredWidth;
-		layoutTarget.measuredHeight = measuredHeight;
+		layoutTarget.measuredWidth = measuredWidth + (_useWindowGap ? (20 + 20) : 0);
+		layoutTarget.measuredHeight = measuredHeight + (_useWindowGap ? (14 + 20) : 0);
 	}
 
 	private function isAnotherColumnElement(element:ILayoutElement):Boolean
@@ -225,12 +233,12 @@ public class CenterEqualizedLayout extends LayoutBase
 
 		var lastFirstAuxiliaryElement:Skin;
 
-		var x:Number = layoutTarget.measuredWidth == w ? 0 : ((w - layoutTarget.measuredWidth) / 2);
+		var x:Number = layoutTarget.measuredWidth == w ? (_useWindowGap ? 20 : 0) : ((w - layoutTarget.measuredWidth) / 2);
 		for each (var column:Column in columns)
 		{
-			var localY:Number = 0;
-			var columnCompositionsLength:int = column.compositions.length;
-			if (columnCompositionsLength == 2)
+			var localY:Number = _useWindowGap ? 14 : 0;
+			const columnCompositionsLength:int = column.compositions.length;
+			if (useFluentTopHack && columnCompositionsLength == 2)
 			{
 				localY = 3;
 			}
@@ -259,7 +267,7 @@ public class CenterEqualizedLayout extends LayoutBase
 					{
 						localX += _labelGap;
 					}
-					else if (elementIndex == 0 && compositionIndex == 0 && composition.length == 1 && columnCompositionsLength != 2)
+					else if (useFluentTopHack && elementIndex == 0 && compositionIndex == 0 && composition.length == 1 && columnCompositionsLength != 2)
 					{
 						localY += 3; // see comment BasicGroupSkin#PADDING_TOP
 					}

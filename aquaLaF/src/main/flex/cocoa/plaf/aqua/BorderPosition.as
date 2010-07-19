@@ -19,8 +19,9 @@ public final class BorderPosition
 	public static const windowWithToolbar:int = window + 1;
 
 	public static const windowApplicationBottomBar:int = windowWithToolbar + 1;
+	public static const windowChooseDialogBottomBar:int = windowApplicationBottomBar + 1;
 
-	public static const hudWindow:int = windowApplicationBottomBar + 1;
+	public static const hudWindow:int = windowChooseDialogBottomBar + 1;
 
 	public static const hudButton:int = hudWindow + 1;
 	public static const hudPopUpButton:int = hudButton + 1;
@@ -35,6 +36,8 @@ public final class BorderPosition
 	public static const treeItem:int = hudTitleBarCloseButton + 1;
 	public static const treeDisclosureSideBar:int = treeItem + 1;
 
-	public static const totalLength:int = treeDisclosureSideBar + 2;
+	public static const textArea:int = treeDisclosureSideBar + 2;
+
+	public static const totalLength:int = textArea + 1;
 }
 }

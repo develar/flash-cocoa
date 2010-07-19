@@ -84,7 +84,7 @@ internal final class CompoundImageReader
 		borders[borderPosition] = border.configure(bitmaps);
 	}
 
-	public function readScale3(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder):void
+	public function readScale3(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder, borderPosition:int):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -93,7 +93,7 @@ internal final class CompoundImageReader
 		var bitmaps:Vector.<BitmapData> = slice3H(frameRectangle, sliceSize);
 		border.configure(bitmaps);
 
-		borders[BorderPosition.windowApplicationBottomBar] = border;
+		borders[borderPosition] = border;
 	}
 
 	public function readTitleBarAndContent(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder, borderPosition:int):void

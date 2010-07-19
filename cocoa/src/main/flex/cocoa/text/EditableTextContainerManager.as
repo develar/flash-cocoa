@@ -8,6 +8,8 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.ui.ContextMenu;
 
+import flash.utils.Dictionary;
+
 import flashx.textLayout.container.TextContainerManager;
 import flashx.textLayout.edit.EditingMode;
 import flashx.textLayout.edit.ElementRange;
@@ -476,9 +478,18 @@ internal final class EditableTextContainerManager extends TextContainerManager
 		return textDisplay._selectionFormat;
 	}
 
+	private var cachedUnfocusedSelectionFormats:Dictionary = new Dictionary(true);
+
 	override protected function getUnfocusedSelectionFormat():SelectionFormat
 	{
-		return textDisplay._selectionFormat;
+		var focusedSelectionFormat:SelectionFormat = textDisplay._selectionFormat;
+		var unfocusedSelectionFormat:SelectionFormat = cachedUnfocusedSelectionFormats[focusedSelectionFormat];
+		if (unfocusedSelectionFormat == null)
+		{
+			unfocusedSelectionFormat = new SelectionFormat(focusedSelectionFormat.rangeColor, focusedSelectionFormat.rangeAlpha, focusedSelectionFormat.rangeBlendMode, 0, 0);
+			cachedUnfocusedSelectionFormats[focusedSelectionFormat] = unfocusedSelectionFormat;
+		}
+		return unfocusedSelectionFormat;
 	}
 
 	override protected function getInactiveSelectionFormat():SelectionFormat

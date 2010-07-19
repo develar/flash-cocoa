@@ -157,7 +157,11 @@
 	[colorWell2 setEnabled:NO];
 	[contentView addSubview:colorWell2];
 	
-	
+	controlFrame.size.width = 100;
+	controlFrame.size.height = 100;
+	controlFrame.origin.x += 60;
+	NSTextField *textField = [[NSTextField alloc] initWithFrame:controlFrame];
+	[contentView addSubview:textField];
 	
 	return;
 	

@@ -62,6 +62,7 @@
 								<class>**.Label</class>
 
 								<class>**.TextInput</class>
+								<class>**.TextArea</class>
 								<class>**.*TextView</class>
 
 								<class>**.*ApplicationImpl</class>

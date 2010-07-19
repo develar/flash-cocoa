@@ -77,6 +77,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["Window.border"] = borders[BorderPosition.window];
 		data["Window.border.toolbar"] = borders[BorderPosition.windowWithToolbar];
 		data["Window.bottomBar.application"] = borders[BorderPosition.windowApplicationBottomBar];
+		data["Window.bottomBar.chooseDialog"] = borders[BorderPosition.windowChooseDialogBottomBar];
 
 		data["SourceListView"] = SourceListViewSkin;
 		data["ListView"] = ListViewSkin;
@@ -138,9 +139,16 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["NumericStepper"] = NumericStepperSkin;
 		data["CheckBox"] = CheckBoxSkin;
 		data["HSlider"] = HSliderSkin;
+
 		data["TextInput"] = TextInputSkin;
 		data["TextInput.border"] = new TextInputBorder();
 		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
+
+		data["TextArea"] = TextAreaSkin;
+		data["TextArea.border"] = borders[BorderPosition.textArea];
+		data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
+		TextFormat(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
+
 		data["NumericStepper.TextInput"] = TextInputSkin;
 
 		data["HSeparator.border"] = new SeparatorBorder();
@@ -218,7 +226,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 	private function createDefaultTextFormat():TextFormat
 	{
-		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT_HUD);
+		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT);
 		textInputTextFormat.$paddingTop = 2;
 		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
 		return textInputTextFormat;
