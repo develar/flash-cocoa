@@ -136,7 +136,7 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 
 	override public function removeElementAt(index:int):IVisualElement
 	{
-		var element:IVisualElement = _subviews[index];
+		var element:Viewable = _subviews[index];
 		if (!elementsChanged)
 		{
 			subviewRemoved(element, index);
@@ -144,7 +144,7 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 
 		_subviews.splice(index, 1);
 
-		return element;
+		return element as IVisualElement;
 	}
 
 	override protected function canSkipMeasurement():Boolean

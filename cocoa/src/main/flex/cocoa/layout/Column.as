@@ -101,7 +101,7 @@ internal final class Column
 		compositions.push(currentComposition);
 	}
 
-	public function addElement(element:ILayoutElement):void
+	public function addElement(element:ILayoutElement, minControlWidth:Number):void
 	{
 		const rowIndex:int = compositions.length - 1;
 		const columnIndex:int = currentComposition.push(element) - 1;
@@ -116,7 +116,7 @@ internal final class Column
 		}
 		else
 		{
-			currentRowWidth += width;
+			currentRowWidth += isNaN(minControlWidth) ? width : Math.max(minControlWidth, width);
 		}
 
 		const height:Number = element.getPreferredBoundsHeight();

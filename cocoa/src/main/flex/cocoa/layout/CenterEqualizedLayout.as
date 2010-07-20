@@ -71,6 +71,15 @@ public class CenterEqualizedLayout extends LayoutBase
 		}
     }
 
+	private var _minControlWidth:Number;
+    public function set controlWidth(value:Number):void
+    {
+        if (value != _minControlWidth)
+		{
+            _minControlWidth = value;
+		}
+    }
+
 	private var _labelGap:Number = 6;
     public function set labelGap(value:Number):void
     {
@@ -173,7 +182,7 @@ public class CenterEqualizedLayout extends LayoutBase
 
 				if (!skipAdd)
 				{
-					column.addElement(element);
+					column.addElement(element, _minControlWidth);
 				}
 			}
 
@@ -294,7 +303,7 @@ public class CenterEqualizedLayout extends LayoutBase
 						localX += element.getPreferredBoundsWidth() + _controlGap;
 					}
 
-					element.setLayoutBoundsSize(NaN, NaN);
+					element.setLayoutBoundsSize(isNaN(_minControlWidth) ? NaN : Math.max(_minControlWidth, element.getPreferredBoundsWidth()), NaN);
 				}
 
 				localY += compositionHeight + fieldGap;
