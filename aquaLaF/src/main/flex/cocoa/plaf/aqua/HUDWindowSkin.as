@@ -11,7 +11,7 @@ import flash.display.Graphics;
 public class HUDWindowSkin extends AbstractWindowSkin
 {
 	private static const TITLE_BAR_HEIGHT:Number = 19;
-	private static const CONTENT_INSETS:Insets = new Insets(15, TITLE_BAR_HEIGHT + 14, 15, 15);
+	private static const CONTENT_INSETS:Insets = new Insets(10, TITLE_BAR_HEIGHT + 10, 10, 10);
 
 	override public function attach(component:Component, laf:LookAndFeel):void
 	{

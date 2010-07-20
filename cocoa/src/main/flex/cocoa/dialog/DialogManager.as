@@ -87,8 +87,8 @@ public class DialogManager
 
 		if (modalWindowSkin != null)
 		{
-			modalWindowSkin = null;
 			modalWindowSkin.stage.removeEventListener(Event.RESIZE, stageResizeHandler);
+			modalWindowSkin = null;
 		}
 		PopUpManager.removePopUp(window.skin);
 	}
