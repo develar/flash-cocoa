@@ -6,11 +6,11 @@ import cocoa.border.AbstractBorder;
 
 import flash.display.Graphics;
 
-public class TextInputBorder extends AbstractBorder
+public class HUDTextInputBorder extends AbstractBorder
 {
 	private static const CONTENT_INSETS:Insets = new Insets(2, 3, 2, 2);
 
-	public function TextInputBorder()
+	public function HUDTextInputBorder()
 	{
 		super();
 

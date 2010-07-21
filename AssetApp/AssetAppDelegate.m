@@ -163,6 +163,14 @@
 	NSTextField *textField = [[NSTextField alloc] initWithFrame:controlFrame];
 	[contentView addSubview:textField];
 	
+	
+	controlFrame.size.width = 100;
+	controlFrame.size.height = 40;
+	controlFrame.origin.x += 160;
+	NSTextField *textInput = [[NSTextField alloc] initWithFrame:controlFrame];
+	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
+	[contentView addSubview:textInput];
+	
 	return;
 	
 	// SegmentedControl

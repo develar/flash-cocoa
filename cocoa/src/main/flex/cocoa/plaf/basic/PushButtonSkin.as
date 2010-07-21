@@ -111,7 +111,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 
 			labelHelper.validate();
 			labelHelper.alpha = enabled ? 1 : 0.5;
-			labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
+			labelHelper.moveByInsets(h, border.contentInsets);
 		}
 
 		var g:Graphics = graphics;

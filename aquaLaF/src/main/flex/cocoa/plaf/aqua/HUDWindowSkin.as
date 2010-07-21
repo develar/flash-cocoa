@@ -11,7 +11,14 @@ import flash.display.Graphics;
 public class HUDWindowSkin extends AbstractWindowSkin
 {
 	private static const TITLE_BAR_HEIGHT:Number = 19;
-	private static const CONTENT_INSETS:Insets = new Insets(10, TITLE_BAR_HEIGHT + 10, 10, 10);
+
+	private static const CONTENT_FRAME_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT + 1, 0, 0);
+	private static const CONTENT_LAYOUT_INSETS:Insets = new Insets(10, 10, 10, 10);
+
+	override protected function get contentFrameInsets():Insets
+	{
+		return CONTENT_FRAME_INSETS;
+	}
 
 	override public function attach(component:Component, laf:LookAndFeel):void
 	{
@@ -23,9 +30,9 @@ public class HUDWindowSkin extends AbstractWindowSkin
 		// skip
 	}
 
-	override protected function get contentInsets():Insets
+	override protected function get contentLayoutInsets():Insets
 	{
-		return CONTENT_INSETS;
+		return CONTENT_LAYOUT_INSETS;
 	}
 
 	override protected function get titleBarHeight():Number

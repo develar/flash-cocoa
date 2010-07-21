@@ -6,6 +6,9 @@ import cocoa.text.EditableTextView;
 
 import flash.display.Graphics;
 
+/**
+ * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF225
+ */
 public class TextInputSkin extends AbstractSkin
 {
 	protected var textDisplay:EditableTextView;
@@ -44,7 +47,7 @@ public class TextInputSkin extends AbstractSkin
 	override protected function measure():void
 	{
 		measuredWidth = textDisplay.getPreferredBoundsWidth() + border.contentInsets.width;
-		measuredHeight = border.layoutHeight;
+		measuredHeight = isNaN(border.layoutHeight) ? 22 /* Regular size: 22 pixels high*/ : border.layoutHeight;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

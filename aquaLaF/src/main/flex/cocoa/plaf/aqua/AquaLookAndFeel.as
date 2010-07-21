@@ -141,11 +141,11 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["HSlider"] = HSliderSkin;
 
 		data["TextInput"] = TextInputSkin;
-		data["TextInput.border"] = new TextInputBorder();
+		data["TextInput.border"] = borders[BorderPosition.textField];
 		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
 		data["TextArea"] = TextAreaSkin;
-		data["TextArea.border"] = borders[BorderPosition.textArea];
+		data["TextArea.border"] = borders[BorderPosition.textField];
 		data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
 		TextFormat(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
 
@@ -243,7 +243,7 @@ import cocoa.plaf.aqua.HUDPushButtonSkin;
 import cocoa.plaf.aqua.MenuItemBorder;
 import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
-import cocoa.plaf.aqua.TextInputBorder;
+import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.text.TextFormat;
 
@@ -291,7 +291,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 		data["Window.border"] = borders[BorderPosition.hudWindow];
 
-		data["TextInput.border"] = new TextInputBorder();
+		data["TextInput.border"] = new HUDTextInputBorder();
 		data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
 		data["HSeparator.border"] = new SeparatorBorder();

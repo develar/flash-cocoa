@@ -1,9 +1,9 @@
 package cocoa.plaf.aqua
 {
 import cocoa.BorderedContainer;
-import cocoa.layout.AdvancedLayout;
+import cocoa.Insets;
 import cocoa.plaf.BottomBarStyle;
-import cocoa.plaf.WindowSkin;
+import cocoa.plaf.DialogSkin;
 
 import mx.core.mx_internal;
 
@@ -13,14 +13,22 @@ use namespace mx_internal;
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGWindows/XHIGWindows.html
  * На данный момент нет поддержки bottom bar как по спецификации Apple. Но есть нечто типа control bar как Open/Choose — явно там это так никак не названо.
  */
-public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowSkin, AdvancedLayout
+public class WindowSkin extends AbstractWindowSkin implements DialogSkin
 {
+	private static const CONTENT_LAYOUT_INSETS:Insets = new Insets(20, 14, 20,  20);
+	private static const CONTENT_LAYOUT_INSETS_BOTTOM_BAR:Insets = new Insets(20, 14, 20, 12);
+
 	private var controlBar:BorderedContainer;
 
 	private var _bottomBarStyle:BottomBarStyle;
-	override public function set bottomBarStyle(value:BottomBarStyle):void
+	public function set bottomBarStyle(value:BottomBarStyle):void
 	{
 		_bottomBarStyle = value;
+	}
+
+	override protected function get contentLayoutInsets():Insets
+	{
+		return _useWindowGap ? (_bottomBarStyle == null ? CONTENT_LAYOUT_INSETS : CONTENT_LAYOUT_INSETS_BOTTOM_BAR) : super.contentLayoutInsets;
 	}
 
 	override protected function createChildren():void
@@ -49,11 +57,11 @@ public class WindowSkin extends AbstractWindowSkin implements cocoa.plaf.WindowS
 	{
 //		measuredMinWidth = Math.max(_contentView.minWidth, controlBar.minWidth);
 		measuredMinWidth = _contentView.minWidth;
-		measuredMinHeight = contentInsets.height + _contentView.minHeight;
+		measuredMinHeight = insetsHeight + _contentView.minHeight;
 
 //		measuredWidth = Math.max(_contentView.getExplicitOrMeasuredWidth(), controlBar.getExplicitOrMeasuredWidth()) + CONTENT_INSETS.width;
-		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + contentInsets.width;
-		measuredHeight = contentInsets.height + _contentView.getExplicitOrMeasuredHeight();
+		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + insetsWidth;
+		measuredHeight = _contentView.getExplicitOrMeasuredHeight() + insetsHeight;
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

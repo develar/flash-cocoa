@@ -38,12 +38,6 @@ public class CenterEqualizedLayout extends LayoutBase
 		}
     }
 
-	private var _useWindowGap:Boolean;
-	public function set useWindowGap(value:Boolean):void
-	{
-		_useWindowGap = value;
-	}
-
 	private var _maxRowCount:int = 99;
 	public function get maxRowCount():int
 	{
@@ -71,12 +65,12 @@ public class CenterEqualizedLayout extends LayoutBase
 		}
     }
 
-	private var _minControlWidth:Number;
+	private var _controlWidth:Number;
     public function set controlWidth(value:Number):void
     {
-        if (value != _minControlWidth)
+        if (value != _controlWidth)
 		{
-            _minControlWidth = value;
+            _controlWidth = value;
 		}
     }
 
@@ -182,7 +176,7 @@ public class CenterEqualizedLayout extends LayoutBase
 
 				if (!skipAdd)
 				{
-					column.addElement(element, _minControlWidth);
+					column.addElement(element, _controlWidth);
 				}
 			}
 
@@ -212,8 +206,8 @@ public class CenterEqualizedLayout extends LayoutBase
 			}
 		}
 
-		layoutTarget.measuredWidth = measuredWidth + (_useWindowGap ? (20 + 20) : 0);
-		layoutTarget.measuredHeight = measuredHeight + (_useWindowGap ? (14 + 20) : 0);
+		layoutTarget.measuredWidth = measuredWidth;
+		layoutTarget.measuredHeight = measuredHeight;
 	}
 
 	private function isAnotherColumnElement(element:ILayoutElement):Boolean
@@ -242,10 +236,10 @@ public class CenterEqualizedLayout extends LayoutBase
 
 		var lastFirstAuxiliaryElement:Skin;
 
-		var x:Number = layoutTarget.measuredWidth == w ? (_useWindowGap ? 20 : 0) : ((w - layoutTarget.measuredWidth) / 2);
+		var x:Number = layoutTarget.measuredWidth == w ? 0 : ((w - layoutTarget.measuredWidth) / 2);
 		for each (var column:Column in columns)
 		{
-			var localY:Number = _useWindowGap ? 14 : 0;
+			var localY:Number = 0;
 			const columnCompositionsLength:int = column.compositions.length;
 			if (useFluentTopHack && columnCompositionsLength == 2)
 			{
@@ -303,7 +297,7 @@ public class CenterEqualizedLayout extends LayoutBase
 						localX += element.getPreferredBoundsWidth() + _controlGap;
 					}
 
-					element.setLayoutBoundsSize(isNaN(_minControlWidth) ? NaN : Math.max(_minControlWidth, element.getPreferredBoundsWidth()), NaN);
+					element.setLayoutBoundsSize(_controlWidth, NaN);
 				}
 
 				localY += compositionHeight + fieldGap;

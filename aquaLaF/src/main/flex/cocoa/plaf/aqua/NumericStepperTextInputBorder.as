@@ -5,7 +5,7 @@ import cocoa.View;
 
 import flash.display.Graphics;
 
-public class NumericStepperTextInputBorder extends TextInputBorder
+public class NumericStepperTextInputBorder extends HUDTextInputBorder
 {
 	private static const CONTENT_INSETS:Insets = new Insets(4, 3, 4, 2);
 

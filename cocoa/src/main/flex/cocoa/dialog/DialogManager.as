@@ -60,7 +60,7 @@ public class DialogManager
 		}
 
 		var popUpLayerParent:DisplayObject = DisplayObject(FlexGlobals.topLevelApplication);
-		if (modal)
+		if (modal && popUpLayerParent.stage != null /* only for testToolApp, temp hack */)
 		{
 			modalWindowSkin = skin;
 			popUpLayerParent.stage.addEventListener(Event.RESIZE, stageResizeHandler);

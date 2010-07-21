@@ -4,11 +4,12 @@
 
 	<fx:Script><![CDATA[
 		import cocoa.plaf.BottomBarStyle;
+		import cocoa.plaf.DialogSkin;
 		import cocoa.plaf.WindowSkin;
 
 		override protected function skinAttachedHandler():void
 		{
-			WindowSkin(skin).bottomBarStyle = BottomBarStyle.application;
+			DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
 			super.skinAttachedHandler();
 		}
 

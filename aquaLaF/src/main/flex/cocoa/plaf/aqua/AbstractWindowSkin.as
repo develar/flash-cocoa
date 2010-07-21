@@ -9,7 +9,6 @@ import cocoa.View;
 import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.AbstractSkin;
-import cocoa.plaf.BottomBarStyle;
 import cocoa.plaf.FontID;
 import cocoa.plaf.WindowSkin;
 import cocoa.ui;
@@ -44,9 +43,11 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	protected static const TOOLBAR_SMALL_HEIGHT:Number = 47;
 
 	// http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGLayout/XHIGLayout.html
-	private static const CONTENT_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
-	private static const CONTENT_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
+	private static const CONTENT_FRAME_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
+	private static const CONTENT_FRAME_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
+
+	private static const CONTENT_LAYOUT_INSETS:Insets = new Insets();
 
 	private var resizeGripper:DisplayObject;
 	private var closeButton:PushButton;
@@ -63,9 +64,20 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		labelHelper = new LabelHelper(this);
 	}
 
-	protected function get contentInsets():Insets
+	protected var _useWindowGap:Boolean;
+	public function set useWindowGap(value:Boolean):void
 	{
-		return _toolbar == null ? CONTENT_INSETS : CONTENT_INSETS_TOOLBAR;
+		_useWindowGap = value;
+	}
+
+	protected function get contentFrameInsets():Insets
+	{
+		return _toolbar == null ? CONTENT_FRAME_INSETS : CONTENT_FRAME_INSETS_TOOLBAR;
+	}
+
+	protected function get contentLayoutInsets():Insets
+	{
+		return CONTENT_LAYOUT_INSETS;
 	}
 
 	protected function get titleBarHeight():Number
@@ -76,10 +88,6 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 	protected function get titleY():Number
 	{
 		return 16;
-	}
-
-	public function set bottomBarStyle(value:BottomBarStyle):void
-	{
 	}
 
 	protected var _toolbar:Toolbar;
@@ -110,6 +118,21 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		labelHelper.text = _title;
 
 		invalidateDisplayList();
+	}
+
+	protected function get mouseDownOnContentViewCanMoveWindow():Boolean
+	{
+		return false;
+	}
+
+	protected final function get insetsWidth():Number
+	{
+		return contentFrameInsets.width + contentLayoutInsets.width;
+	}
+
+	protected final function get insetsHeight():Number
+	{
+		return contentFrameInsets.height + contentLayoutInsets.height;
 	}
 
 	override protected function createChildren():void
@@ -167,7 +190,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		{
 			var mouseY:Number = event.localY;
 			var mouseX:Number = event.localX;
-			if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (!mouseDownOnContentViewCanMoveWindow && mouseY > contentInsets.top && mouseY < (height - contentInsets.bottom)))
+			if (mouseY < 0 || mouseX < 0 || mouseX > width || mouseY > height || /* skip shadow */ (!mouseDownOnContentViewCanMoveWindow && mouseY > contentFrameInsets.top && mouseY < (height - contentFrameInsets.bottom)))
 			{
 				return;
 			}
@@ -191,11 +214,6 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		mover.move(event, this, titleBarHeight);
 	}
 
-	protected function get mouseDownOnContentViewCanMoveWindow():Boolean
-	{
-		return false;
-	}
-
 	public function childCanSkipMeasurement(element:ILayoutElement):Boolean
 	{
 		// если у окна установлен фиксированный размер, то content pane устанавливается в размер невзирая на его preferred
@@ -204,19 +222,22 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
 	override protected function measure():void
 	{
-		measuredMinWidth = _contentView.minWidth + contentInsets.width;
-		measuredMinHeight = _contentView.minHeight + contentInsets.height;
+		const insetsWidth:Number = insetsWidth;
+		const insetsHeight:Number = insetsHeight;
+		measuredMinWidth = _contentView.minWidth + insetsWidth;
+		measuredMinHeight = _contentView.minHeight + insetsHeight;
 
-		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + contentInsets.width;
-		measuredHeight = _contentView.getExplicitOrMeasuredHeight() + contentInsets.height;
+		measuredWidth = _contentView.getExplicitOrMeasuredWidth() + insetsWidth;
+		measuredHeight = _contentView.getExplicitOrMeasuredHeight() + insetsHeight;
 	}
 
 	protected function drawTitleBottomBorderLine(g:Graphics, w:Number):void
 	{
 		// линия отделяющая контент от title/tool bar
 		g.lineStyle(1, 0x515151);
-		g.moveTo(0, contentInsets.top - 1);
-		g.lineTo(w, contentInsets.top - 1);
+		const y:Number = contentFrameInsets.top - 1;
+		g.moveTo(0, y);
+		g.lineTo(w, y);
 	}
 
 	protected function get hasBottomBar():Boolean
@@ -235,7 +256,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			labelHelper.moveToCenter(w, titleY);
 		}
 
-		border.draw(this, g, w, hasBottomBar ? h - contentInsets.bottom : h);
+		border.draw(this, g, w, hasBottomBar ? (h - BOTTOM_BAR_HEIGHT) : h);
 
 		drawTitleBottomBorderLine(g, w);
 
@@ -244,8 +265,8 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 			_toolbar.skin.setActualSize(w, TOOLBAR_SMALL_HEIGHT);
 		}
 
-		_contentView.move(contentInsets.left, contentInsets.top);
-		_contentView.setActualSize(w - contentInsets.width, h - contentInsets.height);
+		_contentView.move(contentFrameInsets.left + contentLayoutInsets.left, contentFrameInsets.top + contentLayoutInsets.top);
+		_contentView.setActualSize(w - insetsWidth, h - insetsHeight);
 
 		if (Window(component).resizable)
 		{

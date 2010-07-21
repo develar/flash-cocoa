@@ -66,7 +66,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 		}
 
 		labelHelper.validate();
-		labelHelper.moveToCenterByInsets(w, h, border.contentInsets, frameInsets);
+		labelHelper.moveToCenterByInsets(w, h, border.contentInsets);
 
 		var g:Graphics = graphics;
 		g.clear();

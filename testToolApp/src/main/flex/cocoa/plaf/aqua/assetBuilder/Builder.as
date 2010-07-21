@@ -149,9 +149,9 @@ public class Builder
 
 	private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
 	// rounded push button
-	buttonRowsInfo[0] = new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -3, -2), new Insets(10, NaN, 10, 5)));
+	buttonRowsInfo[0] = new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new Insets(10, NaN, 10, 5)));
 	// textured rounded push button
-	buttonRowsInfo[1] = new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, -1, 0, 0), new Insets(10, NaN, 10, 6)));
+	buttonRowsInfo[1] = new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, 0, 0, -1), new Insets(10, NaN, 10, 6)));
 	// rounded pop up button
 	buttonRowsInfo[2] = new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
 
@@ -205,7 +205,7 @@ public class Builder
 		// image view bezel border (imagewell border)
 		borders[BorderPosition.imageView] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
 
-		borders[BorderPosition.textArea] = Scale9BitmapBorder.create(null, new Insets(4, 3, 4, 2)).configure(compoundImageReader.parseScale9Grid(new Rectangle(120, 332, 100, 100)));
+		borders[BorderPosition.textField] = Scale9BitmapBorder.create(null, new Insets(4, 3, 4, 2)).configure(compoundImageReader.parseScale9Grid(new Rectangle(120, 332, 100, 100)));
 
 		var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
 		compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);

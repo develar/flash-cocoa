@@ -25,7 +25,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin
 			}
 
 			labelHelper.validate();
-			labelHelper.moveByInsets(h, border.contentInsets, border.frameInsets);
+			labelHelper.moveByInsets(h, border.contentInsets);
 		}
 
 		var g:Graphics = graphics;

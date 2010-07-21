@@ -6,8 +6,8 @@
 		import cocoa.MenuItem;
 		import cocoa.pane.PaneItem;
 		import cocoa.plaf.BottomBarStyle;
+		import cocoa.plaf.DialogSkin;
 		import cocoa.plaf.MenuItemRenderer;
-		import cocoa.plaf.WindowSkin;
 		import cocoa.resources.ResourceMetadata;
 
 		import org.flyti.util.ArrayList;
@@ -35,7 +35,7 @@
 
 		override protected function skinAttachedHandler():void
 		{
-			WindowSkin(skin).bottomBarStyle = BottomBarStyle.application;
+			DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
 			super.skinAttachedHandler();
 		}
 

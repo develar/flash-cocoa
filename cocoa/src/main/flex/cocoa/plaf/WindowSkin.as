@@ -9,7 +9,5 @@ public interface WindowSkin extends Skin
 
 	function set toolbar(value:Toolbar):void;
 	function set contentView(value:View):void;
-
-	function set bottomBarStyle(value:BottomBarStyle):void;
 }
 }
