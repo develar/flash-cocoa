@@ -88,7 +88,7 @@ public class TextView extends AbstractView implements IViewport
 
 	private function createController():void
 	{
-		container = new Sprite;
+		container = new Sprite();
 		addDisplayObject(container);
 		containerController = new ContainerController(container, 0, 0);
 	}
