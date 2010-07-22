@@ -1,7 +1,9 @@
 package cocoa.layout
 {
 import cocoa.CheckBox;
+import cocoa.Component;
 import cocoa.Label;
+import cocoa.SliderNumericStepper;
 import cocoa.VSeparator;
 import cocoa.plaf.Skin;
 
@@ -217,8 +219,20 @@ public class CenterEqualizedLayout extends LayoutBase
 
 	private function isStartElement(element:ILayoutElement):Boolean
 	{
-		return element is Label /* control не может состоять только из Label, поэтому дальше явно часть текущего control, а не новый */ ||
-			   (isCheckBox(element) && CheckBox(Skin(element).component).label != null);
+		return element is Label /* control не может состоять только из Label, поэтому дальше явно часть текущего control, а не новый */ || isLabeledControl(element);
+	}
+
+	private function isLabeledControl(element:ILayoutElement):Boolean
+	{
+		if (element is Skin)
+		{
+			var component:Component = Skin(element).component;
+			return (component is CheckBox && CheckBox(component).label != null) || (component is SliderNumericStepper && SliderNumericStepper(component).label != null);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	private function isCheckBox(element:ILayoutElement):Boolean

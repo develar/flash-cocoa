@@ -47,6 +47,16 @@ public class LabelHelper
 		return textLine.textWidth;
 	}
 
+	public function get textHeight():Number
+	{
+		return textLine.textHeight;
+	}
+
+	public function get textAscent():Number
+	{
+		return textLine.ascent;
+	}
+
 	public function set alpha(value:Number):void
 	{
 		if (textLine != null)

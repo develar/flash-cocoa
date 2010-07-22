@@ -9,8 +9,8 @@ import cocoa.plaf.LookAndFeelProvider;
 
 public class HSliderSkin extends LightFlexUIComponent implements UIPartProvider
 {
-	private var thumb:FlexButton;
-	private var track:FlexButton;
+	protected var thumb:FlexButton;
+	protected var track:FlexButton;
 
 	public function HSliderSkin()
 	{

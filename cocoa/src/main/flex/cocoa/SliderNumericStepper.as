@@ -1,5 +1,7 @@
 package cocoa
 {
+import cocoa.plaf.SliderNumericStepperSkin;
+
 import flash.events.Event;
 import flash.utils.Dictionary;
 
@@ -18,6 +20,23 @@ public class SliderNumericStepper extends AbstractComponent
 
 	ui var slider:HSlider;
 	ui var stepper:NumericStepper;
+
+	private var _label:String;
+	public function get label():String
+	{
+		return _label;
+	}
+	public function set label(value:String):void
+	{
+		if (value != _label)
+		{
+			_label = value;
+			if (skin != null)
+			{
+				SliderNumericStepperSkin(skin).label = _label;
+			}
+		}
+	}
 
 	private var _stepSize:Number = 0.01;
 	public function set stepSize(value:Number):void
@@ -133,6 +152,16 @@ public class SliderNumericStepper extends AbstractComponent
 		}
 
 		slider.addEventListener(Event.CHANGE, sliderChangeHandler);
+	}
+
+	override protected function skinAttachedHandler():void
+    {
+		super.skinAttachedHandler();
+
+		if (label != null)
+		{
+			SliderNumericStepperSkin(skin).label = label;
+		}
 	}
 
 //	override protected function partRemoved(partName:String, instance:Object):void
