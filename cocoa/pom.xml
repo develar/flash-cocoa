@@ -95,7 +95,8 @@
 								<class>cocoa.graphics.*</class>
 
 								<class>cocoa.*Separator</class>
-								
+								<class>cocoa.*ImageView</class>
+
 								<class>**.*ScrollView</class>
 							</includes>
 							<excludes>

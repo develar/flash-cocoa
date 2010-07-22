@@ -1,7 +1,6 @@
-package cocoa.graphics
+package cocoa
 {
-import cocoa.AbstractView;
-import cocoa.Border;
+import cocoa.graphics.BitmapFillType;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
