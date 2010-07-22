@@ -25,7 +25,7 @@ public class SliderNumericStepper extends AbstractComponent
 		_stepSize = value;
 	}
 
-	private var _unitLabel:String = "%";
+	private var _unitLabel:String;
 	public function set unitLabel(value:String):void
 	{
 		_unitLabel = value;

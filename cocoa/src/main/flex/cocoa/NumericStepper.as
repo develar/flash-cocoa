@@ -21,7 +21,7 @@ import spark.components.Spinner;
 use namespace mx_internal;
 use namespace ui;
 
-public class NumericStepper extends Spinner implements UIPartController
+public class NumericStepper extends Spinner implements UIPartController, Viewable
 {
 	public function NumericStepper()
 	{
