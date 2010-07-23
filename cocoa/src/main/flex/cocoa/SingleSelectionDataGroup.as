@@ -29,6 +29,15 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
 		invalidateProperties();
 	}
 
+	public function get selectedItem():Object
+	{
+		return dataProvider.getItemAt(selectedIndex);
+	}
+	public function set selectedItem(value:Object):void
+	{
+		selectedIndex = dataProvider.getItemIndex(value);
+	}
+
 	override protected function itemSelecting(itemIndex:int):void
     {
 		if (itemIndex != _selectedIndex)

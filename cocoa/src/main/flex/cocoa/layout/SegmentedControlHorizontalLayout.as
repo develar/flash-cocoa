@@ -40,7 +40,7 @@ public class SegmentedControlHorizontalLayout extends SegmentedControlLayout
 				continue;
 			}
 
-			width += layoutElement.getPreferredBoundsWidth() + gap;
+			width += (isNaN(_itemWidth) ? layoutElement.getPreferredBoundsWidth() : _itemWidth) + gap;
 		}
 
 		width -= gap;

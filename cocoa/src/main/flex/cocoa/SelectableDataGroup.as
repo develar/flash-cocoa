@@ -9,6 +9,8 @@ import flash.events.MouseEvent;
 import mx.core.IVisualElement;
 import mx.core.mx_internal;
 
+import mx.managers.IToolTipManagerClient;
+
 import spark.components.IItemRenderer;
 
 use namespace mx_internal;
@@ -38,6 +40,12 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		_laf = value;
 	}
 
+	private var _lafSubname:String;
+	public final function set lafSubname(value:String):void
+	{
+		_lafSubname = value;
+	}
+
 	private var _iconFunction:Function;
 	public function set iconFunction(value:Function):void
 	{
@@ -46,6 +54,12 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 
 	private var _labelFunction:Function;
 	public function set labelFunction(value:Function):void
+	{
+		_labelFunction = value;
+	}
+
+	private var _toolTipFunction:Function;
+	public function set toolTipFunction(value:Function):void
 	{
 		_labelFunction = value;
 	}
@@ -64,6 +78,11 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 
 	override protected function commitProperties():void
 	{
+		if (_lafSubname != null && itemRenderer == null)
+		{
+			itemRenderer = _laf.getFactory("SegmentedControl." + _lafSubname);
+		}
+
 		super.commitProperties();
 
 		if (flags & mouseSelectionModeChanged)
@@ -124,6 +143,11 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		{
 			IconedItemRenderer(renderer).icon = itemToIcon(data);
 		}
+
+		if (_toolTipFunction != null && renderer is IToolTipManagerClient)
+		{
+			IToolTipManagerClient(renderer).toolTip = _toolTipFunction(data);
+		}
 	}
 
 	private function itemToIcon(item:Object):Icon
@@ -134,6 +158,11 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 	override public function itemToLabel(item:Object):String
 	{
 		return _labelFunction == null ? super.itemToLabel(item) : _labelFunction(item);
+	}
+
+	override protected function initializationComplete():void
+	{
+		super.initializationComplete();
 	}
 }
 }
