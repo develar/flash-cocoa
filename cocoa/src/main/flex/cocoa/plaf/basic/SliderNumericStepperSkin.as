@@ -9,12 +9,12 @@ import cocoa.plaf.SliderNumericStepperSkin;
 
 public class SliderNumericStepperSkin extends AbstractSkin implements cocoa.plaf.SliderNumericStepperSkin
 {
-	private var slider:HSlider;
-	private var stepper:NumericStepper;
+	protected var slider:HSlider;
+	protected var stepper:NumericStepper;
 
-	private static const GAP:Number = 5;
+	protected static const GAP:Number = 5;
 
-	private var labelHelper:LabelHelper;
+	protected var labelHelper:LabelHelper;
 
 	public function set label(value:String):void
 	{
@@ -73,7 +73,7 @@ public class SliderNumericStepperSkin extends AbstractSkin implements cocoa.plaf
 		if (labelHelper != null)
 		{
 			labelHelper.validate();
-			measuredHeight += labelHelper.textAscent;
+			measuredHeight += Math.round(labelHelper.textAscent);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class SliderNumericStepperSkin extends AbstractSkin implements cocoa.plaf
 		var topOffset:Number = 0;
 		if (labelHelper != null)
 		{
-			topOffset = labelHelper.textAscent;
+			topOffset = Math.round(labelHelper.textAscent);
 			labelHelper.validate();
 			labelHelper.move(0, topOffset);
 		}
@@ -94,10 +94,10 @@ public class SliderNumericStepperSkin extends AbstractSkin implements cocoa.plaf
 		var sliderH:Number = slider.getExplicitOrMeasuredHeight();
 
 		slider.setActualSize(w - stepperW - GAP, sliderH);
-		slider.y = ((controlH - sliderH) / 2) + topOffset;
+		slider.y = Math.round((controlH - sliderH) / 2) + topOffset;
 
 		stepper.setActualSize(stepperW, stepperH);
-		stepper.move(w - stepperW, ((controlH - stepperH) / 2) + topOffset);
+		stepper.move(w - stepperW, Math.round((controlH - stepperH) / 2) + topOffset);
 	}
 
 	override public function set enabled(value:Boolean):void

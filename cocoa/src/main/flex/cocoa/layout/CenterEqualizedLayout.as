@@ -114,6 +114,7 @@ public class CenterEqualizedLayout extends LayoutBase
 		}
 		else
 		{
+			columns.fixed = false;
 			columns.length = 0;
 		}
 
@@ -161,9 +162,8 @@ public class CenterEqualizedLayout extends LayoutBase
 						column.auxiliaryElement = element;
 						skipAdd = true;
 					}
-					// isRightAlignLabel для HUD, ему это не нужно
 					// проверка на first auxiliary element — в данный момент считаем что он должен быть первым в композиции
-					else if (_useEnableCheckBox && i == 1 && isCheckBox(element) && isAnotherColumnElement(layoutTarget.getElementAt(i)) && !isAnotherColumnElement(layoutTarget.getElementAt(i + 1)))
+					else if (_useEnableCheckBox && i == 1 && numElements > 2 && isCheckBox(element) && !isCheckBox(layoutTarget.getElementAt(i + 1)))
 					{
 						column.auxiliaryElement = element;
 						column.isAuxiliaryElementFirst = true;
@@ -189,7 +189,7 @@ public class CenterEqualizedLayout extends LayoutBase
 
 			if (oldColumn != null)
 			{
-				columns.push(oldColumn);
+				columns[columns.length] = oldColumn;
 				oldColumn.finalize();
 				measuredWidth += oldColumn.calculateTotalWidth(_labelGap, _controlGap);
 
@@ -207,6 +207,8 @@ public class CenterEqualizedLayout extends LayoutBase
 				oldColumn = null;
 			}
 		}
+
+		columns.fixed = true;
 
 		layoutTarget.measuredWidth = measuredWidth;
 		layoutTarget.measuredHeight = measuredHeight;
@@ -371,7 +373,9 @@ public class CenterEqualizedLayout extends LayoutBase
 		{
 			for each (var elements:Vector.<ILayoutElement> in column.compositions)
 			{
-				IUIComponent(elements[1]).enabled = enabled; // только первый, в композиции Label: CheckBox ColorPicker мы отвечаем только за enable CheckBox
+				// только первый, в композиции Label: CheckBox ColorPicker мы отвечаем только за enable CheckBox
+				// проверка на длину нужна для таких контролов как SliderNumericStepper с label
+				IUIComponent(elements[elements.length == 1 ? 0 : 1]).enabled = enabled;
 			}
 
 			if (!column.isAuxiliaryElementFirst && column.auxiliaryElement != null)

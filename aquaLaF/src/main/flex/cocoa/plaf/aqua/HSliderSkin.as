@@ -19,6 +19,15 @@ public class HSliderSkin extends LightFlexUIComponent implements UIPartProvider
 		height = 12;
 	}
 
+	override public function set enabled(value:Boolean):void
+	{
+		if (enabled != value)
+		{
+			super.enabled = value;
+			alpha = enabled ? 1 : 0.5;
+		}
+	}
+
 	override protected function createChildren():void
 	{
 		var laf:LookAndFeel = LookAndFeelProvider(parent.parent).laf;

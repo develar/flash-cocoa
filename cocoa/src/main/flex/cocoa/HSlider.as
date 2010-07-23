@@ -12,6 +12,15 @@ use namespace mx_internal;
 
 public class HSlider extends spark.components.HSlider implements UIPartController
 {
+	override public function set enabled(value:Boolean):void
+	{
+		super.enabled = value;
+		if (skin != null)
+		{
+			skin.enabled = value;
+		}
+	}
+	
 	override protected function nearestValidValue(value:Number, interval:Number):Number
 	{
 		if (interval == 0)
