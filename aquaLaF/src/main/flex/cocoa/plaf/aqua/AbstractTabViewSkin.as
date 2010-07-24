@@ -52,7 +52,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 
 			segmentedControl.mouseSelectionMode = ItemMouseSelectionMode.NONE;
 
-			SegmentedControlController(laf.getFactory(component.lafPrefix + ".segmentedControlController").newInstance()).register(segmentedControl);
+			SegmentedControlController(laf.getFactory(component.lafKey + ".segmentedControlController").newInstance()).register(segmentedControl);
 
 			addChild(segmentedControl);
 			component.uiPartAdded("segmentedControl", segmentedControl);

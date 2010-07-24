@@ -40,10 +40,10 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		_laf = value;
 	}
 
-	private var _lafSubname:String;
-	public final function set lafSubname(value:String):void
+	private var _lafSubkey:String;
+	public final function set lafSubkey(value:String):void
 	{
-		_lafSubname = value;
+		_lafSubkey = value;
 	}
 
 	private var _iconFunction:Function;
@@ -78,9 +78,9 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 
 	override protected function commitProperties():void
 	{
-		if (_lafSubname != null && itemRenderer == null)
+		if (_lafSubkey != null && itemRenderer == null)
 		{
-			itemRenderer = _laf.getFactory("SegmentedControl." + _lafSubname);
+			itemRenderer = _laf.getFactory("SegmentedControl." + _lafSubkey + ".itemRenderer");
 		}
 
 		super.commitProperties();

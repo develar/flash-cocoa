@@ -98,7 +98,7 @@ public class TabView extends SingleSelectionBar
 	{
 		if (_skinClass == null)
 		{
-			_skinClass = laf.getClass(_style == DEFAULT ? lafPrefix : (lafPrefix + ".borderless"));
+			_skinClass = laf.getClass(_style == DEFAULT ? lafKey : (lafKey + ".borderless"));
 		}
 		return super.createView(laf);
 	}

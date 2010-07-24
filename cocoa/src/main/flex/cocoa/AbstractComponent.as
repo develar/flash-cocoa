@@ -115,7 +115,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	{
 		if (_skinClass == null)
 		{
-			_skinClass = laf.getClass(lafPrefix);
+			_skinClass = laf.getClass(lafKey);
 		}
 		_skin = new _skinClass();
 		_skinClass = null;
@@ -133,13 +133,19 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 	}
 
 	private var _lafPrefix:String;
-	public final function get lafPrefix():String
+	public final function get lafKey():String
 	{
 		return _lafPrefix == null ? defaultLaFPrefix : _lafPrefix;
 	}
-	public final function set lafPrefix(value:String):void
+	public final function set lafKey(value:String):void
 	{
 		_lafPrefix = value;
+	}
+
+	protected var _lafSubkey:String;
+	public final function set lafSubkey(value:String):void
+	{
+		_lafSubkey = value;
 	}
 
 	protected function get defaultLaFPrefix():String

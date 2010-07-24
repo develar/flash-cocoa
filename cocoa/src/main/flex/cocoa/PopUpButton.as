@@ -49,7 +49,7 @@ public class PopUpButton extends AbstractControl implements Cell
 	override public final function createView(laf:LookAndFeel):Skin
 	{
 		super.createView(laf);
-		menuController = laf.getFactory(lafPrefix + ".menuController").newInstance();
+		menuController = laf.getFactory(lafKey + ".menuController").newInstance();
 		menuController.initialize(this, _menu, laf);
 		return skin;
 	}
