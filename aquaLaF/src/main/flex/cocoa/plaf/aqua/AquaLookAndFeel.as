@@ -37,7 +37,9 @@ import mx.core.ClassFactory;
 public class AquaLookAndFeel extends AbstractLookAndFeel
 {
 	[Embed(source="/borders", mimeType="application/octet-stream")]
+//	[Embed(source="/Users/develar/workspace/XpressPages/client/editor/skins/xpBlue/target/editorSkins/assets", mimeType="application/octet-stream")]
 	private static var assetsDataClass:Class;
+
 	private static var borders:Vector.<Border>;
 	private static var icons:Vector.<Icon>;
 
@@ -174,7 +176,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		var border:AbstractBitmapBorder;
 		for (var i:int = 0; i < n; i++)
 		{
-			switch (data.readUnsignedByte())
+			var typeMarker:int = data.readUnsignedByte();
+			switch (typeMarker)
 			{
 				case 0: border = new Scale3EdgeHBitmapBorder(); break;
 				case 1: border = new Scale1BitmapBorder(); break;
@@ -182,6 +185,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 				case 3: border = new OneBitmapBorder(); break;
 				case 4: border = new Scale3HBitmapBorder(); break;
 				case 5: border = new Scale3VBitmapBorder(); break;
+
+				default: throw new Error("unknown type marker" + typeMarker);
 			}
 			border.readExternal(data);
 			borders[i] = border;

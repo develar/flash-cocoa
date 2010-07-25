@@ -3,6 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.Insets;
 import cocoa.plaf.MenuSkin;
 import cocoa.plaf.PopUpMenuController;
+import cocoa.plaf.basic.PushButtonSkin;
 import cocoa.ui;
 
 import flash.display.Stage;
@@ -23,7 +24,7 @@ public class PopUpMenuController extends cocoa.plaf.PopUpMenuController
 	override protected function setPopUpPosition():void
     {
 		var selectedItemRenderer:MenuItemRenderer = MenuItemRenderer(_menu.itemGroup.getElementAt(_menu.selectedIndex));
-		var popUpButtonSkin:PushButtonSkin = PushButtonSkin(popUpButton.skin);
+		var popUpButtonSkin:cocoa.plaf.basic.PushButtonSkin = cocoa.plaf.basic.PushButtonSkin(popUpButton.skin);
 		var stage:Stage = popUpButtonSkin.stage;
 		var menuSkin:MenuSkin = MenuSkin(_menu.skin);
 		var menuBorderContentInsets:Insets = menuSkin.border.contentInsets;

@@ -46,6 +46,11 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 		return border.layoutHeight - border.contentInsets.bottom;
 	}
 
+	public function get labelLeftMargin():Number
+	{
+		return border.contentInsets.left + border.frameInsets.left;
+	}
+
 	public function set label(value:String):void
 	{
 		if (labelHelper == null)

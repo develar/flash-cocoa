@@ -20,6 +20,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>asset-builder-maven-plugin</module>
 		<module>cocoa</module>
 		<module>acocoa</module>
 		<module>aquaLaF</module>

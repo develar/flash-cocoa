@@ -12,10 +12,5 @@ public class HUDPushButtonSkin extends cocoa.plaf.basic.PushButtonSkin
 
 		super.updateDisplayList(w, h);
 	}
-
-	public function get labelLeftMargin():Number
-	{
-		return border.contentInsets.left + border.frameInsets.left;
-	}
 }
 }

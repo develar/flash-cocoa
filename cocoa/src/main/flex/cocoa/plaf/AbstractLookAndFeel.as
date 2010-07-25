@@ -3,7 +3,18 @@ package cocoa.plaf
 import cocoa.Border;
 import cocoa.Icon;
 
+import cocoa.border.AbstractBitmapBorder;
+
+import cocoa.border.OneBitmapBorder;
+import cocoa.border.Scale1BitmapBorder;
+import cocoa.border.Scale3EdgeHBitmapBorder;
+
+import cocoa.border.Scale3HBitmapBorder;
+import cocoa.border.Scale3VBitmapBorder;
+import cocoa.border.Scale9BitmapBorder;
+
 import flash.text.engine.ElementFormat;
+import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 import flashx.textLayout.edit.SelectionFormat;
@@ -15,6 +26,33 @@ import mx.core.IFactory;
 public class AbstractLookAndFeel implements LookAndFeel
 {
 	protected const data:Dictionary = new Dictionary();
+
+	protected static function initAssets(data:Dictionary, assetsDataClass:Class):void
+	{
+		var assetsData:ByteArray = new assetsDataClass();
+		assetsDataClass = null;
+
+		var n:int = assetsData.readUnsignedByte();
+		var border:AbstractBitmapBorder;
+		for (var i:int = 0; i < n; i++)
+		{
+			const key:String = assetsData.readUTF();
+			const typeMarker:int = assetsData.readUnsignedByte();
+			switch (typeMarker)
+			{
+				case 0: border = new Scale3EdgeHBitmapBorder(); break;
+				case 1: border = new Scale1BitmapBorder(); break;
+				case 2: border = new Scale9BitmapBorder(); break;
+				case 3: border = new OneBitmapBorder(); break;
+				case 4: border = new Scale3HBitmapBorder(); break;
+				case 5: border = new Scale3VBitmapBorder(); break;
+
+				default: throw new Error("unknown type marker" + typeMarker);
+			}
+			border.readExternal(assetsData);
+			data[key + ".border"] = border;
+		}
+	}
 
 	public final function get defaults():Dictionary
 	{
