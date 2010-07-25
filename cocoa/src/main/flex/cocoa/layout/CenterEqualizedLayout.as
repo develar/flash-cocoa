@@ -22,8 +22,6 @@ public class CenterEqualizedLayout extends LayoutBase
 {
 	private var columns:Vector.<Column>;
 
-	protected var useFluentTopHack:Boolean;
-
 	private var _fieldGap:Number = 8;
 	/**
 	 * Расстояние вертикальное между полями
@@ -257,11 +255,6 @@ public class CenterEqualizedLayout extends LayoutBase
 		{
 			var localY:Number = 0;
 			const columnCompositionsLength:int = column.compositions.length;
-			if (useFluentTopHack && columnCompositionsLength == 2)
-			{
-				localY = 3;
-			}
-
 			if (column.isAuxiliaryElementFirst)
 			{
 				column.auxiliaryElement.setLayoutBoundsPosition(x, localY);
@@ -285,10 +278,6 @@ public class CenterEqualizedLayout extends LayoutBase
 					if (elementIndex == 1)
 					{
 						localX += _labelGap;
-					}
-					else if (useFluentTopHack && elementIndex == 0 && compositionIndex == 0 && composition.length == 1 && columnCompositionsLength != 2)
-					{
-						localY += 3; // see comment BasicGroupSkin#PADDING_TOP
 					}
 
 					var element:ILayoutElement = composition[elementIndex];

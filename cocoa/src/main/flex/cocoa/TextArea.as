@@ -5,7 +5,7 @@ use namespace ui;
 public class TextArea extends TextInput
 {
 	private var _heightInLines:Number;
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "TextArea";
 	}

@@ -51,7 +51,7 @@ public class TextInput extends AbstractComponent
 		_text = textDisplay.text;
 	}
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "TextInput";
 	}

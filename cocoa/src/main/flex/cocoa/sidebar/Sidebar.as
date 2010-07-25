@@ -132,7 +132,7 @@ public class Sidebar extends Bar
 		selectedIndices = null;
 	}
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "Sidebar";
 	}

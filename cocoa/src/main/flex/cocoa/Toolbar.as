@@ -6,7 +6,7 @@ public class Toolbar extends Box
 	{
 	}
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "Toolbar";
 	}

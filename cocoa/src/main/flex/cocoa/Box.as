@@ -28,7 +28,7 @@ public class Box extends AbstractComponent implements ViewContainerProvider
 
 	private var _elements:Array;
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "Box";
 	}

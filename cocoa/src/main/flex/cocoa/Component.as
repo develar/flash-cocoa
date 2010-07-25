@@ -12,11 +12,8 @@ public interface Component extends Viewable, IEventDispatcher, UIPartController
 	 * В самом компоненте указывается путем переопределения геттера defaultLaFPrefix.
 	 */
 	function get lafKey():String;
-	/**
-	 * Если компонент используется как часть скина другого, то нам может потребоваться изменить его LaF,
-	 * но не таким дорогим способом как создание дочернего LaF — поэтому для компонента laf prefix может быть указан явно (в этом случае defaultLaFPrefix не будет использоваться).
-	 */
-	function set lafKey(value:String):void
+
+	function set lafSubkey(value:String):void;
 
 	function get skin():Skin;
 

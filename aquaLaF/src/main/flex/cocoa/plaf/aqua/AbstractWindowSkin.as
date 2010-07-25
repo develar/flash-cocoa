@@ -164,7 +164,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		if (Window(component).closable)
 		{
 			closeButton = new PushButton();
-			closeButton.lafKey = "PushButton.TitleBar";
+			closeButton.lafSubkey = "TitleBar";
 			closeButton.action = Window(component).close;
 			var closeButtonSkin:DisplayObject = DisplayObject(closeButton.createView(laf));
 			if (Capabilities.os.indexOf("Mac OS") != -1)

@@ -319,8 +319,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 		data["CheckBox.border"] = borders[BorderPosition.checkBox];
 
-		data["PushButton.TitleBar"] = _parent.getClass("PushButton");
-		data["PushButton.TitleBar.border"] = borders[BorderPosition.hudTitleBarCloseButton];
+		data["TitleBar.PushButton"] = _parent.getClass("PushButton");
+		data["TitleBar.PushButton.border"] = borders[BorderPosition.hudTitleBarCloseButton];
 	}
 
 	private function createDefaultTextFormat():TextFormat

@@ -107,7 +107,7 @@ public class PopUpButton extends AbstractControl implements Cell
 		}
 	}
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "PopUpButton";
 	}

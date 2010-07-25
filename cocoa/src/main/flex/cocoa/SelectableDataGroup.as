@@ -80,7 +80,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 	{
 		if (_lafSubkey != null && itemRenderer == null)
 		{
-			itemRenderer = _laf.getFactory("SegmentedControl." + _lafSubkey + ".itemRenderer");
+			itemRenderer = _laf.getFactory(_lafSubkey + ".SegmentedControl.itemRenderer");
 		}
 
 		super.commitProperties();

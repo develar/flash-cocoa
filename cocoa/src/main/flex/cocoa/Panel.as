@@ -43,7 +43,7 @@ public class Panel extends Window
 		dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_SIDE));
 	}
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "Panel";
 	}

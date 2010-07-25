@@ -219,7 +219,7 @@ public class SliderNumericStepper extends AbstractComponent
 		}
 	}
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return "SliderNumericStepper";
 	}

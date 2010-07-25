@@ -26,7 +26,7 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 	{
 		var laf:LookAndFeel = LookAndFeelProvider(parent.parent).laf;
 		textDisplay = new TextInput();
-		textDisplay.lafKey = "NumericStepper.TextInput";
+		textDisplay.lafSubkey = "NumericStepper";
 		var textInputSkin:DisplayObject = DisplayObject(textDisplay.createView(laf));
 		addChild(textInputSkin);
 

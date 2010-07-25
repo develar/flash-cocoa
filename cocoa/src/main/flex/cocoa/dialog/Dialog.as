@@ -46,7 +46,7 @@ public class Dialog extends Window
 
 	protected var controlButtons:Vector.<PushButton>;
 
-	override protected function get defaultLaFPrefix():String
+	override protected function get primaryLaFKey():String
 	{
 		return RESOURCE_BUNDLE;
 	}

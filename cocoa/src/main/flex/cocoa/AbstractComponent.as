@@ -132,14 +132,9 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 		return _skin;
 	}
 
-	private var _lafPrefix:String;
 	public final function get lafKey():String
 	{
-		return _lafPrefix == null ? defaultLaFPrefix : _lafPrefix;
-	}
-	public final function set lafKey(value:String):void
-	{
-		_lafPrefix = value;
+		return _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
 	}
 
 	protected var _lafSubkey:String;
@@ -148,7 +143,7 @@ public class AbstractComponent extends ComponentBase implements Component, IFlex
 		_lafSubkey = value;
 	}
 
-	protected function get defaultLaFPrefix():String
+	protected function get primaryLaFKey():String
 	{
 		throw new Error("abstract");
 	}
