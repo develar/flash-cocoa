@@ -23,6 +23,7 @@ import java.util.*;
  *
  * При поиске мы формируем имя согласно key + "." + имя состояния. пока что считаем что список состояний равен "off, on".
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public class AssetBuilderMojo extends AbstractMojo
 {
 	private static final String[] DEFAULT_STATES = {"off", "on"};
@@ -30,33 +31,38 @@ public class AssetBuilderMojo extends AbstractMojo
 	/**
      * @parameter expression="${asset.builder..skip}"
      */
-    private boolean skip;
+    @SuppressWarnings({"UnusedDeclaration"})
+	private boolean skip;
 
 	/**
      * @parameter expression="${project}"
      * @required
      * @readonly
      */
+	@SuppressWarnings({"UnusedDeclaration"})
 	private MavenProject project;
 
 	/**
      * @parameter default-value="${project.build.directory}/assets"
      */
-    private File output;
+    @SuppressWarnings({"UnusedDeclaration"})
+	private File output;
 
-//	/**
-//     * @parameter
-//     */
-//	private File[] imageDirectories;
+	/**
+     * @parameter default-value="src/main/resources/icons"
+     */
+	@SuppressWarnings({"UnusedDeclaration"})
+	private File iconDirectory;
 
 	/**
      * @parameter default-value="src/main/resources/assets.xml"
      */
+	@SuppressWarnings({"UnusedDeclaration"})
 	private File descriptor;
 
 	private List<File> sources;
 
-	private DataOutputStream out = null;
+	private AssetOutputStream out = null;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException
@@ -95,8 +101,14 @@ public class AssetBuilderMojo extends AbstractMojo
 
 		try
 		{
-			out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(output)));
+			out = new AssetOutputStream(new BufferedOutputStream(new FileOutputStream(output)));
 			buildBorders(assetSet.borders);
+
+			if (iconDirectory.exists())
+			{
+				new IconPackager().pack(iconDirectory, out);
+			}
+
 			out.flush();
 		}
 		catch (IOException e)
@@ -199,7 +211,7 @@ public class AssetBuilderMojo extends AbstractMojo
 
 				case OneBitmap:
 				{
-					writeImage(sourceImages[0]);
+					out.write(sourceImages[0]);
 				}
 				break;
 			}
@@ -221,17 +233,7 @@ public class AssetBuilderMojo extends AbstractMojo
 
 		for (BufferedImage image : finalImages)
 		{
-			writeImage(image);
-		}
-	}
-
-	private void writeImage(BufferedImage image) throws IOException
-	{
-		out.writeByte(image.getWidth());
-		out.writeByte(image.getHeight());
-		for (int pixel : image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth()))
-		{
-			out.writeInt(pixel);
+			out.write(image);
 		}
 	}
 

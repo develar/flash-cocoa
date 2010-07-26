@@ -52,6 +52,18 @@ public class AbstractLookAndFeel implements LookAndFeel
 			border.readExternal(assetsData);
 			data[key + ".border"] = border;
 		}
+
+		if (assetsData.bytesAvailable > 0)
+		{
+			n = assetsData.readUnsignedByte();
+			var icon:BitmapIcon;
+			for (i = 0; i < n; i++)
+			{
+				icon = new BitmapIcon();
+				data[assetsData.readUTF()] = icon;
+				icon.readExternal(assetsData);
+			}
+		}
 	}
 
 	public final function get defaults():Dictionary
