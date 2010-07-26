@@ -7,9 +7,15 @@ public class Border
 {
 	@Attribute
 	public String key;
+	@Attribute(required = false)
+	public String subkey;
+
 	@Attribute
 	public String type;
 
-	@Element
-	public Insets insets;
+	@Element(required = false)
+	public Insets contentInsets;
+
+	@Element(required = false)
+	public Insets frameInsets;
 }

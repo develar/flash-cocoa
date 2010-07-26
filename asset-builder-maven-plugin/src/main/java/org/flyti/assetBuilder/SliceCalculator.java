@@ -5,12 +5,22 @@ import java.awt.image.BufferedImage;
 
 public class SliceCalculator
 {
+	/**
+	 * Для большинства изображений достаточно и 1, но для изображение Fluent PopUp Button, где стрелка отступает от края на несколько px — нужно именно такое значение
+	 * (иначе мы до стрелки не дойдем, посчитав и так что изображение уже не повторяется).
+	 */
+	private static final int DEFAULT_EQUAL_LENGTH = 4;
+
 	private int width;
 	private int height;
 
 	private int[] pixels;
 
-	private int equalLength = 1;
+	/**
+	 * Количество _непрерывных_ равных пикселей (отсчет от 0)
+	 * Учитывается только для top и right
+	 */
+	private int equalLength = DEFAULT_EQUAL_LENGTH;
 
 	public int calculateFromTop(BufferedImage image, Rectangle sourceRectangle)
 	{
@@ -48,7 +58,7 @@ public class SliceCalculator
 
 	public Insets calculate(BufferedImage image, boolean strict, boolean allSide)
 	{
-		return calculate(image, null, 0, strict, allSide, 2);
+		return calculate(image, null, 0, strict, allSide, DEFAULT_EQUAL_LENGTH);
 	}
 
 	public Insets calculate(BufferedImage image, Rectangle frameRectangle, int top, boolean strict, boolean allSide, int equalLength)
@@ -97,17 +107,24 @@ public class SliceCalculator
 
 	private int getUnrepeatableFromRight(boolean strict)
 	{
+		int equalCount = 0;
+
 		columnLoop : for (int column = width - 1; column > 1; column--)
 		{
 			for (int i = column, n = (width * height) - width + 1; i < n; i += width)
 			{
 				if (!equalColor(pixels[i], pixels[i - 1], strict))
 				{
+					equalCount = 0; // сбрасываем счетчик равности, так как если equalLength равен 5, это значит, что у нас должно как минимум 5 _непрерывных_ равных пикселей
 					continue columnLoop;
 				}
 			}
 
-			return width - (column + 1);
+			equalCount++;
+			if (equalCount == equalLength)
+			{
+				return width - (column + 1) - (equalCount - 1);
+			}
 		}
 
 		throw new Error("can't find center area");
@@ -123,6 +140,7 @@ public class SliceCalculator
 			{
 				if (!equalColor(pixels[i], pixels[i + width], strict))
 				{
+					equalCount = 0;
 					continue rowLoop;
 				}
 			}
@@ -130,7 +148,7 @@ public class SliceCalculator
 			equalCount++;
 			if (equalCount == equalLength)
 			{
-				return row;
+				return row - (equalCount + 1);
 			}
 		}
 

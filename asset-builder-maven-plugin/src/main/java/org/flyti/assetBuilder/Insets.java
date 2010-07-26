@@ -4,16 +4,16 @@ import org.simpleframework.xml.Attribute;
 
 public class Insets
 {
-	@Attribute(name = "left")
-	public final int left;
-	@Attribute(name = "top", required = false)
-	public final int top;
-	@Attribute(name = "right")
-	public final int right;
-	@Attribute(name = "bottom")
-	public final int bottom;
+	@Attribute
+	public int left;
+	@Attribute(required = false)
+	public int top;
+	@Attribute
+	public int right;
+	@Attribute(required = false)
+	public int bottom;
 
-	public Insets(@Attribute(name = "left") int left, @Attribute(name = "top", required = false) int top, @Attribute(name = "right") int right, @Attribute(name = "bottom") int bottom)
+	public Insets(int left, int top, int right, int bottom)
 	{
 		this.left = left;
 		this.top = top;
@@ -21,12 +21,9 @@ public class Insets
 		this.bottom = bottom;
 	}
 
-	public Insets(@Attribute(name = "left") int left, @Attribute(name = "right") int right, @Attribute(name = "bottom") int bottom)
+	@SuppressWarnings({"UnusedDeclaration"})
+	public Insets()
 	{
-		this.left = left;
-		this.top = 0;
-		this.right = right;
-		this.bottom = bottom;
 	}
 
 	public int getWidth()

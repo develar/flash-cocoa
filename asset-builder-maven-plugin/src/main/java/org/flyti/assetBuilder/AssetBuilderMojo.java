@@ -1,5 +1,7 @@
 package org.flyti.assetBuilder;
 
+import com.sun.istack.internal.Nullable;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -12,7 +14,7 @@ import org.simpleframework.xml.core.Persister;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 /**
  * @goal generate
@@ -23,7 +25,8 @@ import java.util.List;
  */
 public class AssetBuilderMojo extends AbstractMojo
 {
-	private static final String[] states = {"off", "on"};
+	private static final String[] DEFAULT_STATES = {"off", "on"};
+
 	/**
      * @parameter expression="${asset.builder..skip}"
      */
@@ -51,7 +54,9 @@ public class AssetBuilderMojo extends AbstractMojo
      */
 	private File descriptor;
 
-	private File[] sources;
+	private List<File> sources;
+
+	private DataOutputStream out = null;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException
@@ -62,7 +67,20 @@ public class AssetBuilderMojo extends AbstractMojo
 			return;
 		}
 
-		setUpImageDirectories();
+		if (!descriptor.exists())
+		{
+			getLog().warn("");
+			return;
+		}
+
+		try
+		{
+			setUpImageDirectories();
+		}
+		catch (Exception e)
+		{
+			throw new MojoExecutionException("Can't set up images source directories", e);
+		}
 
 		Serializer serializer = new Persister();
 		AssetSet assetSet;
@@ -75,12 +93,11 @@ public class AssetBuilderMojo extends AbstractMojo
 			throw new MojoExecutionException("Can't parse descriptor", e);
 		}
 
-		DataOutputStream outputStream = null;
 		try
 		{
-			outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(output)));
-			buildBorders(assetSet.borders, outputStream);
-			outputStream.flush();
+			out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(output)));
+			buildBorders(assetSet.borders);
+			out.flush();
 		}
 		catch (IOException e)
 		{
@@ -88,120 +105,176 @@ public class AssetBuilderMojo extends AbstractMojo
 		}
 		finally
 		{
-			IOUtil.close(outputStream);
+			IOUtil.close(out);
 		}
 	}
 
-	private void setUpImageDirectories()
+	private void setUpImageDirectories() throws IOException, ClassNotFoundException
 	{
-		@SuppressWarnings({"unchecked"})
-		List<Resource> resources = (List<Resource>) project.getResources();
-		final int resourcesSize = resources.size();
-		final int resourceDirectoriesOffset = 0;
-		sources = new File[resourcesSize + 1];
-//		sources = new File[resourcesSize + (imageDirectories == null ? 0 : imageDirectories.length)];
-//		if (imageDirectories != null)
-//		{
-//			System.arraycopy(imageDirectories, 0, sources, 0, imageDirectories.length);
-//			for (File imageDirectory : imageDirectories)
-//			{
-//				if (!imageDirectory.exists())
-//				{
-//					throw new MojoExecutionException("Image directory " + imageDirectory + " does not exists");
-//				}
-//			}
-//		}
-
-		for (int i = 0; i < resourcesSize; i++)
+		sources = new ArrayList<File>();
+		//noinspection unchecked
+		for (Resource resource : (List<Resource>) project.getResources())
 		{
-			final String resourceDirectory = resources.get(i).getDirectory();
-			//noinspection PointlessArithmeticExpression
-			sources[i + resourceDirectoriesOffset] = new File(resourceDirectory);
+			sources.add(new File(resource.getDirectory()));
 		}
 
-		// @todo надо получать из SWC
-		sources[sources.length - 1] = new File("/Users/develar/workspace/XpressPages/common/fluentSkin/blue/src/main/resources");
+		final Map<String, String> projectResourceDirectoryMap;
+		final File projectResourceDirectoryCache = new File(project.getBuild().getDirectory(), "projectResourceDirectoryMap");
+		if (projectResourceDirectoryCache.exists())
+		{
+			//noinspection unchecked
+			projectResourceDirectoryMap = (Map<String, String>) new ObjectInputStream(new FileInputStream(projectResourceDirectoryCache)).readObject();
+		}
+		else
+		{
+			projectResourceDirectoryMap = new HashMap<String, String>();
+		}
+
+		@SuppressWarnings({"unchecked"})
+		Map<String, MavenProject> projectReferences = (Map<String, MavenProject>) project.getProjectReferences();
+		//noinspection unchecked
+		for (Artifact artifact : (Set<Artifact>) project.getArtifacts())
+		{
+			// пока что только берем из resource directories, но swc не парсим
+			if ("swc".equals(artifact.getType()))
+			{
+				final String referenceProjectId = MavenProject.getProjectReferenceId(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
+				final File referenceResourceDirectory;
+				if (projectResourceDirectoryMap.containsKey(referenceProjectId))
+				{
+					referenceResourceDirectory = new File(projectResourceDirectoryMap.get(referenceProjectId));
+					if (!referenceResourceDirectory.exists())
+					{
+						projectResourceDirectoryMap.remove(referenceProjectId);
+						continue;
+					}
+				}
+				else
+				{
+					MavenProject referenceProject = projectReferences.get(referenceProjectId);
+					referenceResourceDirectory = new File(((Resource) referenceProject.getResources().get(0)).getDirectory());
+					if (referenceResourceDirectory.exists())
+					{
+						projectResourceDirectoryMap.put(referenceProjectId, referenceResourceDirectory.getAbsolutePath());
+					}
+					else
+					{
+						continue;
+					}
+				}
+
+				sources.add(referenceResourceDirectory);
+			}
+		}
+
+		if (projectResourceDirectoryMap.size() > 0)
+		{
+			new ObjectOutputStream(new FileOutputStream(projectResourceDirectoryCache)).writeObject(projectResourceDirectoryMap);
+		}
 	}
 
-	private void buildBorders(List<Border> borders, DataOutput output) throws IOException, MojoExecutionException
+	private void buildBorders(List<Border> borders) throws IOException, MojoExecutionException
 	{
-		output.writeByte(borders.size());
+		out.writeByte(borders.size());
 
 		SliceCalculator sliceCalculator = new SliceCalculator();
 
 		for (Border border : borders)
 		{
 			BorderType borderType = BorderType.valueOf(border.type);
-			output.writeUTF(border.key);
-			output.writeByte(borderType.ordinal());
 
-			BufferedImage[] sourceImages = getImages(border.key, states);
+			final String key = border.subkey == null ? border.key : (border.subkey + "." + border.key);
+			out.writeUTF(key);
+			out.writeByte(borderType.ordinal());
 
-			Insets sliceSize = sliceCalculator.calculate(sourceImages[0], false, false);
-			BufferedImage[] finalImages = slice3H(sourceImages, sliceSize);
+			BufferedImage[] sourceImages = getImages(key, borderType == BorderType.OneBitmap ? null : DEFAULT_STATES);
 
-			output.writeByte(finalImages.length);
-
-			for (BufferedImage image : finalImages)
+			switch (borderType)
 			{
-				output.writeByte(image.getWidth());
-				output.writeByte(image.getHeight());
-				for (int pixel : image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth()))
+				case Scale3EdgeHBitmap:
 				{
-					output.writeInt(pixel);
+					buildMultipleBorder(sourceImages, sliceCalculator);
 				}
+				break;
+
+				case OneBitmap:
+				{
+					writeImage(sourceImages[0]);
+				}
+				break;
 			}
 
-			if (border.insets == null)
-			{
-				output.writeByte(0);
-			}
-			else
-			{
-				output.writeByte(1);
-				writeInsets(output, border.insets);
-			}
-
-			lazyWriteFrameInsets(output, null);
-
-//			switch (borderType)
-//			{
-//				case Scale3EdgeHBitmap:
-//				{
-//
-//				}
-//			}
+			lazyWriteInsets(border.contentInsets, true);
+			lazyWriteInsets(border.frameInsets, false);
 		}
 	}
 
-	private BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException
+	private void buildMultipleBorder(BufferedImage[] sourceImages, SliceCalculator sliceCalculator) throws MojoExecutionException, IOException
 	{
-		BufferedImage[] images = new BufferedImage[states.length];
+		// мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
+		// иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
+		// Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
+		Insets sliceSize = sliceCalculator.calculate(sourceImages[1], false, false);
+		BufferedImage[] finalImages = slice3H(sourceImages, sliceSize);
 
-		for (int i = 0, statesLength = states.length; i < statesLength; i++)
+		out.writeByte(finalImages.length);
+
+		for (BufferedImage image : finalImages)
 		{
+			writeImage(image);
+		}
+	}
+
+	private void writeImage(BufferedImage image) throws IOException
+	{
+		out.writeByte(image.getWidth());
+		out.writeByte(image.getHeight());
+		for (int pixel : image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth()))
+		{
+			out.writeInt(pixel);
+		}
+	}
+
+	private BufferedImage[] getImages(String key, @Nullable String[] states) throws MojoExecutionException
+	{
+		final boolean hasStates = states != null;
+		final int statesLength = hasStates ? states.length : 1;
+		BufferedImage[] images = new BufferedImage[statesLength];
+
+		for (int i = 0; i < statesLength; i++)
+		{
+			String postfix = ".";
+			if (hasStates)
+			{
+				postfix += states[i] + ".";
+			}
+			postfix += "png";
+
 			File imageFile = null;
-			final String state = states[i];
 			for (File sourceDirectory : sources)
 			{
 				// пока что считаем, что все файлы это png, а tiff добавим как понадобится
-				imageFile = new File(sourceDirectory, key + "." + state + ".png");
+				imageFile = new File(sourceDirectory, key + postfix);
 				if (imageFile.exists())
 				{
-					try
-					{
-						images[i] = ImageIO.read(imageFile);
-					}
-					catch (IOException e)
-					{
-						throw new MojoExecutionException("Can't read image " + imageFile, e);
-					}
+					break;
 				}
 			}
 
 			if (imageFile == null || !imageFile.exists())
 			{
 				throw new MojoExecutionException("Can't find image for " + key);
+			}
+			else
+			{
+				try
+				{
+					images[i] = ImageIO.read(imageFile);
+				}
+				catch (IOException e)
+				{
+					throw new MojoExecutionException("Can't read image " + imageFile, e);
+				}
 			}
 		}
 
@@ -224,33 +297,26 @@ public class AssetBuilderMojo extends AbstractMojo
 		return images;
 	}
 
-	private void writeInsets(DataOutput output, Insets insets) throws IOException
+	private void lazyWriteInsets(Insets insets, boolean isContent) throws IOException
 	{
-//		output.writeByte(insets is TextInsets ? 1 : 0);
-		output.writeByte(0);
-		output.writeByte(insets.left);
-		output.writeByte(insets.top);
-		output.writeByte(insets.right);
-		output.writeByte(insets.bottom);
-
-//		if (insets is TextInsets)
-//		{
-//			output.writeByte(TextInsets(insets).truncatedTailMargin);
-//		}
-	}
-
-	protected void lazyWriteFrameInsets(DataOutput output, Insets insets) throws IOException
-	{
-//		if (insets == EMPTY_FRAME_INSETS)
-		//noinspection ConstantIfStatement
-		if (true)
+		if (insets == null)
 		{
-			output.writeByte(0);
+			out.writeByte(0);
 		}
 		else
 		{
-			output.writeByte(1);
-			writeInsets(output, insets);
+			out.writeByte(1);
+
+			if (isContent)
+			{
+//				output.writeByte(contentInsets is TextInsets ? 1 : 0);
+				out.writeByte(0);
+			}
+
+			out.writeByte(insets.left);
+			out.writeByte(insets.top);
+			out.writeByte(insets.right);
+			out.writeByte(insets.bottom);
 		}
 	}
 }
