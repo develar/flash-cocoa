@@ -1,6 +1,5 @@
 package org.flyti.assetBuilder;
 
-import com.sun.istack.internal.Nullable;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -237,7 +236,7 @@ public class AssetBuilderMojo extends AbstractMojo
 		}
 	}
 
-	private BufferedImage[] getImages(String key, @Nullable String[] states) throws MojoExecutionException
+	private BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException
 	{
 		final boolean hasStates = states != null;
 		final int statesLength = hasStates ? states.length : 1;
