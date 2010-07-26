@@ -1,7 +1,6 @@
 package org.flyti.assetBuilder;
 
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -25,7 +24,7 @@ public class IconPackager
 		out.writeByte(iconFilenames.length);
 		for (String iconFilename : iconFilenames)
 		{
-			out.writeUTF(FileUtils.basename(iconFilename));
+			out.writeUTF(iconFilename.substring(0, iconFilename.lastIndexOf(".")));
 			out.write(ImageIO.read(new File(sourceDirectory, iconFilename)));
 		}
 	}
