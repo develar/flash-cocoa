@@ -12,6 +12,7 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 	public function set icon(value:Icon):void
 	{
 		_icon = value;
+		invalidateDisplayList();
 	}
 
 	override protected function get bordered():Boolean
@@ -59,7 +60,10 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 		g.clear();
 
 		drawBorder(g, w, h);
-		_icon.draw(this, g, Math.round((w - _icon.iconWidth) * 0.5), labelHelper == null ? Math.round((h - _icon.iconHeight) * 0.5) : iconInsets.top);
+		if (_icon != null)
+		{
+			_icon.draw(this, g, Math.round((w - _icon.iconWidth) * 0.5), labelHelper == null ? Math.round((h - _icon.iconHeight) * 0.5) : iconInsets.top);
+		}
 
 		if (labelHelper != null)
 		{
