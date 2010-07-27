@@ -2165,48 +2165,52 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		validateProperties();
 
 		// Assign each specified attribute to one of three format objects,
-		// depending on whether it is container-, paragraph-,
-		// or character-level. Note that these can remain null.
+		// depending on whether it is container-, paragraph-, or character-level. Note that these can remain null.
 		var containerFormat:TextLayoutFormat;
 		var paragraphFormat:TextLayoutFormat;
 		var characterFormat:TextLayoutFormat;
 
-		// This internal TLF object maps the names of format properties
-		// to Property instances.
-		// Each Property instance has a category property which tells
-		// whether it is container-, paragraph-, or character-level.
+		// This internal TLF object maps the names of format properties to Property instances.
+		// Each Property instance has a category property which tells whether it is container-, paragraph-, or character-level.
 		var description:Object = TextLayoutFormat.description;
 
 		for (var p:String in description)
 		{
 			if (format[p] === undefined)
+			{
 				continue;
-
-			var category:String = description[p].category;
-
-			if (category == Category.CONTAINER)
-			{
-				if (containerFormat == null)
-				{
-					containerFormat = new TextLayoutFormat();
-				}
-				containerFormat[p] = format[p];
 			}
-			else if (category == Category.PARAGRAPH)
+
+			switch (description[p].category)
 			{
-				if (paragraphFormat == null)
+				case Category.CONTAINER:
 				{
-					paragraphFormat = new TextLayoutFormat();
+					if (containerFormat == null)
+					{
+						containerFormat = new TextLayoutFormat();
+					}
+					containerFormat[p] = format[p];
 				}
-				paragraphFormat[p] = format[p];
-			}
-			else if (category == Category.CHARACTER)
-			{
-				if (characterFormat == null)
+				break;
+
+				case Category.PARAGRAPH:
 				{
-					characterFormat = new TextLayoutFormat();
+					if (paragraphFormat == null)
+					{
+						paragraphFormat = new TextLayoutFormat();
+					}
+					paragraphFormat[p] = format[p];
 				}
-				characterFormat[p] = format[p];
+				break;
+
+				case Category.CHARACTER:
+				{
+					if (characterFormat == null)
+					{
+						characterFormat = new TextLayoutFormat();
+					}
+					characterFormat[p] = format[p];
+				}
 			}
 		}
 
@@ -2217,8 +2221,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			activePosition = _selectionActivePosition;
 		}
 
-		// Apply the three format objects to the current selection if
-		// selectionState is null, else the specified selection.
+		// Apply the three format objects to the current selection if selectionState is null, else the specified selection.
 		_textContainerManager.applyFormatOperation(characterFormat, paragraphFormat, containerFormat, anchorPosition, activePosition);
 	}
 

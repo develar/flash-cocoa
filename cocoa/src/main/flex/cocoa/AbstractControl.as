@@ -8,6 +8,12 @@ public class AbstractControl extends AbstractComponent implements Control
 		_action = value;
 	}
 
+	protected var _actionRequireTarget:Boolean;
+	public function set actionRequireTarget(value:Boolean):void
+	{
+		_actionRequireTarget = value;
+	}
+
 	private var _state:int = CellState.OFF;
 	public final function get state():int
 	{

@@ -96,7 +96,7 @@ public class AbstractButton extends AbstractControl implements Cell
 
 			if (_action != null)
 			{
-				_action();
+				_actionRequireTarget ?_action(this) : _action();
 			}
 		}
 
