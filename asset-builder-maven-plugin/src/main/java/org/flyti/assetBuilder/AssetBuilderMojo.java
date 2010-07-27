@@ -279,8 +279,10 @@ public class AssetBuilderMojo extends AbstractMojo
 							{
 								return o2.getName().startsWith("on") ? (o1.getName().length() - o2.getName().length()) : 1;
 							}
-
-							throw new IllegalArgumentException("Image for unknown state: " + o1);
+							else
+							{
+								return 1;
+							}
 						}
 					});
 
