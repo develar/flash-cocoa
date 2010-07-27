@@ -37,6 +37,12 @@ public class LabelHelper
 		_font = font;
 	}
 
+	private var _useTruncationIndicator:Boolean = true;
+	public function set useTruncationIndicator(value:Boolean):void
+	{
+		_useTruncationIndicator = value;
+	}
+
 	public function get hasText():Boolean
 	{
 		return _text != null;
@@ -213,7 +219,7 @@ public class LabelHelper
 			else
 			{
 				truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
-				if (truncated)
+				if (truncated && _useTruncationIndicator)
 				{
 					textElement.text = _text.slice(0, getTruncationPosition(textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
 					textLine = textBlock.createTextLine();

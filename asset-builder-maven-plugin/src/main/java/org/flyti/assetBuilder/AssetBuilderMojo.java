@@ -176,7 +176,7 @@ public class AssetBuilderMojo extends AbstractMojo
 		if (projectResourceDirectoryMap.size() > 0)
 		{
 			//noinspection ResultOfMethodCallIgnored
-			projectResourceDirectoryCache.mkdirs();
+			projectResourceDirectoryCache.getParentFile().mkdirs();
 			new ObjectOutputStream(new FileOutputStream(projectResourceDirectoryCache)).writeObject(projectResourceDirectoryMap);
 		}
 	}
