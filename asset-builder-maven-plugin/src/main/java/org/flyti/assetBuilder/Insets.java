@@ -4,11 +4,11 @@ import org.simpleframework.xml.Attribute;
 
 public class Insets
 {
-	@Attribute
+	@Attribute(required = false)
 	public int left;
 	@Attribute(required = false)
 	public int top;
-	@Attribute
+	@Attribute(required = false)
 	public int right;
 	@Attribute(required = false)
 	public int bottom;

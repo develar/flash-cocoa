@@ -5,27 +5,33 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class IconPackager
 {
-	public static final String[] INCLUDES = {"*.png", "*.tiff"};
+	public static final String[] INCLUDES = {"**/*.png", "**/*.tiff"};
 
-	public void pack(File sourceDirectory, AssetOutputStream out) throws IOException
+	public void pack(List<File> sourceDirectories, AssetOutputStream out) throws IOException
 	{
 		DirectoryScanner scanner = new DirectoryScanner();
 		scanner.addDefaultExcludes();
 		scanner.setIncludes(INCLUDES);
 
-		scanner.setBasedir( sourceDirectory );
-        scanner.scan();
-
-		String[] iconFilenames = scanner.getIncludedFiles();
-
-		out.writeByte(iconFilenames.length);
-		for (String iconFilename : iconFilenames)
+		for (File sourceDirectory : sourceDirectories)
 		{
-			out.writeUTF(iconFilename.substring(0, iconFilename.lastIndexOf(".")));
-			out.write(ImageIO.read(new File(sourceDirectory, iconFilename)));
+			File baseDirectory = new File(sourceDirectory, "icons");
+			if (baseDirectory.exists())
+			{
+				scanner.setBasedir(baseDirectory);
+				scanner.scan();
+
+				String[] filenames = scanner.getIncludedFiles();
+				for (String filename : filenames)
+				{
+					out.writeUTF(filename.substring(0, filename.lastIndexOf(".")).replace('/', '.'));
+					out.write(ImageIO.read(new File(baseDirectory, filename)));
+				}
+			}
 		}
 	}
 }

@@ -21,4 +21,13 @@ public class AssetOutputStream extends DataOutputStream
 			writeInt(pixel);
 		}
 	}
+
+	public void write(BufferedImage[] images) throws IOException
+	{
+		writeByte(images.length);
+		for (BufferedImage image : images)
+		{
+			write(image);
+		}
+	}
 }

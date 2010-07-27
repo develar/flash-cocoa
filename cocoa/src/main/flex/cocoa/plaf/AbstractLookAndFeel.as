@@ -50,19 +50,15 @@ public class AbstractLookAndFeel implements LookAndFeel
 				default: throw new Error("unknown type marker" + typeMarker);
 			}
 			border.readExternal(assetsData);
-			data[key + ".border"] = border;
+			data[key] = border;
 		}
 
-		if (assetsData.bytesAvailable > 0)
+		var icon:BitmapIcon;
+		while (assetsData.bytesAvailable > 0)
 		{
-			n = assetsData.readUnsignedByte();
-			var icon:BitmapIcon;
-			for (i = 0; i < n; i++)
-			{
-				icon = new BitmapIcon();
-				data[assetsData.readUTF()] = icon;
-				icon.readExternal(assetsData);
-			}
+			icon = new BitmapIcon();
+			data[assetsData.readUTF()] = icon;
+			icon.readExternal(assetsData);
 		}
 	}
 

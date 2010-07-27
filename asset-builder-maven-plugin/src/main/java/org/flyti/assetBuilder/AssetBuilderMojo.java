@@ -1,5 +1,6 @@
 package org.flyti.assetBuilder;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -27,6 +28,8 @@ public class AssetBuilderMojo extends AbstractMojo
 {
 	private static final String[] DEFAULT_STATES = {"off", "on"};
 
+	private static final FileFilter ASSET_FILE_FILTER = new SuffixFileFilter(new String[]{".png"});
+
 	/**
      * @parameter expression="${asset.builder..skip}"
      */
@@ -46,12 +49,6 @@ public class AssetBuilderMojo extends AbstractMojo
      */
     @SuppressWarnings({"UnusedDeclaration"})
 	private File output;
-
-	/**
-     * @parameter default-value="src/main/resources/icons"
-     */
-	@SuppressWarnings({"UnusedDeclaration"})
-	private File iconDirectory;
 
 	/**
      * @parameter default-value="src/main/resources/assets.xml"
@@ -101,12 +98,10 @@ public class AssetBuilderMojo extends AbstractMojo
 		try
 		{
 			out = new AssetOutputStream(new BufferedOutputStream(new FileOutputStream(output)));
+//			out = new AssetOutputStream(new DeflaterOutputStream(new FileOutputStream(output), new Deflater(Deflater.BEST_COMPRESSION)));
 			buildBorders(assetSet.borders);
 
-			if (iconDirectory.exists())
-			{
-				new IconPackager().pack(iconDirectory, out);
-			}
+			new IconPackager().pack(sources, out);
 
 			out.flush();
 		}
@@ -195,7 +190,7 @@ public class AssetBuilderMojo extends AbstractMojo
 			BorderType borderType = BorderType.valueOf(border.type);
 
 			final String key = border.subkey == null ? border.key : (border.subkey + "." + border.key);
-			out.writeUTF(key);
+			out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".border") : key);
 			out.writeByte(borderType.ordinal());
 
 			BufferedImage[] sourceImages = getImages(key, borderType == BorderType.OneBitmap ? null : DEFAULT_STATES);
@@ -204,13 +199,22 @@ public class AssetBuilderMojo extends AbstractMojo
 			{
 				case Scale3EdgeHBitmap:
 				{
-					buildMultipleBorder(sourceImages, sliceCalculator);
+					// мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
+					// иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
+					// Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
+					out.write(slice3H(sourceImages, sliceCalculator.calculate(sourceImages[1], false, false)));
 				}
 				break;
 
 				case OneBitmap:
 				{
 					out.write(sourceImages[0]);
+				}
+				break;
+
+				case Scale1Bitmap:
+				{
+					out.write(sourceImages);
 				}
 				break;
 			}
@@ -220,66 +224,75 @@ public class AssetBuilderMojo extends AbstractMojo
 		}
 	}
 
-	private void buildMultipleBorder(BufferedImage[] sourceImages, SliceCalculator sliceCalculator) throws MojoExecutionException, IOException
-	{
-		// мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
-		// иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
-		// Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
-		Insets sliceSize = sliceCalculator.calculate(sourceImages[1], false, false);
-		BufferedImage[] finalImages = slice3H(sourceImages, sliceSize);
-
-		out.writeByte(finalImages.length);
-
-		for (BufferedImage image : finalImages)
-		{
-			out.write(image);
-		}
-	}
-
-	private BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException
+	private BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException, IOException
 	{
 		final boolean hasStates = states != null;
 		final int statesLength = hasStates ? states.length : 1;
-		BufferedImage[] images = new BufferedImage[statesLength];
 
-		for (int i = 0; i < statesLength; i++)
+		// если для key найдено изображение для какого-либо состояния, то мы считаем, что и все остальные изображения там же
+		for (File sourceDirectory : sources)
 		{
+			boolean found = false;
+
 			String postfix = ".";
 			if (hasStates)
 			{
-				postfix += states[i] + ".";
+				postfix += states[0] + ".";
 			}
 			postfix += "png";
 
-			File imageFile = null;
-			for (File sourceDirectory : sources)
+			File imageFile = new File(sourceDirectory, key + postfix);
+			if (imageFile.exists())
 			{
-				// пока что считаем, что все файлы это png, а tiff добавим как понадобится
-				imageFile = new File(sourceDirectory, key + postfix);
-				if (imageFile.exists())
+				BufferedImage[] images = new BufferedImage[statesLength];
+				images[0] = ImageIO.read(imageFile);
+				if (hasStates)
 				{
-					break;
+					for (int i = 1; i < statesLength; i++)
+					{
+						images[i] = ImageIO.read(new File(sourceDirectory, key + "." + states[i] + ".png"));
+					}
 				}
-			}
 
-			if (imageFile == null || !imageFile.exists())
-			{
-				throw new MojoExecutionException("Can't find image for " + key);
+				return images;
 			}
-			else
+			else if (hasStates)
 			{
-				try
+				File imageDirectory = new File(sourceDirectory, key);
+				if (imageDirectory.exists())
 				{
-					images[i] = ImageIO.read(imageFile);
-				}
-				catch (IOException e)
-				{
-					throw new MojoExecutionException("Can't read image " + imageFile, e);
+					File[] files = imageDirectory.listFiles(ASSET_FILE_FILTER);
+					BufferedImage[] images = new BufferedImage[files.length];
+
+					Arrays.sort(files, new Comparator<File>()
+					{
+						@Override
+						public int compare(File o1, File o2)
+						{
+							if (o1.getName().startsWith("off"))
+							{
+								return o2.getName().startsWith("off") ? (o1.getName().length() - o2.getName().length()) : -1;
+							}
+							else if (o1.getName().startsWith("on"))
+							{
+								return o2.getName().startsWith("on") ? (o1.getName().length() - o2.getName().length()) : 1;
+							}
+
+							throw new IllegalArgumentException("Image for unknown state: " + o1);
+						}
+					});
+
+					for (int i = 0, filesLength = files.length; i < filesLength; i++)
+					{
+						images[i] = ImageIO.read(files[i]);
+					}
+
+					return images;
 				}
 			}
 		}
 
-		return images;
+		throw new MojoExecutionException("Can't find image for " + key);
 	}
 
 	private BufferedImage[] slice3H(BufferedImage[] sourceImages, Insets sliceSize)
