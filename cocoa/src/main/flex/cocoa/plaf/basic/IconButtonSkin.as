@@ -30,10 +30,20 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 		throw new Error("abstract");
 	}
 
+	protected function measureIcon():void
+	{
+		measuredWidth = iconInsets.width;
+		measuredHeight = iconInsets.height;
+		if (_icon != null)
+		{
+			measuredWidth += _icon.iconWidth;
+			measuredHeight += _icon.iconHeight;
+		}
+	}
+
 	override protected function measure():void
 	{
-		measuredMinWidth = measuredWidth = _icon.iconWidth + iconInsets.width;
-		measuredMinHeight = measuredHeight = _icon.iconHeight + iconInsets.height;
+		measureIcon();
 
 		if (labelHelper != null)
 		{
