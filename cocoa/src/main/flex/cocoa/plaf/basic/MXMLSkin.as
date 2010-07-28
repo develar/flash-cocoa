@@ -1,8 +1,10 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.Component;
 import cocoa.MXMLContainer;
 import cocoa.layout.LayoutMetrics;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
 
 import com.asfusion.mate.events.InjectorEvent;
 

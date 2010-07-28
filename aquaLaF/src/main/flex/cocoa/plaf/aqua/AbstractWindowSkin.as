@@ -8,7 +8,7 @@ import cocoa.Toolbar;
 import cocoa.View;
 import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
-import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.basic.AbstractSkin;
 import cocoa.plaf.FontID;
 import cocoa.plaf.WindowSkin;
 import cocoa.ui;
@@ -106,16 +106,14 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		}
 	}
 
-	private var _title:String;
 	public function set title(value:String):void
 	{
-		if (value == _title)
+		if (value == labelHelper.text)
 		{
 			return;
 		}
 
-		_title = value;
-		labelHelper.text = _title;
+		labelHelper.text = value;
 
 		invalidateDisplayList();
 	}
@@ -250,7 +248,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 		var g:Graphics = graphics;
 		g.clear();
 
-		if (_title != null)
+		if (labelHelper.hasText)
 		{
 			labelHelper.validate();
 			labelHelper.moveToCenter(w, titleY);

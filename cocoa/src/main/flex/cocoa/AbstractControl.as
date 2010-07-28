@@ -1,6 +1,6 @@
 package cocoa
 {
-public class AbstractControl extends AbstractComponent implements Control
+public class AbstractControl extends TitledComponent implements Control
 {
 	protected var _action:Function;
 	public function set action(value:Function):void

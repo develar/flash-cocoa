@@ -4,10 +4,7 @@ import cocoa.Border;
 import cocoa.Cell;
 import cocoa.Component;
 import cocoa.Insets;
-import cocoa.LabelHelper;
 import cocoa.TextInsets;
-import cocoa.plaf.AbstractSkin;
-import cocoa.plaf.FontID;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.PushButtonSkin;
 
@@ -15,9 +12,8 @@ import flash.display.Graphics;
 
 import mx.managers.IFocusManagerComponent;
 
-public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButtonSkin, IFocusManagerComponent
+public class PushButtonSkin extends TitledComponentSkin implements cocoa.plaf.PushButtonSkin, IFocusManagerComponent
 {
-	protected var labelHelper:LabelHelper;
 	protected var border:Border;
 
 	protected var myComponent:Cell;
@@ -51,36 +47,9 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 		return border.contentInsets.left + border.frameInsets.left;
 	}
 
-	public function set label(value:String):void
-	{
-		if (labelHelper == null)
-		{
-			if (value == null)
-			{
-				return;
-			}
-
-			labelHelper = new LabelHelper(this, laf == null ? null : getFont(FontID.SYSTEM));
-		}
-		else if (value == labelHelper.text)
-		{
-			return;
-		}
-
-		labelHelper.text = value;
-
-		invalidateSize();
-		invalidateDisplayList();
-	}
-
 	override protected function createChildren():void
 	{
 		super.createChildren();
-
-		if (labelHelper != null)
-		{
-			labelHelper.font = getFont(FontID.SYSTEM);
-		}
 
 		if (bordered)
 		{
@@ -106,7 +75,7 @@ public class PushButtonSkin extends AbstractSkin implements cocoa.plaf.PushButto
 
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		if (labelHelper != null)
+		if (labelHelper != null && labelHelper.hasText)
 		{
 			if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth)))
 			{

@@ -2,8 +2,8 @@ package cocoa
 {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.PopUpMenuController;
-import cocoa.plaf.PushButtonSkin;
 import cocoa.plaf.Skin;
+import cocoa.plaf.TitledComponentSkin;
 
 import flash.events.Event;
 
@@ -17,7 +17,7 @@ use namespace ui;
 [DefaultProperty("menu")]
 public class PopUpButton extends AbstractControl implements Cell
 {
-	private var labelChanged:Boolean = false;
+	private var titleChanged:Boolean = false;
 	private var menuController:PopUpMenuController;
 
 	public function get isMouseDown():Boolean
@@ -32,16 +32,16 @@ public class PopUpButton extends AbstractControl implements Cell
 		{
 			if (_menu != null)
 			{
-				_menu.removeEventListener(Event.CHANGE, updateLabelDisplay);
+				_menu.removeEventListener(Event.CHANGE, updateTitle);
 			}
 
 			_menu = value;
-			_menu.addEventListener(Event.CHANGE, updateLabelDisplay);
+			_menu.addEventListener(Event.CHANGE, updateTitle);
 			if (menuController != null)
 			{
 				menuController.menu = _menu;
 			}
-			labelChanged = true;
+			titleChanged = true;
 			invalidateProperties();
 		}
 	}
@@ -58,16 +58,16 @@ public class PopUpButton extends AbstractControl implements Cell
     {
         super.commitProperties();
 
-        if (labelChanged)
+        if (titleChanged)
         {
-            labelChanged = false;
-            updateLabelDisplay();
+            titleChanged = false;
+            updateTitle();
         }
     }
 
-	protected function updateLabelDisplay(event:Event = null):void
+	protected function updateTitle(event:Event = null):void
 	{
-		PushButtonSkin(skin).label = selectedItem == null ? null : LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
+		TitledComponentSkin(skin).title = selectedItem == null ? null : LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
 	}
 
 	public function get selectedItem():Object
@@ -83,7 +83,7 @@ public class PopUpButton extends AbstractControl implements Cell
 			{
 				_action();
 			}
-			updateLabelDisplay();
+			updateTitle();
 		}
 	}
 
@@ -103,7 +103,7 @@ public class PopUpButton extends AbstractControl implements Cell
 //				AbstractView(skin).callLater(_action);
 				_action();
 			}
-			updateLabelDisplay();
+			updateTitle();
 		}
 	}
 

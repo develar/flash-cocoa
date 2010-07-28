@@ -2,7 +2,7 @@ package cocoa.plaf.aqua
 {
 import cocoa.FrameInsets;
 import cocoa.border.BitmapBorderStateIndex;
-import cocoa.plaf.LabeledItemRenderer;
+import cocoa.plaf.basic.LabeledItemRenderer;
 import cocoa.plaf.LookAndFeel;
 import cocoa.border.Scale1BitmapBorder;
 

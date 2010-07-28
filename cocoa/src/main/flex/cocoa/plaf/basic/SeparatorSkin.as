@@ -1,7 +1,6 @@
 package cocoa.plaf.basic
 {
 import cocoa.Border;
-import cocoa.plaf.AbstractSkin;
 
 import flash.display.Graphics;
 

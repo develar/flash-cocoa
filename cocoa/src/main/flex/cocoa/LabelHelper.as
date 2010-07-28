@@ -77,6 +77,7 @@ public class LabelHelper
 		if (value != _font)
 		{
 			_font = value;
+			textElement.elementFormat = _font;
 			invalid = true;
 		}
 	}
@@ -113,67 +114,25 @@ public class LabelHelper
 
 	public function moveToCenter(w:Number, y:Number):void
 	{
-		if (textLine == null)
-		{
-			return;
-		}
-
 		textLine.x = (w - textLine.textWidth) * 0.5;
 		textLine.y = y;
 	}
 
-	public function moveByInset(h:Number, contentInsets:Insets):void
-	{
-		if (textLine == null)
-		{
-			return;
-		}
-
-		textLine.x = contentInsets.left;
-		textLine.y = h - contentInsets.bottom;
-	}
-
 	public function moveToCenterByInsets(w:Number, h:Number, contentInsets:Insets):void
 	{
-		if (textLine == null)
-		{
-			return;
-		}
-
 		textLine.x = (w - textLine.textWidth) * 0.5;
 		textLine.y = h - contentInsets.bottom;
 	}
 	
 	public function moveByInsets(h:Number, contentInsets:Insets):void
 	{
-		if (textLine == null)
-		{
-			return;
-		}
-
 		textLine.x = contentInsets.left;
 		textLine.y = h - contentInsets.bottom;
 	}
 
 	public function moveByVerticalInsets(h:Number, contentInsets:Insets, x:Number):void
 	{
-		if (textLine == null)
-		{
-			return;
-		}
-
 		textLine.x = x;
-		textLine.y = h - contentInsets.bottom;
-	}
-
-	public function moveByInsetsWithXOffseet(h:Number, contentInsets:Insets, frameInsets:FrameInsets, xOffset:Number):void
-	{
-		if (textLine == null)
-		{
-			return;
-		}
-
-		textLine.x = contentInsets.left + frameInsets.left + xOffset;
 		textLine.y = h - contentInsets.bottom;
 	}
 
@@ -184,7 +143,7 @@ public class LabelHelper
 			newWidth = 1000000;
 		}
 
-		if (newWidth < availableWidth || (newWidth > availableWidth && truncated))
+		if (newWidth < availableWidth || (truncated && newWidth > availableWidth))
 		{
 			invalid = true;
 		}
@@ -208,7 +167,6 @@ public class LabelHelper
 
 		if (_text != null)
 		{
-			textElement.elementFormat = _font;
 			textElement.text = _text;
 			textLine = textBlock.createTextLine(null, availableWidth);
 //			trace(container + " " + this + " " + textBlock.textLineCreationResult, textLine.width, availableWidth);
@@ -222,6 +180,7 @@ public class LabelHelper
 				if (truncated && _useTruncationIndicator)
 				{
 					textElement.text = _text.slice(0, getTruncationPosition(textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
+
 					textLine = textBlock.createTextLine();
 				}
 
@@ -241,7 +200,7 @@ public class LabelHelper
 	{
 		if (truncationIndicatorMap == null)
 		{
-			truncationIndicatorMap = new Dictionary();
+			truncationIndicatorMap = new Dictionary(true);
 		}
 
 		var width:Number = truncationIndicatorMap[format];

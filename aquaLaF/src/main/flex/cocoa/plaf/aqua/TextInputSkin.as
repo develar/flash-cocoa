@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Border;
-import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.basic.AbstractSkin;
 import cocoa.text.EditableTextView;
 
 import flash.display.Graphics;

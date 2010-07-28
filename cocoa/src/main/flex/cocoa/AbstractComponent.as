@@ -15,6 +15,7 @@ import mx.core.IVisualElement;
 
 use namespace ui;
 
+[Abstract]
 public class AbstractComponent extends ComponentBase implements Component, IFlexModule, IMXMLObject
 {
 	// только как прокси

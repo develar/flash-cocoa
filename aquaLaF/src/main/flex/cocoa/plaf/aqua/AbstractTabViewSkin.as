@@ -6,8 +6,8 @@ import cocoa.SingleSelectionDataGroup;
 import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.SegmentedControlHorizontalLayout;
-import cocoa.plaf.AbstractSkin;
-import cocoa.plaf.SegmentedControlController;
+import cocoa.plaf.basic.AbstractSkin;
+import cocoa.plaf.basic.SegmentedControlController;
 
 import mx.core.ClassFactory;
 import mx.core.ILayoutElement;

@@ -78,7 +78,7 @@
 		]]></fx:Script>
 
 	<Container id="container">
-		<!--<c:PushButton label="Textured Rounded" skinClass="{PushButtonSkin}"/>-->
+		<!--<c:PushButton title="Textured Rounded" skinClass="{PushButtonSkin}"/>-->
 		
 		<!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>-->
 		<!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testDataWithLongLabels}"/>-->

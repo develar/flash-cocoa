@@ -1,6 +1,6 @@
 package cocoa
 {
-import cocoa.plaf.AbstractItemRenderer;
+import cocoa.plaf.basic.AbstractItemRenderer;
 import cocoa.plaf.ListViewSkin;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;

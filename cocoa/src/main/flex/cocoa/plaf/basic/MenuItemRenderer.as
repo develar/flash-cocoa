@@ -1,7 +1,8 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.HighlightableItemRenderer;
 import cocoa.MenuItem;
+import cocoa.plaf.FontID;
 
 import flash.display.Graphics;
 
@@ -52,7 +53,7 @@ public class MenuItemRenderer extends LabeledItemRenderer implements Highlightab
 
 		labelHelper.font = getFont(highlighted ? FontID.MENU_HIGHLIGHTED : FontID.MENU);
 		labelHelper.validate();
-		labelHelper.moveByInset(h, border.contentInsets);
+		labelHelper.moveByInsets(h, border.contentInsets);
 		
 		var g:Graphics = graphics;
 		g.clear();

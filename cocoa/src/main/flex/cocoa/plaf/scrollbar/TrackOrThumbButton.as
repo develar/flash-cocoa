@@ -1,7 +1,7 @@
 package cocoa.plaf.scrollbar
 {
-import cocoa.FlexButton;
 import cocoa.Border;
+import cocoa.FlexButton;
 
 import flash.events.Event;
 import flash.events.MouseEvent;

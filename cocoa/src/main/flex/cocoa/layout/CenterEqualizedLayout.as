@@ -38,6 +38,12 @@ public class CenterEqualizedLayout extends LayoutBase
 		}
     }
 
+	private var _labelBelow:Boolean;
+	public function set labelBelow(value:Boolean):void
+	{
+		_labelBelow = value;
+	}
+
 	private var _maxRowCount:int = 99;
 	public function get maxRowCount():int
 	{
@@ -189,9 +195,9 @@ public class CenterEqualizedLayout extends LayoutBase
 			{
 				columns[columns.length] = oldColumn;
 				oldColumn.finalize();
-				measuredWidth += oldColumn.calculateTotalWidth(_labelGap, _controlGap);
+				measuredWidth += oldColumn.calculateTotalWidth(_labelGap, _controlGap, _labelBelow);
 
-				const currentHeight:Number = oldColumn.calculateTotalHeight(fieldGap);
+				const currentHeight:Number = oldColumn.calculateTotalHeight(fieldGap, _labelBelow);
 				if (currentHeight > measuredHeight)
 				{
 					measuredHeight = currentHeight;
@@ -227,7 +233,7 @@ public class CenterEqualizedLayout extends LayoutBase
 		if (element is Skin)
 		{
 			var component:Component = Skin(element).component;
-			return (component is CheckBox && CheckBox(component).label != null) || (component is SliderNumericStepper && SliderNumericStepper(component).label != null);
+			return (component is CheckBox && CheckBox(component).title != null) || (component is SliderNumericStepper && SliderNumericStepper(component).title != null);
 		}
 		else
 		{

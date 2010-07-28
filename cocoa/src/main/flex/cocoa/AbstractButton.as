@@ -1,15 +1,16 @@
 package cocoa
 {
-import cocoa.plaf.PushButtonSkin;
-
 import flash.events.Event;
 import flash.events.MouseEvent;
 
 public class AbstractButton extends AbstractControl implements Cell
 {
-	protected var mySkin:PushButtonSkin;
-
 	private var oldState:int = -1;
+
+	override public function get objectValue():Object
+	{
+		return title;
+	}
 
 	[Bindable(event="selectedChanged")]
 	public function get selected():Boolean
@@ -34,23 +35,22 @@ public class AbstractButton extends AbstractControl implements Cell
 	{
 		super.skinAttachedHandler();
 
-		mySkin = PushButtonSkin(skin);
 		addHandlers();
 	}
 
 	protected function addHandlers():void
 	{
-		mySkin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+		skin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 	}
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
 		oldState = state;
 
-		mySkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+		skin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mySkin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-		mySkin.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+		skin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+		skin.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 
 		mouseOverHandler(event);
 	}
@@ -62,12 +62,12 @@ public class AbstractButton extends AbstractControl implements Cell
 
 	private function stageMouseUpHandler(event:MouseEvent):void
 	{
-		mySkin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+		skin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mySkin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-		mySkin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+		skin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+		skin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 
-		if (event.target == mySkin)
+		if (event.target == skin)
 		{
 			// может быть уже отвалидировано в roll over/out
 			if (toggled)

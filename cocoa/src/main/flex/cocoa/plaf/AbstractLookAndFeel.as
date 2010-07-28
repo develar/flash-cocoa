@@ -2,13 +2,10 @@ package cocoa.plaf
 {
 import cocoa.Border;
 import cocoa.Icon;
-
 import cocoa.border.AbstractBitmapBorder;
-
 import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
-
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;

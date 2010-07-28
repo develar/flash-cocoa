@@ -1,7 +1,9 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.Border;
 import cocoa.LabelHelper;
+import cocoa.plaf.FontID;
+import cocoa.plaf.LookAndFeel;
 
 public class LabeledItemRenderer extends AbstractItemRenderer
 {

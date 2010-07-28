@@ -1,8 +1,9 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Icon;
+import cocoa.plaf.LookAndFeel;
 
 import flash.text.engine.ElementFormat;
 

@@ -31,9 +31,9 @@ public class IconButton extends PushButton
 		if (value != _icon)
 		{
 			_icon = value;
-			if (mySkin != null)
+			if (skin != null)
 			{
-				IconButtonSkin(mySkin).icon = _icon;
+				IconButtonSkin(skin).icon = _icon;
 			}
 		}
 	}
@@ -51,7 +51,7 @@ public class IconButton extends PushButton
     {
 		super.skinAttachedHandler();
 
-		IconButtonSkin(mySkin).icon = _icon;
+		IconButtonSkin(skin).icon = _icon;
 	}
 
 	override public function createView(laf:LookAndFeel):Skin

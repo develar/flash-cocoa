@@ -10,6 +10,7 @@ import mx.utils.OnDemandEventDispatcher;
 
 use namespace ui;
 
+[Abstract]
 public class ComponentBase extends OnDemandEventDispatcher
 {
 	protected static const HANDLER_NOT_EXISTS:int = 2;

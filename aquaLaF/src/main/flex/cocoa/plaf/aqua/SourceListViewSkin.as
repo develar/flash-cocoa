@@ -3,7 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.Container;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.LayoutMetrics;
-import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.basic.AbstractSkin;
 
 import flash.display.Graphics;
 

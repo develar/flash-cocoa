@@ -12,7 +12,7 @@ import flash.events.IEventDispatcher;
 import org.flyti.plexus.Injectable;
 
 [DefaultProperty("mxmlContent")]
-public class Window extends AbstractComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher
+public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher
 {
 	protected var mySkin:WindowSkin;
 	protected var flags:uint = RESIZABLE | CLOSABLE;
@@ -58,19 +58,6 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 		}
 	}
 
-	private var _title:String;
-	public function set title(value:String):void
-	{
-		if (value != _title)
-		{
-			_title = value;
-			if (skin != null)
-			{
-				mySkin.title = _title;
-			}
-		}
-	}
-
 	private var _mxmlContent:Array;
 	public function set mxmlContent(value:Array):void
 	{
@@ -90,16 +77,13 @@ public class Window extends AbstractComponent implements TitledPane, LookAndFeel
 
 	override protected function skinAttachedHandler():void
 	{
+		super.skinAttachedHandler();
+
 		mySkin = WindowSkin(skin);
 
-		if (_title == null && _resourceBundle != null)
+		if (title == null && _resourceBundle != null)
 		{
-			_title = resourceManager.getNullableString(_resourceBundle, "windowTitle");
-		}
-
-		if (_title != null)
-		{
-			mySkin.title = _title;
+			title = resourceManager.getNullableString(_resourceBundle, "windowTitle");
 		}
 
 		if (toolbar != null)

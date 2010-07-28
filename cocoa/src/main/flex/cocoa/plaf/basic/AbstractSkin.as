@@ -1,10 +1,12 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Component;
 import cocoa.Icon;
 import cocoa.UIPartProvider;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
 
 import com.asfusion.mate.events.InjectorEvent;
 

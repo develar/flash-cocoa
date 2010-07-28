@@ -5,7 +5,7 @@
 
 		public function set buttonTitle(value:String):void
 		{
-			button.label = value;
+			button.title = value;
 		}
 
 		]]></fx:Script>

@@ -75,8 +75,9 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
 			_icon.draw(this, g, Math.round((w - _icon.iconWidth) * 0.5), labelHelper == null ? Math.round((h - _icon.iconHeight) * 0.5) : iconInsets.top);
 		}
 
-		if (labelHelper != null)
+		if (labelHelper != null && labelHelper.hasText)
 		{
+			labelHelper.validate();
 			labelHelper.moveToCenter(w, labelInsets.top);
 		}
 	}

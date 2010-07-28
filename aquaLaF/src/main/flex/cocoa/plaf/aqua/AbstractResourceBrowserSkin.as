@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Component;
-import cocoa.plaf.AbstractSkin;
+import cocoa.plaf.basic.AbstractSkin;
 import cocoa.sidebar.SourceListView;
 
 import flash.display.DisplayObject;

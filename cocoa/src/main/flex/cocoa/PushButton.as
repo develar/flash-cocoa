@@ -6,23 +6,6 @@ public class PushButton extends AbstractButton
 	{
 		return "PushButton";
 	}
-
-	private var _label:String;
-	public function get label():String
-	{
-		return _label;
-	}
-	public function set label(value:String):void
-	{
-		if (value != _label)
-		{
-			_label = value;
-			if (mySkin != null)
-			{
-				mySkin.label = _label;
-			}
-		}
-	}
 	
 	protected var _toolTip:String;
 	public function set toolTip(value:String):void
@@ -30,9 +13,9 @@ public class PushButton extends AbstractButton
 		if (value != _toolTip)
 		{
 			_toolTip = value;
-			if (mySkin != null)
+			if (skin != null)
 			{
-				mySkin.toolTip = _toolTip;
+				skin.toolTip = _toolTip;
 			}
 		}
 	}
@@ -43,9 +26,9 @@ public class PushButton extends AbstractButton
 		if (value != _alternateToolTip)
 		{
 			_alternateToolTip = value;
-			if (mySkin != null && state == CellState.ON)
+			if (skin != null && state == CellState.ON)
 			{
-				mySkin.toolTip = _alternateToolTip;
+				skin.toolTip = _alternateToolTip;
 			}
 		}
 	}
@@ -54,23 +37,17 @@ public class PushButton extends AbstractButton
     {
 		super.skinAttachedHandler();
 
-		mySkin.label = _label;
 		if (_toolTip != null)
 		{
-			mySkin.toolTip = _toolTip;
+			skin.toolTip = _toolTip;
 		}
-	}
-
-	override public function get objectValue():Object
-	{
-		return label;
 	}
 
 	override public function set state(value:int):void
 	{
 		if (_alternateToolTip != null)
 		{
-			mySkin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
+			skin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
 		}
 
 		super.state = value;

@@ -30,9 +30,9 @@ public class ToggleIconButton extends IconButton implements ToggleButton
 		if (value != _alternateIcon)
 		{
 			_alternateIcon = value;
-			if (mySkin != null && state == CellState.ON)
+			if (skin != null && state == CellState.ON)
 			{
-				IconButtonSkin(mySkin).icon = _alternateIcon;
+				IconButtonSkin(skin).icon = _alternateIcon;
 			}
 		}
 	}
@@ -56,7 +56,7 @@ public class ToggleIconButton extends IconButton implements ToggleButton
 	{
 		if (_alternateIcon != null)
 		{
-			IconButtonSkin(mySkin).icon = value == CellState.ON ? _alternateIcon : icon;
+			IconButtonSkin(skin).icon = value == CellState.ON ? _alternateIcon : icon;
 		}
 
 		super.state = value;

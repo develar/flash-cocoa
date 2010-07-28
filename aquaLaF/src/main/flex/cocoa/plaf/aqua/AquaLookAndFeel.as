@@ -16,7 +16,7 @@ import cocoa.plaf.AbstractLookAndFeel;
 import cocoa.plaf.BitmapIcon;
 import cocoa.plaf.FontID;
 import cocoa.plaf.MenuSkin;
-import cocoa.plaf.SegmentedControlController;
+import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;

@@ -1,45 +1,19 @@
 package cocoa.plaf.basic
 {
 import cocoa.HSlider;
-import cocoa.LabelHelper;
 import cocoa.NumericStepper;
-import cocoa.plaf.AbstractSkin;
-import cocoa.plaf.FontID;
-import cocoa.plaf.SliderNumericStepperSkin;
 
-public class SliderNumericStepperSkin extends AbstractSkin implements cocoa.plaf.SliderNumericStepperSkin
+public class SliderNumericStepperSkin extends TitledComponentSkin
 {
 	protected var slider:HSlider;
 	protected var stepper:NumericStepper;
 
 	protected static const GAP:Number = 5;
 
-	protected var labelHelper:LabelHelper;
-
-	public function set label(value:String):void
-	{
-		if (labelHelper == null)
-		{
-			if (value == null)
-			{
-				return;
-			}
-
-			labelHelper = new LabelHelper(this, laf == null ? null : getFont(FontID.SYSTEM));
-		}
-		else if (value == labelHelper.text)
-		{
-			return;
-		}
-
-		labelHelper.text = value;
-
-		invalidateSize();
-		invalidateDisplayList();
-	}
-
 	override protected function createChildren():void
 	{
+		super.createChildren();
+
 		if (slider == null)
 		{
 			slider = new HSlider();
@@ -54,11 +28,6 @@ public class SliderNumericStepperSkin extends AbstractSkin implements cocoa.plaf
 			stepper.enabled = enabled;
 			addChild(stepper);
 			component.uiPartAdded("stepper", stepper);
-		}
-
-		if (labelHelper != null)
-		{
-			labelHelper.font = getFont(FontID.SYSTEM);
 		}
 	}
 

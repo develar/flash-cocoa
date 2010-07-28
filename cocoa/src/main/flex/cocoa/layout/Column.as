@@ -52,12 +52,21 @@ internal final class Column
 		return _totalWidth;
 	}
 
-	public function calculateTotalWidth(labelGap:Number, controlGap:Number):Number
+	public function calculateTotalWidth(labelGap:Number, controlGap:Number, labelBelow:Boolean):Number
 	{
-		_totalWidth = _labelMaxWidth + rowMaxWidth;
+		_totalWidth = rowMaxWidth;
+		if (!labelBelow)
+		{
+			_totalWidth += _labelMaxWidth;
+		}
+
 		if (_maxControlLengthInComposition > 1)
 		{
-			_totalWidth += labelGap + ((_maxControlLengthInComposition - 2) * controlGap);
+			_totalWidth += ((_maxControlLengthInComposition - 2) * controlGap);
+			if (!labelBelow)
+			{
+				_totalWidth += labelGap;
+			}
 		}
 
 		if (auxiliaryElement != null)
@@ -72,7 +81,7 @@ internal final class Column
 		return _totalWidth;
 	}
 
-	public function calculateTotalHeight(gap:Number):Number
+	public function calculateTotalHeight(gap:Number, labelBelow:Boolean):Number
 	{
 		var result:Number = 0;
 		for each (var number:Number in heights)
@@ -85,6 +94,11 @@ internal final class Column
 		if (auxiliaryElement != null)
 		{
 			result += gap + auxiliaryElement.getPreferredBoundsHeight();
+		}
+
+		if (labelBelow)
+		{
+			result += heights.length * 4;
 		}
 
 		return result;

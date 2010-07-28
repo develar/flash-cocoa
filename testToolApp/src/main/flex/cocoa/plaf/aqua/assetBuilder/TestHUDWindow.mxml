@@ -18,7 +18,7 @@
 			<s:HorizontalLayout gap="12"/>
 		</layout>
 		<TextInput id="feedURITextInput" width="100%"/>
-		<PushButton label="Apply"/>
+		<PushButton title="Apply"/>
 	</Container>
 
 	<HSeparator/>
@@ -28,7 +28,7 @@
 			<CenterEqualizedLayout/>
 		</layout>
 
-		<CheckBox id="showDateCheckBox" label="Show Date"/>
+		<CheckBox id="showDateCheckBox" title="Show Date"/>
 
 		<Label text="Article Length:"/>
 		<HSlider id="articleLengthSlider" value="0.5"/>

@@ -7,7 +7,8 @@
 		import cocoa.pane.PaneItem;
 		import cocoa.plaf.BottomBarStyle;
 		import cocoa.plaf.DialogSkin;
-		import cocoa.plaf.MenuItemRenderer;
+		import cocoa.plaf.basic.MenuItemRenderer;
+		import cocoa.plaf.basic.MenuItemRenderer;
 		import cocoa.resources.ResourceMetadata;
 
 		import org.flyti.util.ArrayList;
@@ -50,7 +51,7 @@
 		<layout>
 			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
 		</layout>
-		<PushButton label="Help H"/>
+		<PushButton title="Help H"/>
 		<PopUpButton>
 			<Menu>
 				<items>{testData}</items>
@@ -67,7 +68,7 @@
 
 		<TabView items="{tabViewPanes}"/>
 
-		<PushButton label="Change List Data Provider" action="changeListDataProvder"/>
+		<PushButton title="Change List Data Provider" action="changeListDataProvder"/>
 		<ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">
 			<layout>
 				<TileLayout rowHeight="25"/>

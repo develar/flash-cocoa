@@ -1,8 +1,8 @@
 package cocoa.plaf.aqua
 {
-import cocoa.plaf.MenuItemRenderer;
+import cocoa.plaf.basic.MenuItemRenderer;
 
-internal class MenuItemRenderer extends cocoa.plaf.MenuItemRenderer
+internal class MenuItemRenderer extends cocoa.plaf.basic.MenuItemRenderer
 {
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{

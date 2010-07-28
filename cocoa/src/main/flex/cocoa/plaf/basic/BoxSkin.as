@@ -1,7 +1,6 @@
 package cocoa.plaf.basic
 {
 import cocoa.Container;
-import cocoa.plaf.AbstractSkin;
 
 public class BoxSkin extends AbstractSkin
 {

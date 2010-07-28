@@ -129,7 +129,7 @@ public class Dialog extends Window
 	private function createControlButton(label:String, actionHandler:Function):PushButton
 	{
 		var button:PushButton = new PushButton();
-		button.label = label;
+		button.title = label;
 		button.action = actionHandler;
 		button.right = 0;
 		return button;
@@ -141,11 +141,11 @@ public class Dialog extends Window
 
 		if (okButton != null)
 		{
-			okButton.label = getOkLocalizedLabel();
+			okButton.title = getOkLocalizedLabel();
 		}
 		if (cancelButton != null)
 		{
-			cancelButton.label = resourceManager.getString(RESOURCE_BUNDLE, "cancel");
+			cancelButton.title = resourceManager.getString(RESOURCE_BUNDLE, "cancel");
 		}
 	}
 

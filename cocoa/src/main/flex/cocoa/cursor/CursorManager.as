@@ -2,7 +2,7 @@ package cocoa.cursor
 {
 import cocoa.Application;
 import cocoa.plaf.CursorData;
-import cocoa.plaf.MXMLSkin;
+import cocoa.plaf.basic.MXMLSkin;
 
 import flash.utils.Dictionary;
 

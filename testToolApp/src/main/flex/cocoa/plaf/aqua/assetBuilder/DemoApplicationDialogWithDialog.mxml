@@ -17,8 +17,8 @@
 
 	<toolbar>
 		<Toolbar>
-			<PushButton label="Toolbar Button 1" left="0"/>
-			<PushButton label="Toolbar Button 2" left="0"/>
+			<PushButton title="Toolbar Button 1" left="0"/>
+			<PushButton title="Toolbar Button 2" left="0"/>
 		</Toolbar>
 	</toolbar>
 
@@ -27,6 +27,6 @@
 			<s:VerticalLayout paddingTop="50" paddingLeft="50" paddingRight="50" paddingBottom="50"/>
 		</layout>
 
-		<PushButton label="Content Button"/>
+		<PushButton title="Content Button"/>
 	</Container>
 </Dialog>

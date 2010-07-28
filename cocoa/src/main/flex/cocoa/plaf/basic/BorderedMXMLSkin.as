@@ -1,4 +1,4 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.Border;
 
