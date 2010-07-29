@@ -7,6 +7,8 @@ import flash.text.engine.TextLine;
 import flash.text.engine.TextLineCreationResult;
 import flash.utils.Dictionary;
 
+import flashx.textLayout.compose.ISWFContext;
+
 import mx.core.mx_internal;
 
 use namespace mx_internal;
@@ -16,6 +18,9 @@ use namespace mx_internal;
  */
 public class LabelHelper
 {
+	private static const emptyArgs:Array = [];
+	private static const wArgs:Array = [null, 0];
+	
 	private static const TRUNCATION_INDICATOR:String = "…";
 
 	private static var truncationIndicatorMap:Dictionary;
@@ -28,13 +33,19 @@ public class LabelHelper
 	private var invalid:Boolean;
 	private var truncated:Boolean;
 
-	private var textLine:TextLine;
+	private var _textLine:TextLine;
 	private var container:View;
 
 	public function LabelHelper(container:View, font:ElementFormat = null)
 	{
 		this.container = container;
 		_font = font;
+	}
+
+	private var _swfContext:ISWFContext;
+	public function set swfContext(value:ISWFContext):void
+	{
+		_swfContext = value;
 	}
 
 	private var _useTruncationIndicator:Boolean = true;
@@ -50,24 +61,24 @@ public class LabelHelper
 
 	public function get textWidth():Number
 	{
-		return textLine.textWidth;
+		return _textLine.textWidth;
 	}
 
 	public function get textHeight():Number
 	{
-		return textLine.textHeight;
+		return _textLine.textHeight;
 	}
 
-	public function get textAscent():Number
+	public function get textLine():TextLine
 	{
-		return textLine.ascent;
+		return _textLine;
 	}
 
 	public function set alpha(value:Number):void
 	{
-		if (textLine != null)
+		if (_textLine != null)
 		{
-			textLine.alpha = value;
+			_textLine.alpha = value;
 		}
 	}
 
@@ -98,42 +109,42 @@ public class LabelHelper
 
 	public function set x(value:Number):void
 	{
-		textLine.x = value;
+		_textLine.x = value;
 	}
 
 	public function set y(value:Number):void
 	{
-		textLine.y = value;
+		_textLine.y = value;
 	}
 
 	public function move(x:Number, y:Number):void
 	{
-		textLine.x = x;
-		textLine.y = y;
+		_textLine.x = x;
+		_textLine.y = y;
 	}
 
 	public function moveToCenter(w:Number, y:Number):void
 	{
-		textLine.x = (w - textLine.textWidth) * 0.5;
-		textLine.y = y;
+		_textLine.x = (w - _textLine.textWidth) * 0.5;
+		_textLine.y = y;
 	}
 
 	public function moveToCenterByInsets(w:Number, h:Number, contentInsets:Insets):void
 	{
-		textLine.x = (w - textLine.textWidth) * 0.5;
-		textLine.y = h - contentInsets.bottom;
+		_textLine.x = (w - _textLine.textWidth) * 0.5;
+		_textLine.y = h - contentInsets.bottom;
 	}
 	
 	public function moveByInsets(h:Number, contentInsets:Insets):void
 	{
-		textLine.x = contentInsets.left;
-		textLine.y = h - contentInsets.bottom;
+		_textLine.x = contentInsets.left;
+		_textLine.y = h - contentInsets.bottom;
 	}
 
 	public function moveByVerticalInsets(h:Number, contentInsets:Insets, x:Number):void
 	{
-		textLine.x = x;
-		textLine.y = h - contentInsets.bottom;
+		_textLine.x = x;
+		_textLine.y = h - contentInsets.bottom;
 	}
 
 	public function adjustWidth(newWidth:Number):void
@@ -160,17 +171,26 @@ public class LabelHelper
 
 		invalid = false;
 
-		if (textLine != null)
+		if (_textLine != null)
 		{
-			container.removeDisplayObject(textLine);
+			container.removeDisplayObject(_textLine);
 		}
 
 		if (_text != null)
 		{
 			textElement.text = _text;
-			textLine = textBlock.createTextLine(null, availableWidth);
-//			trace(container + " " + this + " " + textBlock.textLineCreationResult, textLine.width, availableWidth);
-			if (textLine == null)
+
+			if (_swfContext == null)
+			{
+				_textLine = textBlock.createTextLine(null, availableWidth);
+			}
+			else
+			{
+				wArgs[1] = availableWidth;
+				_textLine = _swfContext.callInContext(textBlock.createTextLine, textBlock, wArgs);
+			}
+
+			if (_textLine == null)
 			{
 				trace(container + " " + this + " " + textBlock.textLineCreationResult);
 			}
@@ -179,20 +199,20 @@ public class LabelHelper
 				truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
 				if (truncated && _useTruncationIndicator)
 				{
-					textElement.text = _text.slice(0, getTruncationPosition(textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
+					textElement.text = _text.slice(0, getTruncationPosition(_textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
 
-					textLine = textBlock.createTextLine();
+					_textLine = _swfContext == null ? textBlock.createTextLine() : _swfContext.callInContext(textBlock.createTextLine, textBlock, emptyArgs);
 				}
 
-				textBlock.releaseLines(textLine, textLine);
-				textLine.mouseEnabled = false;
-				textLine.mouseChildren = false;
-				container.addDisplayObject(textLine);
+				textBlock.releaseLines(_textLine, _textLine);
+				_textLine.mouseEnabled = false;
+				_textLine.mouseChildren = false;
+				container.addDisplayObject(_textLine);
 			}
 		}
 		else
 		{
-			textLine = null;
+			_textLine = null;
 		}
 	}
 

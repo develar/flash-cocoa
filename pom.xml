@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.flyti</groupId>
 		<artifactId>flyti-forge</artifactId>
-		<version>1.0.7</version>
+		<version>1.0.8</version>
 	</parent>
 
-	<properties>
-		<fdk.version>4.1.0.15885</fdk.version>
-		<flex.sdk.version>4.1.0.15885</flex.sdk.version>
-	</properties>
+	<!--<properties>-->
+		<!--<fdk.version>4.1.0.15885</fdk.version>-->
+		<!--<flex.sdk.version>4.1.0.15885</flex.sdk.version>-->
+	<!--</properties>-->
 
 	<name>Cocoa Aggregator</name>
 	<groupId>org.flyti.cocoa</groupId>

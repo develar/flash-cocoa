@@ -7,7 +7,6 @@ import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.ui.ContextMenu;
-
 import flash.utils.Dictionary;
 
 import flashx.textLayout.container.TextContainerManager;
@@ -38,7 +37,7 @@ import mx.core.mx_internal;
 use namespace mx_internal;
 use namespace tlf_internal;
 
-internal final class EditableTextContainerManager extends TextContainerManager
+internal final class EditableTextContainerManager extends TextContainerManager implements ScrollController
 {
 	private var hasScrollRect:Boolean = false;
 
@@ -378,7 +377,12 @@ internal final class EditableTextContainerManager extends TextContainerManager
 
     override public function focusInHandler(event:FocusEvent):void
     {
-        textDisplay.focusInHandler(event);
+		// When TCM is simulating a focusIn event, event will be null.
+		// Ignore these and wait for the actual focus in event.
+		if (event == null)
+		{
+        	textDisplay.focusInHandler(event);
+		}
 
         super.focusInHandler(event);
     }

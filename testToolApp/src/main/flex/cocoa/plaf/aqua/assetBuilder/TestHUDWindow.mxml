@@ -12,7 +12,7 @@
 		private static const testData2:ArrayList = new ArrayList(new <Object>["Grid", "Mosaic", MenuItem.createSeparatorItem(), "Carousel"]);
 		]]></fx:Script>
 
-	<Label text="URL"/>
+	<Label title="URL"/>
 	<Container width="100%">
 		<layout>
 			<s:HorizontalLayout gap="12"/>
@@ -30,16 +30,16 @@
 
 		<CheckBox id="showDateCheckBox" title="Show Date"/>
 
-		<Label text="Article Length:"/>
+		<Label title="Article Length:"/>
 		<HSlider id="articleLengthSlider" value="0.5"/>
 
-		<Label text="Photo Size:"/>
+		<Label title="Photo Size:"/>
 		<HSlider id="photoSizeSlider" value="1"/>
 		
-		<Label text="Number of Entries:"/>
+		<Label title="Number of Entries:"/>
 		<NumericStepper id="numberOfEntriesNumericStepper" minimum="1" maximum="999" value="10"/>
 
-		<Label text="Layout:"/>
+		<Label title="Layout:"/>
 		<PopUpButton>
 			<Menu>
 				<items>{testData2}</items>

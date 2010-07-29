@@ -1,7 +1,5 @@
 package cocoa.text
 {
-import cocoa.AbstractView;
-
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.Event;
@@ -21,8 +19,6 @@ import flash.ui.Keyboard;
 
 import flashx.textLayout.compose.ISWFContext;
 import flashx.textLayout.container.TextContainerManager;
-import flashx.textLayout.conversion.ConversionType;
-import flashx.textLayout.conversion.ITextExporter;
 import flashx.textLayout.conversion.ITextImporter;
 import flashx.textLayout.conversion.TextConverter;
 import flashx.textLayout.edit.EditManager;
@@ -31,8 +27,6 @@ import flashx.textLayout.edit.IEditManager;
 import flashx.textLayout.edit.ISelectionManager;
 import flashx.textLayout.edit.SelectionFormat;
 import flashx.textLayout.edit.SelectionState;
-import flashx.textLayout.elements.Configuration;
-import flashx.textLayout.elements.GlobalSettings;
 import flashx.textLayout.elements.InlineGraphicElement;
 import flashx.textLayout.elements.InlineGraphicElementStatus;
 import flashx.textLayout.elements.TextFlow;
@@ -65,34 +59,18 @@ import mx.managers.IFocusManagerComponent;
 import mx.utils.StringUtil;
 
 import spark.components.TextSelectionHighlighting;
-import spark.core.IViewport;
-import spark.core.NavigationUnit;
 import spark.events.TextOperationEvent;
 import spark.utils.TextUtil;
 
 use namespace mx_internal;
 use namespace tlf_internal;
 
-public class EditableTextView extends AbstractView implements IFocusManagerComponent, IIMESupport, ISystemCursorClient, IViewport
+public class EditableTextView extends AbstractTextView implements IFocusManagerComponent, IIMESupport, ISystemCursorClient
 {
-	private static const sourceText:int = 0;
-	private static const sourceTextFlow:int = 1;
-	private static const sourceContent:int = 2;
-	
-	// from RET
-	private static var classInitialized:Boolean = false;
-
-	/**
-	 *  @private
-	 *  Create a single Configuration used by all Text instances.
-	 *  It tells the TextContainerManager that we don't want it
-	 *  to handle the ENTER key, because we need the ENTER key to behave
-	 *  differently based on the 'multiline' property.
-	 */
-	private static var configuration:Configuration;
+	private static const textElement:TextElement = new TextElement();
+	private static const textBlock:TextBlock = new TextBlock(textElement);
 
 	private static var plainTextImporter:ITextImporter;
-	private static var plainTextExporter:ITextExporter;
 
 	/**
 	 *  Regular expression which matches all newlines in the text.  Used
@@ -100,23 +78,8 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 */
 	private static const ALL_NEWLINES_REGEXP:RegExp = /\n/g;
 
-	/**
-	 *  It is set to NaN by stylesInitialized() and styleChanged(),
-	 *  and recreated whenever necessary in calculateFontMetrics().
-	 */
 	private var ascent:Number = NaN;
-
-	/**
-	 *  It is set to NaN by stylesInitialized() and styleChanged(),
-	 *  and recreated whenever necessary in calculateFontMetrics().
-	 */
 	private var descent:Number = NaN;
-
-	/**
-	 *  @private
-	 *  Source of text: one of "text", "textFlow" or "content".
-	 */
-	private var source:int = sourceText;
 
 	/**
 	 *  @private
@@ -186,19 +149,13 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	private var hasProgrammaticSelectionRange:Boolean = false;
 
 	/**
-	 *  True if this component sizes itself based on its actual
-	 *  contents.
+	 *  True if this component sizes itself based on its actual contents.
 	 */
-	mx_internal var autoSize:Boolean = false;
+	private var autoSize:Boolean = false;
 
 	public function EditableTextView()
 	{
 		super();
-
-		if (!classInitialized)
-		{
-			initClass();
-		}
 
 		_textContainerManager = new EditableTextContainerManager(this, configuration);
 		_textContainerManager.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textContainerManager_compositionCompleteHandler);
@@ -211,58 +168,36 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		_textContainerManager.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, textContainerManager_inlineGraphicStatusChangeHandler);
 	}
 
-	/**
-	 *  @private
-	 *  This method initializes the static vars of this class.
-	 *  Rather than calling it at static initialization time,
-	 *  we call it in the constructor to do the class initialization
-	 *  when the first instance is created.
-	 *  (It does an immediate return if it has already run.)
-	 *  By doing so, we avoid any static initialization issues
-	 *  related to whether this class or the TLF classes
-	 *  that it uses are initialized first.
-	 */
-	private static function initClass():void
-	{
-		// Set the TLF hook used for localizing runtime error messages.
-		// TLF itself has English-only messages,
-		// but higher layers like Flex can provide localized versions.
-		GlobalSettings.resourceStringFunction = TextUtil.getResourceString;
-
-		// Set the TLF hook used to specify the callback used for changing
-		// the FontLookup based on SWFContext.
-		GlobalSettings.resolveFontLookupFunction = TextUtil.resolveFontLookup;
-
-		// Pre-FP10.1, set default tab stops in TLF.  Without this, if there
-		// is a tab and TLF is measuring width, the tab will
-		// measure as the rest of the remaining width up to 10000.
-		GlobalSettings.enableDefaultTabStops = !Configuration.playerEnablesArgoFeatures;
-
-		configuration = Configuration(TextContainerManager.defaultConfiguration).clone();
-		configuration.manageEnterKey = false; // default is true
-		configuration.manageTabKey = false;   // default is false
-
-		plainTextImporter = TextConverter.getImporter(TextConverter.PLAIN_TEXT_FORMAT, configuration);
-
-		// Throw import errors rather than return a null textFlow.
-		// Alternatively, the error strings are in the Vector, importer.errors.
-		plainTextImporter.throwOnError = true;
-
-		plainTextExporter = TextConverter.getExporter(TextConverter.PLAIN_TEXT_FORMAT);
-
-		classInitialized = true;
-	}
-
 	private static function splice(str:String, start:int, end:int, strToInsert:String):String
 	{
 		return str.substring(0, start) + strToInsert + str.substring(end, str.length);
 	}
 
-	private var _textFormat:ITextLayoutFormat;
-	public function set textFormat(value:ITextLayoutFormat):void
+	override protected function get scrollController():ScrollController
 	{
-		assert(_textFormat == null);
-		_textFormat = value;
+		return _textContainerManager;
+	}
+
+	private var _multiline:Boolean = true;
+	/**
+	 *  Determines whether the user can enter multiline text.
+	 *
+	 *  <p>If <code>true</code>, the Enter key starts a new paragraph. If <code>false</code>, the Enter key doesn't affect the text
+	 *  but causes the RichEditableText to dispatch an <code>"enter"</code> event. If you paste text into the RichEditableText with a multiline
+	 *  value of <code>true</code>, newlines are stripped out of the text. </p>
+	 */
+	public function get multiline():Boolean
+	{
+		return _multiline;
+	}
+	public function set multiline(value:Boolean):void
+	{
+		_multiline = value;
+	}
+
+	override public function set textFormat(value:ITextLayoutFormat):void
+	{
+		super.textFormat = value;
 
 		_textContainerManager.hostFormat = _textFormat;
 
@@ -351,225 +286,12 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		return editable;
 	}
 
-	private var _clipAndEnableScrolling:Boolean = false;
-	private var clipAndEnableScrollingChanged:Boolean = false;
-
-	public function get clipAndEnableScrolling():Boolean
-	{
-		return _clipAndEnableScrolling;
-	}
-
-	public function set clipAndEnableScrolling(value:Boolean):void
-	{
-		if (value == _clipAndEnableScrolling)
-			return;
-
-		_clipAndEnableScrolling = value;
-		clipAndEnableScrollingChanged = true;
-
-		invalidateProperties();
-	}
-
-	private var _contentHeight:Number = 0;
-
-	[Bindable("propertyChange")]
-	public function get contentHeight():Number
-	{
-		return _contentHeight;
-	}
-
-	private var _contentWidth:Number = 0;
-	[Bindable("propertyChange")]
-	public function get contentWidth():Number
-	{
-		return _contentWidth;
-	}
-
-	private var _horizontalScrollPosition:Number = 0;
-	private var horizontalScrollPositionChanged:Boolean = false;
-
-	[Bindable("propertyChange")]
-	public function get horizontalScrollPosition():Number
-	{
-		return _horizontalScrollPosition;
-	}
-
-	public function set horizontalScrollPosition(value:Number):void
-	{
-		// Convert NaN to 0 to keep TCM happy.
-		if (isNaN(value))
-			value = 0;
-
-		if (value == _horizontalScrollPosition)
-			return;
-
-		_horizontalScrollPosition = value;
-		horizontalScrollPositionChanged = true;
-
-		invalidateProperties();
-
-		// Note:  TLF takes care of updating the container when the scroll
-		// position is set so there is no need for us to invalidate the
-		// display list.
-	}
-
-	private var _verticalScrollPosition:Number = 0;
-	private var verticalScrollPositionChanged:Boolean = false;
-
-	[Bindable("propertyChange")]
-
-	public function get verticalScrollPosition():Number
-	{
-		return _verticalScrollPosition;
-	}
-
-	public function set verticalScrollPosition(value:Number):void
-	{
-		// Convert NaN to 0 to keep TCM happy.
-		if (isNaN(value))
-			value = 0;
-
-		if (value == _verticalScrollPosition)
-			return;
-
-		_verticalScrollPosition = value;
-		verticalScrollPositionChanged = true;
-
-		invalidateProperties();
-
-		// Note:  TLF takes care of updating the container when the scroll
-		// position is set so there is no need for us to invalidate the
-		// display list.
-	}
-
-
-	private var _content:Object;
-	private var contentChanged:Boolean = false;
-
-	/**
-	 *  @private
-	 *  This metadata tells the MXML compiler to disable some of its default
-	 *  interpretation of the value specified for the 'content' property.
-	 *  Normally, for properties of type Object, it assumes that things
-	 *  looking like numbers are numbers and things looking like arrays
-	 *  are arrays. But <content>1</content> should generate code to set the
-	 *  content to  the String "1", not the int 1, and <content>[1]</content>
-	 *  should set it to the String "[1]", not the Array [ 1 ].
-	 *  However, {...} continues to be interpreted as a databinding
-	 *  expression, and @Resource(...), @Embed(...), etc.
-	 *  as compiler directives.
-	 *  Similar metadata on TLF classes causes the same rules to apply
-	 *  within <p>, <span>, etc.
-	 */
-	[RichTextContent]
-
-	/**
-	 *  This property is intended for use in MXML at compile time;
-	 *  to get or set rich text content at runtime,
-	 *  please use the <code>textFlow</code> property instead.
-	 *
-	 *  <p>The <code>content</code> property is the default property
-	 *  for RichEditableText, so that you can write MXML such as
-	 *  <pre>
-	 *  &lt;s:RichEditableText&gt;Hello &lt;s:span fontWeight="bold"/&gt;World&lt;/s:span&gt;&lt;/s:RichEditableText&gt;
-	 *  </pre>
-	 *  and have the String and SpanElement that you specify
-	 *  as the content be used to create a TextFlow.</p>
-	 *
-	 *  <p>This property is typed as Object because you can set it to
-	 *  to a String, a FlowElement, or an Array of Strings and FlowElements.
-	 *  In the example above, you are specifying the content
-	 *  to be a 2-element Array whose first element is the String
-	 *  "Hello" and whose second element is a SpanElement with the text
-	 *  "World" in boldface.</p>
-	 *
-	 *  <p>No matter how you specify the content, it gets converted
-	 *  into a TextFlow, and when you get this property, you will get
-	 *  the resulting TextFlow.</p>
-	 *
-	 *  <p>Adobe recommends using <code>textFlow</code> property
-	 *  to get and set rich text content at runtime,
-	 *  because it is strongly typed as a TextFlow
-	 *  rather than as an Object.
-	 *  A TextFlow is the canonical representation
-	 *  for rich text content in the Text Layout Framework.</p>
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get content():Object
-	{
-		return textFlow;
-	}
-
-	/**
-	 *  @private
-	 */
-	public function set content(value:Object):void
-	{
-		// Treat setting the 'content' to null
-		// as if 'text' were being set to the empty String
-		// (which is the default state).
-		if (value == null)
-		{
-			text = "";
-			return;
-		}
-
-		if (value == _content)
-			return;
-
-		_content = value;
-		contentChanged = true;
-		source = sourceContent;
-
-		// Of 'text', 'textFlow', and 'content', the last one set wins.
-		textChanged = false;
-		textFlowChanged = false;
-
-		// The other two are now invalid and must be recalculated when needed.
-		_text = null;
-		_textFlow = null;
-
-		invalidateProperties();
-		invalidateSize();
-		invalidateDisplayList();
-
-		dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
-	}
-
-	//----------------------------------
-	//  displayAsPassword
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _displayAsPassword:Boolean = false;
-
-	/**
-	 *  @private
-	 */
 	private var displayAsPasswordChanged:Boolean = false;
-
-	/**
-	 *  @copy flash.text.TextField#displayAsPassword
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
 	public function get displayAsPassword():Boolean
 	{
 		return _displayAsPassword;
 	}
-
-	/**
-	 *  @private
-	 */
 	public function set displayAsPassword(value:Boolean):void
 	{
 		if (value == _displayAsPassword)
@@ -583,18 +305,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		invalidateDisplayList();
 	}
 
-	//----------------------------------
-	//  editable
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _editable:Boolean = true;
-
-	/**
-	 *  @private
-	 */
 	private var editableChanged:Boolean = false;
 
 	/**
@@ -637,20 +348,12 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		invalidateDisplayList();
 	}
 
-	//----------------------------------
-	//  editingMode
-	//----------------------------------
-
 	/**
-	 *  @private
 	 *  The editingMode of this component's TextContainerManager.
-	 *  Note that this is not a public property
-	 *  and does not use the invalidation mechanism.
 	 */
 	private function get editingMode():String
 	{
 		// Note: this could be called before all properties are committed.
-
 		if (enabledChanged || editableChanged || selectableChanged)
 		{
 			updateEditingMode();
@@ -663,26 +366,20 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		return _textContainerManager.editingMode;
 	}
 
-	/**
-	 *  @private
-	 */
 	private function set editingMode(value:String):void
 	{
 		var lastEditingMode:String = _textContainerManager.editingMode;
-
 		if (lastEditingMode == value)
+		{
 			return;
+		}
 
 		_textContainerManager.editingMode = value;
 
-		// Make sure the selection manager selection is in sync with the
-		// current selection.
+		// Make sure the selection manager selection is in sync with the current selection.
 		if (value != EditingMode.READ_ONLY && _selectionAnchorPosition != -1 && _selectionActivePosition != -1)
 		{
-			var selectionManager:ISelectionManager = _textContainerManager.beginInteraction();
-
-			selectionManager.selectRange(_selectionAnchorPosition, _selectionActivePosition);
-
+			_textContainerManager.beginInteraction().selectRange(_selectionAnchorPosition, _selectionActivePosition);
 			_textContainerManager.endInteraction();
 		}
 	}
@@ -771,140 +468,37 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 	/**
 	 *  @copy flash.text.TextField#maxChars
-	 *
-	 *  @default 0
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
 	 */
 	public function get maxChars():int
 	{
 		return _maxChars;
 	}
-
-	/**
-	 *  @private
-	 */
 	public function set maxChars(value:int):void
 	{
 		_maxChars = value;
 	}
 
-	//----------------------------------
-	//  multiline
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
-	private var _multiline:Boolean = true;
-
-	/**
-	 *  Determines whether the user can enter multiline text.
-	 *
-	 *  <p>If <code>true</code>, the Enter key starts a new paragraph.
-	 *  If <code>false</code>, the Enter key doesn't affect the text
-	 *  but causes the RichEditableText to dispatch an <code>"enter"</code>
-	 *  event.  If you paste text into the RichEditableText with a multiline
-	 *  value of <code>true</code>, newlines are stripped out of the text. </p>
-	 *
-	 *  @default true
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get multiline():Boolean
-	{
-		return _multiline;
-	}
-
-	/**
-	 *  @private
-	 */
-	public function set multiline(value:Boolean):void
-	{
-		_multiline = value;
-	}
-
-	//----------------------------------
-	//  restrict
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _restrict:String = null;
 
 	/**
 	 *  @copy flash.text.TextField#restrict
-	 *
-	 *  @default null
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
 	 */
 	public function get restrict():String
 	{
 		return _restrict;
 	}
-
-	/**
-	 *  @private
-	 */
 	public function set restrict(value:String):void
 	{
 		_restrict = value;
 	}
 
-	//----------------------------------
-	//  selectable
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
-	private var _selectable:Boolean = true;
-
-	/**
-	 *  @private
-	 */
 	private var selectableChanged:Boolean = false;
-
-	/**
-	 *  A flag indicating whether the content is selectable
-	 *  with the mouse, or with the keyboard when the control
-	 *  has the keyboard focus.
-	 *
-	 *  <p>Making the text selectable lets you copy text from the control.</p>
-	 *
-	 *  <p>This property is ignored if the <code>editable</code>
-	 *  property is <code>true</code>.</p>
-	 *
-	 *  @default true
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get selectable():Boolean
-	{
-		return _selectable;
-	}
-
-	/**
-	 *  @private
-	 */
 	public function set selectable(value:Boolean):void
 	{
 		if (value == _selectable)
+		{
 			return;
+		}
 
 		_selectable = value;
 		selectableChanged = true;
@@ -1035,156 +629,12 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 //		invalidateDisplayList();
 	}
 
-	private var _text:String = "";
-	private var textChanged:Boolean = false;
-
-	[Bindable("change")]
-	[Inspectable(category="General")]
-
-	/**
-	 *  The text String displayed by this component.
-	 *
-	 *  <p>Setting this property affects the <code>textFlow</code> property
-	 *  and vice versa.</p>
-	 *
-	 *  <p>If you set the <code>text</code> to a String such as
-	 *  <code>"Hello World"</code> and get the <code>textFlow</code>,
-	 *  it will be a TextFlow containing a single ParagraphElement
-	 *  with a single SpanElement.</p>
-	 *
-	 *  <p>If the text contains explicit line breaks --
-	 *  CR ("\r"), LF ("\n"), or CR+LF ("\r\n") --
-	 *  then the content will be set to a TextFlow
-	 *  which contains multiple paragraphs, each with one span.</p>
-	 *
-	 *  <p>If you set the <code>textFlow</code> and get the <code>text</code>,
-	 *  the text in each paragraph will be separated by a single
-	 *  LF ("\n").</p>
-	 *
-	 *  <p>Setting this property also affects the properties
-	 *  specifying the control's scroll position and the text selection.
-	 *  It resets the <code>horizontalScrollPosition</code>
-	 *  and <code>verticalScrollPosition</code> to 0,
-	 *  and it sets the <code>selectionAnchorPosition</code>
-	 *  and <code>selectionActivePosition</code>
-	 *  to -1 to clear the selection.</p>
-	 *
-	 *  @default ""
-	 *
-	 *  @see #textFlow
-	 *  @see #horizontalScrollPosition
-	 *  @see #verticalScrollPosition
-	 *  @see #selectionAnchorPosition
-	 *  @see #selectionActivePosition
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */ public function get text():String
-	{
-		// Extracting the plaintext from a TextFlow is somewhat expensive,
-		// as it involves iterating over the leaf FlowElements in the TextFlow.
-		// Therefore we do this extraction only when necessary, namely when
-		// you first set the 'content' or the 'textFlow'
-		// (or mutate the TextFlow), and then get the 'text'.
-		if (_text == null)
-		{
-			// If 'content' was last set,
-			// we have to first turn that into a TextFlow.
-			if (_content != null)
-				_textFlow = createTextFlowFromContent(_content);
-
-			// Once we have a TextFlow, we can export its plain text.
-			//noinspection ReservedWordAsName
-			_text = plainTextExporter.export(_textFlow, ConversionType.STRING_TYPE) as String;
-		}
-
-		return _text;
-	}
-
-	/**
-	 *  @private
-	 *  This will create a TextFlow with a single paragraph with a single span
-	 *  with exactly the text specified.  If there is whitespace and line
-	 *  breaks in the text, they will remain, regardless of the settings of
-	 *  the lineBreak and whiteSpaceCollapse styles.
-	 */
-	public function set text(value:String):void
-	{
-		// Treat setting the 'text' to null
-		// as if it were set to the empty String
-		// (which is the default state).
-		if (value == null)
-		{
-			value = "";
-		}
-
-		// If value is the same as _text, make sure if was not produced from
-		// setting 'textFlow' or 'content'.  For example, if you set a TextFlow
-		// corresponding to "Hello <span color="OxFF0000">World</span>"
-		// and then get the 'text', it will be the String "Hello World"
-		// But if you then set the 'text' to "Hello World"
-		// this represents a change: the "World" should no longer be red.
-		//
-		// Note: this is needed to stop two-binding from recursing.
-		if (source == sourceText && text == value)
-		{
-			return;
-		}
-
-		_text = value;
-		textChanged = true;
-		source = sourceText;
-
-		// Of 'text', 'textFlow', and 'content', the last one set wins.
-		textFlowChanged = false;
-		contentChanged = false;
-
-		// The other two are now invalid and must be recalculated when needed.
-		_textFlow = null;
-		_content = null;
-
-		invalidateProperties();
-		invalidateSize();
-		invalidateDisplayList();
-
-		dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
-	}
-
-	//----------------------------------
-	//  textContainerManager
-	//----------------------------------
-
-	/**
-	 *  @private
-	 */
 	private var _textContainerManager:EditableTextContainerManager;
 
-	/**
-	 *  @private
-	 *  The TLF TextContainerManager instance that displays,
-	 *  scrolls, and edits the text in this component.
-	 */
 	mx_internal function get textContainerManager():TextContainerManager
 	{
 		return _textContainerManager;
 	}
-
-	//----------------------------------
-	//  textFlow
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Storage for the textFlow property.
-	 */
-	private var _textFlow:TextFlow;
-
-	/**
-	 *  @private
-	 */
-	private var textFlowChanged:Boolean = false;
 
 	/**
 	 *  The TextFlow representing the rich text displayed by this component.
@@ -1240,31 +690,24 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	 *  @see spark.utils.TextFlowUtil.importFromXML()
 	 *  @see #text
 	 */
-	public function get textFlow():TextFlow
+	override public function get textFlow():TextFlow
 	{
-		// Note: this could be called before all properties are committed.
-
-		// We might not have a valid _textFlow for two reasons:
-		// either because the 'text' was set (which is the state
-		// after construction) or because the 'content' was set.
-		if (!_textFlow)
+		if (_textFlow == null)
 		{
-			if (_content != null)
+			if (plainTextImporter == null)
 			{
-				_textFlow = createTextFlowFromContent(_content);
-				_content = null;
+				plainTextImporter = TextConverter.getImporter(TextConverter.PLAIN_TEXT_FORMAT, configuration);
+				plainTextImporter.throwOnError = true;
 			}
-			else
-			{
-				_textFlow = plainTextImporter.importToFlow(_text);
-			}
+
+			_textFlow = plainTextImporter.importToFlow(_text);
 		}
 
 		// Make sure the interactionManager is added to this textFlow.
-		if (textChanged || contentChanged || textFlowChanged)
+		if (textChanged || textFlowChanged)
 		{
 			_textContainerManager.setTextFlow(_textFlow);
-			textChanged = contentChanged = textFlowChanged = false;
+			textChanged = textFlowChanged = false;
 		}
 
 		// If not read-only, make sure the textFlow has a composer in
@@ -1278,14 +721,8 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		return _textFlow;
 	}
 
-	/**
-	 *  @private
-	 */
 	public function set textFlow(value:TextFlow):void
 	{
-		// Treat setting the 'textFlow' to null
-		// as if 'text' were being set to the empty String
-		// (which is the default state).
 		if (value == null)
 		{
 			text = "";
@@ -1293,19 +730,18 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		}
 
 		if (value == _textFlow)
+		{
 			return;
+		}
 
 		_textFlow = value;
 		textFlowChanged = true;
-		source = sourceTextFlow;
 
 		// Of 'text', 'textFlow', and 'content', the last one set wins.
 		textChanged = false;
-		contentChanged = false;
 
 		// The other two are now invalid and must be recalculated when needed.
 		_text = null;
-		_content = null;
 
 		invalidateProperties();
 		invalidateSize();
@@ -1465,55 +901,34 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		}
 
 		// Only one of textChanged, textFlowChanged, and contentChanged
-		// will be true; the other two will be false because each setter
-		// guarantees this.
+		// will be true; the other two will be false because each setter guarantees this.
 
 		if (textChanged)
 		{
-			// If the text has linebreaks (CR, LF, or CF+LF)
-			// create a multi-paragraph TextFlow from it
-			// and use the TextFlowTextLineFactory to render it.
-			// Otherwise the StringTextLineFactory will put
-			// all of the lines into a single paragraph
-			// and FTE performance will degrade on a large paragraph.
-			if (_text.indexOf("\n") != -1 || _text.indexOf("\r") != -1)
-			{
-				_textFlow = plainTextImporter.importToFlow(_text);
-				_textContainerManager.setTextFlow(_textFlow);
-			}
-			else
-			{
-				_textContainerManager.setText(_text);
-			}
-		} else if (textFlowChanged)
+			_textContainerManager.setText(_text);
+		}
+		else if (textFlowChanged)
 		{
 			_textContainerManager.setTextFlow(_textFlow);
-		} else if (contentChanged)
-		{
-			_textFlow = createTextFlowFromContent(_content);
-			_textContainerManager.setTextFlow(_textFlow);
-
-			// Content converted to textFlow.
-			_content = null;
 		}
 
-		if (textChanged || textFlowChanged || contentChanged)
+		if (textChanged || textFlowChanged)
 		{
-			lastGeneration = _textFlow ? _textFlow.generation : 0;
+			lastGeneration = _textFlow != null ? _textFlow.generation : 0;
 			lastContentBoundsGeneration = 0;
 
 			// Handle the case where the initial text, textFlow or content
 			// is displayed as a password.
 			if (displayAsPassword)
+			{
 				displayAsPasswordChanged = true;
+			}
 
 			textChanged = false;
 			textFlowChanged = false;
-			contentChanged = false;
 		}
 
-		// If displayAsPassword changed, it only applies to the display,
-		// not the underlying text.
+		// If displayAsPassword changed, it only applies to the display, not the underlying text.
 		if (displayAsPasswordChanged)
 		{
 			var oldAnchorPosition:int = _selectionAnchorPosition;
@@ -1522,14 +937,10 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			// If there is any text, convert it to the passwordChar.
 			if (displayAsPassword)
 			{
-				// Make sure _text is set with the actual text before we
-				// change the displayed text.
+				// Make sure _text is set with the actual text before we change the displayed text.
 				_text = text;
-
 				// Paragraph terminators are lost during this substitution.
-				var textToDisplay:String = StringUtil.repeat(passwordChar, _text.length);
-
-				_textContainerManager.setText(textToDisplay);
+				_textContainerManager.setText(StringUtil.repeat(passwordChar, _text.length));
 			}
 			else
 			{
@@ -1540,46 +951,12 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			if (editingMode != EditingMode.READ_ONLY)
 			{
 				// Must preserve the selection, if there was one.
-				var selManager:ISelectionManager = _textContainerManager.beginInteraction();
-
 				// The visible selection will be refreshed during the update.
-				selManager.selectRange(oldAnchorPosition, oldActivePosition);
-
+				_textContainerManager.beginInteraction().selectRange(oldAnchorPosition, oldActivePosition);
 				_textContainerManager.endInteraction();
 			}
 
 			displayAsPasswordChanged = false;
-		}
-
-		if (clipAndEnableScrollingChanged)
-		{
-			// The TLF code seems to check for !off.
-			_textContainerManager.horizontalScrollPolicy = "auto";
-			_textContainerManager.verticalScrollPolicy = "auto";
-
-			clipAndEnableScrollingChanged = false;
-		}
-
-		if (horizontalScrollPositionChanged)
-		{
-			var oldHorizontalScrollPosition:Number = _textContainerManager.horizontalScrollPosition;
-
-			_textContainerManager.horizontalScrollPosition = _horizontalScrollPosition;
-
-			dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, _horizontalScrollPosition);
-
-			horizontalScrollPositionChanged = false;
-		}
-
-		if (verticalScrollPositionChanged)
-		{
-			var oldVerticalScrollPosition:Number = _textContainerManager.verticalScrollPosition;
-
-			_textContainerManager.verticalScrollPosition = _verticalScrollPosition;
-
-			dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, _verticalScrollPosition);
-
-			verticalScrollPositionChanged = false;
 		}
 	}
 
@@ -1705,34 +1082,27 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	/**
 	 *  @private
 	 */
-	override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+	override protected function updateDisplayList(w:Number, h:Number):void
 	{
-		// Check if the auto-size text is constrained in some way and needs
-		// to be remeasured.  If one of the dimension changes, the text may
-		// compose differently and have a different size which the layout
-		// manager needs to know.
-		if (autoSize && remeasureText(unscaledWidth, unscaledHeight))
+		// Check if the auto-size text is constrained in some way and needs to be remeasured.  If one of the dimension changes, the text may
+		// compose differently and have a different size which the layout manager needs to know.
+		if (autoSize && remeasureText(w, h))
 		{
 			return;
 		}
 
-		super.updateDisplayList(unscaledWidth, unscaledHeight);
+		super.updateDisplayList(w, h);
 
-		// If we're autoSizing we're telling the layout manager one set of
-		// values and TLF another set of values so there is room for the text
-		// to grow.
-
+		// If we're autoSizing we're telling the layout manager one set of values and TLF another set of values so there is room for the text to grow.
 		// autoSize for blockProgression=="rl" is implemented
 		if (!autoSize)
 		{
-			_textContainerManager.compositionWidth = unscaledWidth;
-			_textContainerManager.compositionHeight = unscaledHeight;
+			_textContainerManager.compositionWidth = w;
+			_textContainerManager.compositionHeight = h;
 		}
 
-		// If scrolling, always compose with the composer so we get consistent
-		// measurements.  The factory and the composer produce slightly
-		// different results which can confuse the scroller.  If there isn't a
-		// composer, this calls updateContainer so do it here now that the
+		// If scrolling, always compose with the composer so we get consistent measurements. The factory and the composer produce slightly
+		// different results which can confuse the scroller.  If there isn't a composer, this calls updateContainer so do it here now that the
 		// composition sizes are set so the results can be used.
 		if (clipAndEnableScrolling && _textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER)
 		{
@@ -1782,100 +1152,6 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 		super.setFocus();
 	}
-
-	//--------------------------------------------------------------------------
-	//
-	//  Methods: IViewport
-	//
-	//--------------------------------------------------------------------------
-
-	public function getHorizontalScrollPositionDelta(navigationUnit:uint):Number
-	{
-		var scrollR:Rectangle = scrollRect;
-		if (!scrollR)
-		{
-			return 0;
-		}
-
-		// maxDelta is the horizontalScrollPosition delta required to scroll to the RIGHT and minDelta scrolls to LEFT.
-		var maxDelta:Number = contentWidth - scrollR.right;
-		var minDelta:Number = -scrollR.left;
-
-		// Scroll by a "character" which is 1 em (matches widthInChars()).
-		var em:Number = effectiveTextFormat.fontSize;
-
-		switch (navigationUnit)
-		{
-			case NavigationUnit.LEFT:
-				return (scrollR.left <= 0) ? 0 : Math.max(minDelta, -em);
-
-			case NavigationUnit.RIGHT:
-				return (scrollR.right >= contentWidth) ? 0 : Math.min(maxDelta, em);
-
-			case NavigationUnit.PAGE_LEFT:
-				return Math.max(minDelta, -scrollR.width);
-
-			case NavigationUnit.PAGE_RIGHT:
-				return Math.min(maxDelta, scrollR.width);
-
-			case NavigationUnit.HOME:
-				return minDelta;
-
-			case NavigationUnit.END:
-				return maxDelta;
-
-			default:
-				return 0;
-		}
-	}
-
-	/**
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function getVerticalScrollPositionDelta(navigationUnit:uint):Number
-	{
-		var scrollR:Rectangle = scrollRect;
-		if (!scrollR)
-			return 0;
-
-		// maxDelta is the horizontalScrollPosition delta required
-		// to scroll to the END and minDelta scrolls to HOME.
-		var maxDelta:Number = contentHeight - scrollR.bottom;
-		var minDelta:Number = -scrollR.top;
-
-		switch (navigationUnit)
-		{
-			case NavigationUnit.UP:
-				return _textContainerManager.getScrollDelta(-1);
-
-			case NavigationUnit.DOWN:
-				return _textContainerManager.getScrollDelta(1);
-
-			case NavigationUnit.PAGE_UP:
-				return Math.max(minDelta, -scrollR.height);
-
-			case NavigationUnit.PAGE_DOWN:
-				return Math.min(maxDelta, scrollR.height);
-
-			case NavigationUnit.HOME:
-				return minDelta;
-
-			case NavigationUnit.END:
-				return maxDelta;
-
-			default:
-				return 0;
-		}
-	}
-
-	//--------------------------------------------------------------------------
-	//
-	//  Methods
-	//
-	//--------------------------------------------------------------------------
 
 	/**
 	 *  Inserts the specified text into the RichEditableText
@@ -2237,16 +1513,10 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		}
 	}
 
-	private function get effectiveTextFormat():ITextLayoutFormat
-	{
-		return _textFormat == null ? _textFlow.computedFormat : _textFormat;
-	}
-
 	/**
-	 *  @private
 	 *  Return true if there is a width and height to use for the measure.
 	 */
-	mx_internal function isMeasureFixed():Boolean
+	private function isMeasureFixed():Boolean
 	{
 		if (effectiveTextFormat.blockProgression != BlockProgression.TB)
 		{
@@ -2254,11 +1524,10 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		}
 
 		// Is there some sort of width and some sort of height?
-		return  (!isNaN(explicitWidth) || !isNaN(_widthInChars) || !isNaN(widthConstraint)) && (!isNaN(explicitHeight) || !isNaN(_heightInLines) || !isNaN(heightConstraint));
+		return (!isNaN(explicitWidth) || !isNaN(_widthInChars) || !isNaN(widthConstraint)) && (!isNaN(explicitHeight) || !isNaN(_heightInLines) || !isNaN(heightConstraint));
 	}
 
 	/**
-	 *  @private
 	 *  Returns the bounds of the measured text.  The initial composeWidth may
 	 *  be adjusted for minWidth or maxWidth.  The value used for the compose
 	 *  is in _textContainerManager.compositionWidth.
@@ -2299,10 +1568,8 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		// Adjust width and height for text alignment.
 		var bounds:Rectangle = _textContainerManager.getContentBounds();
 
-		// If it's an empty text flow, there is one line with one
-		// character so the height is good for the line but we
+		// If it's an empty text flow, there is one line with one character so the height is good for the line but we
 		// need to give it some width other than optional padding.
-
 		if (_textContainerManager.getText().length == 0)
 		{
 			// Empty text flow.  One Em wide so there
@@ -2315,9 +1582,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		return bounds;
 	}
 
-
 	/**
-	 *  @private
 	 *  If auto-sizing text, it may need to be remeasured if it is
 	 *  constrained in one dimension by the layout manager.  If it is
 	 *  constrained in both dimensions there is no need to remeasure.
@@ -2377,14 +1642,9 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		return true;
 	}
 
-	private static const textElement:TextElement = new TextElement();
-	private static const textBlock:TextBlock = new TextBlock(textElement);
 	/**
-	 *  @private
-	 *  This method is called when anything affecting the
-	 *  default font, size, weight, etc. changes.
-	 *  It calculates the 'ascent', 'descent', and
-	 *  instance variables, which are used in measure().
+	 *  This method is called when anything affecting the default font, size, weight, etc. changes.
+	 *  It calculates the 'ascent', 'descent', and instance variables, which are used in measure().
 	 */
 	private function calculateFontMetrics():void
 	{
@@ -2410,60 +1670,47 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 	private function calculateWidthInChars():Number
 	{
-		var effectiveWidthInChars:int;
-		// If both height and width are NaN use 10 chars.  Otherwise if only width is NaN, use 1.
-		if (isNaN(_widthInChars))
-		{
-			effectiveWidthInChars = isNaN(_heightInLines) ? 10 : 1;
-		}
-		else
-		{
-			effectiveWidthInChars = _widthInChars;
-		}
-
-		// Without the explicit casts, if padding values are non-zero, the
-		// returned width is a very large number.
+		var effectiveWidthInChars:int = isNaN(_widthInChars) ? (isNaN(_heightInLines) ? 10 : 1) : _widthInChars;
+		// Without the explicit casts, if padding values are non-zero, the returned width is a very large number.
 		return effectiveTextFormat.paddingLeft + (effectiveWidthInChars * effectiveTextFormat.fontSize) + effectiveTextFormat.paddingRight;
 	}
 
 	/**
-	 *  Calculates the height needed for heightInLines lines using the default
-	 *  font.
+	 *  Calculates the height needed for heightInLines lines using the default font.
 	 */
 	private function calculateHeightInLines():Number
 	{
 		var height:Number = effectiveTextFormat.paddingTop + effectiveTextFormat.paddingBottom;
-
 		if (_heightInLines == 0)
+		{
 			return height;
+		}
 
 		var effectiveHeightInLines:int;
-
-		// If both height and width are NaN use 10 lines.  Otherwise if
-		// only height is NaN, use 1.
-		if (isNaN(_heightInLines))
-			effectiveHeightInLines = isNaN(_widthInChars) ? 10 : 1;
-		else
-			effectiveHeightInLines = _heightInLines;
+		// If both height and width are NaN use 10 lines.  Otherwise if only height is NaN, use 1.
+		effectiveHeightInLines = isNaN(_heightInLines) ? (isNaN(_widthInChars) ? 10 : 1) : _heightInLines;
 
 		// Position of the baseline of first line in the container.
 		value = effectiveTextFormat.firstBaselineOffset;
 		if (value == lineHeight)
-			height += lineHeight; else if (value is Number)
-			height += Number(value);
+		{
+			height += lineHeight;
+		}
 		else
-			height += ascent;
+		{
+			height += value is Number ? Number(value) : ascent;
+		}
 
-		// Distance from baseline to baseline.  Can be +/- number or
-		// or +/- percent (in form "120%") or "undefined".
+		// Distance from baseline to baseline.  Can be +/- number or +/- percent (in form "120%") or "undefined".
 		if (effectiveHeightInLines > 1)
 		{
 			var value:Object = effectiveTextFormat.lineHeight;
 			var lineHeight:Number = TextUtil.getNumberOrPercentOf(value, effectiveTextFormat.fontSize);
-
 			// Default is 120%
 			if (isNaN(lineHeight))
+			{
 				lineHeight = effectiveTextFormat.fontSize * 1.2;
+			}
 
 			height += (effectiveHeightInLines - 1) * lineHeight;
 		}
@@ -2472,32 +1719,6 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		height += descent;
 
 		return height;
-	}
-
-	private function createTextFlowFromContent(content:Object):TextFlow
-	{
-		var textFlow:TextFlow;
-
-		if (content is TextFlow)
-		{
-			textFlow = content as TextFlow;
-		}
-		else if (content is Array)
-		{
-			textFlow = new TextFlow();
-			textFlow.whiteSpaceCollapse = effectiveTextFormat.whiteSpaceCollapse;
-			textFlow.mxmlChildren = content as Array;
-			textFlow.whiteSpaceCollapse = undefined;
-		}
-		else
-		{
-			textFlow = new TextFlow();
-			textFlow.whiteSpaceCollapse = effectiveTextFormat.whiteSpaceCollapse;
-			textFlow.mxmlChildren = [content];
-			textFlow.whiteSpaceCollapse = undefined;
-		}
-
-		return textFlow;
 	}
 
 	private function updateEditingMode():void
@@ -2533,65 +1754,61 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			_selectionAnchorPosition = text.length;
 			_selectionActivePosition = _selectionAnchorPosition;
 		}
-		else
+		// Insert requires a selection, or it is a noop.
+		else if (_selectionAnchorPosition == -1 || _selectionActivePosition == -1)
 		{
-			// Insert requires a selection, or it is a noop.
-			if (_selectionAnchorPosition == -1 || _selectionActivePosition == -1)
-				return;
+			return;
 		}
 
 		// This will update the selection after the operation is done.
-		var success:Boolean = _textContainerManager.insertTextOperation(newText, _selectionAnchorPosition, _selectionActivePosition);
-
-		if (success)
+		if (_textContainerManager.insertTextOperation(newText, _selectionAnchorPosition, _selectionActivePosition))
+		{
 			dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+		}
 	}
 
-	/**
-	 *  @private
-	 */
 	private function handlePasteOperation(op:PasteOperation):void
 	{
 		var hasConstraints:Boolean = restrict != null || maxChars > 0 || displayAsPassword;
 
-		// If there are no constraints and multiline text is allowed
-		// there is nothing that needs to be done.
+		// If there are no constraints and multiline text is allowed there is nothing that needs to be done.
 		if (!hasConstraints && multiline)
+		{
 			return;
+		}
 
-		// If copied/cut from displayAsPassword field the pastedText
-		// is '*' characters but this is correct.
+		// If copied/cut from displayAsPassword field the pastedText is '*' characters but this is correct.
 		var pastedText:String = TextUtil.extractText(op.textScrap.textFlow);
 
-		// If there are no constraints and no newlines there is nothing
-		// more to do.
+		// If there are no constraints and no newlines there is nothing more to do.
 		if (!hasConstraints && pastedText.indexOf("\n") == -1)
+		{
 			return;
+		}
 
-		// Save this in case we modify the pasted text.  We need to know
-		// how much text to delete.
+		// Save this in case we modify the pasted text.  We need to know how much text to delete.
 		var textLength:int = pastedText.length;
 
 		// If multiline is false, strip newlines out of pasted text
 		// This will not strip newlines out of displayAsPassword fields
 		// since the text is the passwordChar and newline won't be found.
 		if (!multiline)
+		{
 			pastedText = pastedText.replace(ALL_NEWLINES_REGEXP, "");
+		}
 
 		// We know it's an EditManager or we wouldn't have gotten here.
-		var editManager:IEditManager = EditManager(_textContainerManager.beginInteraction());
+		var editManager:IEditManager = IEditManager(_textContainerManager.beginInteraction());
 
 		// Generate a CHANGING event for the PasteOperation but not for the
-		// DeleteTextOperation or the InsertTextOperation which are also part
-		// of the paste.
+		// DeleteTextOperation or the InsertTextOperation which are also part of the paste.
 		dispatchChangeAndChangingEvents = false;
 
 		var selectionState:SelectionState = new SelectionState(op.textFlow, op.absoluteStart, op.absoluteStart + textLength);
 		editManager.deleteText(selectionState);
 
 		// Insert the same text, the same place where the paste was done.
-		// This will go thru the InsertPasteOperation and do the right
-		// things with restrict, maxChars and displayAsPassword.
+		// This will go thru the InsertPasteOperation and do the right things with restrict, maxChars and displayAsPassword.
 		selectionState = new SelectionState(op.textFlow, op.absoluteStart, op.absoluteStart);
 		editManager.insertText(pastedText, selectionState);
 
@@ -2614,27 +1831,21 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	}
 
 	/**
-	 *  @private
 	 *  add listeners to focusManager
 	 */
 	private function addActivateHandlers():void
 	{
-		if (!focusManager)
+		if (focusManager != null)
 		{
-			return;
+			focusManager.addEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, _textContainerManager.activateHandler, false, 0, true);
+			focusManager.addEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, _textContainerManager.deactivateHandler, false, 0, true);
 		}
-
-		focusManager.addEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, _textContainerManager.activateHandler, false, 0, true);
-		focusManager.addEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, _textContainerManager.deactivateHandler, false, 0, true);
 	}
 
 	/**
-	 *  @private
 	 *  Called when a FocusManager is added to an IFocusManagerContainer.
-	 *  We need to check that it belongs
-	 *  to us before listening to it.
-	 *  Because we listen to sandboxroot, you cannot assume the type of
-	 *  the event.
+	 *  We need to check that it belongs to us before listening to it.
+	 *  Because we listen to sandboxroot, you cannot assume the type of the event.
 	 */
 	private function addFocusManagerHandler(event:Event):void
 	{
@@ -2646,23 +1857,14 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	}
 
 	/**
-	 *  @private
-	 *  RichEditableTextContainerManager overrides focusInHandler and calls
-	 *  this before executing its own focusInHandler.
+	 *  RichEditableTextContainerManager overrides focusInHandler and calls this before executing its own focusInHandler.
 	 */
 	mx_internal function focusInHandler(event:FocusEvent):void
 	{
-		// When TCM is simulating a focusIn event, event will be null.
-		// Ignore these and wait for the actual focus in event.
-		if (event == null)
-		{
-			return;
-		}
-
 		//trace("focusIn handler");
 
 		var fm:IFocusManager = focusManager;
-		if (fm && editingMode == EditingMode.READ_WRITE)
+		if (fm != null && editingMode == EditingMode.READ_WRITE)
 		{
 			fm.showFocusIndicator = true;
 		}
@@ -2719,14 +1921,13 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			}
 		}
 
-		if (focusManager && multiline)
+		if (focusManager != null && multiline)
 		{
 			focusManager.defaultButtonEnabled = false;
 		}
 	}
 
 	/**
-	 *  @private
 	 *  RichEditableTextContainerManager overrides focusOutHandler and calls
 	 *  this before executing its own focusOutHandler.
 	 */
@@ -2874,32 +2075,25 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	}
 
 	/**
-	 *  @private
-	 *  Called when the TextContainerManager dispatches a 'compositionComplete'
-	 *  event when it has recomposed the text into TextLines.
+	 *  Called when the TextContainerManager dispatches a 'compositionComplete' event when it has recomposed the text into TextLines.
 	 */
 	private function textContainerManager_compositionCompleteHandler(event:CompositionCompleteEvent):void
 	{
-		//trace("compositionComplete");
-
 		var oldContentWidth:Number = _contentWidth;
 		var oldContentHeight:Number = _contentHeight;
-
 		var newContentBounds:Rectangle = _textContainerManager.getContentBounds();
 
-		// Try to prevent the scroller from getting into a loop while
-		// adding/removing scroll bars.
+		// Try to prevent the scroller from getting into a loop while adding/removing scroll bars.
 		if (_textFlow && clipAndEnableScrolling)
+		{
 			adjustContentBoundsForScroller(newContentBounds);
+		}
 
 		var newContentWidth:Number = newContentBounds.width;
 		var newContentHeight:Number = newContentBounds.height;
-
 		if (newContentWidth != oldContentWidth)
 		{
 			_contentWidth = newContentWidth;
-
-			//trace("composeWidth", _textContainerManager.compositionWidth, "contentWidth", oldContentWidth, newContentWidth);
 
 			// If there is a scroller, this triggers the scroller layout.
 			dispatchPropertyChangeEvent("contentWidth", oldContentWidth, newContentWidth);
@@ -2909,24 +2103,21 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		{
 			_contentHeight = newContentHeight;
 
-			//trace("composeHeight", _textContainerManager.compositionHeight, "contentHeight", oldContentHeight, newContentHeight);
-
 			// If there is a scroller, this triggers the scroller layout.
 			dispatchPropertyChangeEvent("contentHeight", oldContentHeight, newContentHeight);
 		}
 	}
 
 	/**
-	 *  @private
 	 *  Called when the TextContainerManager dispatches a 'damage' event.
 	 *  The TextFlow could have been modified interactively or programatically.
 	 */
 	private function textContainerManager_damageHandler(event:DamageEvent):void
 	{
 		if (ignoreDamageEvent || event.damageLength == 0)
+		{
 			return;
-
-		//trace("damageHandler", "generation", _textFlow ? _textFlow.generation : -1, "lastGeneration", lastGeneration);
+		}
 
 		// The following textContainerManager functions can trigger a damage
 		// event:
@@ -2947,18 +2138,21 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 		// If there are pending changes, don't wipe them out.  We have
 		// not gotten to commitProperties() yet.
-		if (textChanged || textFlowChanged || contentChanged)
+		if (textChanged || textFlowChanged)
+		{
 			return;
+		}
 
 		// In this case we always maintain _text with the underlying text and
 		// display the appropriate number of passwordChars.  If there are any
 		// interactive editing operations _text is updated during the operation.
 		if (displayAsPassword)
+		{
 			return;
+		}
 
 		// Invalidate _text and _content.
 		_text = null;
-		_content = null;
 		_textFlow = _textContainerManager.getTextFlow();
 
 		lastGeneration = _textFlow.generation;
@@ -2974,7 +2168,6 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 	}
 
 	/**
-	 *  @private
 	 *  Called when the TextContainerManager dispatches a 'scroll' event
 	 *  as it autoscrolls.
 	 */
@@ -2985,28 +2178,20 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 
 		if (newHorizontalScrollPosition != oldHorizontalScrollPosition)
 		{
-			//trace("hsp scroll", oldHorizontalScrollPosition, "->", newHorizontalScrollPosition);
-
 			_horizontalScrollPosition = newHorizontalScrollPosition;
-
 			dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, newHorizontalScrollPosition);
 		}
 
 		var oldVerticalScrollPosition:Number = _verticalScrollPosition;
 		var newVerticalScrollPosition:Number = _textContainerManager.verticalScrollPosition;
-
 		if (newVerticalScrollPosition != oldVerticalScrollPosition)
 		{
-			//trace("vsp scroll", oldVerticalScrollPosition, "->", newVerticalScrollPosition);
-
 			_verticalScrollPosition = newVerticalScrollPosition;
-
 			dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, newVerticalScrollPosition);
 		}
 	}
 
 	/**
-	 *  @private
 	 *  Called when the TextContainerManager dispatches a 'selectionChange' event.
 	 */
 	private function textContainerManager_selectionChangeHandler(event:SelectionEvent):void
@@ -3015,8 +2200,7 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		var oldActive:int = _selectionActivePosition;
 
 		var selectionState:SelectionState = event.selectionState;
-
-		if (selectionState)
+		if (selectionState != null)
 		{
 			_selectionAnchorPosition = selectionState.anchorPosition;
 			_selectionActivePosition = selectionState.activePosition;
@@ -3031,23 +2215,17 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		hasProgrammaticSelectionRange = false;
 
 		// Only dispatch the event if the selection has really changed.
-		var changed:Boolean = oldAnchor != _selectionAnchorPosition || oldActive != _selectionActivePosition;
-		if (changed)
+		if (oldAnchor != _selectionAnchorPosition || oldActive != _selectionActivePosition)
 		{
-			//trace("selectionChangeHandler", _selectionAnchorPosition, _selectionActivePosition);
 			dispatchEvent(new FlexEvent(FlexEvent.SELECTION_CHANGE));
 		}
 	}
 
 	/**
-	 *  @private
-	 *  Called when the TextContainerManager dispatches an 'operationBegin'
-	 *  event before an editing operation.
+	 *  Called when the TextContainerManager dispatches an 'operationBegin' event before an editing operation.
 	 */
 	private function textContainerManager_flowOperationBeginHandler(event:FlowOperationEvent):void
 	{
-		//trace("flowOperationBegin", "level", event.level);
-
 		var op:FlowOperation = event.operation;
 
 		// The text flow's generation will be incremented if the text flow
@@ -3056,12 +2234,8 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 		if (op is InsertTextOperation)
 		{
 			var insertTextOperation:InsertTextOperation = InsertTextOperation(op);
-
 			var textToInsert:String = insertTextOperation.text;
-
-			// Note: Must process restrict first, then maxChars,
-			// then displayAsPassword last.
-
+			// Note: Must process restrict first, then maxChars, then displayAsPassword last.
 			if (_restrict != null)
 			{
 				textToInsert = StringUtil.restrict(textToInsert, restrict);
@@ -3072,11 +2246,9 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 				}
 			}
 
-			// The text deleted by this operation.  If we're doing our
-			// own manipulation of the textFlow we have to take the deleted
+			// The text deleted by this operation. If we're doing our own manipulation of the textFlow we have to take the deleted
 			// text into account as well as the inserted text.
 			var delSelOp:SelectionState = insertTextOperation.deleteSelectionState;
-
 			var delLen:int = (delSelOp == null) ? 0 : delSelOp.absoluteEnd - delSelOp.absoluteStart;
 
 			if (maxChars != 0)
@@ -3084,7 +2256,9 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 				var length1:int = text.length - delLen;
 				var length2:int = textToInsert.length;
 				if (length1 + length2 > maxChars)
+				{
 					textToInsert = textToInsert.substr(0, maxChars - length1);
+				}
 			}
 
 			if (_displayAsPassword)
@@ -3103,13 +2277,15 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			}
 
 			insertTextOperation.text = textToInsert;
-		} else if (op is PasteOperation)
+		}
+		else if (op is PasteOperation)
 		{
 			// Paste is implemented in operationEnd.  The basic idea is to allow
 			// the paste to go through unchanged, but group it together with a
 			// second operation that modifies text as part of the same
 			// transaction. This is vastly simpler for TLF to manage.
-		} else if (op is DeleteTextOperation || op is CutOperation)
+		}
+		else if (op is DeleteTextOperation || op is CutOperation)
 		{
 			var flowTextOperation:FlowTextOperation = FlowTextOperation(op);
 
@@ -3129,64 +2305,51 @@ public class EditableTextView extends AbstractView implements IFocusManagerCompo
 			}
 		}
 
-		// Dispatch a 'changing' event from the RichEditableText
-		// as notification that an editing operation is about to occur.
-		// The level will be 0 for single operations, and at the start
-		// of a composite operation.
+		// Dispatch a 'changing' event from the RichEditableText as notification that an editing operation is about to occur.
+		// The level will be 0 for single operations, and at the start of a composite operation.
 		if (dispatchChangeAndChangingEvents && event.level == 0)
 		{
-			var newEvent:TextOperationEvent = new TextOperationEvent(TextOperationEvent.CHANGING);
-			newEvent.operation = op;
+			var newEvent:TextOperationEvent = new TextOperationEvent(TextOperationEvent.CHANGING, false, true, op);
 			dispatchEvent(newEvent);
 
 			// If the event dispatched from this RichEditableText is canceled,
-			// cancel the one from the EditManager, which will prevent
-			// the editing operation from being processed.
+			// cancel the one from the EditManager, which will prevent the editing operation from being processed.
 			if (newEvent.isDefaultPrevented())
+			{
 				event.preventDefault();
+			}
 		}
 	}
 
 	/**
-	 *  @private
-	 *  Called when the TextContainerManager dispatches an 'operationEnd' event
-	 *  after an editing operation.
+	 *  Called when the TextContainerManager dispatches an 'operationEnd' event after an editing operation.
 	 */
 	private function textContainerManager_flowOperationEndHandler(event:FlowOperationEvent):void
 	{
-		//trace("flowOperationEnd", "level", event.level);
-
-		// Paste is a special case.  Any mods have to be made to the text
-		// which includes what was pasted.
+		// Paste is a special case.  Any mods have to be made to the text which includes what was pasted.
 		if (event.operation is PasteOperation)
+		{
 			handlePasteOperation(PasteOperation(event.operation));
+		}
 	}
 
 	/**
-	 *  @private
-	 *  Called when the TextContainerManager dispatches an 'operationComplete'
-	 *  event after an editing operation.
+	 *  Called when the TextContainerManager dispatches an 'operationComplete' event after an editing operation.
 	 */
 	private function textContainerManager_flowOperationCompleteHandler(event:FlowOperationEvent):void
 	{
-		//trace("flowOperationComplete", "level", event.level);
-
-		// Dispatch a 'change' event from the RichEditableText
-		// as notification that an editing operation has occurred.
+		// Dispatch a 'change' event from the this as notification that an editing operation has occurred.
 		// The flow is now in a state that it can be manipulated.
-		// The level will be 0 for single operations, and at the end
-		// of a composite operation.
+		// The level will be 0 for single operations, and at the end of a composite operation.
 		if (dispatchChangeAndChangingEvents && event.level == 0)
 		{
-			var newEvent:TextOperationEvent = new TextOperationEvent(TextOperationEvent.CHANGE);
-			newEvent.operation = event.operation;
-			dispatchEvent(newEvent);
+			dispatchEvent(new TextOperationEvent(TextOperationEvent.CHANGE, false, true, event.operation));
 		}
 	}
 
 	/**
 	 *  Called when a InlineGraphicElement is resized due to having width or
-	 *  height as auto or percent and the graphic has finished loading.  The
+	 *  height as auto or percent and the graphic has finished loading. The
 	 *  size of the graphic is now known.
 	 */
 	private function textContainerManager_inlineGraphicStatusChangeHandler(event:StatusChangeEvent):void

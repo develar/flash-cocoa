@@ -7,11 +7,14 @@ import flash.text.engine.FontDescription;
 import flashx.textLayout.formats.BackgroundColor;
 import flashx.textLayout.formats.BaselineOffset;
 import flashx.textLayout.formats.BlockProgression;
+import flashx.textLayout.formats.Clear;
 import flashx.textLayout.formats.Direction;
 import flashx.textLayout.formats.FormatValue;
 import flashx.textLayout.formats.ITextLayoutFormat;
 import flashx.textLayout.formats.LeadingModel;
 import flashx.textLayout.formats.LineBreak;
+import flashx.textLayout.formats.ListStylePosition;
+import flashx.textLayout.formats.ListStyleType;
 import flashx.textLayout.formats.TextAlign;
 import flashx.textLayout.formats.TextDecoration;
 import flashx.textLayout.formats.TextJustify;
@@ -312,6 +315,41 @@ public class TextFormat implements ITextLayoutFormat
 	public function set $lineBreak(value:String):void
 	{
 		_lineBreak = value;
+	}
+
+	public function get marginLeft():*
+	{
+		return 0;
+	}
+
+	public function get marginTop():*
+	{
+		return 0;
+	}
+
+	public function get marginRight():*
+	{
+		return 0;
+	}
+
+	public function get marginBottom():*
+	{
+		return 0;
+	}
+
+	public function get listStyleType():*
+	{
+		return ListStyleType.DISC;
+	}
+
+	public function get listStylePosition():*
+	{
+		return ListStylePosition.OUTSIDE;
+	}
+
+	public function get clear():*
+	{
+		return Clear.NONE;
 	}
 }
 }

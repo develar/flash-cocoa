@@ -42,7 +42,7 @@ public class SliderNumericStepperSkin extends TitledComponentSkin
 		if (labelHelper != null)
 		{
 			labelHelper.validate();
-			measuredHeight += Math.round(labelHelper.textAscent);
+			measuredHeight += Math.round(labelHelper.textLine.ascent);
 		}
 	}
 
@@ -51,8 +51,8 @@ public class SliderNumericStepperSkin extends TitledComponentSkin
 		var topOffset:Number = 0;
 		if (labelHelper != null)
 		{
-			topOffset = Math.round(labelHelper.textAscent);
 			labelHelper.validate();
+			topOffset = Math.round(labelHelper.textLine.ascent);
 			labelHelper.move(0, topOffset);
 		}
 
