@@ -32,10 +32,8 @@ import mx.core.DesignLayer;
 import mx.core.EventPriority;
 import mx.core.FlexGlobals;
 import mx.core.FlexSprite;
-import mx.core.IEmbeddedFontRegistry;
 import mx.core.IFlexModule;
 import mx.core.IFlexModuleFactory;
-import mx.core.IFontContextComponent;
 import mx.core.IInvalidating;
 import mx.core.ILayoutDirectionElement;
 import mx.core.IUIComponent;
@@ -43,7 +41,6 @@ import mx.core.IVisualElement;
 import mx.core.IVisualElementContainer;
 import mx.core.LayoutDirection;
 import mx.core.LayoutElementUIComponentUtils;
-import mx.core.Singleton;
 import mx.core.UIComponent;
 import mx.core.UIComponentCachePolicy;
 import mx.core.UIComponentGlobals;
@@ -733,21 +730,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	private static const DEFAULT_MAX_WIDTH:Number = 10000;
 	private static const DEFAULT_MAX_HEIGHT:Number = 10000;
 
-	//----------------------------------
-	//  embeddedFontRegistry
-	//----------------------------------
-
-	private static var noEmbeddedFonts:Boolean;
-
-	/**
-	 *  @private
-	 *  Storage for the _embeddedFontRegistry property.
-	 *  Note: This gets initialized on first access,
-	 *  not when this class is initialized, in order to ensure
-	 *  that the Singleton registry has already been initialized.
-	 */
-	private static var _embeddedFontRegistry:IEmbeddedFontRegistry;
-
 	public function AbstractView()
 	{
 		super();
@@ -767,29 +749,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 		_width = super.width;
 		_height = super.height;
-	}
-
-	/**
-	 *  @private
-	 *  A reference to the embedded font registry.
-	 *  Single registry in the system.
-	 *  Used to look up the moduleFactory of a font.
-	 */
-	mx_internal static function get embeddedFontRegistry():IEmbeddedFontRegistry
-	{
-		if (!_embeddedFontRegistry && !noEmbeddedFonts)
-		{
-			try
-			{
-				_embeddedFontRegistry = IEmbeddedFontRegistry(Singleton.getInstance("mx.core::IEmbeddedFontRegistry"));
-			}
-			catch (e:Error)
-			{
-				noEmbeddedFonts = true;
-			}
-		}
-
-		return _embeddedFontRegistry;
 	}
 
 	/**
@@ -5016,12 +4975,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			}
 		}
 
-		// Set the font context in non-UIComponent children. UIComponent children use moduleFactory.
-		if (child is IFontContextComponent && !child is UIComponent && IFontContextComponent(child).fontContext == null)
-		{
-			IFontContextComponent(child).fontContext = moduleFactory;
-		}
-
 		if (child is IUIComponent)
 		{
 			IUIComponent(child).parentChanged(this);
@@ -6960,35 +6913,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 
 		return child == this;
-	}
-
-	/**
-	 *  @private
-	 *  Finds a module factory that can create a TextField
-	 *  that can display the given font.
-	 *  This is important for embedded fonts, not for system fonts.
-	 *
-	 *  @param fontName The name of the fontFamily.
-	 *
-	 *  @param bold A flag which true if the font weight is bold,
-	 *  and false otherwise.
-	 *
-	 *  @param italic A flag which is true if the font style is italic,
-	 *  and false otherwise.
-	 *
-	 *  @return The IFlexModuleFactory that represents the context
-	 *  where an object wanting to  use the font should be created.
-	 */
-	mx_internal function getFontContext(fontName:String, bold:Boolean, italic:Boolean, embeddedCff:* = undefined):IFlexModuleFactory
-	{
-		if (noEmbeddedFonts)
-		{
-			return null;
-		}
-
-		var registry:IEmbeddedFontRegistry = embeddedFontRegistry;
-
-		return registry ? registry.getAssociatedModuleFactory(fontName, bold, italic, this, moduleFactory, systemManager, embeddedCff) : null;
 	}
 
 	/**

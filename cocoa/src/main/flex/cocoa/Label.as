@@ -8,11 +8,7 @@ import cocoa.plaf.Skin;
 import flash.display.DisplayObjectContainer;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
-import flash.text.engine.FontLookup;
-import flash.text.engine.FontPosture;
-import flash.text.engine.FontWeight;
 
-import flashx.textLayout.compose.ISWFContext;
 import flashx.textLayout.formats.TextAlign;
 import flashx.textLayout.formats.VerticalAlign;
 
@@ -214,18 +210,13 @@ public class Label extends AbstractView
 
 			fontDescription = elementFormat.fontDescription;
 		}
-
-		// на данный момент встроенные шрифты могут придти только из LaF, поэтому более нигде мы не обновляем swf context
-		if (elementFormat.fontDescription.fontLookup == FontLookup.EMBEDDED_CFF)
-		{
-			labelHelper.swfContext = ISWFContext(getFontContext(fontDescription.fontName, fontDescription.fontWeight == FontWeight.BOLD, fontDescription.fontPosture == FontPosture.ITALIC, true));
-		}
 	}
 
 	override protected function measure():void
 	{
 		if (labelHelper.hasText)
 		{
+			labelHelper.font = elementFormat;
 			labelHelper.validate();
 			measuredWidth = labelHelper.textWidth + _paddingLeft + _paddingRight;
 			measuredHeight = labelHelper.textHeight + _paddingBottom + _paddingTop;
@@ -240,8 +231,6 @@ public class Label extends AbstractView
 	override protected function updateDisplayList(w:Number, h:Number):void
 	{
 		super.updateDisplayList(w, h);
-
-		labelHelper.font = elementFormat;
 		if (!labelHelper.hasText)
 		{
 			return;
@@ -249,7 +238,8 @@ public class Label extends AbstractView
 
 		labelHelper.validate();
 
-		var textY:Number = h - labelHelper.textLine.descent - _paddingBottom + _paddingTop;
+		// verticalAlign = top
+		var textY:Number = labelHelper.textLine.ascent + _paddingTop;
 		
 		switch (_textAlign)
 		{

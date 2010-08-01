@@ -379,7 +379,7 @@ internal final class EditableTextContainerManager extends TextContainerManager i
     {
 		// When TCM is simulating a focusIn event, event will be null.
 		// Ignore these and wait for the actual focus in event.
-		if (event == null)
+		if (event != null)
 		{
         	textDisplay.focusInHandler(event);
 		}

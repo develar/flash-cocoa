@@ -1,31 +1,31 @@
 package cocoa.plaf.basic
 {
-import cocoa.SingleSelectionDataGroup;
+import cocoa.HighlightableItemRenderer;
+import cocoa.ItemMouseSelectionMode;
+import cocoa.SelectableDataGroup;
 
 import flash.events.MouseEvent;
 
 public class SegmentedControlController
 {
-	private var wasSelected:Boolean;
+	private var itemRenderer:HighlightableItemRenderer;
 
-	private var itemRenderer:AbstractItemRenderer;
-
-	public function register(dataGroup:SingleSelectionDataGroup):void
+	public function register(dataGroup:SelectableDataGroup):void
 	{
+		dataGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE;
 		dataGroup.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 	}
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
-		var dataGroup:SingleSelectionDataGroup = SingleSelectionDataGroup(event.currentTarget);
+		var dataGroup:SelectableDataGroup = SelectableDataGroup(event.currentTarget);
 		if (!dataGroup.hitTestPoint(event.stageX, event.stageY))
 		{
 			return;
 		}
 
-		itemRenderer = AbstractItemRenderer(event.target);
+		itemRenderer = HighlightableItemRenderer(event.target);
 		itemRenderer.highlighted = true;
-		wasSelected = itemRenderer.selected;
 
 		dataGroup.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
@@ -45,11 +45,7 @@ public class SegmentedControlController
 		if (itemRenderer == event.target)
 		{
 			itemRenderer.highlighted = false;
-			if (!wasSelected)
-			{
-				itemRenderer.selected = true;
-				SingleSelectionDataGroup(itemRenderer.owner).selectedIndex = itemRenderer.itemIndex;
-			}
+			SelectableDataGroup(itemRenderer.owner).itemSelecting(itemRenderer.itemIndex);
 			event.updateAfterEvent();
 		}
 

@@ -117,7 +117,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 		}
 	}
 
-	protected function itemSelecting(itemIndex:int):void
+	public function itemSelecting(itemIndex:int):void
     {
 
 	}

@@ -38,7 +38,7 @@ public class SingleSelectionDataGroup extends SelectableDataGroup
 		selectedIndex = dataProvider.getItemIndex(value);
 	}
 
-	override protected function itemSelecting(itemIndex:int):void
+	override public function itemSelecting(itemIndex:int):void
     {
 		if (itemIndex != _selectedIndex)
 		{

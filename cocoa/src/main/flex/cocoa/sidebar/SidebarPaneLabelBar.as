@@ -84,7 +84,7 @@ public class SidebarPaneLabelBar extends SelectableDataGroup
 		dispatchEvent(new MultipleSelectionChangeEvent(addedItems, removedItems));
 	}
 
-	override protected function itemSelecting(itemIndex:int):void
+	override public function itemSelecting(itemIndex:int):void
     {
 		var paneMetadata:PaneItem = PaneItem(dataProvider.getItemAt(itemIndex));
 		var pane:Panel = Panel(paneMetadata.view);

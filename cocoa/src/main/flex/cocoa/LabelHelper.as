@@ -1,14 +1,22 @@
 package cocoa
 {
 import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.FontLookup;
+import flash.text.engine.FontPosture;
+import flash.text.engine.FontWeight;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TextLineCreationResult;
+import flash.text.engine.TextRotation;
 import flash.utils.Dictionary;
 
-import flashx.textLayout.compose.ISWFContext;
-
+import mx.core.IEmbeddedFontRegistry;
+import mx.core.IFlexModule;
+import mx.core.IFlexModuleFactory;
+import mx.core.IUIComponent;
+import mx.core.Singleton;
 import mx.core.mx_internal;
 
 use namespace mx_internal;
@@ -18,6 +26,8 @@ use namespace mx_internal;
  */
 public class LabelHelper
 {
+	private static var embeddedFontRegistry:IEmbeddedFontRegistry;
+
 	private static const emptyArgs:Array = [];
 	private static const wArgs:Array = [null, 0];
 	
@@ -40,13 +50,22 @@ public class LabelHelper
 	{
 		this.container = container;
 		_font = font;
+		if (_font != null)
+		{
+			adjustSWFContext();
+		}
 	}
 
-	private var _swfContext:ISWFContext;
-	public function set swfContext(value:ISWFContext):void
+	/**
+	 * @see TextBlock#lineRotation
+	 */
+	private var _rotation:String;
+	public function set rotation(value:String):void
 	{
-		_swfContext = value;
+		_rotation = value;
 	}
+
+	private var swfContext:IFlexModuleFactory;
 
 	private var _useTruncationIndicator:Boolean = true;
 	public function set useTruncationIndicator(value:Boolean):void
@@ -61,12 +80,13 @@ public class LabelHelper
 
 	public function get textWidth():Number
 	{
-		return _textLine.textWidth;
+		// _textLine.textWidth именно logical width of the text line, не учитывает rotation
+		return _textLine.width;
 	}
 
 	public function get textHeight():Number
 	{
-		return _textLine.textHeight;
+		return _textLine.height;
 	}
 
 	public function get textLine():TextLine
@@ -88,8 +108,9 @@ public class LabelHelper
 		if (value != _font)
 		{
 			_font = value;
-			textElement.elementFormat = _font;
 			invalid = true;
+
+			adjustSWFContext();
 		}
 	}
 
@@ -119,6 +140,19 @@ public class LabelHelper
 
 	public function move(x:Number, y:Number):void
 	{
+		if (_rotation != null)
+		{
+			switch (_rotation)
+			{
+				case TextRotation.ROTATE_270:
+				{
+					y += _textLine.textWidth;
+					x += _textLine.textHeight;
+				}
+				break;
+			}
+		}
+
 		_textLine.x = x;
 		_textLine.y = y;
 	}
@@ -178,16 +212,21 @@ public class LabelHelper
 
 		if (_text != null)
 		{
+			textElement.elementFormat = _font;
 			textElement.text = _text;
+			if (_rotation != null)
+			{
+				textBlock.lineRotation = _rotation;
+			}
 
-			if (_swfContext == null)
+			if (swfContext == null)
 			{
 				_textLine = textBlock.createTextLine(null, availableWidth);
 			}
 			else
 			{
 				wArgs[1] = availableWidth;
-				_textLine = _swfContext.callInContext(textBlock.createTextLine, textBlock, wArgs);
+				_textLine = swfContext.callInContext(textBlock.createTextLine, textBlock, wArgs);
 			}
 
 			if (_textLine == null)
@@ -201,13 +240,18 @@ public class LabelHelper
 				{
 					textElement.text = _text.slice(0, getTruncationPosition(_textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
 
-					_textLine = _swfContext == null ? textBlock.createTextLine() : _swfContext.callInContext(textBlock.createTextLine, textBlock, emptyArgs);
+					_textLine = swfContext == null ? textBlock.createTextLine() : swfContext.callInContext(textBlock.createTextLine, textBlock, emptyArgs);
 				}
 
 				textBlock.releaseLines(_textLine, _textLine);
 				_textLine.mouseEnabled = false;
 				_textLine.mouseChildren = false;
 				container.addDisplayObject(_textLine);
+			}
+
+			if (_rotation != null)
+			{
+				textBlock.lineRotation = TextRotation.ROTATE_0;
 			}
 		}
 		else
@@ -262,5 +306,26 @@ public class LabelHelper
 
         return charPosition;
     }
+
+	private function adjustSWFContext():void
+	{
+		swfContext = _font.fontDescription.fontLookup == FontLookup.DEVICE ? null : getEmbeddedFontContext(container, _font.fontDescription.fontName, _font.fontDescription.fontWeight, _font.fontDescription.fontPosture);
+	}
+
+	public static function getEmbeddedFontContext(view:IUIComponent, fontName:String, fontWeight:String, fontPosture:String):IFlexModuleFactory
+	{
+		if (FontDescription.isFontCompatible(fontName, fontWeight, fontPosture))
+		{
+			return null;
+		}
+		else
+		{
+			if (embeddedFontRegistry == null)
+			{
+				embeddedFontRegistry = IEmbeddedFontRegistry(Singleton.getInstance("mx.core::IEmbeddedFontRegistry"));
+			}
+			return embeddedFontRegistry.getAssociatedModuleFactory(fontName, fontWeight == FontWeight.BOLD, fontPosture == FontPosture.ITALIC, view, IFlexModule(view).moduleFactory, view.systemManager);
+		}
+	}
 }
 }

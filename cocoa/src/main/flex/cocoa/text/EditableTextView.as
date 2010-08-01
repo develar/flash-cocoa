@@ -1,5 +1,7 @@
 package cocoa.text
 {
+import cocoa.LabelHelper;
+
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.Event;
@@ -10,8 +12,6 @@ import flash.geom.Rectangle;
 import flash.system.IME;
 import flash.system.IMEConversionMode;
 import flash.text.engine.FontLookup;
-import flash.text.engine.FontPosture;
-import flash.text.engine.FontWeight;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
@@ -107,7 +107,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 	mx_internal var undoManager:IUndoManager;
 	mx_internal var clearUndoOnFocusOut:Boolean = true;
 
-	mx_internal var embeddedFontContext:IFlexModuleFactory;
+	private var embeddedFontContext:IFlexModuleFactory;
 
 	/**
 	 *  @private
@@ -1503,13 +1503,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
 	private function getEmbeddedFontContext():IFlexModuleFactory
 	{
-		if (effectiveTextFormat.fontLookup != FontLookup.DEVICE)
+		if (effectiveTextFormat.fontLookup == FontLookup.DEVICE)
 		{
-			return getFontContext(effectiveTextFormat.fontFamily, effectiveTextFormat.fontWeight == FontWeight.BOLD, effectiveTextFormat.fontStyle == FontPosture.ITALIC, true);
+			return null;
 		}
 		else
 		{
-			return null;
+			return LabelHelper.getEmbeddedFontContext(this, effectiveTextFormat.fontFamily, effectiveTextFormat.fontWeight, effectiveTextFormat.fontStyle);
 		}
 	}
 
@@ -1657,14 +1657,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 	public function measureText(text:String):TextLine
 	{
 		textElement.text = text;
-		var swfContext:ISWFContext = ISWFContext(embeddedFontContext);
-		if (swfContext != null)
+		if (embeddedFontContext == null)
 		{
-			return swfContext.callInContext(textBlock.createTextLine, textBlock, [null, 1000]);
+			return textBlock.createTextLine(null, 1000);
 		}
 		else
 		{
-			return textBlock.createTextLine(null, 1000);
+			return embeddedFontContext.callInContext(textBlock.createTextLine, textBlock, [null, 1000]);
 		}
 	}
 
