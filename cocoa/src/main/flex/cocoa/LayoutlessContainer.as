@@ -1,6 +1,7 @@
 package cocoa
 {
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelClient;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
@@ -23,41 +24,9 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 	{
 		return _laf;
 	}
-	public function set laf(value:LookAndFeel):void
+	public function set $laf(value:LookAndFeel):void
 	{
 		_laf = value;
-	}
-
-	override protected function createChildren():void
-	{
-		if (_laf != null)
-		{
-			return;
-		}
-
-		var p:DisplayObjectContainer = parent;
-		while (p != null)
-		{
-			if (p is LookAndFeelProvider)
-			{
-				_laf = LookAndFeelProvider(p).laf;
-				return;
-			}
-			else
-			{
-				if (p is Skin && Skin(p).component is LookAndFeelProvider)
-				{
-					_laf = LookAndFeelProvider(Skin(p).component).laf;
-					return;
-				}
-				else
-				{
-					p = p.parent;
-				}
-			}
-		}
-
-		throw new Error("laf not found");
 	}
 
 	public function addSubview(viewable:Viewable, index:int = -1):void
@@ -72,6 +41,11 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
 			if (viewable is Injectable || viewable is SkinnableComponent || (viewable is GroupBase && GroupBase(viewable).id != null))
 			{
 				dispatchEvent(new InjectorEvent(viewable));
+			}
+
+			if (viewable is LookAndFeelClient)
+			{
+				LookAndFeelClient(viewable).$laf = laf;
 			}
 
 			addChildAt(DisplayObject(viewable), index == -1 ? numChildren : index);

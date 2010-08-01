@@ -51,7 +51,7 @@ public class DialogManager
 		var skin:Skin = window.skin;
 		if (skin == null)
 		{
-			window.laf = LookAndFeelProvider(FlexGlobals.topLevelApplication).laf;
+			window.$laf = LookAndFeelProvider(FlexGlobals.topLevelApplication).laf;
 			skin = window.createView(window.laf);
 			if (dispatchInjectorEvent)
 			{

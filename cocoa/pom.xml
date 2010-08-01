@@ -107,7 +107,7 @@
 								<class>**.*ScrollView</class>
 							</includes>
 							<excludes>
-								<class>cocoa.plaf.scrollbar.*</class>
+								<class>cocoa.plaf.basic.scrollbar.*</class>
 							</excludes>
 							<names>
 								<class>

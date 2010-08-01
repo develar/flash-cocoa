@@ -1,8 +1,7 @@
 package cocoa.plaf
 {
-public interface LookAndFeelProvider
+public interface LookAndFeelProvider extends LookAndFeelClient
 {
 	function get laf():LookAndFeel;
-	function set laf(value:LookAndFeel):void;
 }
 }

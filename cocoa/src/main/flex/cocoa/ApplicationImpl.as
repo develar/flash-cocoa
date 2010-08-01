@@ -42,7 +42,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
 	private var resizeWidth:Boolean = true;
 	private var resizeHeight:Boolean = true;
-	private var synchronousResize:Boolean = false;
+	private static var synchronousResize:Boolean = false;
 
 	private var resizeHandlerAdded:Boolean = false;
 	private var percentBoundsChanged:Boolean;
@@ -104,11 +104,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 		MateManager.instance.container.checkInjectors(new InjectorEvent(this));
 
 		super.childrenCreated();
-	}
-
-	override protected function createChildren():void
-	{
-		// для App не нужно искать LAF, так как он должен устанавливаться явно (так как app ведь корневой)
 	}
 
 	private function injectHandler(event:InjectorEvent):void
@@ -341,24 +336,21 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 	}
 
 	/**
-	 *  @private
-	 *  Triggered by a resize event of the stage.
-	 *  Sets the new width and height.
-	 *  After the SystemManager performs its function,
-	 *  it is only necessary to notify the children of the change.
+	 *  Triggered by a resize event of the stage. Sets the new width and height.
+	 *  After the SystemManager performs its function, it is only necessary to notify the children of the change.
 	 */
 	private function resizeHandler(event:Event):void
 	{
-		// If we're already due to update our bounds on the next
-		// commitProperties pass, avoid the redundancy.
+		// If we're already due to update our bounds on the next commitProperties pass, avoid the redundancy.
 		if (!percentBoundsChanged)
 		{
 			updateBounds();
 
-			// Update immediately when stage resizes so that we may appear
-			// in synch with the stage rather than visually "catching up".
+			// Update immediately when stage resizes so that we may appear in synch with the stage rather than visually "catching up".
 			if (synchronousResize)
+			{
 				UIComponentGlobals.layoutManager.validateNow();
+			}
 		}
 	}
 
@@ -366,13 +358,11 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 	{
 		// When user has not specified any width/height, application assumes the size of the stage.
 		// If developer has specified width/height, the application will not resize.
-		// If developer has specified percent width/height, application will resize to the required value
-		// based on the current SystemManager's width/height.
+		// If developer has specified percent width/height, application will resize to the required value based on the current SystemManager's width/height.
 		// If developer has specified min/max values, then application will not resize beyond those values.
 
 		var w:Number;
 		var h:Number;
-
 		if (resizeWidth)
 		{
 			if (isNaN(percentWidth))
@@ -381,8 +371,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 			}
 			else
 			{
-				super.percentWidth = Math.max(percentWidth, 0);
-				super.percentWidth = Math.min(percentWidth, 100);
+				super.percentWidth = Math.min(Math.max(percentWidth, 0), 100);
 				w = percentWidth * DisplayObject(systemManager).width / 100;
 			}
 
@@ -409,16 +398,19 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 			}
 			else
 			{
-				super.percentHeight = Math.max(percentHeight, 0);
-				super.percentHeight = Math.min(percentHeight, 100);
+				super.percentHeight = Math.min(Math.max(percentHeight, 0), 100);
 				h = percentHeight * DisplayObject(systemManager).height / 100;
 			}
 
 			if (!isNaN(explicitMaxHeight))
+			{
 				h = Math.min(h, explicitMaxHeight);
+			}
 
 			if (!isNaN(explicitMinHeight))
+			{
 				h = Math.max(h, explicitMinHeight);
+			}
 		}
 		else
 		{

@@ -1,7 +1,7 @@
 package cocoa
 {
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.PopUpMenuController;
+import cocoa.plaf.basic.PopUpMenuController;
 import cocoa.plaf.Skin;
 import cocoa.plaf.TitledComponentSkin;
 

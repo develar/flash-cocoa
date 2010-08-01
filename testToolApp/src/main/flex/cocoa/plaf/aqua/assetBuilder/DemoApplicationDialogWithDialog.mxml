@@ -3,7 +3,7 @@
 		xmlns="cocoa" xmlns:cocoa="cocoa.*">
 
 	<fx:Script><![CDATA[
-		import cocoa.plaf.BottomBarStyle;
+		import cocoa.plaf.basic.BottomBarStyle;
 		import cocoa.plaf.DialogSkin;
 		import cocoa.plaf.WindowSkin;
 

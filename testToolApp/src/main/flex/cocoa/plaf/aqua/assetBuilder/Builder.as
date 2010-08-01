@@ -13,7 +13,7 @@ import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
-import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.basic.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BorderPosition;

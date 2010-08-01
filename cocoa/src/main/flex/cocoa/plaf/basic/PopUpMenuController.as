@@ -1,10 +1,11 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.CellState;
 import cocoa.HighlightableItemRenderer;
 import cocoa.ListSelection;
 import cocoa.Menu;
 import cocoa.PopUpButton;
+import cocoa.plaf.*;
 import cocoa.ui;
 
 import flash.display.DisplayObject;

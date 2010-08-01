@@ -38,11 +38,6 @@ public class Label extends AbstractView
 
 		labelHelper = new LabelHelper(this);
 	}
-
-	public function set _elementFormat(value:ElementFormat):void
-	{
-		elementFormat = value;
-	}
 	
 	private var _paddingLeft:Number = 0;
 	public function set paddingLeft(value:Number):void

@@ -35,6 +35,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 		if (viewStack == null)
 		{
 			viewStack = new ViewStack();
+			viewStack.$laf = laf;
 			viewStack.move(contentInsets.left, contentInsets.top);
 			addChild(viewStack);
 			component.uiPartAdded("viewStack", viewStack);
@@ -47,7 +48,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 			layout.gap = 1;
 			layout.useGapForEdge = true;
 			segmentedControl.layout = layout;
-			segmentedControl.laf = laf;
+			segmentedControl.$laf = laf;
 			segmentedControl.itemRenderer = new ClassFactory(SegmentItemRenderer);
 
 			segmentedControl.mouseSelectionMode = ItemMouseSelectionMode.NONE;

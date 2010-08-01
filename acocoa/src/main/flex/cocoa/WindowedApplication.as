@@ -1,6 +1,5 @@
 package cocoa
 {
-import flash.desktop.DockIcon;
 import flash.desktop.NativeApplication;
 import flash.desktop.SystemTrayIcon;
 import flash.display.NativeWindow;
@@ -438,29 +437,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow
 		// dispatch here yet
 	}
 
-
-	//--------------------------------------------------------------------------
-	//
-	//  Properties
-	//
-	//--------------------------------------------------------------------------
-
-	//----------------------------------
-	//  applicationID
-	//----------------------------------
-
-	/**
-	 *  The identifier that AIR uses to identify the application.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get applicationID():String
-	{
-		return nativeApplication.applicationID;
-	}
-
 	//----------------------------------
 	//  alwaysInFront
 	//----------------------------------
@@ -496,33 +472,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow
 		_alwaysInFront = value;
 		if (_nativeWindow && !_nativeWindow.closed)
 			nativeWindow.alwaysInFront = value;
-	}
-
-	//----------------------------------
-	//  autoExit
-	//----------------------------------
-
-	/**
-	 *  Specifies whether the AIR application will quit when the last
-	 *  window closes or will continue running in the background.
-	 *
-	 *  @default true
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get autoExit():Boolean
-	{
-		return nativeApplication.autoExit;
-	}
-
-	/**
-	 *  @private
-	 */
-	public function set autoExit(value:Boolean):void
-	{
-		nativeApplication.autoExit = value;
 	}
 
 	//----------------------------------
@@ -592,58 +541,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow
 
 		invalidateProperties();
 		invalidateSize();
-	}
-
-	//----------------------------------
-	//  closed
-	//----------------------------------
-
-	/**
-	 *  Returns true when the underlying window has been closed.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get closed():Boolean
-	{
-		return nativeWindow.closed;
-	}
-
-	//----------------------------------
-	//  dockIconMenu
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Storage for the dockIconMenu property.
-	 */
-	private var _dockIconMenu:FlexNativeMenu;
-
-	/**
-	 *  The dock icon menu. Some operating systems do not support dock icon menus.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get dockIconMenu():FlexNativeMenu
-	{
-		return _dockIconMenu;
-	}
-
-	/**
-	 *  @private
-	 */
-	public function set dockIconMenu(value:FlexNativeMenu):void
-	{
-		_dockIconMenu = value;
-
-		if (NativeApplication.supportsDockIcon)
-		{
-			if (nativeApplication.icon is DockIcon)
-				DockIcon(nativeApplication.icon).menu = value.nativeMenu;
-		}
 	}
 
 	//----------------------------------

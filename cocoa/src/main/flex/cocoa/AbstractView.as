@@ -33,7 +33,6 @@ import mx.core.EventPriority;
 import mx.core.FlexGlobals;
 import mx.core.FlexSprite;
 import mx.core.IEmbeddedFontRegistry;
-import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IFlexModuleFactory;
 import mx.core.IFontContextComponent;
@@ -5231,13 +5230,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	/**
 	 *  Performs any final processing after child objects are created.
-	 *  This is an advanced method that you might override
-	 *  when creating a subclass of UIComponent.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
 	 */
 	protected function childrenCreated():void
 	{
@@ -5245,13 +5237,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		invalidateSize();
 		invalidateDisplayList();
 	}
-
-
-	//--------------------------------------------------------------------------
-	//
-	//  Methods: Invalidation
-	//
-	//--------------------------------------------------------------------------
 
 	/**
 	 *  Marks a component so that its <code>commitProperties()</code>
@@ -6726,63 +6711,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	mx_internal function getEffectsForProperty(propertyName:String):Array
 	{
 		return _affectedProperties[propertyName] != undefined ? _affectedProperties[propertyName] : [];
-	}
-
-	//--------------------------------------------------------------------------
-	//
-	//  Methods: Printing
-	//
-	//--------------------------------------------------------------------------
-
-	/**
-	 *  Prepares an IFlexDisplayObject for printing.
-	 *  For the UIComponent class, the method performs no action.
-	 *  Flex containers override the method to prepare for printing;
-	 *  for example, by removing scroll bars from the printed output.
-	 *
-	 *  <p>This method is normally not used by application developers. </p>
-	 *
-	 *  @param target The component to be printed.
-	 *  It can be the current component or one of its children.
-	 *
-	 *  @return Object containing the properties of the current component
-	 *  required by the <code>finishPrint()</code> method
-	 *  to restore it to its previous state.
-	 *
-	 *  @see mx.printing.FlexPrintJob
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public function prepareToPrint(target:IFlexDisplayObject):Object
-	{
-		return null;
-	}
-
-	/**
-	 *  Called after printing is complete.
-	 *  For the UIComponent class, the method performs no action.
-	 *  Flex containers override the method to restore the container after printing.
-	 *
-	 *  <p>This method is normally not used by application developers. </p>
-	 *
-	 *  @param obj Contains the properties of the component that
-	 *  restore it to its state before printing.
-	 *
-	 *  @param target The component that just finished printing.
-	 *  It can be the current component or one of its children.
-	 *
-	 *  @see mx.printing.FlexPrintJob
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public function finishPrint(obj:Object, target:IFlexDisplayObject):void
-	{
 	}
 
 	//--------------------------------------------------------------------------

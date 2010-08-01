@@ -2,6 +2,7 @@ package cocoa
 {
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelClient;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
@@ -34,7 +35,7 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 	{
 		return _laf;
 	}
-	public function set laf(value:LookAndFeel):void
+	public function set $laf(value:LookAndFeel):void
 	{
 		_laf = value;
 	}
@@ -113,6 +114,11 @@ public class MXMLContainer extends Group implements ViewContainer, LookAndFeelPr
 		else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null))
 		{
 			dispatchEvent(new InjectorEvent(view));
+		}
+
+		if (view is LookAndFeelClient)
+		{
+			LookAndFeelClient(view).$laf = laf;
 		}
 
 		elementAdded(IVisualElement(view), index, false);

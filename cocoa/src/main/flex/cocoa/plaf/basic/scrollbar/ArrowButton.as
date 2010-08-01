@@ -1,4 +1,4 @@
-package cocoa.plaf.scrollbar
+package cocoa.plaf.basic.scrollbar
 {
 import cocoa.FlexButton;
 import cocoa.VScrollBar;

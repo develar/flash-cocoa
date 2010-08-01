@@ -12,10 +12,10 @@ import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
-import cocoa.plaf.AbstractLookAndFeel;
-import cocoa.plaf.BitmapIcon;
+import cocoa.plaf.basic.AbstractLookAndFeel;
+import cocoa.plaf.basic.BitmapIcon;
 import cocoa.plaf.FontID;
-import cocoa.plaf.MenuSkin;
+import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.IconButtonSkin;
@@ -240,7 +240,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 }
 
 import cocoa.Border;
-import cocoa.plaf.AbstractLookAndFeel;
+import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.FontID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BorderPosition;

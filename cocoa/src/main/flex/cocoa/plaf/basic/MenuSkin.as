@@ -1,12 +1,10 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.Menu;
 import cocoa.MenuItem;
 import cocoa.SingleSelectionDataGroup;
-import cocoa.plaf.basic.AbstractItemRenderer;
-import cocoa.plaf.basic.AbstractSkin;
 
 import flash.display.Graphics;
 

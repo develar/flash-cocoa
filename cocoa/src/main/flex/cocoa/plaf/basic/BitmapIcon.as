@@ -1,7 +1,8 @@
-package cocoa.plaf
+package cocoa.plaf.basic
 {
 import cocoa.Icon;
 import cocoa.View;
+import cocoa.plaf.*;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;

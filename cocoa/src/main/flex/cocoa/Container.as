@@ -2,6 +2,7 @@ package cocoa
 {
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelClient;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
@@ -82,7 +83,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 	{
 		return _laf;
 	}
-	public function set laf(value:LookAndFeel):void
+	public function set $laf(value:LookAndFeel):void
 	{
 		_laf = value;
 	}
@@ -150,7 +151,7 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 			dispatchEvent(new InjectorEvent(view));
 		}
 
-		if (layout)
+		if (layout != null)
 		{
 			layout.elementAdded(index);
 		}
@@ -161,14 +162,19 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 			{
 				IFlexModule(view).moduleFactory = moduleFactory;
 			}
-			else if (document is IFlexModule && document.moduleFactory != null)
+			else if (document is IFlexModule && IFlexModule(document).moduleFactory != null)
 			{
-				IFlexModule(view).moduleFactory = document.moduleFactory;
+				IFlexModule(view).moduleFactory = IFlexModule(document).moduleFactory;
 			}
 			else if (parent is IFlexModule && IFlexModule(view).moduleFactory != null)
 			{
 				IFlexModule(view).moduleFactory = IFlexModule(parent).moduleFactory;
 			}
+		}
+
+		if (view is LookAndFeelClient)
+		{
+			LookAndFeelClient(view).$laf = laf;
 		}
 
 		super.addChildAt(DisplayObject(view), index != -1 ? index : super.numChildren);

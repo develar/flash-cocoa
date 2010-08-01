@@ -1,8 +1,8 @@
 package cocoa.plaf.aqua
 {
 import cocoa.Insets;
-import cocoa.plaf.MenuSkin;
-import cocoa.plaf.PopUpMenuController;
+import cocoa.plaf.basic.MenuSkin;
+import cocoa.plaf.basic.PopUpMenuController;
 import cocoa.plaf.basic.PushButtonSkin;
 import cocoa.ui;
 
@@ -11,7 +11,7 @@ import flash.geom.Point;
 
 use namespace ui;
 
-public class PopUpMenuController extends cocoa.plaf.PopUpMenuController
+public class PopUpMenuController extends cocoa.plaf.basic.PopUpMenuController
 {
 	private static const STAGE_MARGIN:Number = 6;
 	private static const BOTTOM_STAGE_MARGIN:Number = 10;

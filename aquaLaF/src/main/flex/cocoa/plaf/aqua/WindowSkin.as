@@ -2,7 +2,7 @@ package cocoa.plaf.aqua
 {
 import cocoa.BorderedContainer;
 import cocoa.Insets;
-import cocoa.plaf.BottomBarStyle;
+import cocoa.plaf.basic.BottomBarStyle;
 import cocoa.plaf.DialogSkin;
 
 import mx.core.mx_internal;
@@ -39,7 +39,7 @@ public class WindowSkin extends AbstractWindowSkin implements DialogSkin
 		{
 			controlBar = new BorderedContainer();
 			controlBar.height = BOTTOM_BAR_HEIGHT;
-			controlBar.laf = _bottomBarStyle == BottomBarStyle.application ? AquaLookAndFeel(laf).createWindowFrameLookAndFeel() : laf;
+			controlBar.$laf = _bottomBarStyle == BottomBarStyle.application ? AquaLookAndFeel(laf).createWindowFrameLookAndFeel() : laf;
 			controlBar.border = laf.getBorder("Window.bottomBar." + _bottomBarStyle.name);
 			controlBar.mouseEnabled = false;
 

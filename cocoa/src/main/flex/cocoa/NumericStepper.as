@@ -396,7 +396,7 @@ public class NumericStepper extends Spinner implements UIPartController, Viewabl
 		mySkin = new skinClass();
 		if (mySkin is LookAndFeelProvider)
 		{
-			LookAndFeelProvider(mySkin).laf = laf;
+			LookAndFeelProvider(mySkin).$laf = laf;
 		}
 
 		addingChild(mySkin);

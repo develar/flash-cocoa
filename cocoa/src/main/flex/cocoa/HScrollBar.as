@@ -1,6 +1,6 @@
 package cocoa
 {
-import cocoa.plaf.scrollbar.HScrollBarSkin;
+import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
 
 import flash.events.MouseEvent;
 
