@@ -51,7 +51,6 @@ public class PopUpMenuController extends cocoa.plaf.basic.PopUpMenuController
 				var widthAdjustment:Number = popUpButtonSkin.width - menuSkin.width - sharedPoint.x - MIN_RIGHT_MARGIN_FROM_OPEN_BUTTON;
 				if (widthAdjustment > 0)
 				{
-//					menuSkin.setActualSize(menuSkin.width + widthAdjustment, menuSkin.height);
 					menuSkin.width = menuSkin.width + widthAdjustment;
 				}
 			}

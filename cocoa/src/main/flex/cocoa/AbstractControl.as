@@ -1,11 +1,24 @@
 package cocoa
 {
-public class AbstractControl extends TitledComponent implements Control
+public class AbstractControl extends AbstractComponent implements Control
 {
 	protected var _action:Function;
 	public function set action(value:Function):void
 	{
 		_action = value;
+	}
+
+	protected var _toolTip:String;
+	public function set toolTip(value:String):void
+	{
+		if (value != _toolTip)
+		{
+			_toolTip = value;
+			if (skin != null)
+			{
+				skin.toolTip = _toolTip;
+			}
+		}
 	}
 
 	protected var _actionRequireTarget:Boolean;
@@ -25,6 +38,11 @@ public class AbstractControl extends TitledComponent implements Control
 		if (skin != null)
 		{
 			skin.invalidateDisplayList();
+
+			if (_alternateToolTip != null)
+			{
+				skin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
+			}
 		}
 	}
 
@@ -36,6 +54,29 @@ public class AbstractControl extends TitledComponent implements Control
 	public function set objectValue(value:Object):void
 	{
 		throw new Error("abstract");
+	}
+
+	override protected function skinAttachedHandler():void
+    {
+		super.skinAttachedHandler();
+
+		if (_toolTip != null)
+		{
+			skin.toolTip = _toolTip;
+		}
+	}
+
+	private var _alternateToolTip:String;
+	public function set alternateToolTip(value:String):void
+	{
+		if (value != _alternateToolTip)
+		{
+			_alternateToolTip = value;
+			if (skin != null && state == CellState.ON)
+			{
+				skin.toolTip = _alternateToolTip;
+			}
+		}
 	}
 }
 }

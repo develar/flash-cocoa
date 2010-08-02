@@ -5,7 +5,8 @@ import cocoa.HighlightableItemRenderer;
 import cocoa.ListSelection;
 import cocoa.Menu;
 import cocoa.PopUpButton;
-import cocoa.plaf.*;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
 import cocoa.ui;
 
 import flash.display.DisplayObject;

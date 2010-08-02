@@ -465,7 +465,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 	}
 
 	private var _maxChars:int = 0;
-
 	/**
 	 *  @copy flash.text.TextField#maxChars
 	 */
@@ -479,7 +478,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 	}
 
 	private var _restrict:String = null;
-
 	/**
 	 *  @copy flash.text.TextField#restrict
 	 */

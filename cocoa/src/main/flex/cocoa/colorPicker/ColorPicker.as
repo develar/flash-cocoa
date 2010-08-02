@@ -1,50 +1,45 @@
 package cocoa.colorPicker
 {
-import cocoa.Viewable;
+import cocoa.AbstractControl;
+import cocoa.Cell;
 
-import flash.display.Graphics;
-
-import mx.controls.ColorPicker;
 import mx.core.mx_internal;
 
 use namespace mx_internal;
 
-public class ColorPicker extends mx.controls.ColorPicker implements Viewable
+public class ColorPicker extends AbstractControl implements Cell
 {
+	public function ColorPicker()
+    {
+        super();
+    }
+
 	public function get argb():uint
 	{
 		return (0xff << 24) | selectedColor;
 	}
 
-	override protected function measure():void
+	public function get selectedColor():uint
 	{
-		measuredMinWidth = measuredWidth = 21;
-		measuredMinHeight = measuredHeight = 21;
+		return 9;
+	}
+	public function set selectedColor(value:uint):void
+	{
 	}
 
-	protected override function createChildren():void
-	{
-		super.createChildren();
+    public function set dataProvider(value:Object):void
+    {
 
-		setChildIndex(downArrowButton, numChildren - 1);
+    }
+
+	override protected function get primaryLaFKey():String
+	{
+		return "ColorPicker";
 	}
 
-	protected override function updateDisplayList(w:Number, h:Number):void
+	override public function get objectValue():Object
 	{
-		super.updateDisplayList(w, h);
-
-		downArrowButton.move(0, 0);
-		downArrowButton.setActualSize(w, h);
-
-		var downArrowButtonGraphics:Graphics = downArrowButton.graphics;
-		downArrowButtonGraphics.clear();
-		downArrowButtonGraphics.beginFill(0, 0);
-		downArrowButtonGraphics.drawRect(0, 0, w, h);
-	}
-
-	override public function drawFocus(isFocused:Boolean):void
-	{
-		// ignore
+		return 3;
 	}
 }
 }

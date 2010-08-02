@@ -5,9 +5,26 @@ import cocoa.layout.AdvancedLayout;
 import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 
+[DefaultProperty("mxmlContent")]
 public class ViewStack extends LayoutlessContainer implements AdvancedLayout
 {
 	private var currentView:IUIComponent;
+
+	private var _subviews:Array;
+	public function set mxmlContent(value:Array):void
+    {
+		_subviews = value;
+	}
+
+	override protected function createChildren():void
+	{
+		super.createChildren();
+
+		if (_subviews != null)
+		{
+			show(_subviews[0]);
+		}
+	}
 
 	public function show(viewable:Viewable):void
 	{
