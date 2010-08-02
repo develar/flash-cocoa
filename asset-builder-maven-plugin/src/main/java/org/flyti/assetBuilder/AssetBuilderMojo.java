@@ -31,7 +31,7 @@ public class AssetBuilderMojo extends AbstractMojo
 	private static final FileFilter ASSET_FILE_FILTER = new SuffixFileFilter(new String[]{".png"});
 
 	/**
-     * @parameter expression="${asset.builder..skip}"
+     * @parameter expression="${asset.builder.skip}"
      */
     @SuppressWarnings({"UnusedDeclaration"})
 	private boolean skip;

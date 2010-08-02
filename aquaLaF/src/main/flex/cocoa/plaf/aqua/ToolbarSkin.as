@@ -15,6 +15,7 @@ public class ToolbarSkin extends BoxSkin
 	override protected function createChildren():void
 	{
 		contentGroup = new BorderedContainer();
+		contentGroup.$laf = laf;
 
 		super.createChildren();
 

@@ -20,7 +20,7 @@ public class PopUpButton extends AbstractControl implements Cell
 	private var titleChanged:Boolean = false;
 	private var menuController:PopUpMenuController;
 
-	private var _menu:Menu;
+	protected var _menu:Menu;
 	public function set menu(value:Menu):void
 	{
 		if (value != _menu)

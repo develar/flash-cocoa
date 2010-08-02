@@ -98,7 +98,10 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 				if (p is LookAndFeelProvider)
 				{
 					_laf = LookAndFeelProvider(p).laf;
-					break;
+					if (_laf != null)
+					{
+						break;
+					}
 				}
 				else if (p is Skin && Skin(p).component is LookAndFeelProvider)
 				{

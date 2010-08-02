@@ -9,7 +9,8 @@ import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
-import cocoa.plaf.*;
+import cocoa.plaf.CursorData;
+import cocoa.plaf.LookAndFeel;
 
 import flash.text.engine.ElementFormat;
 import flash.utils.ByteArray;
