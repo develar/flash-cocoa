@@ -42,7 +42,6 @@ import mx.core.IVisualElementContainer;
 import mx.core.LayoutDirection;
 import mx.core.LayoutElementUIComponentUtils;
 import mx.core.UIComponent;
-import mx.core.UIComponentCachePolicy;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
 import mx.effects.EffectManager;
@@ -682,10 +681,6 @@ use namespace mx_internal;
  *  the user.</p>
  *  <p>The UIComponent class is not used as an MXML tag, but is used as a base
  *  class for other classes.</p>
- *
- *
- *  @see mx.core.UIComponent
- *
  */
 public class AbstractView extends FlexSprite implements View, IAutomationObject, IFlexModule, IInvalidating, ILayoutManagerClient, IToolTipManagerClient, IVisualElement
 {
@@ -724,8 +719,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	{
 		super.removeChild(child);
 	}
-	
-	// LEGACY
 
 	private static const DEFAULT_MAX_WIDTH:Number = 10000;
 	private static const DEFAULT_MAX_HEIGHT:Number = 10000;
@@ -841,12 +834,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	 *  @private
 	 */
 	private var parentChangedFlag:Boolean = false;
-
-	//--------------------------------------------------------------------------
-	//
-	//  Variables: Creation
-	//
-	//--------------------------------------------------------------------------
 
 	private var _initialized:Boolean = false;
 
@@ -2199,43 +2186,16 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		//dispatchEvent(new Event("enabledChanged"));
 	}
 
-	//----------------------------------
-	//  cacheAsBitmap
-	//----------------------------------
-
 	/**
-	 *  @private
-	 */
-	override public function set cacheAsBitmap(value:Boolean):void
-	{
-		super.cacheAsBitmap = value;
-
-		// If cacheAsBitmap is set directly,
-		// reset the value of cacheAsBitmapCount.
-		cacheAsBitmapCount = value ? 1 : 0;
-	}
-
-	//----------------------------------
-	//  filters
-	//----------------------------------
-
-	/**
-	 *  @private
 	 *  Storage for the filters property.
 	 */
 	private var _filters:Array;
 
-	/**
-	 *  @private
-	 */
 	override public function get filters():Array
 	{
 		return _filters ? _filters : super.filters;
 	}
 
-	/**
-	 *  @private
-	 */
 	override public function set filters(value:Array):void
 	{
 		var n:int;
@@ -2986,18 +2946,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return sm ? sm.screen : null;
 	}
 
-	//--------------------------------------------------------------------------
-	//
-	//  Properties: Modules
-	//
-	//--------------------------------------------------------------------------
-
-	//----------------------------------
-	//  moduleFactory
-	//----------------------------------
-
 	/**
-	 *  @private
 	 *  Storage for the moduleFactory property.
 	 */
 	private var _moduleFactory:IFlexModuleFactory;
@@ -3039,131 +2988,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		_moduleFactory = factory;
 	}
 
-	//----------------------------------
-	//  cachePolicy
-	//----------------------------------
-
 	/**
-	 *  @private
-	 *  Storage for cachePolicy property.
-	 */
-	private var _cachePolicy:String = UIComponentCachePolicy.AUTO;
-
-	[Inspectable(enumeration="on,off,auto", defaultValue="auto")]
-
-	/**
-	 *  Specifies the bitmap caching policy for this object.
-	 *  Possible values in MXML are <code>"on"</code>,
-	 *  <code>"off"</code> and
-	 *  <code>"auto"</code> (default).
-	 *
-	 *  <p>Possible values in ActionScript are <code>UIComponentCachePolicy.ON</code>,
-	 *  <code>UIComponentCachePolicy.OFF</code> and
-	 *  <code>UIComponentCachePolicy.AUTO</code> (default).</p>
-	 *
-	 *  <p><ul>
-	 *	<li>A value of <code>UIComponentCachePolicy.ON</code> means that
-	 *	  the object is always cached as a bitmap.</li>
-	 *	<li>A value of <code>UIComponentCachePolicy.OFF</code> means that
-	 *	  the object is never cached as a bitmap.</li>
-	 *	<li>A value of <code>UIComponentCachePolicy.AUTO</code> means that
-	 *	  the framework uses heuristics to decide whether the object should
-	 *	  be cached as a bitmap.</li>
-	 *  </ul></p>
-	 *
-	 *  @default UIComponentCachePolicy.AUTO
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */
-	public function get cachePolicy():String
-	{
-		return _cachePolicy;
-	}
-
-	/**
-	 *  @private
-	 */
-	public function set cachePolicy(value:String):void
-	{
-		if (_cachePolicy != value)
-		{
-			_cachePolicy = value;
-
-			if (value == UIComponentCachePolicy.OFF)
-			{
-				cacheAsBitmap = false;
-			}
-			else
-			{
-				if (value == UIComponentCachePolicy.ON)
-				{
-					cacheAsBitmap = true;
-				}
-				else
-				{
-					cacheAsBitmap = (cacheAsBitmapCount > 0);
-				}
-			}
-		}
-	}
-
-	//----------------------------------
-	//  cacheHeuristic
-	//----------------------------------
-
-	/**
-	 *  @private
-	 *  Counter used by the cacheHeuristic property.
-	 */
-	private var cacheAsBitmapCount:int = 0;
-
-	[Inspectable(environment="none")]
-
-	/**
-	 *  Used by Flex to suggest bitmap caching for the object.
-	 *  If <code>cachePolicy</code> is <code>UIComponentCachePolicy.AUTO</code>,
-	 *  then <code>cacheHeuristic</code>
-	 *  is used to control the object's <code>cacheAsBitmap</code> property.
-	 *
-	 *  @langversion 3.0
-	 *  @playerversion Flash 9
-	 *  @playerversion AIR 1.1
-	 *  @productversion Flex 3
-	 */ public function set cacheHeuristic(value:Boolean):void
-	{
-		if (_cachePolicy == UIComponentCachePolicy.AUTO)
-		{
-			if (value)
-			{
-				cacheAsBitmapCount++;
-			}
-			else
-			{
-				if (cacheAsBitmapCount != 0)
-				{
-					cacheAsBitmapCount--;
-				}
-			}
-
-			super.cacheAsBitmap = (cacheAsBitmapCount != 0);
-		}
-	}
-
-	//--------------------------------------------------------------------------
-	//
-	//  Properties: Focus management
-	//
-	//--------------------------------------------------------------------------
-
-	//----------------------------------
-	//  focusPane
-	//----------------------------------
-
-	/**
-	 *  @private
 	 *  Storage for the focusPane property.
 	 */
 	private var _focusPane:Sprite;
@@ -3184,9 +3009,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _focusPane;
 	}
 
-	/**
-	 *  @private
-	 */
 	public function set focusPane(value:Sprite):void
 	{
 		if (value)
@@ -3213,7 +3035,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	//----------------------------------
 
 	/**
-	 *  @private
 	 *  Storage for the focusEnabled property.
 	 */
 	private var _focusEnabled:Boolean = true;
@@ -3360,12 +3181,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		_mouseFocusEnabled = value;
 	}
 
-	//----------------------------------
-	//  tabFocusEnabled
-	//----------------------------------
-
 	/**
-	 *  @private
 	 *  Storage for the tabFocusEnabled property.
 	 */
 	private var _tabFocusEnabled:Boolean = true;
@@ -3410,18 +3226,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	//--------------------------------------------------------------------------
-	//
-	//  Properties: Measurement
-	//
-	//--------------------------------------------------------------------------
-
-	//----------------------------------
-	//  measuredMinWidth
-	//----------------------------------
-
 	/**
-	 *  @private
 	 *  Storage for the measuredMinWidth property.
 	 */
 	private var _measuredMinWidth:Number = 0;
@@ -3441,21 +3246,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 	{
 		return _measuredMinWidth;
 	}
-
-	/**
-	 *  @private
-	 */
 	public function set measuredMinWidth(value:Number):void
 	{
 		_measuredMinWidth = value;
 	}
 
-	//----------------------------------
-	//  measuredMinHeight
-	//----------------------------------
-
 	/**
-	 *  @private
 	 *  Storage for the measuredMinHeight property.
 	 */
 	private var _measuredMinHeight:Number = 0;
@@ -4296,13 +4092,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 //		dispatchEvent(new Event("explicitHeightChanged"));
 	}
 
-	//----------------------------------
-	//  hasComplexLayoutMatrix
-	//----------------------------------
-
 	/**
-	 * @private
-	 *
 	 * when false, the transform on this component consists only of translation.  Otherwise, it may be arbitrarily complex.
 	 */
 	private var _hasComplexLayoutMatrix:Boolean = false;
@@ -4343,12 +4133,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	//----------------------------------
-	//  includeInLayout
-	//----------------------------------
-
 	/**
-	 *  @private
 	 *  Storage for the includeInLayout property.
 	 */
 	private var _includeInLayout:Boolean = true;
@@ -4376,9 +4161,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return _includeInLayout;
 	}
 
-	/**
-	 *  @private
-	 */
 	public function set includeInLayout(value:Boolean):void
 	{
 		if (_includeInLayout != value)
@@ -4765,37 +4547,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			formerParent.removeChild(child);
 		}
 
-		// If there is an overlay, place the child underneath it.
-		var index:int = effectOverlayReferenceCount && child != effectOverlay ? Math.max(0, super.numChildren - 1) : super.numChildren;
-
-		// Do anything that needs to be done before the child is added.
-		// When adding a child to UIComponent, this will set the child's
-		// virtual parent, its nestLevel, its document, etc.
-		// When adding a child to a Container, the override will also
-		// invalidate the container, adjust its content/chrome partitions,
-		// etc.
 		addingChild(child);
-
-		// Call a low-level player method in DisplayObjectContainer which
-		// actually attaches the child to this component.
-		// The player dispatches an "added" event from the child just after
-		// it is attached, so all "added" handlers execute during this call.
-		// UIComponent registers an addedHandler() in its constructor,
-		// which makes it runs before any other "added" handlers except
-		// capture-phase ones; it sets up the child's styles.
-		addDisplayObject(child, index);
-
-		// Do anything that needs to be done after the child is added
-		// and after all "added" handlers have executed.
-		// This is where
+		super.addChildAt(child, effectOverlayReferenceCount && child != effectOverlay ? Math.max(0, super.numChildren - 1) : super.numChildren);
 		childAdded(child);
 
 		return child;
 	}
 
-	/**
-	 *  @private
-	 */
 	override public function addChildAt(child:DisplayObject, index:int):DisplayObject
 	{
 		var formerParent:DisplayObjectContainer = child.parent;
@@ -4811,9 +4569,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 
 		addingChild(child);
-
 		super.addChildAt(child, index);
-
 		childAdded(child);
 
 		return child;
@@ -4821,15 +4577,14 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 	override public function removeChild(child:DisplayObject):DisplayObject
 	{
-		removeDisplayObject(child);
+		super.removeChild(child);
 		childRemoved(child);
 		return child;
 	}
 
 	override public function removeChildAt(index:int):DisplayObject
 	{
-		var child:DisplayObject = getChildAt(index);
-		removeDisplayObject(child);
+		var child:DisplayObject = super.removeChildAt(index);
 		childRemoved(child);
 		return child;
 	}
@@ -4844,12 +4599,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
 		super.setChildIndex(child, newIndex);
 	}
-
-	//--------------------------------------------------------------------------
-	//
-	//  Methods: Access to overridden methods of base classes
-	//
-	//--------------------------------------------------------------------------
 
 	/**
 	 *  @private
@@ -4944,10 +4693,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		parentChangedFlag = true;
 	}
 
-	/**
-	 *  @private
-	 */
-	mx_internal function addingChild(child:DisplayObject):void
+	private function addingChild(child:DisplayObject):void
 	{
 		// If the document property isn't already set on the child,
 		// set it to be the same as this component's document.
@@ -4965,9 +4711,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			{
 				IFlexModule(child).moduleFactory = moduleFactory;
 			}
-			else if (document is IFlexModule && document.moduleFactory != null)
+			else if (document is IFlexModule && IFlexModule(document).moduleFactory != null)
 			{
-				IFlexModule(child).moduleFactory = document.moduleFactory;
+				IFlexModule(child).moduleFactory = IFlexModule(document).moduleFactory;
 			}
 			else if (parent is IFlexModule && IFlexModule(parent).moduleFactory != null)
 			{
@@ -4980,10 +4726,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			IUIComponent(child).parentChanged(this);
 		}
 
-		// Set the nestLevel of the child to be one greater
-		// than the nestLevel of this component.
-		// The nestLevel setter will recursively set it on any
-		// descendants of the child that exist.
+		// Set the nestLevel of the child to be one greater than the nestLevel of this component.
+		// The nestLevel setter will recursively set it on any descendants of the child that exist.
 		if (child is ILayoutManagerClient)
 		{
 			ILayoutManagerClient(child).nestLevel = nestLevel + 1;
@@ -4994,10 +4738,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 			InteractiveObject(child).doubleClickEnabled = true;
 		}
 
-		// Sets up the inheritingStyles and nonInheritingStyles objects
-		// and their proto chains so that getStyle() works.
-		// If this object already has some children,
-		// then reinitialize the children's proto chains.
+		// Sets up the inheritingStyles and nonInheritingStyles objects and their proto chains so that getStyle() works.
+		// If this object already has some children, then reinitialize the children's proto chains.
 		if (child is IStyleClient)
 		{
 			IStyleClient(child).regenerateStyleCache(true);
@@ -5020,11 +4762,15 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	protected function childAdded(child:DisplayObject):void
+	private function childAdded(child:DisplayObject):void
 	{
-		if (child is IUIComponent)
+		if (child is UIComponent && !UIComponent(child).initialized)
 		{
-			IUIComponent(child).initialize();
+			UIComponent(child).initialize();
+		}
+		else if (child is View && !View(child).initialized)
+		{
+			View(child).initialize();
 		}
 		else if (child is UIComponent && !UIComponent(child).initialized)
 		{
@@ -5032,12 +4778,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		}
 	}
 
-	protected function childRemoved(child:DisplayObject):void
+	private function childRemoved(child:DisplayObject):void
 	{
 		if (child is IUIComponent)
 		{
-			// only reset document if the child isn't
-			// a document itself
+			// only reset document if the child isn't a document itself
 			if (IUIComponent(child).document != child)
 			{
 				IUIComponent(child).document = null;
@@ -7538,18 +7283,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		setLayoutMatrix3D(value, true /*invalidateLayout*/);
 	}
 
-	//----------------------------------
-	//  depth
-	//----------------------------------
-
 	public function get depth():Number
 	{
 		return (_layoutFeatures == null) ? 0 : _layoutFeatures.depth;
 	}
 
-	/**
-	 * @private
-	 */
 	public function set depth(value:Number):void
 	{
 		if (value == depth)
@@ -7588,11 +7326,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		{
 			super.transform.matrix = _layoutFeatures.computedMatrix;
 		}
-	}
-
-	mx_internal function get computedMatrix():Matrix
-	{
-		return (_layoutFeatures) ? _layoutFeatures.computedMatrix : transform.matrix;
 	}
 
 	/**
@@ -7791,10 +7524,6 @@ class MethodQueueElement
 	 *  @productversion Flex 3
 	 */
 	public var method:Function;
-
-	//----------------------------------
-	//  args
-	//----------------------------------
 
 	/**
 	 *  The arguments to be passed to the method.

@@ -35,7 +35,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 	{
 		return _laf;
 	}
-	public function set $laf(value:LookAndFeel):void
+	public function set laf(value:LookAndFeel):void
 	{
 		_laf = value;
 	}

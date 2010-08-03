@@ -2,27 +2,21 @@ package cocoa
 {
 import cocoa.plaf.FontID;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.Skin;
+import cocoa.plaf.LookAndFeelUtil;
 
-import flash.display.DisplayObjectContainer;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 
 import flashx.textLayout.formats.TextAlign;
 import flashx.textLayout.formats.VerticalAlign;
 
-import mx.core.mx_internal;
-
-use namespace mx_internal;
-
 public class Label extends AbstractView
 {
+	private var elementFormat:ElementFormat;
 	private var fontDescription:FontDescription;
 
 	private var labelHelper:LabelHelper;
 
-	private var elementFormat:ElementFormat;
 	private var laf:LookAndFeel;
 
 	public function Label()
@@ -34,7 +28,7 @@ public class Label extends AbstractView
 
 		labelHelper = new LabelHelper(this);
 	}
-	
+
 	private var _paddingLeft:Number = 0;
 	public function set paddingLeft(value:Number):void
 	{
@@ -166,34 +160,12 @@ public class Label extends AbstractView
 	{
 		super.createChildren();
 
+		laf = LookAndFeelUtil.find(parent);
+
 		if (elementFormat != null && fontDescription != null)
 		{
 			elementFormat.fontDescription = fontDescription;
 			return;
-		}
-
-		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF
-		var p:DisplayObjectContainer = parent;
-		while (p != null)
-		{
-			if (p is LookAndFeelProvider)
-			{
-				laf = LookAndFeelProvider(p).laf;
-				if (laf != null)
-				{
-					break;
-				}
-			}
-			else
-			{
-				if (p is Skin && Skin(p).component is LookAndFeelProvider)
-				{
-					laf = LookAndFeelProvider(Skin(p).component).laf;
-					break;
-				}
-			}
-
-			p = p.parent;
 		}
 
 		if (fontDescription == null)
@@ -257,5 +229,5 @@ public class Label extends AbstractView
 			break;
 		}
 	}
-	}
+}
 }

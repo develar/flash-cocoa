@@ -75,7 +75,7 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		mySkin = new skinClass();
 		if (mySkin is LookAndFeelProvider)
 		{
-			LookAndFeelProvider(mySkin).$laf = laf;
+			LookAndFeelProvider(mySkin).laf = laf;
 		}
 
 		addingChild(mySkin);

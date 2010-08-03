@@ -3,6 +3,8 @@ package cocoa.colorPicker
 import cocoa.Menu;
 import cocoa.PopUpButton;
 
+import flash.events.Event;
+
 import org.flyti.util.ArrayList;
 
 public class ColorPicker extends PopUpButton
@@ -42,6 +44,11 @@ public class ColorPicker extends PopUpButton
 	override public function get objectValue():Object
 	{
 		return 3;
+	}
+
+	override protected function updateTitle(event:Event = null):void
+	{
+
 	}
 
 //	override public function commitProperties():void

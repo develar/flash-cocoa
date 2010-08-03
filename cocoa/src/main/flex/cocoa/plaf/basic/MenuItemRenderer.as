@@ -1,12 +1,11 @@
 package cocoa.plaf.basic
 {
-import cocoa.HighlightableItemRenderer;
 import cocoa.MenuItem;
 import cocoa.plaf.FontID;
 
 import flash.display.Graphics;
 
-public class MenuItemRenderer extends LabeledItemRenderer implements HighlightableItemRenderer
+public class MenuItemRenderer extends LabeledItemRenderer
 {
 	public function get labelLeftMargin():Number
 	{

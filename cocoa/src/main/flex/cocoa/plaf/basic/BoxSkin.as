@@ -13,7 +13,6 @@ public class BoxSkin extends AbstractSkin
 		if (contentGroup == null)
 		{
 			contentGroup = new Container();
-			contentGroup.$laf = laf;
 			component.uiPartAdded("contentGroup", contentGroup);
 			addChild(contentGroup);
 		}

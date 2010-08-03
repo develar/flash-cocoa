@@ -436,5 +436,10 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 	public function set defaultButton(value:IFlexDisplayObject):void
 	{
 	}
+
+	override protected function createChildren():void
+	{
+		// для app LaF ставиться явно
+	}
 }
 }

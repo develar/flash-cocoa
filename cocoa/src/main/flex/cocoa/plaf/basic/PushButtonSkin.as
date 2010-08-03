@@ -15,7 +15,6 @@ import mx.managers.IFocusManagerComponent;
 public class PushButtonSkin extends TitledComponentSkin implements cocoa.plaf.PushButtonSkin, IFocusManagerComponent
 {
 	protected var border:Border;
-
 	protected var myComponent:Cell;
 
 	public function PushButtonSkin()
@@ -68,7 +67,7 @@ public class PushButtonSkin extends TitledComponentSkin implements cocoa.plaf.Pu
 		{
 			labelHelper.validate();
 
-			measuredWidth = Math.ceil(labelHelper.textWidth) + border.contentInsets.width;
+			measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
 			measuredHeight = border.layoutHeight;
 		}
 	}

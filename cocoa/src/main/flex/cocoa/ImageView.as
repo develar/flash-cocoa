@@ -1,14 +1,10 @@
 package cocoa
 {
 import cocoa.graphics.BitmapFillType;
-import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.Skin;
 import cocoa.util.RatioUtil;
 
 import flash.display.BitmapData;
 import flash.display.BlendMode;
-import flash.display.DisplayObjectContainer;
 import flash.display.GradientType;
 import flash.display.Graphics;
 import flash.display.Sprite;
@@ -133,32 +129,10 @@ public class ImageView extends AbstractView
 	{
 		super.createChildren();
 
-		if (_border != null)
-		{
-			return;
-		}
-
-		// ImageView и не скин компонента, и не item renderer, так что пока что он сам ищет для себя LaF.
-		var laf:LookAndFeel;
-		var p:DisplayObjectContainer = parent;
-		while (p != null)
-		{
-			if (p is LookAndFeelProvider)
-			{
-				laf = LookAndFeelProvider(p).laf;
-				if (laf != null)
-				{
-					break;
-				}
-			}
-			else if (p is Skin && Skin(p).component is LookAndFeelProvider)
-			{
-				laf = LookAndFeelProvider(Skin(p).component).laf;
-				break;
-			}
-
-			p = p.parent;
-		}
+//		if (_border != null)
+//		{
+//			return;
+//		}
 
 //		_border = laf.getBorder("ImageView.border");
 	}

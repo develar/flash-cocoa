@@ -45,7 +45,7 @@
 			//				 g.endFill();
 			//			return;
 
-			$laf = new AquaLookAndFeel();
+			laf = new AquaLookAndFeel();
 			createDeferredContent();
 
 			MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog()));

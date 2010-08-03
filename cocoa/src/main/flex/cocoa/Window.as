@@ -136,7 +136,7 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
 	{
 		return _laf;
 	}
-	public function set $laf(value:LookAndFeel):void
+	public function set laf(value:LookAndFeel):void
 	{
 		_laf = value;
 	}

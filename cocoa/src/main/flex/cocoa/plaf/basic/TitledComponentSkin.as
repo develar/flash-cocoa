@@ -4,6 +4,7 @@ import cocoa.LabelHelper;
 import cocoa.plaf.FontID;
 import cocoa.plaf.TitledComponentSkin;
 
+[Abstract]
 public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.TitledComponentSkin
 {
 	protected var labelHelper:LabelHelper;
@@ -41,7 +42,7 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
 
 		if (labelHelper != null)
 		{
-			labelHelper.font = getFont(FontID.SYSTEM);
+			labelHelper.font = getFont(titleFontId);
 		}
 	}
 }

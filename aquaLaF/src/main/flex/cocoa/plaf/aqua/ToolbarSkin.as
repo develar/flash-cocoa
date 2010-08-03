@@ -15,13 +15,12 @@ public class ToolbarSkin extends BoxSkin
 	override protected function createChildren():void
 	{
 		contentGroup = new BorderedContainer();
-		contentGroup.$laf = laf;
 
 		super.createChildren();
 
 		BorderedContainer(contentGroup).border = getBorder("border");
 		contentGroup.mouseEnabled = false;
-		contentGroup.$laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
+		contentGroup.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
 		component.uiPartAdded("contentGroup", contentGroup);
 
 		if (contentGroup.layout == null)
