@@ -26,10 +26,6 @@ public class Menu extends AbstractComponent
 	}
 
 	private var pendingSelectedIndex:int = 0;
-	public function get selectedIndex():int
-	{
-		return itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex;
-	}
 	public function set selectedIndex(value:int):void
 	{
 		if (itemGroup == null)
@@ -42,13 +38,14 @@ public class Menu extends AbstractComponent
 		}
 	}
 
-	public function get selectedItem():Object
+	public function getItemAt(index:int):Object
 	{
-		return _items.empty || (itemGroup != null && itemGroup.selectedIndex == ListSelection.NO_SELECTION) ? null : _items.getItemAt(itemGroup == null ? pendingSelectedIndex : itemGroup.selectedIndex);
+		return (_items.empty || (index == ListSelection.NO_SELECTION)) ? null : _items.getItemAt(index);
 	}
-	public function set selectedItem(value:Object):void
+
+	public function getItemIndex(value:Object):int
 	{
-		selectedIndex = _items.getItemIndex(value);
+		return _items.getItemIndex(value);
 	}
 
 	private var _labelFunction:Function;
@@ -62,7 +59,7 @@ public class Menu extends AbstractComponent
 	}
 
 	private var itemsChanged:Boolean;
-	private var _items:List;
+	protected var _items:List;
 	public function set items(value:List):void
 	{
 		if (value != _items)

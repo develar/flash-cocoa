@@ -1115,22 +1115,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 		return false;
 	}
 
-	//--------------------------------------------------------------------------
-	//
-	//  Overridden properties
-	//
-	//--------------------------------------------------------------------------
-
-	/**
-	 *  @private
-	 */
-	mx_internal var _owner:DisplayObjectContainer;
-
+	private var _owner:DisplayObjectContainer;
 	public function get owner():DisplayObjectContainer
 	{
 		return _owner != null ? _owner : parent;
 	}
-
 	public function set owner(value:DisplayObjectContainer):void
 	{
 		_owner = value;

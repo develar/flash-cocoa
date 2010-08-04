@@ -1,6 +1,6 @@
 package cocoa
 {
-public class SingletonClassFactory extends ClassFactory
+public final class SingletonClassFactory extends ClassFactory
 {
 	private var instance:Object;
 

@@ -6,13 +6,12 @@ import cocoa.Component;
 import cocoa.Insets;
 import cocoa.TextInsets;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.PushButtonSkin;
 
 import flash.display.Graphics;
 
 import mx.managers.IFocusManagerComponent;
 
-public class PushButtonSkin extends TitledComponentSkin implements cocoa.plaf.PushButtonSkin, IFocusManagerComponent
+public class PushButtonSkin extends TitledComponentSkin implements IFocusManagerComponent
 {
 	protected var border:Border;
 	protected var myComponent:Cell;

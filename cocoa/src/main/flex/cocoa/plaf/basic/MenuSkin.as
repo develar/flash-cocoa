@@ -56,10 +56,10 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner
 
 	public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void
 	{
-		AbstractItemRenderer(renderer).laf = laf;
-
 		if (renderer is IItemRenderer)
 		{
+			AbstractItemRenderer(renderer).laf = laf;
+			
 			IItemRenderer(renderer).itemIndex = itemIndex;
 			IItemRenderer(renderer).label = (data is MenuItem && MenuItem(data).isSeparatorItem) ? null : itemToLabel(data);
 		}

@@ -96,7 +96,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 
 		data["PopUpButton"] = PushButtonSkin;
 		data["PopUpButton.border"] = borders[BorderPosition.popUpButtonTexturedRounded];
-		data["ColorPicker.menuController"] = data["PopUpButton.menuController"] = new ClassFactory(PopUpMenuController);
+		data["ColorPicker.menuController"] = data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuController);
 
 		data["ColorPicker"] = PushButtonSkin;
 		data["ColorPicker.border"] = borders[BorderPosition.popUpButtonTexturedRounded];

@@ -1,6 +1,7 @@
 package cocoa
 {
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.basic.PopUpMenuController;
 import cocoa.plaf.Skin;
 import cocoa.plaf.TitledComponentSkin;
@@ -15,27 +16,36 @@ use namespace ui;
  * @see http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
 [DefaultProperty("menu")]
-public class PopUpButton extends AbstractControl implements Cell
+public class PopUpButton extends AbstractControl implements Cell, LookAndFeelProvider
 {
 	private var titleChanged:Boolean = false;
-	private var menuController:PopUpMenuController;
+
+	private var _laf:LookAndFeel;
+	public function get laf():LookAndFeel
+	{
+		return _laf;
+	}
+	public function set laf(value:LookAndFeel):void
+	{
+		_laf = value;
+	}
 
 	protected var _menu:Menu;
+	public function get menu():Menu
+	{
+		return _menu;
+	}
 	public function set menu(value:Menu):void
 	{
 		if (value != _menu)
 		{
 			if (_menu != null)
 			{
-				_menu.removeEventListener(Event.CHANGE, updateTitle);
+				_menu.removeEventListener(Event.CHANGE, synchronizeTitleAndSelectedItem);
 			}
 
 			_menu = value;
-			_menu.addEventListener(Event.CHANGE, updateTitle);
-			if (menuController != null)
-			{
-				menuController.menu = _menu;
-			}
+			_menu.addEventListener(Event.CHANGE, synchronizeTitleAndSelectedItem);
 			titleChanged = true;
 			invalidateProperties();
 		}
@@ -44,8 +54,8 @@ public class PopUpButton extends AbstractControl implements Cell
 	override public final function createView(laf:LookAndFeel):Skin
 	{
 		super.createView(laf);
-		menuController = laf.getFactory(lafKey + ".menuController").newInstance();
-		menuController.initialize(this, _menu, laf);
+		_laf = laf;
+		PopUpMenuController(laf.getFactory(lafKey + ".menuController").newInstance()).register(this);
 		return skin;
 	}
 
@@ -56,40 +66,29 @@ public class PopUpButton extends AbstractControl implements Cell
         if (titleChanged)
         {
             titleChanged = false;
-            updateTitle();
+            synchronizeTitleAndSelectedItem();
         }
     }
 
-	protected function updateTitle(event:Event = null):void
-	{
-		TitledComponentSkin(skin).title = selectedItem == null ? null : LabelUtil.itemToLabel(selectedItem, null, _menu.labelFunction);
-	}
-
 	public function get selectedItem():Object
 	{
-		return _menu.selectedItem;
+		return _menu.getItemAt(selectedIndex);
 	}
 	public function set selectedItem(value:Object):void
 	{
-		if (value != selectedItem)
-		{
-			_menu.selectedItem = value;
-			if (_action != null)
-			{
-				_action();
-			}
-			updateTitle();
-		}
+		selectedIndex = _menu.getItemIndex(value);
 	}
 
+	private var _selectedIndex:int = 0;
 	public function get selectedIndex():int
 	{
-		return _menu.selectedIndex;
+		return _selectedIndex;
 	}
 	public function set selectedIndex(value:int):void
 	{
 		if (value != selectedIndex)
 		{
+			_selectedIndex = value;
 			_menu.selectedIndex = value;
 			if (_action != null)
 			{
@@ -98,8 +97,14 @@ public class PopUpButton extends AbstractControl implements Cell
 //				AbstractView(skin).callLater(_action);
 				_action();
 			}
-			updateTitle();
+			synchronizeTitleAndSelectedItem();
 		}
+	}
+
+	protected function synchronizeTitleAndSelectedItem(event:Event = null):void
+	{
+		var item:Object = selectedItem;
+		TitledComponentSkin(skin).title = item == null ? null : LabelUtil.itemToLabel(item, null, _menu.labelFunction);
 	}
 
 	override protected function get primaryLaFKey():String
@@ -114,7 +119,7 @@ public class PopUpButton extends AbstractControl implements Cell
 
 	override public function set objectValue(value:Object):void
 	{
-		_menu.selectedItem = value;
+		selectedItem = value;
 	}
 }
 }

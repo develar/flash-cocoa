@@ -5,7 +5,6 @@ import cocoa.HighlightableItemRenderer;
 import cocoa.ListSelection;
 import cocoa.Menu;
 import cocoa.PopUpButton;
-import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 import cocoa.ui;
 
@@ -17,6 +16,7 @@ import flash.geom.Point;
 import flash.ui.Keyboard;
 import flash.utils.getTimer;
 
+import mx.core.IVisualElement;
 import mx.managers.PopUpManager;
 
 import spark.components.IItemRenderer;
@@ -27,32 +27,22 @@ public class PopUpMenuController extends AbstractListController
 {
 	private static const MOUSE_CLICK_INTERVAL:int = 400;
 	protected static const sharedPoint:Point = new Point();
-	
+
 	protected var popUpButton:PopUpButton;
-	private var laf:LookAndFeel;
+	protected var menu:Menu;
 
 	private var mouseDownTime:int = -1;
 
-	protected var _menu:Menu;
-	public function set menu(value:Menu):void
+	public function PopUpMenuController()
 	{
-		_menu = value;
-	}
-
-	public function initialize(popUpButton:PopUpButton, menu:Menu, laf:LookAndFeel):void
-	{
-		this.popUpButton = popUpButton;
-		_menu = menu;
-		this.laf = laf;
-		addHandlers();
+		super();
 
 		flags |= HIGHLIGHTABLE;
 	}
 
-	override protected function addHandlers():void
+	public function register(popUpButton:PopUpButton):void
 	{
 		popUpButton.skin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-		popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 	}
 
 	override protected function keyDownHandler(event:KeyboardEvent):void
@@ -68,7 +58,7 @@ public class PopUpMenuController extends AbstractListController
 		{
 			case Keyboard.ESCAPE:
 			{
-				if (_menu.skin != null && DisplayObject(_menu.skin).parent != null)
+				if (menu.skin != null && DisplayObject(menu.skin).parent != null)
 				{
 					event.preventDefault();
 					close();
@@ -90,29 +80,35 @@ public class PopUpMenuController extends AbstractListController
 
 	private function mouseDownHandler(event:MouseEvent):void
 	{
+		popUpButton = PopUpButton(Skin(event.currentTarget).component);
+		menu = popUpButton.menu;
+
 		var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);
 		if (!popUpButtonSkin.hitTestPoint(event.stageX, event.stageY))
 		{
 			return;
 		}
 
-		var menuSkin:Skin = _menu.skin;
+		var menuSkin:Skin = menu.skin;
 		if (menuSkin == null)
 		{
-			menuSkin = _menu.createView(laf);
+			menuSkin = menu.createView(popUpButton.laf);
 		}
 		else if (DisplayObject(menuSkin).parent != null)
 		{
 			return;
 		}
 
+		popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		
+		menu.selectedIndex = popUpButton.selectedIndex;
 		popUpButton.state = CellState.ON;
 		
 		PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
 		menuSkin.validateNow(); // если это datagroup, то оно должно валидировать display list c item render (их y) до setPopUpPosition 
 		setPopUpPosition();
 
-		itemGroup = _menu.itemGroup;
+		itemGroup = menu.itemGroup;
 		super.addHandlers();
 
 		popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
@@ -120,10 +116,13 @@ public class PopUpMenuController extends AbstractListController
 
 		mouseDownTime = getTimer();
 
-		if (_menu.selectedIndex != ListSelection.NO_SELECTION)
+		if (popUpButton.selectedIndex != ListSelection.NO_SELECTION)
 		{
-			highlightedRenderer = HighlightableItemRenderer(itemGroup.getElementAt(_menu.selectedIndex));
-			highlightedRenderer.highlighted = true;
+			highlightedRenderer = itemGroup.getElementAt(popUpButton.selectedIndex) as HighlightableItemRenderer;
+			if (highlightedRenderer != null)
+			{
+				highlightedRenderer.highlighted = true;
+			}
 		}
 	}
 
@@ -134,7 +133,12 @@ public class PopUpMenuController extends AbstractListController
 		var stage:Stage = DisplayObject(popUpButton.skin).stage;
 		stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 		stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
-		PopUpManager.removePopUp(_menu.skin);
+		PopUpManager.removePopUp(menu.skin);
+
+		popUpButton.skin.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+
+		menu = null;
+		popUpButton = null;
 	}
 
 	protected function setPopUpPosition():void
@@ -146,7 +150,7 @@ public class PopUpMenuController extends AbstractListController
 	{
 		var proposedSelectedIndex:int = -1;
 		// проверка на border (как в Cocoa — можно кликнуть на border, и при этом и меню не будет скрыто, и выделенный item не изменится)
-		if (!_menu.skin.hitTestPoint(event.stageX, event.stageY))
+		if (!menu.skin.hitTestPoint(event.stageX, event.stageY))
 		{
 			// для pop up button работает такое же правило щелчка, как и для menu border
 			if (!popUpButton.skin.hitTestPoint(event.stageX, event.stageY))
@@ -154,9 +158,9 @@ public class PopUpMenuController extends AbstractListController
 				mouseDownTime = -1;
 			}
 		}
-		else if (event.target != _menu.skin && event.target != itemGroup)
+		else if (event.target != menu.skin && event.target != itemGroup)
 		{
-			proposedSelectedIndex = IItemRenderer(event.target).itemIndex;
+			proposedSelectedIndex = highlightedRenderer is IItemRenderer ? IItemRenderer(event.target).itemIndex : itemGroup.getElementIndex(IVisualElement(event.target));
 		}
 		else
 		{
@@ -181,7 +185,7 @@ public class PopUpMenuController extends AbstractListController
 	// а мы не может ни preventDefault, ни stopPropagation — так как на них завязан FocusManager, поэтому мы делаем проверку на mouseDownTime
 	private function stageMouseDownHandler(event:MouseEvent):void
 	{
-		if (mouseDownTime == -1 && !_menu.skin.hitTestPoint(event.stageX, event.stageY))
+		if (mouseDownTime == -1 && !menu.skin.hitTestPoint(event.stageX, event.stageY))
 		{
 			close();
 		}

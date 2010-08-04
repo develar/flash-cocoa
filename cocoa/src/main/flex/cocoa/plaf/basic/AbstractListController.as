@@ -52,10 +52,12 @@ public class AbstractListController
 				highlightedRenderer.highlighted = false;
 			}
 
-			highlightedRenderer = HighlightableItemRenderer(event.target);
-			highlightedRenderer.highlighted = true;
-
-			event.updateAfterEvent();
+			highlightedRenderer = event.target as HighlightableItemRenderer;
+			if (highlightedRenderer != null)
+			{
+				highlightedRenderer.highlighted = true;
+				event.updateAfterEvent();
+			}
 		}
 		else if (highlightedRenderer != null)
 		{
