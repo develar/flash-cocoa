@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
-<Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-		xmlns="cocoa" xmlns:cocoa="cocoa.*">
+<Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark">
 
 	<fx:Script><![CDATA[
 		import cocoa.MenuItem;
 		import cocoa.pane.PaneItem;
-		import cocoa.plaf.basic.BottomBarStyle;
 		import cocoa.plaf.DialogSkin;
-		import cocoa.plaf.basic.MenuItemRenderer;
+		import cocoa.plaf.basic.BottomBarStyle;
 		import cocoa.plaf.basic.MenuItemRenderer;
 		import cocoa.resources.ResourceMetadata;
 
@@ -76,11 +74,5 @@
 		</ListView>
 
 		<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}" height="400"/>
-
-		<!--<cocoa:SingleSelectionDataGroup dataProvider="{shortListData}" itemRenderer="{new ClassFactory(SegmentItemRenderer)}"/>-->
 	</Container>
-
-	<!--<controlButtons>-->
-
-	<!--</controlButtons>-->
 </Dialog>

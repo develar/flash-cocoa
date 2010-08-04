@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
-<Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-		xmlns="cocoa" xmlns:cocoa="cocoa.*">
+<Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark" title="Window with toolbar">
 
 	<fx:Script><![CDATA[
-		import cocoa.plaf.basic.BottomBarStyle;
 		import cocoa.plaf.DialogSkin;
-		import cocoa.plaf.WindowSkin;
+		import cocoa.plaf.basic.BottomBarStyle;
 
 		override protected function skinAttachedHandler():void
 		{
@@ -17,12 +15,12 @@
 
 	<toolbar>
 		<Toolbar>
-			<PushButton title="Toolbar Button 1" left="0"/>
-			<PushButton title="Toolbar Button 2" left="0"/>
+			<PushButton title="Button 1" left="0"/>
+			<PushButton title="Button 2" left="0"/>
 		</Toolbar>
 	</toolbar>
 
-	<Container>
+	<Container width="300">
 		<layout>
 			<s:VerticalLayout paddingTop="50" paddingLeft="50" paddingRight="50" paddingBottom="50"/>
 		</layout>

@@ -243,6 +243,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 }
 
 import cocoa.Border;
+import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.FontID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -280,6 +281,9 @@ final class WindowFrameLookAndFeel extends AbstractLookAndFeel
 
 final class HUDLookAndFeel extends AbstractLookAndFeel
 {
+	[Embed(source="../../../../../../target/assets", mimeType="application/octet-stream")]
+	private static var assetsDataClass:Class;
+	
 	public function HUDLookAndFeel(borders:Vector.<Border>, parent:AquaLookAndFeel)
 	{
 		this.parent = parent;
@@ -295,6 +299,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data[FontID.MENU] = AquaFonts.SMALL_SYSTEM_FONT;
 		data[FontID.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
 
+		LookAndFeelUtil.initAssets(data, assetsDataClass);
+
 		data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
 		data["Window.border"] = borders[BorderPosition.hudWindow];
@@ -305,9 +311,6 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["HSeparator.border"] = new SeparatorBorder();
 
 		data["PushButton"] = HUDPushButtonSkin;
-		data["PushButton.border"] = borders[BorderPosition.hudButton];
-
-		data["PopUpButton.border"] = borders[BorderPosition.hudPopUpButton];
 
 		data["MenuItem.border"] = new MenuItemBorder(borders[BorderPosition.hudMenuItem]);
 		data["MenuItem.border.highlighted"] = borders[BorderPosition.hudMenuItem];

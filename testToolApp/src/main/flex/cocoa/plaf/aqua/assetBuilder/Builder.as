@@ -66,41 +66,6 @@ public class Builder
 	[Embed(source="/segmentedControl4.texturedRounded.png")]
 	private static var segmentedControl4TRClass:Class;
 
-	[Embed(source="/hud/HUD-ButtonLeft-N.png")]
-	private static var hudButtonOffLeft:Class;
-	[Embed(source="/hud/HUD-ButtonFill-N.png")]
-	private static var hudButtonOffCenter:Class;
-	[Embed(source="/hud/HUD-ButtonRight-N.png")]
-	private static var hudButtonOffRight:Class;
-
-	[Embed(source="/hud/HUD-ButtonLeft-P.png")]
-	private static var hudButtonOnLeft:Class;
-	[Embed(source="/hud/HUD-ButtonFill-P.png")]
-	private static var hudButtonOnCenter:Class;
-	[Embed(source="/hud/HUD-ButtonRight-P.png")]
-	private static var hudButtonOnRight:Class;
-
-	[Embed(source="/hud/HUD-PopupLeft-N.png")]
-	private static var hudPopUpButtonOffLeft:Class;
-	[Embed(source="/hud/HUD-PopupFill-N.png")]
-	private static var hudPopUpButtonOffCenter:Class;
-	[Embed(source="/hud/HUD-PopupRight-N.png")]
-	private static var hudPopUpButtonOffRight:Class;
-
-	[Embed(source="/hud/HUD-PopupLeft-P.png")]
-	private static var hudPopUpButtonOnLeft:Class;
-	[Embed(source="/hud/HUD-PopupFill-P.png")]
-	private static var hudPopUpButtonOnCenter:Class;
-	[Embed(source="/hud/HUD-PopupRight-P.png")]
-	private static var hudPopUpButtonOnRight:Class;
-
-	[Embed(source="/hud/HUD-PopupLeft-D.png")]
-	private static var hudPopUpButtonDisabledLeft:Class;
-	[Embed(source="/hud/HUD-PopupFill-D.png")]
-	private static var hudPopUpButtonDisabledCenter:Class;
-	[Embed(source="/hud/HUD-PopupRight-D.png")]
-	private static var hudPopUpButtonDisabledRight:Class;
-
 	[Embed(source="/hud/HUD-SpinnerTop-N.png")]
 	private static var hudSpinnerIncrementButtonOff:Class;
 	[Embed(source="/hud/HUD-SpinnerTop-P.png")]
@@ -153,7 +118,7 @@ public class Builder
 	// textured rounded push button
 	buttonRowsInfo[1] = new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, 0, 0, -1), new Insets(10, NaN, 10, 6)));
 	// rounded pop up button
-	buttonRowsInfo[2] = new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(9, NaN, 9 + 21/* width of double-arrow area */, 5, 21)));
+	buttonRowsInfo[2] = new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5)));
 
 	private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void
 	{
@@ -224,15 +189,6 @@ public class Builder
 		compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.windowWithToolbar);
 		compoundImageReader.readScale9(hudTitleBarAndContentClass, BorderPosition.hudWindow, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
 
-		// HUD PushButton
-		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -2), new Insets(10, NaN, 10, 5)),
-														new <Class>[hudButtonOffLeft, hudButtonOffCenter, hudButtonOffRight,
-															hudButtonOnLeft, hudButtonOnCenter, hudButtonOnRight], BorderPosition.hudButton);
-		// HUD PopUpButton
-		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1, -2), new TextInsets(7, NaN, 7 + 18 /* width of double-arrow area */, 5, 18)),
-														new <Class>[hudPopUpButtonOffLeft, hudPopUpButtonOffCenter, hudPopUpButtonOffRight,
-															hudPopUpButtonOnLeft, hudPopUpButtonOnCenter, hudPopUpButtonOnRight, hudPopUpButtonDisabledLeft, hudPopUpButtonDisabledCenter, hudPopUpButtonDisabledRight], BorderPosition.hudPopUpButton);
-
 		addSpinnerButtons();
 		borders[BorderPosition.sliderThumb] = createFlexButtonBorder(hudSliderThumbOff, hudSliderThumbOn, new FrameInsets(-1, 0, -1, -2));
 
@@ -266,7 +222,7 @@ public class Builder
 		FileUtil.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/borders", data);
 		data.position = 0;
 		
-		show(testContainer, data);
+//		show(testContainer, data);
 
 		AquaLookAndFeel._setBordersAndIcons(borders, icons);
 	}

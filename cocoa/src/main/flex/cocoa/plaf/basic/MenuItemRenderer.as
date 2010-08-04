@@ -48,12 +48,12 @@ public class MenuItemRenderer extends LabeledItemRenderer
 		if (!(menuItem is MenuItem && MenuItem(menuItem).isSeparatorItem))
 		{
 			border = getBorder(highlighted ? "border.highlighted" : "border");
+
+			labelHelper.font = getFont(highlighted ? FontID.MENU_HIGHLIGHTED : FontID.MENU);
+			labelHelper.validate();
+			labelHelper.moveByInsets(h, border.contentInsets);
 		}
 
-		labelHelper.font = getFont(highlighted ? FontID.MENU_HIGHLIGHTED : FontID.MENU);
-		labelHelper.validate();
-		labelHelper.moveByInsets(h, border.contentInsets);
-		
 		var g:Graphics = graphics;
 		g.clear();
 

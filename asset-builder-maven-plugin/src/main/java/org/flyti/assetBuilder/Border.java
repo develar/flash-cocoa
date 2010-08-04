@@ -18,4 +18,7 @@ public class Border
 
 	@Element(required = false)
 	public Insets frameInsets;
+
+	@Attribute(required = false)
+	public String appleResource;
 }

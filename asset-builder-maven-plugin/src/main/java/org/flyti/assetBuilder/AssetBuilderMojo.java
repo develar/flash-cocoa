@@ -1,6 +1,5 @@
 package org.flyti.assetBuilder;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -11,10 +10,11 @@ import org.codehaus.plexus.util.IOUtil;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * @goal generate
@@ -23,12 +23,9 @@ import java.util.*;
  *
  * При поиске мы формируем имя согласно key + "." + имя состояния. пока что считаем что список состояний равен "off, on".
  */
-@SuppressWarnings({"UnusedDeclaration"})
 public class AssetBuilderMojo extends AbstractMojo
 {
 	private static final String[] DEFAULT_STATES = {"off", "on"};
-
-	private static final FileFilter ASSET_FILE_FILTER = new SuffixFileFilter(new String[]{".png"});
 
 	/**
      * @parameter expression="${asset.builder.skip}"
@@ -94,6 +91,9 @@ public class AssetBuilderMojo extends AbstractMojo
 		{
 			throw new MojoExecutionException("Can't parse descriptor", e);
 		}
+
+		//noinspection ResultOfMethodCallIgnored
+		output.getParentFile().mkdirs();
 
 		try
 		{
@@ -187,6 +187,8 @@ public class AssetBuilderMojo extends AbstractMojo
 
 		SliceCalculator sliceCalculator = new SliceCalculator();
 
+		ImageRetriever imageRetriever = new ImageRetriever(sources);
+
 		for (Border border : borders)
 		{
 			BorderType borderType = BorderType.valueOf(border.type);
@@ -195,16 +197,32 @@ public class AssetBuilderMojo extends AbstractMojo
 			out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".border") : key);
 			out.writeByte(borderType.ordinal());
 
-			BufferedImage[] sourceImages = getImages(key, borderType == BorderType.OneBitmap ? null : DEFAULT_STATES);
+//			if (border.appleResource == null)
+			final BufferedImage[] sourceImages;
+			if (border.appleResource == null)
+			{
+				sourceImages = imageRetriever.getImages(key, borderType == BorderType.OneBitmap ? null : DEFAULT_STATES);
+			}
+			else
+			{
+				sourceImages = imageRetriever.getImagesFromAppleResources(border.appleResource, new String[]{"N", "P"});
+			}
 
 			switch (borderType)
 			{
 				case Scale3EdgeHBitmap:
 				{
-					// мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
-					// иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
-					// Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
-					out.write(slice3H(sourceImages, sliceCalculator.calculate(sourceImages[1], false, false)));
+					if (border.appleResource == null)
+					{
+						// мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
+						// иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
+						// Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
+						out.write(slice3H(sourceImages, sliceCalculator.calculate(sourceImages[1], false, false)));
+					}
+					else
+					{
+						out.write(joinButtonAppleResources(sourceImages));
+					}
 				}
 				break;
 
@@ -226,77 +244,50 @@ public class AssetBuilderMojo extends AbstractMojo
 		}
 	}
 
-	private BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException, IOException
+	private BufferedImage[] joinButtonAppleResources(BufferedImage[] sourceImages) throws IOException, MojoExecutionException
 	{
-		final boolean hasStates = states != null;
-		final int statesLength = hasStates ? states.length : 1;
-
-		// если для key найдено изображение для какого-либо состояния, то мы считаем, что и все остальные изображения там же
-		for (File sourceDirectory : sources)
+		final int n  = sourceImages.length;
+		BufferedImage[] images = new BufferedImage[n - (n / 3)];
+		for (int i = 0, bitmapIndex = 0; i < n; i += 3)
 		{
-			boolean found = false;
+			BufferedImage left = sourceImages[i];
+			BufferedImage center = sourceImages[i + 1];
 
-			String postfix = ".";
-			if (hasStates)
+			if (center.getWidth() != 1)
 			{
-				postfix += states[0] + ".";
+				throw new MojoExecutionException("The width of the center must be 1px");
 			}
-			postfix += "png";
 
-			File imageFile = new File(sourceDirectory, key + postfix);
-			if (imageFile.exists())
-			{
-				BufferedImage[] images = new BufferedImage[statesLength];
-				images[0] = ImageIO.read(imageFile);
-				if (hasStates)
-				{
-					for (int i = 1; i < statesLength; i++)
-					{
-						images[i] = ImageIO.read(new File(sourceDirectory, key + "." + states[i] + ".png"));
-					}
-				}
+			final int leftWidth = left.getWidth();
+			final int height = left.getHeight();
 
-				return images;
-			}
-			else if (hasStates)
-			{
-				File imageDirectory = new File(sourceDirectory, key);
-				if (imageDirectory.exists())
-				{
-					File[] files = imageDirectory.listFiles(ASSET_FILE_FILTER);
-					BufferedImage[] images = new BufferedImage[files.length];
+			BufferedImage leftAndFill = new BufferedImage(leftWidth + 1, height, getAppropriateBufferedImageType(left));
+			// с setRect были проблемы с colorSpace
+			leftAndFill.setRGB(0, 0, leftWidth, height, imageToRGB(left), 0, leftWidth);
+			leftAndFill.setRGB(leftWidth, 0, 1, height, imageToRGB(center), 0, 1);
 
-					Arrays.sort(files, new Comparator<File>()
-					{
-						@Override
-						public int compare(File o1, File o2)
-						{
-							if (o1.getName().startsWith("off"))
-							{
-								return o2.getName().startsWith("off") ? (o1.getName().length() - o2.getName().length()) : -1;
-							}
-							else if (o1.getName().startsWith("on"))
-							{
-								return o2.getName().startsWith("on") ? (o1.getName().length() - o2.getName().length()) : 1;
-							}
-							else
-							{
-								return 1;
-							}
-						}
-					});
-
-					for (int i = 0, filesLength = files.length; i < filesLength; i++)
-					{
-						images[i] = ImageIO.read(files[i]);
-					}
-
-					return images;
-				}
-			}
+			images[bitmapIndex++] = leftAndFill;
+			images[bitmapIndex++] = sourceImages[i + 2];
 		}
 
-		throw new MojoExecutionException("Can't find image for " + key);
+		return images;
+	}
+
+	private int[] imageToRGB(BufferedImage image)
+	{
+		return image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+	}
+
+	private int getAppropriateBufferedImageType(BufferedImage original)
+	{
+		if (original.getType() == BufferedImage.TYPE_CUSTOM)
+		{
+			return original.getTransparency() == Transparency.TRANSLUCENT ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+		}
+		else
+		{
+			return original.getType();
+		}
 	}
 
 	private BufferedImage[] slice3H(BufferedImage[] sourceImages, Insets sliceSize)
@@ -327,8 +318,7 @@ public class AssetBuilderMojo extends AbstractMojo
 
 			if (isContent)
 			{
-//				output.writeByte(contentInsets is TextInsets ? 1 : 0);
-				out.writeByte(0);
+				out.writeByte(insets.truncatedTailMargin);
 			}
 
 			out.writeByte(insets.left);

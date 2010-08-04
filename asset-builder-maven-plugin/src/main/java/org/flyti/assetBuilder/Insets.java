@@ -13,6 +13,9 @@ public class Insets
 	@Attribute(required = false)
 	public int bottom;
 
+	@Attribute(required = false)
+	public byte truncatedTailMargin = -1;
+
 	public Insets(int left, int top, int right, int bottom)
 	{
 		this.left = left;

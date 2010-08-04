@@ -37,21 +37,17 @@ public class AbstractBitmapBorder extends AbstractBorder implements Externalizab
 
 	protected final function writeInsets(output:IDataOutput, insets:Insets):void
 	{
-		output.writeByte(insets is TextInsets ? 1 : 0);
+		output.writeByte(insets is TextInsets ? TextInsets(insets).truncatedTailMargin : -1);
 		output.writeByte(insets.left);
 		output.writeByte(insets.top);
 		output.writeByte(insets.right);
 		output.writeByte(insets.bottom);
-
-		if (insets is TextInsets)
-		{
-			output.writeByte(TextInsets(insets).truncatedTailMargin);
-		}
 	}
 
 	protected final function readInsets(input:IDataInput):Insets
 	{
-		return input.readByte() == 0 ? new Insets(input.readByte(), input.readByte(), input.readByte(), input.readByte()) : new TextInsets(input.readByte(), input.readByte(), input.readByte(), input.readByte(), input.readByte());
+		var first:int = input.readByte();
+		return first == -1 ? new Insets(input.readByte(), input.readByte(), input.readByte(), input.readByte()) : new TextInsets(first, input.readByte(), input.readByte(), input.readByte(), input.readByte());
 	}
 
 	protected final function readFrameInsets(input:IDataInput):FrameInsets

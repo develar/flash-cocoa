@@ -25,4 +25,33 @@
 			<type>swc</type>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<configuration>
+					<includeFiles>
+						<file>borders</file>
+					</includeFiles>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.flyti</groupId>
+				<artifactId>asset-builder-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
