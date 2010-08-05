@@ -105,6 +105,8 @@
 								<class>cocoa.*ImageView</class>
 
 								<class>**.*ScrollView</class>
+
+								<class>cocoa.modules.ModuleId</class>
 							</includes>
 							<excludes>
 								<class>cocoa.plaf.basic.scrollbar.*</class>

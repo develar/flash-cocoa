@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flex-config xmlns="http://www.adobe.com/2006/flex-config">
+	<compiler>
+		<debug>true</debug>
+		<source-path>
+			<path-element>../../main/flex</path-element>
+			<path-element>../../main/locales/{locale}</path-element>
+		</source-path>
+		
+		<library-path append="true">
+			<path-element>/Users/develar/.m2/repository/org/flyti/collections/1.1/collections-1.1.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/framework/4.0.0.14025/framework-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/textLayout/4.0.0.14025/textLayout-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/spark/4.0.0.14025/spark-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/sparkskins/4.0.0.14025/sparkskins-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/rpc/4.0.0.14025/rpc-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/utilities/4.0.0.14025/utilities-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/osmf/4.0.0.14025/osmf-4.0.0.14025.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/asfusion/mate/1.0-SNAPSHOT/mate-1.0-SNAPSHOT.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/org/flyti/lang/1.1.3/lang-1.1.3.swc</path-element>
+
+			<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/framework/4.0.0.14025/framework-4.0.0.14025-en_US.rb.swc</path-element>
+      		<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/spark/4.0.0.14025/spark-4.0.0.14025-en_US.rb.swc</path-element>
+      		<path-element>/Users/develar/.m2/repository/com/adobe/flex/framework/rpc/4.0.0.14025/rpc-4.0.0.14025-en_US.rb.swc</path-element>
+
+			<path-element>/Users/develar/.m2/repository/org/hamcrest/hamcrest-as3/1.0.2/hamcrest-as3-1.0.2.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flexunit/flexunit/4.0-rc-1.1/flexunit-4.0-rc-1.1.swc</path-element>
+			<path-element>/Users/develar/.m2/repository/com/adobe/flexunit/uiRunner/4.0-rc-1.1/uiRunner-4.0-rc-1.1.swc</path-element>
+		</library-path>
+		<external-library-path>
+			<path-element>/Users/develar/workspace/XpressPages/client/commonLibrary/flexLibrary/target/classes/playerglobal.swc</path-element>
+		</external-library-path>
+
+		<locale>
+			<locale-element>en_US</locale-element>
+		</locale>
+		<warn-no-constructor>false</warn-no-constructor>
+
+		<fonts>
+			<advanced-anti-aliasing>true</advanced-anti-aliasing>
+			<languages>
+				<language-range>
+					<lang>applicationRange</lang>
+					<range>U+0400-04FF,U+0020-007F,U+0100-017F</range>
+				</language-range>
+			</languages>
+			<managers>
+				<manager-class>flash.fonts.JREFontManager</manager-class>
+				<manager-class>flash.fonts.BatikFontManager</manager-class>
+				<manager-class>flash.fonts.CFFFontManager</manager-class>
+			</managers>
+			<max-cached-fonts>20</max-cached-fonts>
+			<max-glyphs-per-face>1000</max-glyphs-per-face>
+		</fonts>
+	</compiler>
+	<output>../../../target/TestRunner.swf</output>
+	<file-specs>
+		<path-element>client/commonLibrary/flexLibrary/src/test/flex/TestRunner.mxml</path-element>
+	</file-specs>
+</flex-config>
+

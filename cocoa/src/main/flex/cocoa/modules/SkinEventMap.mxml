@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<EventMap xmlns="http://mate.asfusion.com" xmlns:fx="http://ns.adobe.com/mxml/2009">
+	<fx:Script><![CDATA[
+		import cocoa.modules.events.LoadModuleEvent;
+		import cocoa.modules.events.SetSkinsEvent;
+
+		import mx.events.BrowserChangeEvent;
+		]]></fx:Script>
+
+	<fx:Declarations>
+		<EventHandlers type="{BrowserChangeEvent.BROWSER_URL_CHANGE}" debug="false">
+			<MethodInvoker role="{SkinManager}" method="browserUrlChangeHandler" arguments="{[event]}"/>
+		</EventHandlers>
+
+		<EventHandlers type="{SetSkinsEvent.SET_SKINS}">
+			<PropertySetter role="{SkinManager}" targetKey="list" source="{event}" sourceKey="list"/>
+		</EventHandlers>
+		<EventHandlers type="{LoadModuleEvent.LOAD_STYLE}">
+			<MethodInvoker role="{SkinManager}" method="load" arguments="{[event.module]}"/>
+		</EventHandlers>
+	</fx:Declarations>
+</EventMap>

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<EventMap xmlns="http://mate.asfusion.com" xmlns:fx="http://ns.adobe.com/mxml/2009">
+	<fx:Script><![CDATA[
+		import cocoa.modules.events.LoadModuleEvent;
+		import cocoa.modules.events.SetLocalesEvent;
+
+		import mx.events.BrowserChangeEvent;
+		]]></fx:Script>
+
+	<fx:Declarations>
+		<EventHandlers type="{BrowserChangeEvent.BROWSER_URL_CHANGE}">
+			<MethodInvoker role="{LocaleManager}" method="browserUrlChangeHandler" arguments="{[event]}"/>
+		</EventHandlers>
+
+		<EventHandlers type="{SetLocalesEvent.TYPE}">
+			<PropertySetter role="{LocaleManager}" targetKey="list" source="{event}" sourceKey="list"/>
+		</EventHandlers>
+		<EventHandlers type="{LoadModuleEvent.LOAD_LOCALE}">
+			<MethodInvoker role="{LocaleManager}" method="load" arguments="{[event.module]}"/>
+		</EventHandlers>
+	</fx:Declarations>
+</EventMap>
