@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.flyti.cocoa</groupId>
 		<artifactId>cocoaAggregator</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>Aqua LaF Demo App</name>
@@ -23,19 +23,19 @@
 			<groupId>org.flyti.cocoa</groupId>
 			<artifactId>aquaLaF</artifactId>
 			<type>swc</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.flyti.cocoa</groupId>
 			<artifactId>acocoa</artifactId>
 			<type>swc</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flyti.cocoa</groupId>
 			<artifactId>cocoa</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 			<type>rb.swc</type>
 			<classifier>en_US</classifier>
 		</dependency>
