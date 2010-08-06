@@ -1,5 +1,4 @@
-package cocoa.bar
-{
+package cocoa.bar {
 import cocoa.AbstractComponent;
 import cocoa.SelectableDataGroup;
 import cocoa.pane.LabeledItem;
@@ -10,8 +9,6 @@ import cocoa.ui;
 import flash.utils.Dictionary;
 
 import mx.core.IVisualElement;
-import mx.events.CollectionEvent;
-import mx.events.CollectionEventKind;
 
 import org.flyti.plexus.Injectable;
 import org.flyti.util.List;
@@ -21,126 +18,85 @@ import spark.components.IItemRenderer;
 use namespace ui;
 
 [Abstract]
-public class Bar extends AbstractComponent implements Injectable
-{
-	protected static const _skinParts:Dictionary = new Dictionary();
-	_skinParts.segmentedControl = 0;
-	override protected function get skinParts():Dictionary
-	{
-		return _skinParts;
-	}
+public class Bar extends AbstractComponent implements Injectable {
+  protected static const _skinParts:Dictionary = new Dictionary();
+  _skinParts.segmentedControl = 0;
+  override protected function get skinParts():Dictionary {
+    return _skinParts;
+  }
 
-	ui var segmentedControl:SelectableDataGroup;
+  ui var segmentedControl:SelectableDataGroup;
 
-	public function Bar()
-	{
-		listenResourceChange();
-	}
+  public function Bar() {
+    listenResourceChange();
+  }
 
-	protected function get editAware():Boolean
-	{
-		return false;
-	}
+  private var itemsChanged:Boolean;
+  private var _items:List/*<PaneMetadata>*/;
+  public function get items():List {
+    return _items;
+  }
 
-	private var itemsChanged:Boolean;
-	private var _items:List/*<PaneMetadata>*/;
-	public function get items():List
-	{
-		return _items;
-	}
-	public function set items(value:List):void
-	{
-		if (value == items)
-		{
-			return;
-		}
+  public function set items(value:List):void {
+    if (value == items) {
+      return;
+    }
 
-		if (editAware && _items != null)
-		{
-			_items.removeEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler);
-		}
+    _items = value;
+    itemsChanged = true;
+    invalidateProperties();
+  }
 
-		_items = value;
+  ui function segmentedControlAdded():void {
 
-		if (editAware && _items != null)
-		{
-			_items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler);
-		}
+  }
 
-		itemsChanged = true;
-		invalidateProperties();
-	}
+  override public function commitProperties():void {
+    if (itemsChanged) {
+      itemsChanged = false;
+      validateItems();
+    }
 
-	ui function segmentedControlAdded():void
-	{
+    super.commitProperties();
+  }
 
-	}
+  protected function validateItems():void {
+    itemsChanged = false;
 
-	override public function commitProperties():void
-	{
-		if (itemsChanged)
-		{
-			itemsChanged = false;
-			validateItems();
-		}
+    for each (var item:LabeledItem in items.iterator) {
+      item.localizedLabel = itemToLabel(item);
+    }
 
-		super.commitProperties();
-	}
+    segmentedControl.dataProvider = items;
+  }
 
-	protected function validateItems():void
-	{
-		itemsChanged = false;
+  override protected function resourcesChanged():void {
+    if (items == null || segmentedControl == null) {
+      return;
+    }
 
-		for each (var item:LabeledItem in items.iterator)
-		{
-			item.localizedLabel = itemToLabel(item);
-		}
+    var i:int;
+    var n:int = items.size;
+    for (i = 0; i < n; i++) {
+      var item:LabeledItem = LabeledItem(items.getItemAt(i));
+      var localizedLabel:String = itemToLabel(item);
+      item.localizedLabel = localizedLabel;
+      if (item is PaneItem) {
+        var paneItem:PaneItem = PaneItem(item);
+        if (paneItem.view != null && paneItem.view is TitledPane) {
+          TitledPane(paneItem.view).title = localizedLabel;
+        }
+      }
 
-		segmentedControl.dataProvider = items;
-	}
+      var labelRenderer:IVisualElement = segmentedControl.getElementAt(i);
+      if (labelRenderer is IItemRenderer) {
+        IItemRenderer(labelRenderer).label = localizedLabel;
+      }
+    }
+  }
 
-	override protected function resourcesChanged():void
-	{
-		if (items == null || segmentedControl == null)
-		{
-			return;
-		}
-
-		var i:int;
-		var n:int = items.size;
-		for (i = 0; i < n; i++)
-		{
-			var item:LabeledItem = LabeledItem(items.getItemAt(i));
-			var localizedLabel:String = itemToLabel(item);
-			item.localizedLabel = localizedLabel;
-			if (item is PaneItem)
-			{
-				var paneItem:PaneItem = PaneItem(item);
-				if (paneItem.view != null && paneItem.view is TitledPane)
-				{
-					TitledPane(paneItem.view).title = localizedLabel;
-				}
-			}
-
-			var labelRenderer:IVisualElement = segmentedControl.getElementAt(i);
-			if (labelRenderer is IItemRenderer)
-			{
-				 IItemRenderer(labelRenderer).label = localizedLabel;
-			}
-		}
-	}
-
-	protected function itemToLabel(paneMetadata:LabeledItem):String
-	{
-		return resourceManager.getString(paneMetadata.label.bundleName, paneMetadata.label.resourceName);
-	}
-
-	private function itemsChangeHandler(event:CollectionEvent):void
-	{
-		if (event.kind == CollectionEventKind.ADD)
-		{
-
-		}
-	}
+  protected function itemToLabel(paneMetadata:LabeledItem):String {
+    return resourceManager.getString(paneMetadata.label.bundleName, paneMetadata.label.resourceName);
+  }
 }
 }

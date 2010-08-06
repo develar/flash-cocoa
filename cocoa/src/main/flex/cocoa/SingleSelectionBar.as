@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 
@@ -8,45 +7,38 @@ import spark.events.IndexChangeEvent;
 use namespace ui;
 
 [Abstract]
-public class SingleSelectionBar extends Bar
-{
-	private var typedSegmentedControl:SingleSelectionDataGroup;
+public class SingleSelectionBar extends Bar {
+  private var typedSegmentedControl:SingleSelectionDataGroup;
 
-	private var pendingSelectedIndex:int = 0;
-	public function set selectedIndex(value:int):void
-	{
-		if (segmentedControl == null)
-		{
-			pendingSelectedIndex = value;
-		}
-		else
-		{
-			typedSegmentedControl.selectedIndex = value;
-		}
-	}
+  private var pendingSelectedIndex:int = 0;
 
-	public function get selectedItem():PaneItem
-	{
-		return PaneItem(items.getItemAt(typedSegmentedControl == null ? pendingSelectedIndex : typedSegmentedControl.selectedIndex));
-	}
+  public function set selectedIndex(value:int):void {
+    if (segmentedControl == null) {
+      pendingSelectedIndex = value;
+    }
+    else {
+      typedSegmentedControl.selectedIndex = value;
+    }
+  }
 
-	override ui function segmentedControlAdded():void
-	{
-		typedSegmentedControl = SingleSelectionDataGroup(segmentedControl);
-		typedSegmentedControl.selectedIndex = pendingSelectedIndex;
-		pendingSelectedIndex = ListSelection.NO_SELECTION;
+  public function get selectedItem():PaneItem {
+    return PaneItem(items.getItemAt(typedSegmentedControl == null ? pendingSelectedIndex : typedSegmentedControl.selectedIndex));
+  }
 
-		segmentedControl.addEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
-	}
+  override ui function segmentedControlAdded():void {
+    typedSegmentedControl = SingleSelectionDataGroup(segmentedControl);
+    typedSegmentedControl.selectedIndex = pendingSelectedIndex;
+    pendingSelectedIndex = ListSelection.NO_SELECTION;
 
-	ui function itemGroupRemoved():void
-	{
-		segmentedControl.removeEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
-	}
+    segmentedControl.addEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
+  }
 
-	protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void
-	{
-		throw new Error("abstract");
-	}
+  ui function itemGroupRemoved():void {
+    segmentedControl.removeEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
+  }
+
+  protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void {
+    throw new Error("abstract");
+  }
 }
 }

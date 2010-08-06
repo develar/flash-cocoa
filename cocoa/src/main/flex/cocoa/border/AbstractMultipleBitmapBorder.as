@@ -20,11 +20,11 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implement
 
 	override public function readExternal(input:ByteArray):void
 	{
-		var n:int = input.readUnsignedByte();
+		const n:int = input.readUnsignedByte();
 		bitmaps = new Vector.<BitmapData>(n, true);
 		for (var i:int = 0; i < n; i++)
 		{
-			var width:int = input.readUnsignedByte();
+			const width:int = input.readUnsignedByte();
 			if (width != 0)
 			{
 				var bitmapData:BitmapData = new BitmapData(width, input.readUnsignedByte(), true, 0);

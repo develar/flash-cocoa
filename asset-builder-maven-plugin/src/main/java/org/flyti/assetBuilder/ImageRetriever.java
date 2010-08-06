@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -25,9 +26,7 @@ public class ImageRetriever
 		this.sources = sources;
 	}
 
-	/**
-	 * Ищет изображения как они в Apple app resources
-	 */
+	// Ищет изображения как они в Apple app resources
 	public BufferedImage[] getImagesFromAppleResources(String appleResource, String[] states) throws MojoExecutionException, IOException
 	{
 		BufferedImage[] images = new BufferedImage[3 * 2];
@@ -88,17 +87,20 @@ public class ImageRetriever
 			File imageFile = new File(sourceDirectory, key + postfix);
 			if (imageFile.exists())
 			{
-				BufferedImage[] images = new BufferedImage[statesLength];
-				images[0] = ImageIO.read(imageFile);
+				ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(statesLength);
+				images.add(ImageIO.read(imageFile));
 				if (hasStates)
 				{
 					for (int i = 1; i < statesLength; i++)
 					{
-						images[i] = ImageIO.read(new File(sourceDirectory, key + "." + states[i] + ".png"));
+            final File file = new File(sourceDirectory, key + "." + states[i] + ".png");
+            if (file.exists()) {
+              images.add(ImageIO.read(file));
+            }
 					}
 				}
 
-				return images;
+				return images.toArray(new BufferedImage[images.size()]);
 			}
 			else if (hasStates)
 			{

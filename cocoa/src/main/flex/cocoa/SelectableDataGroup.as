@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import cocoa.plaf.basic.AbstractItemRenderer;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
@@ -16,153 +15,126 @@ import spark.components.IItemRenderer;
 use namespace mx_internal;
 
 [Abstract]
-public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelProvider
-{
-	protected static const selectionChanged:uint = 1 << 0;
-	private static const mouseSelectionModeChanged:uint = 1 << 1;
+public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelProvider {
+  protected static const selectionChanged:uint = 1 << 0;
+  private static const mouseSelectionModeChanged:uint = 1 << 1;
 
-	protected var flags:uint = mouseSelectionModeChanged;
+  protected var flags:uint = mouseSelectionModeChanged;
 
-	public function SelectableDataGroup()
-	{
-		super();
+  public function SelectableDataGroup() {
+    super();
 
-		mouseEnabled = false;
-	}
+    mouseEnabled = false;
+  }
 
-	private var _laf:LookAndFeel;
-	public function get laf():LookAndFeel
-	{
-		return _laf;
-	}
-	public function set laf(value:LookAndFeel):void
-	{
-		_laf = value;
-	}
+  private var _laf:LookAndFeel;
+  public function get laf():LookAndFeel {
+    return _laf;
+  }
 
-	private var _lafSubkey:String;
-	public final function set lafSubkey(value:String):void
-	{
-		_lafSubkey = value;
-	}
+  public function set laf(value:LookAndFeel):void {
+    _laf = value;
+  }
 
-	private var _iconFunction:Function;
-	public function set iconFunction(value:Function):void
-	{
-		_iconFunction = value;
-	}
+  private var _lafSubkey:String;
+  public final function set lafSubkey(value:String):void {
+    _lafSubkey = value;
+  }
 
-	private var _labelFunction:Function;
-	public function set labelFunction(value:Function):void
-	{
-		_labelFunction = value;
-	}
+  private var _iconFunction:Function;
+  public function set iconFunction(value:Function):void {
+    _iconFunction = value;
+  }
 
-	private var _toolTipFunction:Function;
-	public function set toolTipFunction(value:Function):void
-	{
-		_labelFunction = value;
-	}
+  private var _labelFunction:Function;
+  public function set labelFunction(value:Function):void {
+    _labelFunction = value;
+  }
 
-	/**
-	 * Only once before initial commitProperties.
-	 */
-	private var _mouseSelectionMode:int = ItemMouseSelectionMode.CLICK;
-	public function set mouseSelectionMode(value:int):void
-	{
-		if (value != _mouseSelectionMode)
-		{
-			_mouseSelectionMode = value;
-		}
-	}
+  private var _toolTipFunction:Function;
+  public function set toolTipFunction(value:Function):void {
+    _labelFunction = value;
+  }
 
-	override protected function commitProperties():void
-	{
-		if (_lafSubkey != null && itemRenderer == null)
-		{
-			itemRenderer = _laf.getFactory(_lafSubkey + ".SegmentedControl.itemRenderer");
-		}
+  /**
+   * Only once before initial commitProperties.
+   */
+  private var _mouseSelectionMode:int = ItemMouseSelectionMode.CLICK;
+  public function set mouseSelectionMode(value:int):void {
+    if (value != _mouseSelectionMode) {
+      _mouseSelectionMode = value;
+    }
+  }
 
-		super.commitProperties();
+  override protected function commitProperties():void {
+    if (_lafSubkey != null && itemRenderer == null) {
+      itemRenderer = _laf.getFactory(_lafSubkey + ".SegmentedControl.itemRenderer");
+    }
 
-		if (flags & mouseSelectionModeChanged)
-		{
-			flags ^= mouseSelectionModeChanged;
-			if (_mouseSelectionMode != ItemMouseSelectionMode.NONE)
-			{
-				addEventListener(_mouseSelectionMode == ItemMouseSelectionMode.CLICK ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN, itemMouseSelectHandler);
-			}
-		}
+    super.commitProperties();
 
-		if (flags & selectionChanged)
-		{
-			flags ^= selectionChanged;
+    if (flags & mouseSelectionModeChanged) {
+      flags ^= mouseSelectionModeChanged;
+      if (_mouseSelectionMode != ItemMouseSelectionMode.NONE) {
+        addEventListener(_mouseSelectionMode == ItemMouseSelectionMode.CLICK ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN, itemMouseSelectHandler);
+      }
+    }
 
-			commitSelection();
-		}
-	}
+    if (flags & selectionChanged) {
+      flags ^= selectionChanged;
 
-	[Abstract]
-	protected function commitSelection():void
-	{
+      commitSelection();
+    }
+  }
 
-	}
+  [Abstract]
+  protected function commitSelection():void {
 
-	private function itemMouseSelectHandler(event:MouseEvent):void
-    {
-		if (event.target != this && event.target != parent)
-		{
-			itemSelecting(event.target is IItemRenderer ? IItemRenderer(event.target).itemIndex : getElementIndex(IVisualElement(event.target)));
-			event.updateAfterEvent();
-		}
-	}
+  }
 
-	public function itemSelecting(itemIndex:int):void
-    {
+  private function itemMouseSelectHandler(event:MouseEvent):void {
+    if (event.target != this && event.target != parent) {
+      itemSelecting(event.target is IItemRenderer ? IItemRenderer(event.target).itemIndex : getElementIndex(IVisualElement(event.target)));
+      event.updateAfterEvent();
+    }
+  }
 
-	}
+  public function itemSelecting(itemIndex:int):void {
 
-	protected function itemSelected(index:int, selected:Boolean):void
-	{
-		var renderer:Object = getElementAt(index);
-		if (renderer is IItemRenderer)
-		{
-			IItemRenderer(renderer).selected = selected;
-		}
-	}
+  }
 
-	override public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void
-    {
-		super.updateRenderer(renderer, itemIndex, data);
+  protected function itemSelected(index:int, selected:Boolean):void {
+    var renderer:Object = getElementAt(index);
+    if (renderer is IItemRenderer) {
+      IItemRenderer(renderer).selected = selected;
+    }
+  }
 
-		if (renderer is AbstractItemRenderer && _laf != null)
-		{
-			AbstractItemRenderer(renderer).laf = _laf;
-		}
-		if (renderer is IconedItemRenderer)
-		{
-			IconedItemRenderer(renderer).icon = itemToIcon(data);
-		}
+  override public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {
+    super.updateRenderer(renderer, itemIndex, data);
 
-		if (_toolTipFunction != null && renderer is IToolTipManagerClient)
-		{
-			IToolTipManagerClient(renderer).toolTip = _toolTipFunction(data);
-		}
-	}
+    if (renderer is AbstractItemRenderer && _laf != null) {
+      AbstractItemRenderer(renderer).laf = _laf;
+    }
+    if (renderer is IconedItemRenderer) {
+      IconedItemRenderer(renderer).icon = itemToIcon(data);
+    }
 
-	private function itemToIcon(item:Object):Icon
-    {
-		return _iconFunction(item);
-	}
+    if (_toolTipFunction != null && renderer is IToolTipManagerClient) {
+      IToolTipManagerClient(renderer).toolTip = _toolTipFunction(data);
+    }
+  }
 
-	override public function itemToLabel(item:Object):String
-	{
-		return _labelFunction == null ? super.itemToLabel(item) : _labelFunction(item);
-	}
+  private function itemToIcon(item:Object):Icon {
+    return _iconFunction(item);
+  }
 
-	override protected function initializationComplete():void
-	{
-		super.initializationComplete();
-	}
+  override public function itemToLabel(item:Object):String {
+    return _labelFunction == null ? super.itemToLabel(item) : _labelFunction(item);
+  }
+
+  override protected function initializationComplete():void {
+    super.initializationComplete();
+  }
 }
 }
