@@ -23,7 +23,7 @@ import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
 
-import cocoa.text.TextFormat;
+import cocoa.text.TextLayoutFormat;
 
 import flash.display.BlendMode;
 import flash.utils.ByteArray;
@@ -152,7 +152,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["TextArea"] = TextAreaSkin;
 		data["TextArea.border"] = borders[BorderPosition.textField];
 		data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
-		TextFormat(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
+		TextLayoutFormat(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
 
 		data["NumericStepper.TextInput"] = TextInputSkin;
 
@@ -232,9 +232,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		return hudLookAndFeel;
 	}
 
-	private function createDefaultTextFormat():TextFormat
+	private function createDefaultTextFormat():TextLayoutFormat
 	{
-		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT);
+		var textInputTextFormat:TextLayoutFormat = new TextLayoutFormat(AquaFonts.SYSTEM_FONT);
 		textInputTextFormat.$paddingTop = 2;
 		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
 		return textInputTextFormat;
@@ -254,7 +254,7 @@ import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.TextInputSkin;
-import cocoa.text.TextFormat;
+import cocoa.text.TextLayoutFormat;
 
 import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
@@ -318,7 +318,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["NumericStepper.TextInput"] = TextInputSkin;
 		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
 
-		var numericStepperTextFormat:TextFormat = createDefaultTextFormat();
+		var numericStepperTextFormat:TextLayoutFormat = createDefaultTextFormat();
 		numericStepperTextFormat.$textAlign = TextAlign.END;
 		data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
 
@@ -334,9 +334,9 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["TitleBar.PushButton.border"] = borders[BorderPosition.hudTitleBarCloseButton];
 	}
 
-	private function createDefaultTextFormat():TextFormat
+	private function createDefaultTextFormat():TextLayoutFormat
 	{
-		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT_HUD);
+		var textInputTextFormat:TextLayoutFormat = new TextLayoutFormat(AquaFonts.SYSTEM_FONT_HUD);
 		textInputTextFormat.$paddingTop = 2;
 		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
 		return textInputTextFormat;

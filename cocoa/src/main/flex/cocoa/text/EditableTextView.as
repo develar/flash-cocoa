@@ -1646,7 +1646,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 	 */
 	private function calculateFontMetrics():void
 	{
-		textElement.elementFormat = TextFormat(effectiveTextFormat).elementFormat;
+		textElement.elementFormat = TextLayoutFormat(effectiveTextFormat).elementFormat;
 		var textLine:TextLine = measureText("M");
 		ascent = textLine.ascent;
 		descent = textLine.descent;
