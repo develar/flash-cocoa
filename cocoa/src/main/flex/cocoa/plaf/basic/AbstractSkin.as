@@ -11,7 +11,6 @@ import cocoa.plaf.Skin;
 import com.asfusion.mate.events.InjectorEvent;
 
 import flash.geom.Point;
-import flash.text.engine.ElementFormat;
 
 import flashx.textLayout.formats.ITextLayoutFormat;
 
@@ -34,14 +33,9 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider
 		return _component;
 	}
 
-	protected function getFont(key:String):ElementFormat
+	protected final function getTextLayoutFormat(key:String):ITextLayoutFormat
 	{
-		return laf.getFont(key);
-	}
-
-	protected final function getTextFormat(key:String):ITextLayoutFormat
-	{
-		return laf.getTextFormat(_component.lafKey + "." + key);
+		return laf.getTextLayoutFormat(_component.lafKey + "." + key);
 	}
 
 	protected final function getBorder(key:String):Border

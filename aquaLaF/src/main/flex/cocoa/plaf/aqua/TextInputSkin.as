@@ -26,7 +26,7 @@ public class TextInputSkin extends AbstractSkin
 		{
 			textDisplay.enabled = false;
 		}
-		textDisplay.textFormat = getTextFormat("SystemTextFormat");
+		textDisplay.textFormat = getTextLayoutFormat("SystemTextFormat");
 		textDisplay.selectionFormat = laf.getSelectionFormat("SelectionFormat");
 
 		textDisplay.x = border.contentInsets.left;

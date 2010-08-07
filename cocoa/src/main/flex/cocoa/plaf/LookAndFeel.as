@@ -1,9 +1,8 @@
-package cocoa.plaf
-{
+package cocoa.plaf {
 import cocoa.Border;
 import cocoa.Icon;
+import cocoa.text.TextFormat;
 
-import flash.text.engine.ElementFormat;
 import flash.utils.Dictionary;
 
 import flashx.textLayout.edit.SelectionFormat;
@@ -11,26 +10,29 @@ import flashx.textLayout.formats.ITextLayoutFormat;
 
 import mx.core.IFactory;
 
-public interface LookAndFeel
-{
-	function get defaults():Dictionary;
+public interface LookAndFeel {
+  function get defaults():Dictionary;
 
-	function set parent(value:LookAndFeel):void;
+  function set parent(value:LookAndFeel):void;
 
-	function getBorder(key:String):Border;
-	function getIcon(key:String):Icon;
-	function getFont(key:String):ElementFormat;
+  function getBorder(key:String):Border;
 
-	function getTextFormat(key:String):ITextLayoutFormat;
-	function getSelectionFormat(key:String):SelectionFormat;
+  function getIcon(key:String):Icon;
 
-	function getClass(key:String):Class;
-	function getFactory(key:String):IFactory;
+  function getTextFormat(key:String):TextFormat;
 
-	function getCursor(cursorType:int):CursorData;
+  function getTextLayoutFormat(key:String):ITextLayoutFormat;
 
-	function getColors(key:String):Vector.<uint>;
+  function getSelectionFormat(key:String):SelectionFormat;
 
-	function getObject(key:String):Object;
+  function getClass(key:String):Class;
+
+  function getFactory(key:String):IFactory;
+
+  function getCursor(cursorType:int):CursorData;
+
+  function getColors(key:String):Vector.<uint>;
+
+  function getObject(key:String):Object;
 }
 }
