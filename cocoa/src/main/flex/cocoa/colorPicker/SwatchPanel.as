@@ -2,10 +2,11 @@ package cocoa.colorPicker {
 import cocoa.AbstractView;
 import cocoa.plaf.LookAndFeel;
 
+import flash.display.Graphics;
 import flash.events.MouseEvent;
 
 public class SwatchPanel extends AbstractView {
-  private var swatches:SwatchGrid;
+  private var swatchGrid:SwatchGrid;
 
   public function SwatchPanel() {
     super();
@@ -46,8 +47,10 @@ public class SwatchPanel extends AbstractView {
   }
 
   override protected function createChildren():void {
-    swatches = new SwatchGrid();
-    addDisplayObject(swatches);
+    swatchGrid = new SwatchGrid();
+    swatchGrid.x = 8;
+    swatchGrid.y = 8;
+    addDisplayObject(swatchGrid);
   }
 
   override protected function commitProperties():void {
@@ -58,17 +61,18 @@ public class SwatchPanel extends AbstractView {
     if (colorListChanged) {
       colorListChanged = false;
 
-      swatches.drawGrid(_colorList);
+      swatchGrid.drawGrid(_colorList, _laf.getBorder("SwatchGrid.border"));
     }
   }
 
   override protected function measure():void {
-    measuredWidth = swatches.width;
-    measuredHeight = swatches.height;
+    measuredWidth = swatchGrid.width + 16;
+    measuredHeight = swatchGrid.height + 16;
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-
+    var g:Graphics = graphics;
+    _laf.getBorder("MenuItem.border").draw(null, g, w, h);
   }
 }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark">
-
 	<fx:Script><![CDATA[
 		import cocoa.MenuItem;
 		import cocoa.pane.PaneItem;
@@ -61,6 +60,8 @@
 				<items>{testData2}</items>
 			</Menu>
 		</PopUpButton>
+
+    <ColorPicker width="44"/>
 
 		<ImageView/>
 

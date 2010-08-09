@@ -1,5 +1,4 @@
-package cocoa.plaf.basic
-{
+package cocoa.plaf.basic {
 import cocoa.Border;
 import cocoa.Insets;
 import cocoa.Menu;
@@ -19,71 +18,62 @@ import spark.layouts.VerticalLayout;
 
 use namespace mx_internal;
 
-public class MenuSkin extends AbstractSkin implements IItemRendererOwner
-{
-	private var itemGroup:SingleSelectionDataGroup;
+public class MenuSkin extends AbstractSkin implements IItemRendererOwner {
+  private var itemGroup:SingleSelectionDataGroup;
 
-	private var _border:Border;
-	public function get border():Border
-	{
-		return _border;
-	}
+  private var _border:Border;
+  public function get border():Border {
+    return _border;
+  }
 
-	override protected function createChildren():void
-	{
-		super.createChildren();
+  override protected function createChildren():void {
+    super.createChildren();
 
-		_border = getBorder("border");
+    _border = getBorder("border");
 
-		itemGroup = new SingleSelectionDataGroup();
-		itemGroup.itemRenderer = getFactory("itemFactory");
-		itemGroup.rendererUpdateDelegate = this;
-		var itemGroupLayout:VerticalLayout = new VerticalLayout();
-		itemGroupLayout.gap = 0;
-		itemGroupLayout.horizontalAlign = HorizontalAlign.CONTENT_JUSTIFY;
-		itemGroup.layout = itemGroupLayout;
-		itemGroup.x = _border.contentInsets.left;
-		itemGroup.y = _border.contentInsets.top;
-		addChild(itemGroup);
+    itemGroup = new SingleSelectionDataGroup();
+    itemGroup.itemRenderer = getFactory("itemFactory");
+    itemGroup.rendererUpdateDelegate = this;
+    var itemGroupLayout:VerticalLayout = new VerticalLayout();
+    itemGroupLayout.gap = 0;
+    itemGroupLayout.horizontalAlign = HorizontalAlign.CONTENT_JUSTIFY;
+    itemGroup.layout = itemGroupLayout;
+    itemGroup.x = _border.contentInsets.left;
+    itemGroup.y = _border.contentInsets.top;
+    addChild(itemGroup);
 
-		component.uiPartAdded("itemGroup", itemGroup);
-	}
+    component.uiPartAdded("itemGroup", itemGroup);
+  }
 
-	public function itemToLabel(item:Object):String
-	{
-		return Menu(component).labelFunction == null ? String(item) : Menu(component).labelFunction(item);
-	}
+  public function itemToLabel(item:Object):String {
+    return Menu(component).labelFunction == null ? String(item) : Menu(component).labelFunction(item);
+  }
 
-	public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void
-	{
-		if (renderer is IItemRenderer)
-		{
-			AbstractItemRenderer(renderer).laf = laf;
-			
-			IItemRenderer(renderer).itemIndex = itemIndex;
-			IItemRenderer(renderer).label = (data is MenuItem && MenuItem(data).isSeparatorItem) ? null : itemToLabel(data);
-		}
+  public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {
+    if (renderer is IItemRenderer) {
+      AbstractItemRenderer(renderer).laf = laf;
 
-		if ((renderer is IDataRenderer) && (renderer !== data))
-		{
-			IDataRenderer(renderer).data = data;
-		}
-	}
+      IItemRenderer(renderer).itemIndex = itemIndex;
+      IItemRenderer(renderer).label = (data is MenuItem && MenuItem(data).isSeparatorItem) ? null : itemToLabel(data);
+    }
 
-	override protected function measure():void
-	{
-		var contentInsets:Insets = _border.contentInsets;
-		measuredMinWidth = measuredWidth = contentInsets.width + itemGroup.getExplicitOrMeasuredWidth();
-		measuredMinHeight = measuredHeight = contentInsets.height + itemGroup.getExplicitOrMeasuredHeight();
-	}
+    if ((renderer is IDataRenderer) && (renderer !== data)) {
+      IDataRenderer(renderer).data = data;
+    }
+  }
 
-	override protected function updateDisplayList(w:Number, h:Number):void
-	{
-		itemGroup.setActualSize(w - _border.contentInsets.width, h - _border.contentInsets.height);
-		
-		var g:Graphics = graphics;
-		g.clear();
-		_border.draw(this, g, w, h);
-	}
+  override protected function measure():void {
+    var contentInsets:Insets = _border.contentInsets;
+    measuredMinWidth = measuredWidth = contentInsets.width + itemGroup.getExplicitOrMeasuredWidth();
+    measuredMinHeight = measuredHeight = contentInsets.height + itemGroup.getExplicitOrMeasuredHeight();
+  }
+
+  override protected function updateDisplayList(w:Number, h:Number):void {
+    itemGroup.setActualSize(w - _border.contentInsets.width, h - _border.contentInsets.height);
+
+    var g:Graphics = graphics;
+    g.clear();
+    _border.draw(this, g, w, h);
+  }
 }
 }
