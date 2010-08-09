@@ -4,8 +4,9 @@ import cocoa.Border;
 import cocoa.HighlightableItemRenderer;
 import cocoa.Icon;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
 
-public class AbstractItemRenderer extends AbstractView implements HighlightableItemRenderer {
+public class AbstractItemRenderer extends AbstractView implements HighlightableItemRenderer, LookAndFeelProvider {
   protected var state:uint = 0;
 
   protected static const SELECTED:uint = 1 << 0;
@@ -14,6 +15,9 @@ public class AbstractItemRenderer extends AbstractView implements HighlightableI
   protected static const DRAGGING:uint = 1 << 4;
 
   protected var _laf:LookAndFeel;
+  public function get laf():LookAndFeel {
+    return _laf;
+  }
   public function set laf(value:LookAndFeel):void {
     _laf = value;
   }
