@@ -20,6 +20,7 @@ import mx.events.FlexEvent;
 
 import spark.core.IViewport;
 import spark.core.NavigationUnit;
+import spark.utils.TextUtil;
 
 use namespace tlf_internal;
 
@@ -54,6 +55,9 @@ internal class AbstractTextView extends AbstractView implements IViewport
 	 */
 	private static function initClass():void
 	{
+		// Set the TLF hook used to specify the callback used for changing the FontLookup based on SWFContext.
+		GlobalSettings.resolveFontLookupFunction = TextUtil.resolveFontLookup;
+
 		// Pre-FP10.1, set default tab stops in TLF.  Without this, if there is a tab and TLF is measuring width, the tab will
 		// measure as the rest of the remaining width up to 10000.
 		GlobalSettings.enableDefaultTabStops = !Configuration.playerEnablesArgoFeatures;

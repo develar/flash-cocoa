@@ -1,7 +1,7 @@
 package cocoa.plaf.basic
 {
 import cocoa.MenuItem;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.FontID;
 
 import flash.display.Graphics;
 
@@ -49,7 +49,7 @@ public class MenuItemRenderer extends LabeledItemRenderer
 		{
 			border = getBorder(highlighted ? "border.highlighted" : "border");
 
-			labelHelper.textFormat = _laf.getTextFormat(highlighted ? TextFormatID.MENU_HIGHLIGHTED : TextFormatID.MENU);
+			labelHelper.font = getFont(highlighted ? FontID.MENU_HIGHLIGHTED : FontID.MENU);
 			labelHelper.validate();
 			labelHelper.moveByInsets(h, border.contentInsets);
 		}

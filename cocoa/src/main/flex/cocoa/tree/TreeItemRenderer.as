@@ -4,7 +4,7 @@ import cocoa.AbstractView;
 import cocoa.LabelHelper;
 import cocoa.border.BitmapBorderStateIndex;
 import cocoa.border.MultipleBorder;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.FontID;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
@@ -69,7 +69,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			//			addDisplayObject(icon);
 		}
 
-		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getTextFormat(TextFormatID.SMALL_SYSTEM));
+		labelHelper = new LabelHelper(this, LookAndFeelProvider(owner.parent).laf.getFont(FontID.SMALL_SYSTEM));
 	}
 
 	override protected function measure():void
@@ -130,7 +130,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 			maxDisclosureIconWidth = Math.max(laf.getBorder("Tree.disclosureIcon.close").layoutWidth, laf.getBorder("Tree.disclosureIcon.open").layoutWidth);
 		}
 
-		labelHelper.textFormat = laf.getTextFormat(selected ? TextFormatID.SMALL_SYSTEM_HIGHLIGHTED : TextFormatID.SMALL_SYSTEM);
+		labelHelper.font = laf.getFont(selected ? FontID.SMALL_SYSTEM_HIGHLIGHTED : FontID.SMALL_SYSTEM);
 		labelHelper.validate();
 		labelHelper.move(_listData.indent + maxDisclosureIconWidth + Tree(owner).$border.contentInsets.left, h - Tree(owner).$border.contentInsets.bottom);
 	}

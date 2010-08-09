@@ -14,7 +14,7 @@ import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BitmapIcon;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.FontID;
 import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.BoxSkin;
@@ -23,7 +23,7 @@ import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
 
-import cocoa.text.TextLayoutFormatImpl;
+import cocoa.text.TextFormat;
 
 import flash.display.BlendMode;
 import flash.utils.ByteArray;
@@ -52,18 +52,18 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 	{
 		initAssets();
 
-		data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT;
-		data[TextFormatID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
+		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT;
+		data[FontID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
-		data[TextFormatID.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
-		data[TextFormatID.SMALL_SYSTEM_EMPHASIZED] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
-		data[TextFormatID.SMALL_SYSTEM_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
+		data[FontID.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
+		data[FontID.SMALL_SYSTEM_EMPHASIZED] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
+		data[FontID.SMALL_SYSTEM_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
 
-		data[TextFormatID.VIEW] = AquaFonts.VIEW_FONT;
-		data[TextFormatID.VIEW_HIGHLIGHTED] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
+		data[FontID.VIEW] = AquaFonts.VIEW_FONT;
+		data[FontID.VIEW_HIGHLIGHTED] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
 
-		data[TextFormatID.MENU] = AquaFonts.SYSTEM_FONT;
-		data[TextFormatID.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
+		data[FontID.MENU] = AquaFonts.SYSTEM_FONT;
+		data[FontID.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
 		data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
@@ -152,7 +152,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		data["TextArea"] = TextAreaSkin;
 		data["TextArea.border"] = borders[BorderPosition.textField];
 		data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
-		TextLayoutFormatImpl(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
+		TextFormat(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
 
 		data["NumericStepper.TextInput"] = TextInputSkin;
 
@@ -232,9 +232,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 		return hudLookAndFeel;
 	}
 
-	private function createDefaultTextFormat():TextLayoutFormatImpl
+	private function createDefaultTextFormat():TextFormat
 	{
-		var textInputTextFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT);
+		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT);
 		textInputTextFormat.$paddingTop = 2;
 		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
 		return textInputTextFormat;
@@ -245,7 +245,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel
 import cocoa.Border;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.basic.AbstractLookAndFeel;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.FontID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
@@ -255,7 +255,6 @@ import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.text.TextFormat;
-import cocoa.text.TextLayoutFormatImpl;
 
 import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
@@ -293,12 +292,12 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 
 	private function initialize(borders:Vector.<Border>):void
 	{
-		data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
-		data[TextFormatID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HUD_HIGHLIGHTED;
-		data[TextFormatID.VIEW] = AquaFonts.VIEW_FONT_HUD;
+		data[FontID.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
+		data[FontID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HUD_HIGHLIGHTED;
+		data[FontID.VIEW] = AquaFonts.VIEW_FONT_HUD;
 
-		data[TextFormatID.MENU] = AquaFonts.SMALL_SYSTEM_FONT;
-		data[TextFormatID.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
+		data[FontID.MENU] = AquaFonts.SMALL_SYSTEM_FONT;
+		data[FontID.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
 
 		LookAndFeelUtil.initAssets(data, assetsDataClass);
 
@@ -319,7 +318,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["NumericStepper.TextInput"] = TextInputSkin;
 		data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
 
-		var numericStepperTextFormat:TextLayoutFormatImpl = createDefaultTextFormat();
+		var numericStepperTextFormat:TextFormat = createDefaultTextFormat();
 		numericStepperTextFormat.$textAlign = TextAlign.END;
 		data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
 
@@ -335,9 +334,9 @@ final class HUDLookAndFeel extends AbstractLookAndFeel
 		data["TitleBar.PushButton.border"] = borders[BorderPosition.hudTitleBarCloseButton];
 	}
 
-	private function createDefaultTextFormat():TextLayoutFormatImpl
+	private function createDefaultTextFormat():TextFormat
 	{
-		var textInputTextFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT_HUD);
+		var textInputTextFormat:TextFormat = new TextFormat(AquaFonts.SYSTEM_FONT_HUD);
 		textInputTextFormat.$paddingTop = 2;
 		textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
 		return textInputTextFormat;
@@ -352,17 +351,17 @@ final class AquaFonts
 	private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
 	private static const FONT_BOLD_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD);
 
-	public static const SYSTEM_FONT:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 13));
-	public static const SYSTEM_FONT_HUD:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff));
-	public static const SYSTEM_FONT_HIGHLIGHTED:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 13, 0xffffff));
-	public static const SYSTEM_FONT_HUD_HIGHLIGHTED:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff));
+	public static const SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13);
+	public static const SYSTEM_FONT_HUD:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
+	public static const SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 13, 0xffffff);
+	public static const SYSTEM_FONT_HUD_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
 
-	public static const SMALL_SYSTEM_FONT:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 11));
-	public static const SMALL_SYSTEM_FONT_HIGHLIGHTED:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff));
-	public static const SMALL_EMPHASIZED_SYSTEM_FONT:TextFormat = new TextFormat(new ElementFormat(FONT_BOLD_DESCRIPTION, 11));
+	public static const SMALL_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11);
+	public static const SMALL_SYSTEM_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff);
+	public static const SMALL_EMPHASIZED_SYSTEM_FONT:ElementFormat = new ElementFormat(FONT_BOLD_DESCRIPTION, 11);
 
-	public static const VIEW_FONT:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 12));
-	public static const VIEW_FONT_HUD:TextFormat = SYSTEM_FONT_HUD;
-	public static const VIEW_FONT_HIGHLIGHTED:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 12, 0xffffff));
+	public static const VIEW_FONT:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 12);
+	public static const VIEW_FONT_HUD:ElementFormat = SYSTEM_FONT_HUD;
+	public static const VIEW_FONT_HIGHLIGHTED:ElementFormat = new ElementFormat(FONT_DESCRIPTION, 12, 0xffffff);
 
 }

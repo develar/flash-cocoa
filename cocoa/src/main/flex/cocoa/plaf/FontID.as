@@ -1,6 +1,6 @@
 package cocoa.plaf
 {
-public final class TextFormatID
+public final class FontID
 {
 	public static const SYSTEM:String = "f.System";
 	public static const SYSTEM_HIGHLIGHTED:String = "f.System.h";

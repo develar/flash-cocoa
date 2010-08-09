@@ -1,40 +1,49 @@
-package cocoa.plaf.basic {
+package cocoa.plaf.basic
+{
 import cocoa.LabelHelper;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.FontID;
 import cocoa.plaf.TitledComponentSkin;
 
 [Abstract]
-public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.TitledComponentSkin {
-  protected var labelHelper:LabelHelper;
+public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.TitledComponentSkin
+{
+	protected var labelHelper:LabelHelper;
 
-  protected function get titleTextFormatID():String {
-    return TextFormatID.SYSTEM;
-  }
+	protected function get titleFontId():String
+	{
+		return FontID.SYSTEM;
+	}
 
-  public function set title(value:String):void {
-    if (labelHelper == null) {
-      if (value == null) {
-        return;
-      }
+	public function set title(value:String):void
+	{
+		if (labelHelper == null)
+		{
+			if (value == null)
+			{
+				return;
+			}
 
-      labelHelper = new LabelHelper(this, laf == null ? null : laf.getTextFormat(titleTextFormatID));
-    }
-    else if (value == labelHelper.text) {
-      return;
-    }
+			labelHelper = new LabelHelper(this, laf == null ? null : getFont(titleFontId));
+		}
+		else if (value == labelHelper.text)
+		{
+			return;
+		}
 
-    labelHelper.text = value;
+		labelHelper.text = value;
 
-    invalidateSize();
-    invalidateDisplayList();
-  }
+		invalidateSize();
+		invalidateDisplayList();
+	}
 
-  override protected function createChildren():void {
-    super.createChildren();
+	override protected function createChildren():void
+	{
+		super.createChildren();
 
-    if (labelHelper != null) {
-      labelHelper.textFormat = laf.getTextFormat(titleTextFormatID);
-    }
-  }
+		if (labelHelper != null)
+		{
+			labelHelper.font = getFont(titleFontId);
+		}
+	}
 }
 }

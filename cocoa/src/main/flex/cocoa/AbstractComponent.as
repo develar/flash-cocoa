@@ -7,6 +7,8 @@ import cocoa.resources.ResourceManager;
 
 import flash.events.Event;
 
+import mx.core.IFlexModule;
+import mx.core.IFlexModuleFactory;
 import mx.core.IMXMLObject;
 import mx.core.IStateClient2;
 import mx.core.IVisualElement;
@@ -14,7 +16,7 @@ import mx.core.IVisualElement;
 use namespace ui;
 
 [Abstract]
-public class AbstractComponent extends ComponentBase implements Component, IMXMLObject
+public class AbstractComponent extends ComponentBase implements Component, IFlexModule, IMXMLObject
 {
 	// только как прокси
 	private var layoutMetrics:LayoutMetrics = new LayoutMetrics();
@@ -198,6 +200,17 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
 		{
 			dispatchEvent(new Event("enabledChanged"));
 		}
+	}
+
+	/* IFlexModule */
+	private var _moduleFactory:IFlexModuleFactory;
+	public function get moduleFactory():IFlexModuleFactory
+	{
+		return _moduleFactory;
+	}
+	public function set moduleFactory(factory:IFlexModuleFactory):void
+	{
+		_moduleFactory = factory;
 	}
 
 	/* IID */
