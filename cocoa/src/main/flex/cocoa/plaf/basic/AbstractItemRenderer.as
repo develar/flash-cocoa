@@ -6,8 +6,6 @@ import cocoa.Icon;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
-import flash.text.engine.ElementFormat;
-
 public class AbstractItemRenderer extends AbstractView implements HighlightableItemRenderer, LookAndFeelProvider {
   protected var state:uint = 0;
 
@@ -85,11 +83,8 @@ public class AbstractItemRenderer extends AbstractView implements HighlightableI
   public function get data():Object {
     return null;
   }
-  public function set data(value:Object):void {
-  }
 
-  protected function getFont(key:String):ElementFormat {
-    return _laf.getFont(key);
+  public function set data(value:Object):void {
   }
 
   protected function getBorder(key:String):Border {
