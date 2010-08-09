@@ -2,7 +2,7 @@ package cocoa.plaf.basic
 {
 import cocoa.Border;
 import cocoa.LabelHelper;
-import cocoa.plaf.FontID;
+import cocoa.plaf.TextFormatID;
 import cocoa.plaf.LookAndFeel;
 
 public class LabeledItemRenderer extends AbstractItemRenderer
@@ -42,7 +42,7 @@ public class LabeledItemRenderer extends AbstractItemRenderer
 	override public function set laf(value:LookAndFeel):void
 	{
 		super.laf = value;
-		labelHelper.font = getFont(FontID.SYSTEM);
+		labelHelper.textFormat = _laf.getTextFormat(TextFormatID.SYSTEM);
 	}
 
 	override protected function measure():void
