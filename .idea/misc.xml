@@ -38,6 +38,7 @@
           <module name="aquaLaF" />
           <module name="assetBuilder" />
           <module name="demo" />
+          <module name="aquaLaFAssetBuilder" />
         </modules>
       </facet-type>
     </autodetection-disabled>

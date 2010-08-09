@@ -8,22 +8,16 @@
 		<version>1.2-SNAPSHOT</version>
 	</parent>
 
-	<name>Aqua Asset Builder</name>
-	<artifactId>assetBuilder</artifactId>
+	<name>Aqua LaF Asset Builder</name>
+	<artifactId>aquaLaFAssetBuilder</artifactId>
 	<packaging>swf</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>air-framework</artifactId>
-			<type>pom</type>
-		</dependency>
-
-		<dependency>
 			<groupId>org.flyti.cocoa</groupId>
 			<artifactId>acocoa</artifactId>
-			<type>swc</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>swc</type>
 		</dependency>
 		<dependency>
 			<groupId>org.flyti.cocoa</groupId>
@@ -48,7 +42,6 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
 					<debug>true</debug>
-					<accessible>false</accessible>
 					<sourceFile>cocoa/plaf/aqua/assetBuilder/Main.mxml</sourceFile>
 					<compiledLocales>
 						<locale>en_US</locale>

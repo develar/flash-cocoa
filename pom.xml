@@ -8,6 +8,10 @@
     <version>1.0.9</version>
   </parent>
 
+  <properties>
+		<flexMojos.version>3.8-de1</flexMojos.version>
+	</properties>
+
   <name>Cocoa Aggregator</name>
   <groupId>org.flyti.cocoa</groupId>
   <artifactId>cocoaAggregator</artifactId>
@@ -19,7 +23,7 @@
     <module>cocoa</module>
     <module>acocoa</module>
     <module>aquaLaF</module>
-    <module>testToolApp</module>
+    <module>aquaLaFAssetBuilder</module>
     <module>demo</module>
   </modules>
   
