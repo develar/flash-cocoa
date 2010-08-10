@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
   </parent>
 
   <properties>
-		<flexMojos.version>3.8-de1</flexMojos.version>
+		<!--<flexMojos.version>3.8-de1</flexMojos.version>-->
 	</properties>
 
   <name>Cocoa Aggregator</name>

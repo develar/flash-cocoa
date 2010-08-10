@@ -3,51 +3,80 @@ import cocoa.Border;
 
 import flash.display.CapsStyle;
 import flash.display.Graphics;
+import flash.display.GraphicsPathCommand;
 import flash.display.LineScaleMode;
-import flash.display.Shape;
+import flash.display.Sprite;
 
-public class SwatchGrid extends Shape {
+public class SwatchGrid extends Sprite {
+//  private var highlightIndicator:Shape;
+
+  private static var gridCommands:Vector.<int> = new <int>[GraphicsPathCommand.MOVE_TO, GraphicsPathCommand.LINE_TO];
+  private static var gridPathData:Vector.<Number> = new Vector.<Number>(4, true);
+
+  private static const horizontalGap:Number = 1;
+  private static const verticalGap:Number = 1;
+  private static const swatchHeight:Number = 10;
+  private static const swatchWidth:Number = 10;
+
+  private static const swatchBorderThickness:Number = 1;
+  private static const swatchBorderColor:uint = 0xb8b8b8;
+
+  private static const columnCount:int = 19;
+
+  private static const cellPadding:Number = 1;
+
+  private static const xStep:Number = swatchWidth + horizontalGap + (cellPadding * 2);
+  private static const yStep:Number = swatchHeight + verticalGap + (cellPadding * 2);
+
   public function drawGrid(list:Vector.<uint>, border:Border):void {
     var g:Graphics = graphics;
     g.clear();
 
-    const horizontalGap:Number = 1;
-    const verticalGap:Number = 1;
-    //        var previewWidth:Number = 45;
-    //        var swatchGridBackgroundColor:uint = 0;
-    const swatchHeight:Number = 12;
-    const swatchWidth:Number = 12;
-    //        var textFieldWidth:Number = 72;
-
-    const swatchBorderSize:Number = 1;
-    const swatchBorderColor:uint = 0xffffff;
-
     const size:int = list.length;
-    const columnCount:int = 19;
     const rowCount:int = Math.ceil(size / columnCount);
 
-    const xStep:Number = swatchWidth + horizontalGap;
-    const yStep:Number = swatchHeight + verticalGap;
-
-    const gridWidth:Number = (columnCount * xStep) - horizontalGap;
-    const gridHeight:Number = (rowCount * yStep) - verticalGap;
+    const gridWidth:Number = (columnCount * xStep) - horizontalGap + (cellPadding * 2);
+    const gridHeight:Number = (rowCount * yStep) - verticalGap + (cellPadding * 2);
 
     border.draw(null, g, gridWidth + border.contentInsets.width, gridHeight + border.contentInsets.height);
 
-    if (swatchBorderSize > 0) {
-      g.lineStyle(swatchBorderSize, swatchBorderColor, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE);
-    }
-    else {
-      g.lineStyle();
+    g.lineStyle(1, swatchBorderColor, 1, false, LineScaleMode.NORMAL, CapsStyle.NONE);
+    var i:int;
+
+    gridPathData[1] = border.contentInsets.top + swatchBorderThickness;
+    gridPathData[3] = border.contentInsets.top + gridHeight - swatchBorderThickness;
+    var gx:Number = border.contentInsets.left;
+    for (i = -1; i < columnCount; i++) {
+      gridPathData[0] = gridPathData[2] = gx;
+      g.drawPath(gridCommands, gridPathData);
+
+      gx += xStep;
     }
 
-    var cellX:Number = border.contentInsets.left + 0.5;
-    var cellY:Number = border.contentInsets.top + 0.5;
-    const maxCellX:Number = cellX + gridWidth - xStep;
-    var i:int;
+    gridPathData[0] = border.contentInsets.left;
+    gridPathData[2] = border.contentInsets.left + gridWidth;
+    var gy:Number = border.contentInsets.top;
+    gridPathData[1] = gridPathData[3] = gy;
+    g.drawPath(gridCommands, gridPathData);
+    gridPathData[1] = gridPathData[3] = gy + gridHeight - swatchBorderThickness;
+    g.drawPath(gridCommands, gridPathData);
+    gridPathData[0] += swatchBorderThickness;
+    gridPathData[2] -= swatchBorderThickness;
+
+    for (i = 1; i < rowCount; i++) {
+      gridPathData[1] = gridPathData[3] = gy += yStep;
+      g.drawPath(gridCommands, gridPathData);
+    }
+
+    g.lineStyle();
+    const leftCellX:Number = border.contentInsets.left + swatchBorderThickness + cellPadding;
+    const maxCellX:Number = leftCellX + ((columnCount - 1) * xStep);
+    var cellX:Number = leftCellX;
+    var cellY:Number = border.contentInsets.top + swatchBorderThickness + cellPadding;
+    i = 0;
     while (true) {
       g.beginFill(list[i++]);
-      g.drawRect(cellX, cellY, swatchWidth - 1, swatchHeight - 1);
+      g.drawRect(cellX, cellY, swatchWidth, swatchHeight);
       g.endFill();
 
       if (cellX < maxCellX) {
@@ -58,7 +87,7 @@ public class SwatchGrid extends Shape {
       }
       else {
         cellY += yStep;
-        cellX = border.contentInsets.left + 0.5;
+        cellX = leftCellX;
       }
     }
   }

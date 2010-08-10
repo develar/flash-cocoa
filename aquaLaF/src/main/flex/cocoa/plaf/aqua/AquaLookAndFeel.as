@@ -80,9 +80,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["SourceListView"] = SourceListViewSkin;
     data["ListView"] = ListViewSkin;
-    data["ListView.border"] = new ListViewBorder();
-
-    data["SwatchGrid.border"] = new ListViewBorder(0xb8b8b8, 2);
+    data["SwatchGrid.border"] = data["ListView.border"] = new ListViewBorder();
 
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
