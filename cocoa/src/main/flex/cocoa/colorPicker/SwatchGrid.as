@@ -6,31 +6,44 @@ import flash.display.Graphics;
 import flash.display.GraphicsPathCommand;
 import flash.display.LineScaleMode;
 import flash.display.Sprite;
+import flash.events.MouseEvent;
 
 public class SwatchGrid extends Sprite {
-//  private var highlightIndicator:Shape;
-
   private static var gridCommands:Vector.<int> = new <int>[GraphicsPathCommand.MOVE_TO, GraphicsPathCommand.LINE_TO];
   private static var gridPathData:Vector.<Number> = new Vector.<Number>(4, true);
 
   private static const horizontalGap:Number = 1;
   private static const verticalGap:Number = 1;
-  private static const swatchHeight:Number = 10;
-  private static const swatchWidth:Number = 10;
+  protected static const swatchHeight:Number = 10;
+  protected static const swatchWidth:Number = 10;
 
-  private static const swatchBorderThickness:Number = 1;
+  protected static const swatchBorderThickness:Number = 1;
   private static const swatchBorderColor:uint = 0xb8b8b8;
 
-  private static const columnCount:int = 19;
+  protected static const columnCount:int = 19;
 
-  private static const cellPadding:Number = 1;
+  protected static const cellPadding:Number = 1;
 
-  private static const xStep:Number = swatchWidth + horizontalGap + (cellPadding * 2);
-  private static const yStep:Number = swatchHeight + verticalGap + (cellPadding * 2);
+  protected static const xStep:Number = swatchWidth + horizontalGap + (cellPadding * 2);
+  protected static const yStep:Number = swatchHeight + verticalGap + (cellPadding * 2);
+
+  protected var border:Border;
+  protected var list:Vector.<uint>;
+
+  public function SwatchGrid() {
+    mouseChildren = false;
+    addEventListener(MouseEvent.CLICK, clickHandler);
+  }
+
+  private function clickHandler(event:MouseEvent):void {
+  }
 
   public function drawGrid(list:Vector.<uint>, border:Border):void {
     var g:Graphics = graphics;
     g.clear();
+
+    this.border = border;
+    this.list = list;
 
     const size:int = list.length;
     const rowCount:int = Math.ceil(size / columnCount);

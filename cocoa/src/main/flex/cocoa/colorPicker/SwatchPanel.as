@@ -47,7 +47,7 @@ public class SwatchPanel extends AbstractView {
   }
 
   override protected function createChildren():void {
-    swatchGrid = new SwatchGrid();
+    swatchGrid = new SwatchGridWithHighlightIndicator();
     swatchGrid.x = 8;
     swatchGrid.y = 8;
     addDisplayObject(swatchGrid);

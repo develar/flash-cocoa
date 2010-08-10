@@ -103,7 +103,6 @@ class WebSafePalette {
 
     const spacer:uint = 0xffffff;
     var c1:Vector.<uint> = new <uint>[0x000000, 0x333333, 0x666666, 0x999999, 0xcccccc, 0xffffff, 0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff];
-    c1.fixed = true;
 
     var ra:Vector.<String> = new <String>[ "00", "00", "00", "00", "00", "00",
       "33", "33", "33", "33", "33", "33",
