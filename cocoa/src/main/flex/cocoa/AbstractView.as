@@ -13,7 +13,6 @@ import flash.events.Event;
 import flash.events.EventPhase;
 import flash.events.FocusEvent;
 import flash.events.IEventDispatcher;
-import flash.events.KeyboardEvent;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
@@ -22,7 +21,6 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.geom.Transform;
 import flash.geom.Vector3D;
-import flash.ui.Keyboard;
 
 import mx.automation.IAutomationObject;
 import mx.controls.IFlexContextMenu;
@@ -679,10 +677,36 @@ use namespace mx_internal;
  *  <p>The UIComponent class is not used as an MXML tag, but is used as a base
  *  class for other classes.</p>
  */
+[Abstract]
 public class AbstractView extends FlexSprite implements View, IAutomationObject, IInvalidating, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
   public static const LAYOUT_DIRECTION_LTR:String = "ltr";
 
   private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
+
+  /**
+   *  @private
+   *  There is a bug (139381) where we occasionally get callLaterDispatcher()
+   *  even though we didn't expect it.
+   *  That causes us to do a removeEventListener() twice,
+   *  which messes up some internal thing in the player so that
+   *  the next addEventListener() doesn't actually get us the render event.
+   */
+  private static const INITIALIZED:uint = 1 << 0;
+  private static const LISTENING_FOR_RENDER:uint = 1 << 1;
+  private static const PARENT_CHANGED:uint = 1 << 2;
+  private static const PROCESSED_DESCRIPTORS:uint = 1 << 3;
+  private static const UPDATE_COMPLETE_PENDING:uint = 1 << 4;
+
+  private static const INVALID_PROPERTIES:uint = 1 << 5;
+  private static const INVALID_SIZE:uint = 1 << 6;
+  private static const INVALID_DISPLAY_LIST:uint = 1 << 7;
+
+  private static const BLEND_SHADER_CHANGED:uint = 1 << 8;
+  private static const BLEND_MODE_CHANGED:uint = 1 << 9;
+
+  private static const MAINTAIN_PROJECTION_CENTER:uint = 1 << 10;
+
+  private var flags:uint;
 
   protected var _layoutMetrics:LayoutMetrics = EMPTY_LAYOUT_METRICS;
   public function get layoutMetrics():LayoutMetrics {
@@ -735,92 +759,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   /**
-   *  Blocks the background processing of methods
-   *  queued by <code>callLater()</code>,
-   *  until <code>resumeBackgroundProcessing()</code> is called.
-   *
-   *  <p>These methods can be useful when you have time-critical code
-   *  which needs to execute without interruption.
-   *  For example, when you set the <code>suspendBackgroundProcessing</code>
-   *  property of an Effect to <code>true</code>,
-   *  <code>suspendBackgroundProcessing()</code> is automatically called
-   *  when it starts playing, and <code>resumeBackgroundProcessing</code>
-   *  is called when it stops, in order to ensure that the animation
-   *  is smooth.</p>
-   *
-   *  <p>Since the LayoutManager uses <code>callLater()</code>,
-   *  this means that <code>commitProperties()</code>,
-   *  <code>measure()</code>, and <code>updateDisplayList()</code>
-   *  is not called in between calls to
-   *  <code>suspendBackgroundProcessing()</code> and
-   *  <code>resumeBackgroundProcessing()</code>.</p>
-   *
-   *  <p>It is safe for both an outer method and an inner method
-   *  (i.e., one that the outer methods calls) to call
-   *  <code>suspendBackgroundProcessing()</code>
-   *  and <code>resumeBackgroundProcessing()</code>, because these
-   *  methods actually increment and decrement a counter
-   *  which determines whether background processing occurs.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public static function suspendBackgroundProcessing():void {
-    UIComponentGlobals.callLaterSuspendCount++;
-  }
-
-  /**
-   *  Resumes the background processing of methods
-   *  queued by <code>callLater()</code>, after a call to
-   *  <code>suspendBackgroundProcessing()</code>.
-   *
-   *  <p>Refer to the description of
-   *  <code>suspendBackgroundProcessing()</code> for more information.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public static function resumeBackgroundProcessing():void {
-    if (UIComponentGlobals.callLaterSuspendCount > 0) {
-      UIComponentGlobals.callLaterSuspendCount--;
-
-      // Once the suspend count gets back to 0, we need to
-      // force a render event to happen
-      if (UIComponentGlobals.callLaterSuspendCount == 0) {
-        var sm:ISystemManager = SystemManagerGlobals.topLevelSystemManagers[0];
-        if (sm && sm.stage) {
-          sm.stage.invalidate();
-        }
-      }
-    }
-  }
-
-  /**
-   *  @private
-   *  There is a bug (139381) where we occasionally get callLaterDispatcher()
-   *  even though we didn't expect it.
-   *  That causes us to do a removeEventListener() twice,
-   *  which messes up some internal thing in the player so that
-   *  the next addEventListener() doesn't actually get us the render event.
-   */
-  private var listeningForRender:Boolean = false;
-
-  /**
-   *  @private
    *  List of methods used by callLater().
    */
-  private var methodQueue:Vector.<MethodQueueElement> = new <MethodQueueElement>[];
-
-  /**
-   *  @private
-   */
-  private var parentChangedFlag:Boolean = false;
-
-  private var _initialized:Boolean = false;
+  private var methodQueue:Vector.<MethodQueueElement>;
 
   [Inspectable(environment="none")]
 
@@ -834,27 +775,17 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function get initialized():Boolean {
-    return _initialized;
+    return (flags & INITIALIZED) != 0;
   }
 
   public function set initialized(value:Boolean):void {
-    _initialized = value;
+    flags |= INITIALIZED;
 
     if (value) {
       setVisible(_visible, true);
       dispatchEvent(new FlexEvent(FlexEvent.CREATION_COMPLETE));
     }
   }
-
-  //----------------------------------
-  //  processedDescriptors
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the processedDescriptors property.
-   */
-  private var _processedDescriptors:Boolean = false;
 
   [Inspectable(environment="none")]
 
@@ -883,31 +814,20 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function get processedDescriptors():Boolean {
-    return _processedDescriptors;
+    return (flags & PROCESSED_DESCRIPTORS) != 0;
   }
 
-  /**
-   *  @private
-   */
   public function set processedDescriptors(value:Boolean):void {
-    _processedDescriptors = value;
-
     if (value) {
-      dispatchEvent(new FlexEvent(FlexEvent.INITIALIZE));
+      flags |= PROCESSED_DESCRIPTORS;
+      if (hasEventListener(FlexEvent.INITIALIZE)) {
+        dispatchEvent(new FlexEvent(FlexEvent.INITIALIZE));
+      }
+    }
+    else {
+      flags ^= PROCESSED_DESCRIPTORS;
     }
   }
-
-  //----------------------------------
-  //  updateCompletePendingFlag
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the updateCompletePendingFlag property.
-   */
-  private var _updateCompletePendingFlag:Boolean = false;
-
-  [Inspectable(environment="none")]
 
   /**
    *  A flag that determines if an object has been through all three phases
@@ -919,58 +839,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function get updateCompletePendingFlag():Boolean {
-    return _updateCompletePendingFlag;
+    return (flags & UPDATE_COMPLETE_PENDING) != 0;
   }
 
-  /**
-   *  @private
-   */
   public function set updateCompletePendingFlag(value:Boolean):void {
-    _updateCompletePendingFlag = value;
+    value ? flags |= UPDATE_COMPLETE_PENDING : flags ^= UPDATE_COMPLETE_PENDING;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Variables: Invalidation
-  //
-  //--------------------------------------------------------------------------
-
-  /**
-   *  @private
-   *  Whether this component needs to have its
-   *  commitProperties() method called.
-   */
-  mx_internal var invalidatePropertiesFlag:Boolean = false;
-
-  /**
-   *  @private
-   *  Whether this component needs to have its
-   *  measure() method called.
-   */
-  mx_internal var invalidateSizeFlag:Boolean = false;
-
-  /**
-   *  @private
-   *  Whether this component needs to be have its
-   *  updateDisplayList() method called.
-   */
-  mx_internal var invalidateDisplayListFlag:Boolean = false;
-
-  /**
-   *  @private
-   *  Whether setActualSize() has been called on this component
-   *  at least once.  This is used in validateBaselinePosition()
-   *  to resize the component to explicit or measured
-   *  size if baselinePosition getter is called before the
-   *  component has been resized by the layout.
-   */
-  mx_internal var setActualSizeCalled:Boolean = false;
-
-  //--------------------------------------------------------------------------
-  //
-  //  Variables: Measurement
-  //
-  //--------------------------------------------------------------------------
 
   /**
    *  @private
@@ -1969,8 +1843,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  Storage for the blendMode property.
    */
   private var _blendMode:String = BlendMode.NORMAL;
-  private var blendShaderChanged:Boolean;
-  private var blendModeChanged:Boolean;
+
 
   [Inspectable(category="General", enumeration="add,alpha,darken,difference,erase,hardlight,invert,layer,lighten,multiply,normal,subtract,screen,overlay,colordodge,colorburn,exclusion,softlight,hue,saturation,color,luminosity", defaultValue="normal")]
 
@@ -1981,13 +1854,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   override public function set blendMode(value:String):void {
     if (_blendMode != value) {
       _blendMode = value;
-      blendModeChanged = true;
+      flags |= BLEND_MODE_CHANGED;
 
       // If one of the non-native Flash blendModes is set,
       // record the new value and set the appropriate
       // blendShader on the display object.
       if (value == "colordodge" || value == "colorburn" || value == "exclusion" || value == "softlight" || value == "hue" || value == "saturation" || value == "color" || value == "luminosity") {
-        blendShaderChanged = true;
+        flags |= BLEND_SHADER_CHANGED;
       }
       invalidateProperties();
     }
@@ -2619,13 +2492,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _document = value;
   }
 
-  //----------------------------------
-  //  id
-  //----------------------------------
-
-  /**
-   *  @private
-   */
   private var _id:String;
 
   /**
@@ -2647,9 +2513,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _id;
   }
 
-  /**
-   *  @private
-   */
   public function set id(value:String):void {
     _id = value;
   }
@@ -4261,40 +4124,32 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     super.setChildIndex(child, index);
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Methods: Initialization
-  //
-  //--------------------------------------------------------------------------
-
   /**
-   *  @private
+   * В Flex UIComponent он как mx_internal и используется в mx.states.RemoveChild
    */
-  mx_internal function updateCallbacks():void {
-    if (invalidateDisplayListFlag) {
+  private function updateCallbacks():void {
+    if (flags & INVALID_DISPLAY_LIST) {
       UIComponentGlobals.layoutManager.invalidateDisplayList(this);
     }
 
-    if (invalidateSizeFlag) {
+    if (flags & INVALID_SIZE) {
       UIComponentGlobals.layoutManager.invalidateSize(this);
     }
 
-    if (invalidatePropertiesFlag) {
+    if (flags & INVALID_PROPERTIES) {
       UIComponentGlobals.layoutManager.invalidateProperties(this);
     }
 
-    // systemManager getter tries to set the internal _systemManager varaible
-    // if it is null. Hence a call to the getter is necessary.
-    // Stage can be null when an untrusted application is loaded by an application
-    // that isn't on stage yet.
-    if (systemManager && (_systemManager.stage || usingBridge)) {
-      if (methodQueue.length > 0 && !listeningForRender) {
+    // systemManager getter tries to set the internal _systemManager varaible if it is null. Hence a call to the getter is necessary.
+    // Stage can be null when an untrusted application is loaded by an application that isn't on stage yet.
+    if (systemManager != null && (_systemManager.stage != null || usingBridge)) {
+      if (methodQueue != null && methodQueue.length > 0 && (flags & LISTENING_FOR_RENDER) == 0) {
         _systemManager.addEventListener(FlexEvent.RENDER, callLaterDispatcher);
         _systemManager.addEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-        listeningForRender = true;
+        flags |= LISTENING_FOR_RENDER;
       }
 
-      if (_systemManager.stage) {
+      if (_systemManager.stage != null) {
         _systemManager.stage.invalidate();
       }
     }
@@ -4316,7 +4171,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       _nestLevel = 0;
     }
 
-    parentChangedFlag = true;
+    flags |= PARENT_CHANGED;
   }
 
   private function addingChild(child:DisplayObject):void {
@@ -4544,10 +4399,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function invalidateProperties():void {
-    if (!invalidatePropertiesFlag) {
-      invalidatePropertiesFlag = true;
+    if ((flags & INVALID_PROPERTIES) == 0) {
+      flags |= INVALID_PROPERTIES;
 
-      if (parent && UIComponentGlobals.layoutManager) {
+      if (parent != null) {
         UIComponentGlobals.layoutManager.invalidateProperties(this);
       }
     }
@@ -4576,10 +4431,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function invalidateSize():void {
-    if (!invalidateSizeFlag) {
-      invalidateSizeFlag = true;
+    if ((flags & INVALID_SIZE) == 0) {
+      flags |= INVALID_SIZE;
 
-      if (parent && UIComponentGlobals.layoutManager) {
+      if (parent != null) {
         UIComponentGlobals.layoutManager.invalidateSize(this);
       }
     }
@@ -4631,10 +4486,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function invalidateDisplayList():void {
-    if (!invalidateDisplayListFlag) {
-      invalidateDisplayListFlag = true;
+    if ((flags & INVALID_DISPLAY_LIST) == 0) {
+      flags |= INVALID_DISPLAY_LIST;
 
-      if (isOnDisplayList() && UIComponentGlobals.layoutManager) {
+      if (isOnDisplayList()) {
         UIComponentGlobals.layoutManager.invalidateDisplayList(this);
       }
     }
@@ -4643,15 +4498,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   private function invalidateTransform():void {
     if (_layoutFeatures && !_layoutFeatures.updatePending) {
       _layoutFeatures.updatePending = true;
-      if (isOnDisplayList() && UIComponentGlobals.layoutManager && !invalidateDisplayListFlag) {
+      if (isOnDisplayList() && (flags & INVALID_DISPLAY_LIST) == 0) {
         UIComponentGlobals.layoutManager.invalidateDisplayList(this);
       }
     }
   }
 
-  /**
-   * @inheritDoc
-   */
   public function invalidateLayoutDirection():void {
     const parentElt:ILayoutDirectionElement = parent as ILayoutDirectionElement;
     const thisLayoutDirection:String = layoutDirection;
@@ -4707,15 +4559,15 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   private function isOnDisplayList():Boolean {
-    var p:DisplayObjectContainer;
     try {
-      p = super.parent;
+      return super.parent != null;
     }
     catch (e:SecurityError) {
       return true; // we are on the display list but the parent is in another sandbox
     }
 
-    return p != null;
+    //noinspection UnreachableCodeJS
+    return true; // fucked adobe
   }
 
   /**
@@ -4763,57 +4615,34 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   public function callLater(method:Function, args:Array /* of Object */ = null):void {
     // trace(">>calllater " + this)
     // Push the method and the arguments onto the method queue.
-    methodQueue.push(new MethodQueueElement(method, args));
+    if (methodQueue == null) {
+      methodQueue = new <MethodQueueElement>[new MethodQueueElement(method, args)];
+      methodQueue.fixed = false;
+    }
+    else {
+      methodQueue[methodQueue.length] = new MethodQueueElement(method, args);
+    }
 
-    // Register to get the next "render" event
-    // just before the next rasterization.
+    // Register to get the next "render" event just before the next rasterization.
     var sm:ISystemManager = systemManager;
 
-    // Stage can be null when an untrusted application is loaded by an application
-    // that isn't on stage yet.
-    if (sm && (sm.stage || usingBridge)) {
-      if (!listeningForRender) {
+    // Stage can be null when an untrusted application is loaded by an application that isn't on stage yet.
+    if (sm != null && (sm.stage != null || usingBridge)) {
+      if ((flags & LISTENING_FOR_RENDER) == 0) {
         // trace("  added");
         sm.addEventListener(FlexEvent.RENDER, callLaterDispatcher);
         sm.addEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-        listeningForRender = true;
+        flags |= LISTENING_FOR_RENDER;
       }
 
       // Force a "render" event to happen soon
-      if (sm.stage) {
+      if (sm.stage != null) {
         sm.stage.invalidate();
       }
     }
 
     // trace("<<calllater " + this)
   }
-
-  /**
-   *  @private
-   *  Cancels all queued functions.
-   */
-  mx_internal function cancelAllCallLaters():void {
-    var sm:ISystemManager = systemManager;
-
-    // Stage can be null when an untrusted application is loaded by an application
-    // that isn't on stage yet.
-    if (sm && (sm.stage || usingBridge)) {
-      if (listeningForRender) {
-        sm.removeEventListener(FlexEvent.RENDER, callLaterDispatcher);
-        sm.removeEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-        listeningForRender = false;
-      }
-    }
-
-    // Empty the method queue.
-    methodQueue.length = 0;
-  }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Methods: Commitment
-  //
-  //--------------------------------------------------------------------------
 
   /**
    *  Used by layout logic to validate the properties of a component
@@ -4827,10 +4656,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function validateProperties():void {
-    if (invalidatePropertiesFlag) {
+    if (flags & INVALID_PROPERTIES) {
       commitProperties();
-
-      invalidatePropertiesFlag = false;
+      flags ^= INVALID_PROPERTIES;
     }
   }
 
@@ -4864,10 +4692,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       dispatchResizeEvent();
     }
 
-    if (blendModeChanged) {
-      blendModeChanged = false;
+    if (flags & BLEND_MODE_CHANGED) {
+      flags ^= BLEND_MODE_CHANGED;
 
-      if (!blendShaderChanged) {
+      if ((flags & BLEND_SHADER_CHANGED) == 0) {
         $blendMode = _blendMode;
       }
       else {
@@ -4875,7 +4703,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
         // blendMode. We mimic the look by instantiating the
         // appropriate shader class and setting the blendShader
         // property on the displayObject.
-        blendShaderChanged = false;
+        flags ^= BLEND_SHADER_CHANGED;
 
         $blendMode = BlendMode.NORMAL;
 
@@ -4924,32 +4752,23 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       }
     }
 
-    parentChangedFlag = false;
+    flags ^= PARENT_CHANGED;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Methods: Measurement
-  //
-  //--------------------------------------------------------------------------
 
   public function validateSize(recursive:Boolean = false):void {
     if (recursive) {
-      for (var i:int = 0; i < numChildren; i++) {
-        var child:DisplayObject = getChildAt(i);
-        if (child is ILayoutManagerClient) {
-          ILayoutManagerClient(child).validateSize(true);
+      for (var i:int = 0, n:int = numChildren; i < n; i++) {
+        var child:ILayoutManagerClient = getChildAt(i) as ILayoutManagerClient;
+        if (child != null) {
+          child.validateSize(true);
         }
       }
     }
 
-    if (invalidateSizeFlag) {
-      if (includeInLayout && measureSizes()) {
-        // TODO (egeorgie): we don't need this invalidateDisplayList() here
-        // because we'll call it if the parent sets new actual size?
-        invalidateDisplayList();
-        invalidateParentSizeAndDisplayList();
-      }
+    if ((flags & INVALID_SIZE) != 0 && includeInLayout && measureSizes()) {
+      // TODO (egeorgie): we don't need this invalidateDisplayList() here because we'll call it if the parent sets new actual size?
+      invalidateDisplayList();
+      invalidateParentSizeAndDisplayList();
     }
   }
 
@@ -4968,29 +4787,17 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    */
   protected function canSkipMeasurement():Boolean {
     // We can skip the measure function if the object's width and height
-    // have been explicitly specified (e.g.: the object's MXML tag has
-    // attributes like width="50" and height="100").
+    // have been explicitly specified (e.g.: the object's MXML tag has attributes like width="50" and height="100").
     //
     // If an object's width and height have been explicitly specified,
-    // then the explicitWidth and explicitHeight properties contain
-    // Numbers (as opposed to NaN)
+    // then the explicitWidth and explicitHeight properties contain Numbers (as opposed to NaN)
     return !isNaN(_layoutMetrics.width) && !isNaN(_layoutMetrics.height);
   }
 
-  /**
-   *  @private
-   */
   private function measureSizes():Boolean {
-    var changed:Boolean = false;
-
-    if (!invalidateSizeFlag) {
-      return changed;
-    }
-
-    var newValue:Number;
-
+    flags ^= INVALID_SIZE;
     if (canSkipMeasurement()) {
-      invalidateSizeFlag = false;
+
       // develar — закомментировано — если мы установили ширину явно, то почему мы должны сбрасывать _measuredMinWidth/_measuredMinHeight — см. WindowResizer
       //			_measuredMinWidth = 0;
       //			_measuredMinHeight = 0;
@@ -4998,67 +4805,58 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     else {
       measure();
 
-      invalidateSizeFlag = false;
-
-      if (!isNaN(explicitMinWidth) && measuredWidth < explicitMinWidth) {
+      if (measuredWidth < explicitMinWidth) {
         measuredWidth = explicitMinWidth;
       }
-
-      if (!isNaN(explicitMaxWidth) && measuredWidth > explicitMaxWidth) {
+      else if (measuredWidth > explicitMaxWidth) {
         measuredWidth = explicitMaxWidth;
       }
 
-      if (!isNaN(explicitMinHeight) && measuredHeight < explicitMinHeight) {
+      if (measuredHeight < explicitMinHeight) {
         measuredHeight = explicitMinHeight;
       }
-
-      if (!isNaN(explicitMaxHeight) && measuredHeight > explicitMaxHeight) {
+      else if (measuredHeight > explicitMaxHeight) {
         measuredHeight = explicitMaxHeight;
       }
     }
 
     if (isNaN(oldMinWidth)) {
-      // This branch does the same thing as the else branch,
-      // but it is optimized for the first time that
+      // This branch does the same thing as the else branch, but it is optimized for the first time that
       // measureSizes() is called on this object.
       oldMinWidth = !isNaN(explicitMinWidth) ? explicitMinWidth : measuredMinWidth;
-
       oldMinHeight = !isNaN(explicitMinHeight) ? explicitMinHeight : measuredMinHeight;
-
       oldExplicitWidth = !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
-
       oldExplicitHeight = !isNaN(_layoutMetrics.height) ? explicitHeight : measuredHeight;
 
-      changed = true;
+      return true;
     }
     else {
-      newValue = !isNaN(explicitMinWidth) ? explicitMinWidth : measuredMinWidth;
+      var newValue:Number = !isNaN(explicitMinWidth) ? explicitMinWidth : measuredMinWidth;
       if (newValue != oldMinWidth) {
         oldMinWidth = newValue;
-        changed = true;
+        return true;
       }
 
       newValue = !isNaN(explicitMinHeight) ? explicitMinHeight : measuredMinHeight;
       if (newValue != oldMinHeight) {
         oldMinHeight = newValue;
-        changed = true;
+        return true;
       }
 
       newValue = !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
       if (newValue != oldExplicitWidth) {
         oldExplicitWidth = newValue;
-        changed = true;
+        return true;
       }
 
       newValue = !isNaN(explicitHeight) ? explicitHeight : measuredHeight;
       if (newValue != oldExplicitHeight) {
         oldExplicitHeight = newValue;
-        changed = true;
+        return true;
       }
 
+      return false;
     }
-
-    return changed;
   }
 
   /**
@@ -5169,7 +4967,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       applyComputedMatrix();
     }
 
-    if (_maintainProjectionCenter) {
+    if (flags & MAINTAIN_PROJECTION_CENTER) {
       var pmatrix:PerspectiveProjection = super.transform.perspectiveProjection;
       if (pmatrix != null) {
         pmatrix.projectionCenter = new Point(width / 2, height / 2);
@@ -5180,22 +4978,19 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   public function validateDisplayList():void {
     oldLayoutDirection = layoutDirection;
 
-    if (invalidateDisplayListFlag) {
+    if (flags & INVALID_DISPLAY_LIST) {
       // Check if our parent is the top level system manager
       var sm:ISystemManager = parent as ISystemManager;
-      if (sm) {
-        if (sm.isProxy || (sm == systemManager.topLevelSystemManager && sm.document != this)) {
-          // Size ourself to the new measured width/height   This can
-          // cause the _layoutFeatures computed matrix to become invalid
-          setActualSize(getExplicitOrMeasuredWidth(), getExplicitOrMeasuredHeight());
-        }
+      if (sm != null && (sm.isProxy || (sm == systemManager.topLevelSystemManager && sm.document != this))) {
+        // Size ourself to the new measured width/height This can cause the _layoutFeatures computed matrix to become invalid
+        setActualSize(getExplicitOrMeasuredWidth(), getExplicitOrMeasuredHeight());
       }
 
       // Don't validate transform.matrix until after setting actual size
       validateMatrix();
       updateDisplayList(width, height);
 
-      invalidateDisplayListFlag = false;
+      flags ^= INVALID_DISPLAY_LIST;
 
       // LAYOUT_DEBUG
       // LayoutManager.debugHelper.addElement(ILayoutElement(this));
@@ -5330,12 +5125,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _layoutMetrics.baseline = Number(value);
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Methods: Moving and sizing
-  //
-  //--------------------------------------------------------------------------
-
   /**
    *  Moves the component to a specified position within its parent.
    *  Calling this method is exactly the same as
@@ -5449,8 +5238,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       invalidateDisplayList();
       dispatchResizeEvent();
     }
-
-    setActualSizeCalled = true;
   }
 
   /**
@@ -5533,7 +5320,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  protected function dispatchPropertyChangeEvent(prop:String, oldValue:*, value:*):void {
+  protected final function dispatchPropertyChangeEvent(prop:String, oldValue:*, value:*):void {
     if (hasEventListener("propertyChange")) {
       dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, prop, oldValue, value));
     }
@@ -5549,62 +5336,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     oldWidth = width;
     oldHeight = height;
-  }
-
-  /**
-   *  @private
-   *  Typically, Keyboard.LEFT means go left, regardless of the
-   *  layoutDirection, and similiarly for Keyboard.RIGHT.  When
-   *  layoutDirection="rtl", rather than duplicating lots of code in the
-   *  switch statement of the keyDownHandler, map Keyboard.LEFT to
-   *  Keyboard.RIGHT, and similiarly for Keyboard.RIGHT.
-   *
-   *  Optionally, Keyboard.UP can be tied with Keyboard.LEFT and
-   *  Keyboard.DOWN can be tied with Keyboard.RIGHT since some components
-   *  do this.
-   *
-   *  @return keyCode to use for the layoutDirection if always using ltr
-   *  actions
-   */
-  mx_internal function mapKeycodeForLayoutDirection(event:KeyboardEvent, mapUpDown:Boolean = false):uint {
-    var keyCode:uint = event.keyCode;
-
-    // If rtl layout, left still means left and right still means right so
-    // swap the keys to get the correct action.
-    switch (keyCode) {
-      case Keyboard.DOWN:
-      {
-        // typically, if ltr, the same as RIGHT
-        if (mapUpDown && layoutDirection == LayoutDirection.RTL) {
-          keyCode = Keyboard.LEFT;
-        }
-        break;
-      }
-      case Keyboard.RIGHT:
-      {
-        if (layoutDirection == LayoutDirection.RTL) {
-          keyCode = Keyboard.LEFT;
-        }
-        break;
-      }
-      case Keyboard.UP:
-      {
-        // typically, if ltr, the same as LEFT
-        if (mapUpDown && layoutDirection == LayoutDirection.RTL) {
-          keyCode = Keyboard.RIGHT;
-        }
-        break;
-      }
-      case Keyboard.LEFT:
-      {
-        if (layoutDirection == LayoutDirection.RTL) {
-          keyCode = Keyboard.RIGHT;
-        }
-        break;
-      }
-    }
-
-    return keyCode;
   }
 
   /**
@@ -5784,21 +5515,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  @private
-   */
   mx_internal function getEffectsForProperty(propertyName:String):Array {
     return _affectedProperties[propertyName] != undefined ? _affectedProperties[propertyName] : [];
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Event handlers: Invalidation
-  //
-  //--------------------------------------------------------------------------
-
   /**
-   *  @private
    *  Callback that then calls queued functions.
    */
   private function callLaterDispatcher(event:Event):void {
@@ -5842,29 +5563,23 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     // Stage can be null when an untrusted application is loaded by an application
     // that isn't on stage yet.
-    if (sm && (sm.stage || usingBridge) && listeningForRender) {
+    if (sm && (sm.stage || usingBridge) && (flags & LISTENING_FOR_RENDER) != 0) {
       // trace("  removed");
       sm.removeEventListener(FlexEvent.RENDER, callLaterDispatcher);
       sm.removeEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-      listeningForRender = false;
+      flags ^= LISTENING_FOR_RENDER;
     }
 
-    // Move the method queue off to the side, so that subsequent
-    // calls to callLater get added to a new queue that'll get handled
-    // next time.
+    // Move the method queue off to the side, so that subsequent calls to callLater get added to a new queue that'll get handled next time.
     var queue:Vector.<MethodQueueElement> = methodQueue;
-    methodQueue = new <MethodQueueElement>[];
+    methodQueue = null;
 
     // Call each method currently in the method queue.
-    // These methods can call callLater(), causing additional
-    // methods to be queued, but these will get called the next
-    // time around.
+    // These methods can call callLater(), causing additional methods to be queued, but these will get called the next time around.
     var n:int = queue.length;
     //  trace("  queue length " + n);
     for (var i:int = 0; i < n; i++) {
-      var mqe:MethodQueueElement = MethodQueueElement(queue[i]);
-
-      mqe.method.apply(null, mqe.args);
+      queue[i].apply();
     }
 
     // trace("  <<calllaterdispatcher2 " + this);
@@ -5942,24 +5657,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Event handlers: Filters
-  //
-  //--------------------------------------------------------------------------
-
-  /**
-   *  @private
-   */
   private function filterChangeHandler(event:Event):void {
     filters = _filters;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  IUIComponent
-  //
-  //--------------------------------------------------------------------------
 
   /**
    *  Returns <code>true</code> if the chain of <code>owner</code> properties
@@ -6070,18 +5770,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return false;
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Diagnostics
-  //
-  //--------------------------------------------------------------------------
-
   private static const fakeMouseX:QName = new QName(mx_internal, "_mouseX");
   private static const fakeMouseY:QName = new QName(mx_internal, "_mouseY");
 
-  /**
-   *  @private
-   */
   override public function get mouseX():Number {
     if (!root || root is Stage || root[fakeMouseX] === undefined) {
       return super.mouseX;
@@ -6089,16 +5780,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return globalToLocal(new Point(root[fakeMouseX], 0)).x;
   }
 
-  /**
-   *  @private
-   */
   override public function get mouseY():Number {
     if (!root || root is Stage || root[fakeMouseY] === undefined) {
       return super.mouseY;
     }
     return globalToLocal(new Point(0, root[fakeMouseY])).y;
   }
-
 
   /**
    *  Initializes the implementation and storage of some of the less frequently
@@ -6209,7 +5896,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     super.transform.colorTransform = ct;
     super.transform.perspectiveProjection = pp;
-    if (maintainProjectionCenter) {
+    if (flags & MAINTAIN_PROJECTION_CENTER) {
       invalidateDisplayList();
     }
     if (was3D != is3D) {
@@ -6244,7 +5931,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  private var _maintainProjectionCenter:Boolean = false;
   /**
    *  When true, the component keeps its projection matrix centered on the
    *  middle of its bounding box.  If no projection matrix is defined on the
@@ -6256,18 +5942,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 4
    */
   public function set maintainProjectionCenter(value:Boolean):void {
-    _maintainProjectionCenter = value;
+    value ? flags |= MAINTAIN_PROJECTION_CENTER : flags ^= MAINTAIN_PROJECTION_CENTER;
     if (value && super.transform.perspectiveProjection == null) {
       super.transform.perspectiveProjection = new PerspectiveProjection();
     }
     invalidateDisplayList();
-  }
-
-  /**
-   * @private
-   */
-  public function get maintainProjectionCenter():Boolean {
-    return _maintainProjectionCenter;
   }
 
   public function setLayoutMatrix(value:Matrix, invalidateLayout:Boolean):void {
@@ -6688,14 +6367,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 }
 
 class MethodQueueElement {
-  public function MethodQueueElement(method:Function, args:Array /* of Object */ = null) {
-    super();
-
-    this.method = method;
-    this.args = args;
-  }
-
-  /**
+   /**
    *  A reference to the method to be called.
    *
    *  @langversion 3.0
@@ -6703,7 +6375,7 @@ class MethodQueueElement {
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  public var method:Function;
+  private var method:Function;
 
   /**
    *  The arguments to be passed to the method.
@@ -6713,5 +6385,16 @@ class MethodQueueElement {
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  public var args:Array /* of Object */;
+  private var args:Array /* of Object */;
+
+  public function MethodQueueElement(method:Function, args:Array /* of Object */ = null) {
+    super();
+
+    this.method = method;
+    this.args = args;
+  }
+
+  public function apply():void {
+    method.apply(null, args);
+  }
 }

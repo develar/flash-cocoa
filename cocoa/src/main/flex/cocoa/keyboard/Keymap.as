@@ -1,8 +1,6 @@
-package cocoa.keyboard
-{
+package cocoa.keyboard {
 [DefaultProperty("keymap")]
-public class Keymap
-{
-	public var keymap:Vector.<KeymapItem>;
+public class Keymap {
+  public var keymap:Vector.<KeymapItem>;
 }
 }

@@ -1,5 +1,4 @@
-package cocoa.keyboard
-{
+package cocoa.keyboard {
 import cocoa.text.EditableTextView;
 
 import com.asfusion.mate.events.ContextEventDispatcher;
@@ -9,122 +8,99 @@ import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 import flash.utils.Dictionary;
 
-public class KeyboardManager extends ContextEventDispatcher
-{
-	private var commandShortcuts:Dictionary;
-	private var commandShiftShortcuts:Dictionary;
-	private var shortcuts:Dictionary;
+public class KeyboardManager extends ContextEventDispatcher {
+  private var commandShortcuts:Dictionary;
+  private var commandShiftShortcuts:Dictionary;
+  private var shortcuts:Dictionary;
 
-	private var clientBinder:ClientBinder = new ClientBinder();
+  private var clientBinder:ClientBinder = new ClientBinder();
 
-	private var keymapLoaded:Boolean = false;
+  private var keymapLoaded:Boolean = false;
 
-	public function loadKeymap(keymap:Vector.<KeymapItem>, activeProfiles:Vector.<uint>):void
-	{
-		shortcuts = new Dictionary();
-		commandShortcuts = new Dictionary();
-		commandShiftShortcuts = new Dictionary();
+  public function loadKeymap(keymap:Vector.<KeymapItem>, activeProfiles:Vector.<uint>):void {
+    shortcuts = new Dictionary();
+    commandShortcuts = new Dictionary();
+    commandShiftShortcuts = new Dictionary();
 
-		clientBinder.eventShortcutMap = new Dictionary();
+    clientBinder.eventShortcutMap = new Dictionary();
 
-		for each (var item:KeymapItem in keymap)
-		{
-			var shortcutLabelRegistered:Boolean = false;
-			for each (var shortcut:Shortcut in item.shortcuts)
-			{
-				if (shortcut.profile == Shortcut.ANY_PROFILE || activeProfiles.indexOf(shortcut.profile) != -1)
-				{
-					if (!shortcutLabelRegistered)
-					{
-						shortcutLabelRegistered = true;
-						clientBinder.eventShortcutMap[item.event.type] = shortcut;
-					}
+    for each (var item:KeymapItem in keymap) {
+      var shortcutLabelRegistered:Boolean = false;
+      for each (var shortcut:Shortcut in item.shortcuts) {
+        if (shortcut.profile == Shortcut.ANY_PROFILE || activeProfiles.indexOf(shortcut.profile) != -1) {
+          if (!shortcutLabelRegistered) {
+            shortcutLabelRegistered = true;
+            clientBinder.eventShortcutMap[item.event.type] = shortcut;
+          }
 
-					var map:Object;
-					if (shortcut.command)
-					{
-						if (shortcut.shift)
-						{
-							map = commandShiftShortcuts;
-						}
-						else
-						{
-							map = commandShortcuts;
-						}
-					}
-					else
-					{
-						map = shortcuts;
-					}
+          var map:Dictionary;
+          if (shortcut.command) {
+            if (shortcut.shift) {
+              map = commandShiftShortcuts;
+            }
+            else {
+              map = commandShortcuts;
+            }
+          }
+          else {
+            map = shortcuts;
+          }
 
-					if (shortcut.code in map)
-					{
-						Vector.<KeymapItem>(map[shortcut.code]).push(item);
-					}
-					else
-					{
-						map[shortcut.code] = new <KeymapItem>[item];
-					}
-				}
-			}
-		}
+          var mapItem:Vector.<KeymapItem> = map[shortcut.code];
+          if (mapItem == null) {
+            map[shortcut.code] = new <KeymapItem>[item];
+          }
+          else {
+            mapItem.fixed = false;
+            mapItem[mapItem.length] = item;
+          }
+        }
+      }
+    }
 
-		keymapLoaded = true;
-		clientBinder.updateClients();
-	}
+    keymapLoaded = true;
+    clientBinder.updateClients();
+  }
 
-	public function keyDownHandler(event:KeyboardEvent):void
-	{
-		if (!keymapLoaded)
-		{
-			return;
-		}
-		
-		var items:Vector.<KeymapItem>;
-		if (event.ctrlKey && !event.altKey)
-		{
-			if (event.shiftKey)
-			{
-				items = commandShiftShortcuts[event.keyCode];
-			}
-			else
-			{
-				items = commandShortcuts[event.keyCode];
-			}
-		}
-		else
-		{
-			var editableText:EditableTextView = event.target as EditableTextView;
-			if (editableText == null || !editableText.editable || (!editableText.multiline && event.keyCode == Keyboard.ESCAPE))
-			{
-            	items = shortcuts[event.keyCode];
-			}
-		}
+  public function keyDownHandler(event:KeyboardEvent):void {
+    if (!keymapLoaded) {
+      return;
+    }
 
-		if (items != null)
-		{
-			for each (var item:KeymapItem in items)
-			{
-				dispatch(item, InteractiveObject(event.target));
-			}
-		}
-	}
+    var items:Vector.<KeymapItem>;
+    if (event.ctrlKey && !event.altKey) {
+      if (event.shiftKey) {
+        items = commandShiftShortcuts[event.keyCode];
+      }
+      else {
+        items = commandShortcuts[event.keyCode];
+      }
+    }
+    else {
+      var editableText:EditableTextView = event.target as EditableTextView;
+      if (editableText == null || !editableText.editable || (!editableText.multiline && event.keyCode == Keyboard.ESCAPE)) {
+        items = shortcuts[event.keyCode];
+      }
+    }
 
-	public function bindShortcut(client:KeyboardManagerClient, eventMetadata:EventMetadata, states:Vector.<String> = null):void
-	{
-		clientBinder.bindShortcut(client, eventMetadata, states);
-	}
+    if (items != null) {
+      for each (var item:KeymapItem in items) {
+        dispatch(item, InteractiveObject(event.target));
+      }
+    }
+  }
 
-	private function dispatch(item:KeymapItem, target:InteractiveObject):void
-	{
-		if (item.event.useContainerChain)
-		{
-			dispatchContextEvent(item.event.create());
-		}
-		else
-		{
-			target.dispatchEvent(item.event.create());
-		}
-	}
+  public function bindShortcut(client:KeyboardManagerClient, eventMetadata:EventMetadata, states:Vector.<String> = null):void {
+    clientBinder.bindShortcut(client, eventMetadata, states);
+  }
+
+  private function dispatch(item:KeymapItem, target:InteractiveObject):void {
+    if (item.event.useContainerChain) {
+      dispatchContextEvent(item.event.create());
+    }
+    else {
+      target.dispatchEvent(item.event.create());
+    }
+  }
 }
 }
