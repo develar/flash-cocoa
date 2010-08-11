@@ -101,7 +101,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["Menu"] = MenuSkin;
     data["Menu.border"] = borders[BorderPosition.menu];
-    data["Menu.itemFactory"] = new ClassFactory(MenuItemRenderer);
+    data["Menu.itemRenderer"] = new ClassFactory(MenuItemRenderer);
 
     data["MenuItem.onStateIcon"] = icons[0];
     data["MenuItem.onStateIcon.highlighted"] = icons[1];

@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import flash.events.Event;
 import flash.utils.Dictionary;
 
@@ -9,110 +8,92 @@ import org.flyti.util.List;
 
 use namespace ui;
 
-public class Menu extends AbstractComponent
-{
-	protected static const _skinParts:Dictionary = new Dictionary();
-	_skinParts.itemGroup = 0;
-	override protected function get skinParts():Dictionary
-	{
-		return _skinParts;
-	}
+public class Menu extends AbstractComponent {
+  protected static const _skinParts:Dictionary = new Dictionary();
+  _skinParts.itemGroup = 0;
+  override protected function get skinParts():Dictionary {
+    return _skinParts;
+  }
 
-	ui var itemGroup:SingleSelectionDataGroup;
+  ui var itemGroup:SingleSelectionDataGroup;
 
-	ui function itemGroupAdded():void
-	{
-		itemGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE; // delegate to MenuController (see PopUpMenuController)
-	}
+  ui function itemGroupAdded():void {
+    itemGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE; // delegate to MenuController (see PopUpMenuController)
+  }
 
-	private var pendingSelectedIndex:int = 0;
-	public function set selectedIndex(value:int):void
-	{
-		if (itemGroup == null)
-		{
-			pendingSelectedIndex = value;
-		}
-		else
-		{
-			itemGroup.selectedIndex = value;
-		}
-	}
+  private var pendingSelectedIndex:int = 0;
 
-	public function getItemAt(index:int):Object
-	{
-		return (_items.empty || (index == ListSelection.NO_SELECTION)) ? null : _items.getItemAt(index);
-	}
+  public function set selectedIndex(value:int):void {
+    if (itemGroup == null) {
+      pendingSelectedIndex = value;
+    }
+    else {
+      itemGroup.selectedIndex = value;
+    }
+  }
 
-	public function getItemIndex(value:Object):int
-	{
-		return _items.getItemIndex(value);
-	}
+  public function getItemAt(index:int):Object {
+    return (_items.empty || (index == ListSelection.NO_SELECTION)) ? null : _items.getItemAt(index);
+  }
 
-	private var _labelFunction:Function;
-	public function get labelFunction():Function
-	{
-		return _labelFunction;
-	}
-	public function set labelFunction(labelFunction:Function):void
-	{
-		_labelFunction = labelFunction;
-	}
+  public function getItemIndex(value:Object):int {
+    return _items.getItemIndex(value);
+  }
 
-	private var itemsChanged:Boolean;
-	protected var _items:List;
-	public function set items(value:List):void
-	{
-		if (value != _items)
-		{
-			var dispatchChangeEvent:Boolean = _items != null;
-			if (_items != null)
-			{
-				_items.removeEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler);
-			}
-			_items = value;
-			itemsChanged = true;
-			invalidateProperties();
+  private var _labelFunction:Function;
+  public function get labelFunction():Function {
+    return _labelFunction;
+  }
 
-			if (dispatchChangeEvent)
-			{
-				itemsChangeHandler();
-			}
-		}
-	}
+  public function set labelFunction(labelFunction:Function):void {
+    _labelFunction = labelFunction;
+  }
 
-	private function itemsChangeHandler(event:CollectionEvent = null):void
-	{
-		AbstractView(skin).callLater(dispatchChangeEvent);
-	}
+  private var itemsChanged:Boolean;
+  protected var _items:List;
+  public function set items(value:List):void {
+    if (value != _items) {
+      var dispatchChangeEvent:Boolean = _items != null;
+      if (_items != null) {
+        _items.removeEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler);
+      }
+      _items = value;
+      itemsChanged = true;
+      invalidateProperties();
 
-	private function dispatchChangeEvent():void
-	{
-		dispatchEvent(new Event(Event.CHANGE));
-	}
+      if (dispatchChangeEvent) {
+        itemsChangeHandler();
+      }
+    }
+  }
 
-	public function get numberOfItems():int
-	{
-		return _items.length;
-	}
+  private function itemsChangeHandler(event:CollectionEvent = null):void {
+    AbstractView(skin).callLater(dispatchChangeEvent);
+  }
 
-	override protected function get primaryLaFKey():String
-	{
-		return "Menu";
-	}
+  private function dispatchChangeEvent():void {
+    dispatchEvent(new Event(Event.CHANGE));
+  }
 
-	override public function commitProperties():void
-	{
-		super.commitProperties();
+  public function get numberOfItems():int {
+    return _items.length;
+  }
 
-		if (itemsChanged)
-		{
-			itemsChanged = false;
-			itemGroup.dataProvider = _items;
-			itemGroup.selectedIndex = pendingSelectedIndex;
-			pendingSelectedIndex = ListSelection.NO_SELECTION;
+  override protected function get primaryLaFKey():String {
+    return "Menu";
+  }
 
-			_items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler, false, -1 /* after itemGroup handler */);
-		}
-	}
+  override public function commitProperties():void {
+    super.commitProperties();
+
+    if (itemsChanged) {
+      itemsChanged = false;
+      itemGroup.dataProvider = _items;
+      itemGroup.selectedIndex = pendingSelectedIndex;
+      pendingSelectedIndex = ListSelection.NO_SELECTION;
+
+      _items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler, false, -1 /* after itemGroup handler */);
+    }
+  }
 }
 }

@@ -692,6 +692,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  the next addEventListener() doesn't actually get us the render event.
    */
   private static const INITIALIZED:uint = 1 << 0;
+  private static const DISABLED:uint = 1 << 11;
+  private static const EXCLUDE_FROM_LAYOUT:uint = 1 << 12;
   private static const LISTENING_FOR_RENDER:uint = 1 << 1;
   private static const PARENT_CHANGED:uint = 1 << 2;
   private static const PROCESSED_DESCRIPTORS:uint = 1 << 3;
@@ -1834,19 +1836,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  blendMode
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the blendMode property.
-   */
   private var _blendMode:String = BlendMode.NORMAL;
 
-
   [Inspectable(category="General", enumeration="add,alpha,darken,difference,erase,hardlight,invert,layer,lighten,multiply,normal,subtract,screen,overlay,colordodge,colorburn,exclusion,softlight,hue,saturation,color,luminosity", defaultValue="normal")]
-
   override public function get blendMode():String {
     return _blendMode;
   }
@@ -1856,9 +1848,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       _blendMode = value;
       flags |= BLEND_MODE_CHANGED;
 
-      // If one of the non-native Flash blendModes is set,
-      // record the new value and set the appropriate
-      // blendShader on the display object.
+      // If one of the non-native Flash blendModes is set, record the new value and set the appropriate blendShader on the display object.
       if (value == "colordodge" || value == "colorburn" || value == "exclusion" || value == "softlight" || value == "hue" || value == "saturation" || value == "color" || value == "luminosity") {
         flags |= BLEND_SHADER_CHANGED;
       }
@@ -1906,14 +1896,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  private var _enabled:Boolean = true;
   public function get enabled():Boolean {
-    return _enabled;
+    return (flags & DISABLED) == 0;
   }
 
   public function set enabled(value:Boolean):void {
-    if (value != _enabled) {
-      _enabled = value;
+    if (value != ((flags & DISABLED) == 0)) {
+      value ? flags ^= DISABLED : flags |= DISABLED;
       invalidateDisplayList();
     }
 
@@ -2669,21 +2658,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _focusEnabled;
   }
 
-  /**
-   *  @private
-   */
   public function set focusEnabled(value:Boolean):void {
     _focusEnabled = value;
   }
 
-  //----------------------------------
-  //  hasFocusableChildren
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the hasFocusableChildren property.
-   */
   private var _hasFocusableChildren:Boolean = false;
 
   [Bindable("hasFocusableChildrenChange")]
@@ -2739,14 +2717,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  mouseFocusEnabled
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the mouseFocusEnabled property.
-   */
   private var _mouseFocusEnabled:Boolean = true;
 
   [Inspectable(defaultValue="true")]
@@ -2771,16 +2741,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _mouseFocusEnabled;
   }
 
-  /**
-   *  @private
-   */
   public function set mouseFocusEnabled(value:Boolean):void {
     _mouseFocusEnabled = value;
   }
 
-  /**
-   *  Storage for the tabFocusEnabled property.
-   */
   private var _tabFocusEnabled:Boolean = true;
 
   [Bindable("tabFocusEnabledChange")]
@@ -2871,14 +2835,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _measuredMinHeight = value;
   }
 
-  //----------------------------------
-  //  measuredWidth
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the measuredWidth property.
-   */
   private var _measuredWidth:Number = 0;
 
   [Inspectable(environment="none")]
@@ -2903,14 +2859,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _measuredWidth = value;
   }
 
-  //----------------------------------
-  //  measuredHeight
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the measuredHeight property.
-   */
   private var _measuredHeight:Number = 0;
 
   [Inspectable(environment="none")]
@@ -2928,18 +2876,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _measuredHeight;
   }
 
-  /**
-   *  @private
-   */
   public function set measuredHeight(value:Number):void {
     _measuredHeight = value;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: Layout
-  //
-  //--------------------------------------------------------------------------
 
   [Bindable("resize")]
   [Inspectable(environment="none")]
@@ -3016,9 +2955,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _layoutMetrics.percentHeight;
   }
 
-  /**
-   *  @private
-   */
   public function set percentHeight(value:Number):void {
     if (_layoutMetrics.percentHeight == value) {
       return;
@@ -3032,10 +2968,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     invalidateParentSizeAndDisplayList();
   }
-
-  //----------------------------------
-  //  minWidth
-  //----------------------------------
 
   [Bindable("explicitMinWidthChanged")]
   [Inspectable(category="Size", defaultValue="0")]
@@ -3077,9 +3009,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return measuredMinWidth;
   }
 
-  /**
-   *  @private
-   */
   public function set minWidth(value:Number):void {
     if (explicitMinWidth == value) {
       return;
@@ -3087,10 +3016,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     explicitMinWidth = value;
   }
-
-  //----------------------------------
-  //  minHeight
-  //----------------------------------
 
   [Bindable("explicitMinHeightChanged")]
   [Inspectable(category="Size", defaultValue="0")]
@@ -3132,9 +3057,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return measuredMinHeight;
   }
 
-  /**
-   *  @private
-   */
   public function set minHeight(value:Number):void {
     if (explicitMinHeight == value) {
       return;
@@ -3142,10 +3064,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     explicitMinHeight = value;
   }
-
-  //----------------------------------
-  //  maxWidth
-  //----------------------------------
 
   [Bindable("explicitMaxWidthChanged")]
   [Inspectable(category="Size", defaultValue="10000")]
@@ -3190,9 +3108,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return !isNaN(explicitMaxWidth) ? explicitMaxWidth : DEFAULT_MAX_WIDTH;
   }
 
-  /**
-   *  @private
-   */
   public function set maxWidth(value:Number):void {
     if (explicitMaxWidth == value) {
       return;
@@ -3249,9 +3164,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return !isNaN(explicitMaxHeight) ? explicitMaxHeight : DEFAULT_MAX_HEIGHT;
   }
 
-  /**
-   *  @private
-   */
   public function set maxHeight(value:Number):void {
     if (explicitMaxHeight == value) {
       return;
@@ -3260,14 +3172,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     explicitMaxHeight = value;
   }
 
-  //----------------------------------
-  //  explicitMinWidth
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the minWidth property.
-   */
   mx_internal var _explicitMinWidth:Number;
 
   [Bindable("explicitMinWidthChanged")]
@@ -3326,14 +3230,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new Event("explicitMinWidthChanged"));
   }
 
-  //----------------------------------
-  //  minHeight
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the minHeight property.
-   */
   mx_internal var _explicitMinHeight:Number;
 
   [Bindable("explictMinHeightChanged")]
@@ -3671,11 +3567,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  Storage for the includeInLayout property.
-   */
-  private var _includeInLayout:Boolean = true;
-
   [Bindable("includeInLayoutChanged")]
   [Inspectable(category="General", defaultValue="true")]
 
@@ -3695,12 +3586,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @productversion Flex 3
    */
   public function get includeInLayout():Boolean {
-    return _includeInLayout;
+    return (flags & EXCLUDE_FROM_LAYOUT) == 0;
   }
 
   public function set includeInLayout(value:Boolean):void {
-    if (_includeInLayout != value) {
-      _includeInLayout = value;
+    if (value != ((flags & EXCLUDE_FROM_LAYOUT) == 0)) {
+      value ? flags ^= EXCLUDE_FROM_LAYOUT : flags |= EXCLUDE_FROM_LAYOUT;
 
       var p:IInvalidating = parent as IInvalidating;
       if (p) {
@@ -5328,10 +5219,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   private function dispatchResizeEvent():void {
     if (hasEventListener(ResizeEvent.RESIZE)) {
-      var resizeEvent:ResizeEvent = new ResizeEvent(ResizeEvent.RESIZE);
-      resizeEvent.oldWidth = oldWidth;
-      resizeEvent.oldHeight = oldHeight;
-      dispatchEvent(resizeEvent);
+      dispatchEvent(new ResizeEvent(ResizeEvent.RESIZE, false, false, oldWidth, oldHeight));
     }
 
     oldWidth = width;
@@ -6023,8 +5911,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     // Reset the flag at the end of the method.
     var oldIncludeInLayout:Boolean;
     if (!invalidateLayout) {
-      oldIncludeInLayout = _includeInLayout;
-      _includeInLayout = false;
+      oldIncludeInLayout = (flags & EXCLUDE_FROM_LAYOUT) == 0;
+      flags |= EXCLUDE_FROM_LAYOUT;
     }
 
     // TODO (chaase): Would be nice to put this function in a central place
@@ -6100,8 +5988,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       }
     }
 
-    if (!invalidateLayout) {
-      _includeInLayout = oldIncludeInLayout;
+    if (!invalidateLayout && oldIncludeInLayout) {
+      flags ^= EXCLUDE_FROM_LAYOUT;
     }
   }
 

@@ -21,6 +21,10 @@ public class ColorPickerMenu extends Menu {
     _items = new ArrayList(new <Object>[PANEL, "No Color"]);
   }
 
+  public function isNoColorItem(index:int):Boolean {
+    return index == 1;
+  }
+
   private var _colorChangeHandler:Function;
   public function set colorChangeHandler(value:Function):void {
     _colorChangeHandler = value;
@@ -59,7 +63,7 @@ public class ColorPickerMenu extends Menu {
 }
 
 import cocoa.PushButton;
-import cocoa.colorPicker.SwatchPanel;
+import cocoa.colorPicker.MenuSwatchItemRenderer;
 import cocoa.plaf.LookAndFeel;
 
 import mx.core.IFactory;
@@ -74,7 +78,7 @@ class SwatchPanelFactory implements IFactory {
   }
 
   public function newInstance():* {
-    var swatchPanel:SwatchPanel = new SwatchPanel();
+    var swatchPanel:MenuSwatchItemRenderer = new MenuSwatchItemRenderer();
     swatchPanel.laf = laf;
     swatchPanel.changeColorHandler = colorChangeHandler;
     swatchPanel.colorList = WebSafePalette.getList();

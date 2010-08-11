@@ -29,10 +29,7 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
     }
     
     if (highlightIndicator == null) {
-      highlightIndicator = new Shape();
-      highlightIndicator.graphics.lineStyle(2, 0x0f53ec, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE);
-      highlightIndicator.graphics.drawRect(0, 0, swatchWidth + (cellPadding * 2), swatchHeight + (cellPadding * 2));
-      addChild(highlightIndicator);
+      createHighlightIndicator();
     }
 
     var cellX:Number = event.localX;
@@ -53,6 +50,13 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
     highlightIndicator.x = cellX;
     highlightIndicator.y = cellY;
     highlightIndicator.visible = true;
+  }
+
+  private function createHighlightIndicator():void {
+    highlightIndicator = new Shape();
+    highlightIndicator.graphics.lineStyle(1, 0xb4d4ff, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE);
+    highlightIndicator.graphics.drawRect(0.5, 0.5, swatchWidth + (cellPadding * 2) - 1, swatchHeight + (cellPadding * 2) - 1);
+    addChild(highlightIndicator);
   }
 }
 }

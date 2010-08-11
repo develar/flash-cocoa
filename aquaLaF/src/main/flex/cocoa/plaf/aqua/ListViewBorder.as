@@ -7,7 +7,7 @@ import flash.display.CapsStyle;
 import flash.display.Graphics;
 import flash.display.LineScaleMode;
 
-internal class ListViewBorder extends AbstractBorder {
+internal final class ListViewBorder extends AbstractBorder {
   private static const CONTENT_INSETS:Insets = new Insets(1, 1, 1, 1);
 
   private static const HALF_LINE_THICKNESS:Number = 0.5;

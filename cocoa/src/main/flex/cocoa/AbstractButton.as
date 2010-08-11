@@ -1,151 +1,124 @@
-package cocoa
-{
+package cocoa {
 import cocoa.plaf.TitledComponentSkin;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-public class AbstractButton extends AbstractControl implements Cell
-{
-	private var oldState:int = -1;
+public class AbstractButton extends AbstractControl implements Cell {
+  private var oldState:int = -1;
 
-	private var _title:String;
-	public function get title():String
-	{
-		return _title;
-	}
-	public function set title(value:String):void
-	{
-		if (value != _title)
-		{
-			_title = value;
-			if (skin != null)
-			{
-				TitledComponentSkin(skin).title = _title;
-			}
-		}
-	}
+  private var _title:String;
+  public function get title():String {
+    return _title;
+  }
 
-	override public function get objectValue():Object
-	{
-		return title;
-	}
+  public function set title(value:String):void {
+    if (value != _title) {
+      _title = value;
+      if (skin != null) {
+        TitledComponentSkin(skin).title = _title;
+      }
+    }
+  }
 
-	[Bindable(event="selectedChanged")]
-	public function get selected():Boolean
-	{
-		return state == CellState.ON;
-	}
+  override public function get objectValue():Object {
+    return title;
+  }
 
-	public function set selected(value:Boolean):void
-	{
-		if (value != selected)
-		{
-			state = value ? CellState.ON : CellState.OFF;
-		}
-	}
+  [Bindable(event="selectedChanged")]
+  public function get selected():Boolean {
+    return state == CellState.ON;
+  }
 
-	public function get isMouseDown():Boolean
-	{
-		return oldState != -1;
-	}
+  public function set selected(value:Boolean):void {
+    if (value != selected) {
+      state = value ? CellState.ON : CellState.OFF;
+    }
+  }
 
-	override protected function skinAttachedHandler():void
-	{
-		super.skinAttachedHandler();
+  public function get isMouseDown():Boolean {
+    return oldState != -1;
+  }
 
-		if (_title != null)
-		{
-			TitledComponentSkin(skin).title = _title;
-		}
+  override protected function skinAttachedHandler():void {
+    super.skinAttachedHandler();
 
-		addHandlers();
-	}
+    if (_title != null) {
+      TitledComponentSkin(skin).title = _title;
+    }
 
-	protected function addHandlers():void
-	{
-		skin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-	}
+    addHandlers();
+  }
 
-	private function mouseDownHandler(event:MouseEvent):void
-	{
-		oldState = state;
+  protected function addHandlers():void {
+    skin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+  }
 
-		skin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+  private function mouseDownHandler(event:MouseEvent):void {
+    oldState = state;
 
-		skin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-		skin.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+    skin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		mouseOverHandler(event);
-	}
+    skin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+    skin.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 
-	protected function get toggled():Boolean
-	{
-		return false;
-	}
+    mouseOverHandler(event);
+  }
 
-	private function stageMouseUpHandler(event:MouseEvent):void
-	{
-		skin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+  protected function get toggled():Boolean {
+    return false;
+  }
 
-		skin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-		skin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+  private function stageMouseUpHandler(event:MouseEvent):void {
+    skin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-		if (event.target == skin)
-		{
-			// может быть уже отвалидировано в roll over/out
-			if (toggled)
-			{
-				if (state == oldState)
-				{
-					state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
-					event.updateAfterEvent();
-				}
-				else
-				{
-					// во fluent есть over — при установке state в mouseOverHandler mouseDown == true, а тут уже up — для button state разницы нет, а вот для скина поддерживающего over есть
-					skin.invalidateDisplayList();
-				}
-			}
-			else if (state == CellState.ON)
-			{
-				state = CellState.OFF;
-				event.updateAfterEvent();
-			}
+    skin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+    skin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 
-			if (hasEventListener("selectedChanged"))
-			{
-				dispatchEvent(new Event("selectedChanged"));
-			}
+    if (event.target == skin) {
+      // может быть уже отвалидировано в roll over/out
+      if (toggled) {
+        if (state == oldState) {
+          state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
+          event.updateAfterEvent();
+        }
+        else {
+          // во fluent есть over — при установке state в mouseOverHandler mouseDown == true, а тут уже up — для button state разницы нет, а вот для скина поддерживающего over есть
+          skin.invalidateDisplayList();
+        }
+      }
+      else if (state == CellState.ON) {
+        state = CellState.OFF;
+        event.updateAfterEvent();
+      }
 
-			if (_action != null)
-			{
-				_actionRequireTarget ?_action(this) : _action();
-			}
-		}
+      if (hasEventListener("selectedChanged")) {
+        dispatchEvent(new Event("selectedChanged"));
+      }
 
-		oldState = -1;
-	}
+      if (_action != null) {
+        _actionRequireTarget ? _action(this) : _action();
+      }
+    }
 
-	private function mouseOverHandler(event:MouseEvent):void
-	{
-		state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
-		event.updateAfterEvent();
-	}
+    oldState = -1;
+  }
 
-	private function mouseOutHandler(event:MouseEvent):void
-	{
-		state = oldState;
-		event.updateAfterEvent();
-	}
+  private function mouseOverHandler(event:MouseEvent):void {
+    state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
+    event.updateAfterEvent();
+  }
 
-	override public function set state(value:int):void
-	{
-		super.state = value;
-		if (oldState == -1 && hasEventListener("selectedChanged"))
-		{
-			dispatchEvent(new Event("selectedChanged"));
-		}
-	}
+  private function mouseOutHandler(event:MouseEvent):void {
+    state = oldState;
+    event.updateAfterEvent();
+  }
+
+  override public function set state(value:int):void {
+    super.state = value;
+    if (oldState == -1 && hasEventListener("selectedChanged")) {
+      dispatchEvent(new Event("selectedChanged"));
+    }
+  }
 }
 }

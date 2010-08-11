@@ -1,13 +1,12 @@
 package cocoa {
-import cocoa.plaf.basic.AbstractItemRenderer;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
+import cocoa.plaf.basic.AbstractItemRenderer;
 
 import flash.events.MouseEvent;
 
 import mx.core.IVisualElement;
 import mx.core.mx_internal;
-
 import mx.managers.IToolTipManagerClient;
 
 import spark.components.IItemRenderer;
@@ -68,7 +67,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 
   override protected function commitProperties():void {
     if (_lafSubkey != null && itemRenderer == null) {
-      itemRenderer = _laf.getFactory(_lafSubkey + ".SegmentedControl.itemRenderer");
+      itemRenderer = _laf.getFactory(_lafSubkey + ".itemRenderer");
     }
 
     super.commitProperties();

@@ -10,7 +10,7 @@ public class ColorPicker extends PopUpButton {
   public function ColorPicker() {
     super();
 
-    this.menu = new ColorPickerMenu();
+    _menu = new ColorPickerMenu();
   }
 
   private function colorChangeHandler(value:uint):void {
@@ -22,7 +22,7 @@ public class ColorPicker extends PopUpButton {
   }
 
   public function get hasSelectedColor():Boolean {
-    return selectedIndex == 0;
+    return ColorPickerMenu(menu).isNoColorItem(selectedIndex);
   }
 
   public function get selectedColor():uint {

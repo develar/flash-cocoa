@@ -5,10 +5,10 @@ import cocoa.plaf.LookAndFeel;
 import flash.display.Graphics;
 import flash.events.MouseEvent;
 
-public class SwatchPanel extends AbstractView {
+public class MenuSwatchItemRenderer extends AbstractView {
   private var swatchGrid:SwatchGrid;
 
-  public function SwatchPanel() {
+  public function MenuSwatchItemRenderer() {
     super();
 
     addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
@@ -62,16 +62,16 @@ public class SwatchPanel extends AbstractView {
       colorListChanged = false;
 
       swatchGrid.drawGrid(_colorList, _laf.getBorder("SwatchGrid.border"));
+      width = swatchGrid.width + 16;
+      height = swatchGrid.height + 16;
     }
-  }
 
-  override protected function measure():void {
-    measuredWidth = swatchGrid.width + 16;
-    measuredHeight = swatchGrid.height + 16;
+    super.commitProperties();
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     var g:Graphics = graphics;
+    g.clear();
     _laf.getBorder("MenuItem.border").draw(null, g, w, h);
   }
 }

@@ -32,7 +32,7 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner {
     _border = getBorder("border");
 
     itemGroup = new SingleSelectionDataGroup();
-    itemGroup.itemRenderer = getFactory("itemFactory");
+    itemGroup.itemRenderer = getFactory("itemRenderer");
     itemGroup.rendererUpdateDelegate = this;
     var itemGroupLayout:VerticalLayout = new VerticalLayout();
     itemGroupLayout.gap = 0;

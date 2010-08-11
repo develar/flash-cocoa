@@ -22,6 +22,7 @@ import spark.components.IItemRenderer;
 
 use namespace ui;
 
+[Abstract]
 public class PopUpMenuController extends AbstractListController {
   private static const MOUSE_CLICK_INTERVAL:int = 400;
   protected static const sharedPoint:Point = new Point();
