@@ -1,45 +1,38 @@
-package cocoa.plaf.basic
-{
+package cocoa.plaf.basic {
 import cocoa.Border;
 
 import flash.display.Graphics;
 
-public class SeparatorSkin extends AbstractSkin
-{
-	private var border:Border;
+public class SeparatorSkin extends AbstractSkin {
+  private var border:Border;
 
-	public function SeparatorSkin()
-	{
-		super();
-		
-		mouseEnabled = false;
-		mouseChildren = false;
-	}
+  public function SeparatorSkin() {
+    super();
 
-	override protected function createChildren():void
-	{
-		super.createChildren();
+    mouseEnabled = false;
+    mouseChildren = false;
+  }
 
-		border = laf.getBorder(component.lafKey + ".border");
-		if (border.layoutWidth < 0)
-		{
-			percentWidth = -border.layoutWidth;
-		}
-	}
+  override protected function createChildren():void {
+    super.createChildren();
 
-	override protected function measure():void
-	{
-		measuredWidth = isNaN(border.layoutWidth) ? 0 : border.layoutWidth;
-		measuredHeight = isNaN(border.layoutHeight) ? 0 : border.layoutHeight;
-	}
+    border = laf.getBorder(component.lafKey + ".border");
+    if (border.layoutWidth < 0) {
+      percentWidth = -border.layoutWidth;
+    }
+  }
 
-	override protected function updateDisplayList(w:Number, h:Number):void
-	{
-		super.updateDisplayList(w, h);
+  override protected function measure():void {
+    measuredWidth = isNaN(border.layoutWidth) ? 0 : border.layoutWidth;
+    measuredHeight = isNaN(border.layoutHeight) ? 0 : border.layoutHeight;
+  }
 
-		var g:Graphics = graphics;
-		g.clear();
-		border.draw(this, g, w, h);
-	}
+  override protected function updateDisplayList(w:Number, h:Number):void {
+    super.updateDisplayList(w, h);
+
+    var g:Graphics = graphics;
+    g.clear();
+    border.draw(this, g, w, h);
+  }
 }
 }

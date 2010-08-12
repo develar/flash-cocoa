@@ -63,19 +63,24 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
   }
 
   public function set selectedIndex(value:int):void {
-    if (value != selectedIndex) {
-      _selectedIndex = value;
-      _menu.selectedIndex = value;
-      if (_action != null) {
-        // иначе если у некого компонента, что использует pop up menu уже invalid properties,
-        // то вызов invalidateProperties инициированнный вызовом action не приведет к commitProperties
-        //				AbstractView(skin).callLater(_action);
-        _action();
-      }
-      
-      if (skin != null) {
-        synchronizeTitleAndSelectedItem();
-      }
+    setSelectedIndex(value, false);
+  }
+
+  public function setSelectedIndex(value:int, callUserInitiatedActionHandler:Boolean = true):void {
+    if (value == selectedIndex) {
+      return;
+    }
+
+    _selectedIndex = value;
+    if (callUserInitiatedActionHandler && _action != null) {
+      // иначе если у некого компонента, что использует pop up menu уже invalid properties,
+      // то вызов invalidateProperties инициированнный вызовом action не приведет к commitProperties
+      //				AbstractView(skin).callLater(_action);
+      _action();
+    }
+
+    if (skin != null) {
+      synchronizeTitleAndSelectedItem();
     }
   }
 

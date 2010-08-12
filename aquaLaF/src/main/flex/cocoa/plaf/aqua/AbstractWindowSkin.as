@@ -250,5 +250,9 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
   public function set defaultButton(value:IFlexDisplayObject):void {
   }
+
+  override public function get isPopUp():Boolean {
+    return true;
+  }
 }
 }

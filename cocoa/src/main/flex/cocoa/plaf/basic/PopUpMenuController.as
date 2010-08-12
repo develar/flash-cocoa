@@ -51,22 +51,19 @@ public class PopUpMenuController extends AbstractListController {
 
     switch (event.keyCode) {
       case Keyboard.ESCAPE:
-      {
         if (menu.skin != null && DisplayObject(menu.skin).parent != null) {
           event.preventDefault();
           close();
         }
-      }
         break;
 
       case Keyboard.ENTER:
       case Keyboard.SPACE:
-      {
         if (highlightedRenderer != null) {
-          popUpButton.selectedIndex = highlightedRenderer.itemIndex;
+          popUpButton.setSelectedIndex(highlightedRenderer.itemIndex);
         }
         close();
-      }
+        break;
     }
   }
 
@@ -87,10 +84,10 @@ public class PopUpMenuController extends AbstractListController {
       return;
     }
 
-    popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-
     menu.selectedIndex = popUpButton.selectedIndex;
     popUpButton.state = CellState.ON;
+
+    popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 
     PopUpManager.addPopUp(menuSkin, popUpButtonSkin, false);
     menuSkin.validateNow(); // если это datagroup, то оно должно валидировать display list c item render (их y) до setPopUpPosition
@@ -148,7 +145,7 @@ public class PopUpMenuController extends AbstractListController {
 
     if (mouseDownTime == -1 || (getTimer() - mouseDownTime) > MOUSE_CLICK_INTERVAL) {
       if (proposedSelectedIndex != -1) {
-        popUpButton.selectedIndex = proposedSelectedIndex;
+        popUpButton.setSelectedIndex(proposedSelectedIndex);
       }
       close();
     }

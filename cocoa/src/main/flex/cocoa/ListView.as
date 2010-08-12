@@ -1,10 +1,8 @@
-package cocoa
-{
-import cocoa.plaf.basic.AbstractItemRenderer;
+package cocoa {
 import cocoa.plaf.ListViewSkin;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.Skin;
+import cocoa.plaf.LookAndFeelUtil;
+import cocoa.plaf.basic.AbstractItemRenderer;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
@@ -17,160 +15,117 @@ import spark.components.List;
 
 use namespace mx_internal;
 
-public class ListView extends List implements Viewable, Control, UIPartController
-{
-	private var _skinClass:Class;
-	public function set skinClass(value:Class):void
-	{
-		_skinClass = value;
-	}
+public class ListView extends List implements Viewable, Control, UIPartController {
+  private var _skinClass:Class;
+  public function set skinClass(value:Class):void {
+    _skinClass = value;
+  }
 
-	private var mySkin:ListViewSkin;
-	override public function get skin():UIComponent
-	{
-		return UIComponent(mySkin);
-	}
+  private var mySkin:ListViewSkin;
 
-	private var _bordered:Boolean = true;
-	public function set bordered(value:Boolean):void
-	{
-		_bordered = value;
-	}
+  override public function get skin():UIComponent {
+    return UIComponent(mySkin);
+  }
 
-	protected var _action:Function;
-	public function set action(value:Function):void
-	{
-		_action = value;
-	}
+  private var _bordered:Boolean = true;
+  public function set bordered(value:Boolean):void {
+    _bordered = value;
+  }
 
-	protected override function commitSelection(dispatchChangedEvents:Boolean = true):Boolean
-	{
-		var result:Boolean = super.commitSelection(dispatchChangedEvents);
-		if (_action != null && result && dispatchChangedEvents)
-		{
-			_action();
-		}
+  protected var _action:Function;
+  public function set action(value:Function):void {
+    _action = value;
+  }
 
-		return result;
-	}
+  override protected function commitSelection(dispatchChangedEvents:Boolean = true):Boolean {
+    var result:Boolean = super.commitSelection(dispatchChangedEvents);
+    if (_action != null && result && dispatchChangedEvents) {
+      _action();
+    }
 
-	private var laf:LookAndFeel;
+    return result;
+  }
 
-	override protected function createChildren():void
-	{
-		var p:DisplayObjectContainer = parent;
-		while (p != null)
-		{
-			if (p is LookAndFeelProvider)
-			{
-				laf = LookAndFeelProvider(p).laf;
-				break;
-			}
-			else
-			{
-				if (p is Skin && Skin(p).component is LookAndFeelProvider)
-				{
-					laf = LookAndFeelProvider(Skin(p).component).laf;
-					break;
-				}
-				else
-				{
-					p = p.parent;
-				}
-			}
-		}
+  private var laf:LookAndFeel;
 
-		_skinClass = laf.getClass("ListView");
-		mySkin = new _skinClass();
-		mySkin.laf = laf;
-		mySkin.bordered = _bordered;
-		mySkin.verticalScrollPolicy = _verticalScrollPolicy;
-		mySkin.horizontalScrollPolicy = _horizontalScrollPolicy;
+  override protected function createChildren():void {
+    laf = LookAndFeelUtil.find(parent);
 
-		var skinAsDisplayObject:DisplayObject = DisplayObject(mySkin);
-		addingChild(skinAsDisplayObject);
-		$addChildAt(skinAsDisplayObject, 0);
-		childAdded(skinAsDisplayObject);
-	}
+    _skinClass = laf.getClass("ListView");
+    mySkin = new _skinClass();
+    mySkin.laf = laf;
+    mySkin.bordered = _bordered;
+    mySkin.verticalScrollPolicy = _verticalScrollPolicy;
+    mySkin.horizontalScrollPolicy = _horizontalScrollPolicy;
 
-	public function get objectValue():Object
-	{
-		return selectedItem;
-	}
+    var skinAsDisplayObject:DisplayObject = DisplayObject(mySkin);
+    addingChild(skinAsDisplayObject);
+    $addChildAt(skinAsDisplayObject, 0);
+    childAdded(skinAsDisplayObject);
+  }
 
-	public function set objectValue(value:Object):void
-	{
-		selectedItem = value;
-	}
+  public function get objectValue():Object {
+    return selectedItem;
+  }
 
-	private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
-	public function set verticalScrollPolicy(value:uint):void
-	{
-		_verticalScrollPolicy = value;
-		if (skin != null)
-		{
-			ListViewSkin(skin).verticalScrollPolicy = _verticalScrollPolicy;
-		}
-	}
+  public function set objectValue(value:Object):void {
+    selectedItem = value;
+  }
 
-	private var _horizontalScrollPolicy:int = ScrollPolicy.AUTO;
-	public function set horizontalScrollPolicy(value:uint):void
-	{
-		_horizontalScrollPolicy = value;
-		if (skin != null)
-		{
-			ListViewSkin(skin).horizontalScrollPolicy = _horizontalScrollPolicy;
-		}
-	}
+  private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
+  public function set verticalScrollPolicy(value:uint):void {
+    _verticalScrollPolicy = value;
+    if (skin != null) {
+      ListViewSkin(skin).verticalScrollPolicy = _verticalScrollPolicy;
+    }
+  }
 
-	public override function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void
-	{
-		if (renderer is AbstractItemRenderer)
-		{
-			AbstractItemRenderer(renderer).laf = laf;
-		}
+  private var _horizontalScrollPolicy:int = ScrollPolicy.AUTO;
+  public function set horizontalScrollPolicy(value:uint):void {
+    _horizontalScrollPolicy = value;
+    if (skin != null) {
+      ListViewSkin(skin).horizontalScrollPolicy = _horizontalScrollPolicy;
+    }
+  }
 
-		super.updateRenderer(renderer, itemIndex, data);
-	}
+  public override function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {
+    if (renderer is AbstractItemRenderer) {
+      AbstractItemRenderer(renderer).laf = laf;
+    }
 
-	// disable unwanted legacy
-	include "../../unwantedLegacy.as";
-	include "../../legacyConstraints.as";
-	
-	override public function getStyle(styleProp:String):*
-	{
-		if (styleProp == "skinClass")
-		{
-			return _skinClass;
-		}
-		else if (styleProp == "layoutDirection")
-		{
-			return layoutDirection;
-		}
-		else
-		{
-			return undefined;
-		}
-	}
+    super.updateRenderer(renderer, itemIndex, data);
+  }
 
-	override protected function attachSkin():void
-	{
-	}
+  // disable unwanted legacy
+  include "../../unwantedLegacy.as";
+  include "../../legacyConstraints.as";
 
-	public function uiPartAdded(id:String, instance:Object):void
-	{
-		this[id] = instance;
-		partAdded(id, instance);
-	}
+  override public function getStyle(styleProp:String):* {
+    if (styleProp == "skinClass") {
+      return _skinClass;
+    }
+    else if (styleProp == "layoutDirection") {
+      return layoutDirection;
+    }
+    else {
+      return undefined;
+    }
+  }
 
-	override public function parentChanged(p:DisplayObjectContainer):void
-	{
-		super.parentChanged(p);
+  override protected function attachSkin():void {
+  }
 
-		if (p != null)
-		{
-			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
-		}
-	}
+  public function uiPartAdded(id:String, instance:Object):void {
+    this[id] = instance;
+    partAdded(id, instance);
+  }
+
+  override public function parentChanged(p:DisplayObjectContainer):void {
+    super.parentChanged(p);
+
+    if (p != null) {
+      _parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+    }
+  }
 }
 }

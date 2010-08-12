@@ -1,7 +1,12 @@
 package cocoa.layout
 {
-public class LayoutMetrics
+public final class LayoutMetrics
 {
+  public static const PERCENT_WIDTH:uint = 1 << 0;
+  public static const PERCENT_HEIGHT:uint = 1 << 1;
+
+  public var flags:uint;
+
 	public var left:Number;
 	public var right:Number;
 
@@ -15,8 +20,5 @@ public class LayoutMetrics
 
 	public var width:Number;
 	public var height:Number;
-
-	public var percentWidth:Number;
-	public var percentHeight:Number;
 }
 }

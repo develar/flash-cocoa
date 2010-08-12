@@ -139,17 +139,18 @@ public class MessageExistenceManager
 		var x:Number = application.mouseX + 11;
 		var y:Number = application.mouseY + 22;
 
+    var screen:Rectangle = application.systemManager.screen;
 		var messageView:IFlexDisplayObject = getMessageView();
 		// If is too wide to fit onstage, move it left
-		if ((x + messageView.width) > application.screen.width)
+		if ((x + messageView.width) > screen.width)
 		{
-			x = application.screen.width - messageView.width;
+			x = screen.width - messageView.width;
 		}
 
 		// If the tooltip is too tall to fit onstage, move it up
-		if (y + messageView.height > application.screen.height)
+		if (y + messageView.height > screen.height)
 		{
-			y = application.screen.height - messageView.height;
+			y = screen.height - messageView.height;
 		}
 
 		messageView.move(x, y);

@@ -239,8 +239,6 @@ public class LabelHelper {
       charPosition = line.getAtomTextBlockEndIndex(atomIndex);
     }
 
-    line.flushAtomData();
-
     return charPosition;
   }
 }

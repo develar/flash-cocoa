@@ -18,7 +18,6 @@ import flash.geom.Matrix;
 import flash.geom.Matrix3D;
 import flash.geom.PerspectiveProjection;
 import flash.geom.Point;
-import flash.geom.Rectangle;
 import flash.geom.Transform;
 import flash.geom.Vector3D;
 
@@ -708,6 +707,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   private static const MAINTAIN_PROJECTION_CENTER:uint = 1 << 10;
 
+  /**
+   * when false, the transform on this component consists only of translation.  Otherwise, it may be arbitrarily complex.
+   */
+  private static const COMPLEX_LAYOUT_MATRIX:uint = 1 << 13;
+
   private var flags:uint;
 
   protected var _layoutMetrics:LayoutMetrics = EMPTY_LAYOUT_METRICS;
@@ -767,15 +771,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   [Inspectable(environment="none")]
 
-  /**
-   *  A flag that determines if an object has been through all three phases
-   *  of layout: commitment, measurement, and layout (provided that any were required).
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
+
   public function get initialized():Boolean {
     return (flags & INITIALIZED) != 0;
   }
@@ -791,30 +787,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   [Inspectable(environment="none")]
 
-  /**
-   *  Set to <code>true</code> after immediate or deferred child creation,
-   *  depending on which one happens. For a Container object, it is set
-   *  to <code>true</code> at the end of
-   *  the <code>createComponentsFromDescriptors()</code> method,
-   *  meaning after the Container object creates its children from its child descriptors.
-   *
-   *  <p>For example, if an Accordion container uses deferred instantiation,
-   *  the <code>processedDescriptors</code> property for the second pane of
-   *  the Accordion container does not become <code>true</code> until after
-   *  the user navigates to that pane and the pane creates its children.
-   *  But, if the Accordion had set the <code>creationPolicy</code> property
-   *  to <code>"all"</code>, the <code>processedDescriptors</code> property
-   *  for its second pane is set to <code>true</code> during application startup.</p>
-   *
-   *  <p>For classes that are not containers, which do not have descriptors,
-   *  it is set to <code>true</code> after the <code>createChildren()</code>
-   *  method creates any internal component children.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get processedDescriptors():Boolean {
     return (flags & PROCESSED_DESCRIPTORS) != 0;
   }
@@ -831,15 +803,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  A flag that determines if an object has been through all three phases
-   *  of layout validation (provided that any were required).
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get updateCompletePendingFlag():Boolean {
     return (flags & UPDATE_COMPLETE_PENDING) != 0;
   }
@@ -849,33 +812,28 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   /**
-   *  @private
    *  Holds the last recorded value of the width property.
    *  Used in dispatching a ResizeEvent.
    */
   private var oldWidth:Number = 0;
 
   /**
-   *  @private
    *  Holds the last recorded value of the height property.
    *  Used in dispatching a ResizeEvent.
    */
   private var oldHeight:Number = 0;
 
   /**
-   *  @private
    *  Holds the last recorded value of the minWidth property.
    */
   private var oldMinWidth:Number;
 
   /**
-   *  @private
    *  Holds the last recorded value of the minHeight property.
    */
   private var oldMinHeight:Number;
 
   /**
-   *  @private
    *  Holds the last recorded value of the explicitWidth property.
    */
   private var oldExplicitWidth:Number;
@@ -894,42 +852,25 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   mx_internal var _layoutFeatures:AdvancedLayoutFeatures;
 
   /**
-   * @private
-   *
    * storage for the modified Transform object that can dispatch change events correctly.
    */
   private var _transform:flash.geom.Transform;
 
-  //--------------------------------------------------------------------------
-  //
-  //  Variables: Effects
-  //
-  //--------------------------------------------------------------------------
-
   /**
-   *  @private
    *  Sprite used to display an overlay.
    */
   mx_internal var effectOverlay:UIComponent;
 
   /**
-   *  @private
    *  Color used for overlay.
    */
   mx_internal var effectOverlayColor:uint;
 
   /**
-   *  @private
    *  Counter to keep track of the number of current users
    *  of the overlay.
    */
   mx_internal var effectOverlayReferenceCount:int = 0;
-
-  //--------------------------------------------------------------------------
-  //
-  //  Variables: Other
-  //
-  //--------------------------------------------------------------------------
 
   private var _usingBridge:int = -1;
 
@@ -937,29 +878,27 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @private
    */
   private function get usingBridge():Boolean {
-    if (_usingBridge == 0) {
+    if (_usingBridge == 0 || _systemManager == null) {
       return false;
     }
-    if (_usingBridge == 1) {
+    else if (_usingBridge == 1) {
       return true;
-    }
-
-    if (!_systemManager) {
-      return false;
     }
 
     // no types so no dependencies
     var mp:Object = _systemManager.getImplementation("mx.managers.IMarshallPlanSystemManager");
-    if (!mp) {
+    if (mp == null) {
       _usingBridge = 0;
       return false;
     }
-    if (mp.useSWFBridge()) {
+    else if (mp.useSWFBridge()) {
       _usingBridge = 1;
       return true;
     }
-    _usingBridge = 0;
-    return false;
+    else {
+      _usingBridge = 0;
+      return false;
+    }
   }
 
   private var _owner:DisplayObjectContainer;
@@ -1032,14 +971,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   [Bindable("zChanged")]
   [Inspectable(category="General")]
 
-  /**
-   *  @inheritDoc
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 3
-   */
   override public function get z():Number {
     return (_layoutFeatures == null) ? super.z : _layoutFeatures.layoutZ;
   }
@@ -1219,15 +1150,12 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return (_layoutFeatures == null) ? super.rotation : _layoutFeatures.layoutRotationZ;
   }
 
-  /**
-   * @private
-   */
   override public function set rotation(value:Number):void {
     if (rotation == value) {
       return;
     }
 
-    _hasComplexLayoutMatrix = true;
+    flags |= COMPLEX_LAYOUT_MATRIX;
     if (_layoutFeatures == null) {
       // clamp the rotation value between -180 and 180.  This is what
       // the Flash player does and what we mimic in CompoundTransform;
@@ -1257,9 +1185,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return rotation;
   }
 
-  /**
-   *  @private
-   */
   override public function set rotationZ(value:Number):void {
     rotation = value;
   }
@@ -1321,9 +1246,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return (_layoutFeatures == null) ? super.rotationY : _layoutFeatures.layoutRotationY;
   }
 
-  /**
-   *  @private
-   */
   override public function set rotationY(value:Number):void {
     if (rotationY == value) {
       return;
@@ -1343,10 +1265,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       validateMatrix();
     }
   }
-
-  //----------------------------------
-  //  y
-  //----------------------------------
 
   [Bindable("yChanged")]
   [Inspectable(category="General")]
@@ -1370,13 +1288,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @playerversion Flash 9
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
-   */ override public function get y():Number {
+   */
+  override public function get y():Number {
     return (_layoutFeatures == null) ? super.y : _layoutFeatures.layoutY;
   }
 
-  /**
-   *  @private
-   */
   override public function set y(value:Number):void {
     if (y == value) {
       return;
@@ -1400,44 +1316,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  width
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the width property.
-   */
   mx_internal var _width:Number;
 
   [Bindable("widthChanged")]
   [Inspectable(category="General")]
   [PercentProxy("percentWidth")]
-
-  /**
-   *  Number that specifies the width of the component, in pixels,
-   *  in the parent's coordinates.
-   *  The default value is 0, but this property contains the actual component
-   *  width after Flex completes sizing the components in your application.
-   *
-   *  <p>Note: You can specify a percentage value in the MXML
-   *  <code>width</code> attribute, such as <code>width="100%"</code>,
-   *  but you cannot use a percentage value in the <code>width</code>
-   *  property in ActionScript.
-   *  Use the <code>percentWidth</code> property instead.</p>
-   *
-   *  <p>Setting this property causes a <code>resize</code> event to
-   *  be dispatched.
-   *  See the <code>resize</code> event for details on when
-   *  this event is dispatched.</p>
-   *
-   *  @see #percentWidth
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   override public function get width():Number {
     return _width;
   }
@@ -1470,14 +1353,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  height
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the height property.
-   */
   mx_internal var _height:Number;
 
   [Bindable("heightChanged")]
@@ -1536,9 +1411,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  scaleX
-  //---------------------------------
   [Bindable("scaleXChanged")]
   [Inspectable(category="Size", defaultValue="1.0")]
 
@@ -1573,7 +1445,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       return;
     }
 
-    _hasComplexLayoutMatrix = true;
+    flags |= COMPLEX_LAYOUT_MATRIX;
 
     // trace("set scaleX:" + this + "value = " + value);
     if (_layoutFeatures == null) {
@@ -1593,10 +1465,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     dispatchEvent(new Event("scaleXChanged"));
   }
-
-  //----------------------------------
-  //  scaleY
-  //----------------------------------
 
   [Bindable("scaleYChanged")]
   [Inspectable(category="Size", defaultValue="1.0")]
@@ -1631,7 +1499,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       return;
     }
 
-    _hasComplexLayoutMatrix = true;
+   flags |= COMPLEX_LAYOUT_MATRIX;
 
     if (_layoutFeatures == null) {
       super.scaleY = value;
@@ -1650,9 +1518,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new Event("scaleYChanged"));
   }
 
-  //----------------------------------
-  //  scaleZ
-  //----------------------------------
 
   [Bindable("scaleZChanged")]
   [Inspectable(category="Size", defaultValue="1.0")]
@@ -1694,7 +1559,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       initAdvancedLayoutFeatures();
     }
 
-    _hasComplexLayoutMatrix = true;
+    flags |= COMPLEX_LAYOUT_MATRIX;
     _layoutFeatures.layoutScaleZ = value;
     invalidateTransform();
     invalidateProperties();
@@ -1745,39 +1610,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     super.scaleY = value;
   }
 
-  //----------------------------------
-  //  visible
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the visible property.
-   */
   private var _visible:Boolean = true;
 
   [Bindable("hide")]
   [Bindable("show")]
   [Inspectable(category="General", defaultValue="true")]
-
-  /**
-   *  Whether or not the display object is visible.
-   *  Display objects that are not visible are disabled.
-   *  For example, if <code>visible=false</code> for an InteractiveObject instance,
-   *  it cannot be clicked.
-   *
-   *  <p>When setting to <code>true</code>, the object dispatches
-   *  a <code>show</code> event.
-   *  When setting to <code>false</code>, the object dispatches
-   *  a <code>hide</code> event.
-   *  In either case the children of the object does not emit a
-   *  <code>show</code> or <code>hide</code> event unless the object
-   *  has specifically written an implementation to do so.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   override public function get visible():Boolean {
     return _visible;
   }
@@ -1786,24 +1623,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     setVisible(value);
   }
 
-  /**
-   *  Called when the <code>visible</code> property changes.
-   *  Set the <code>visible</code> property to show or hide
-   *  a component instead of calling this method directly.
-   *
-   *  @param value The new value of the <code>visible</code> property.
-   *  Specify <code>true</code> to show the component, and <code>false</code> to hide it.
-   *
-   *  @param noEvent If <code>true</code>, do not dispatch an event.
-   *  If <code>false</code>, dispatch a <code>show</code> event when
-   *  the component becomes visible, and a <code>hide</code> event when
-   *  the component becomes invisible.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function setVisible(value:Boolean, noEvent:Boolean = false):void {
     _visible = value;
 
@@ -1856,10 +1675,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  doubleClickEnabled
-  //----------------------------------
-
   [Inspectable(enumeration="true,false", defaultValue="true")]
 
   /**
@@ -1882,7 +1697,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   /**
-   *  @private
    *  Propagate to children.
    */
   override public function set doubleClickEnabled(value:Boolean):void {
@@ -1909,9 +1723,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     //dispatchEvent(new Event("enabledChanged"));
   }
 
-  /**
-   *  Storage for the filters property.
-   */
   private var _filters:Array;
 
   override public function get filters():Array {
@@ -1955,10 +1766,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     super.filters = clonedFilters;
   }
 
-  //----------------------------------
-  //  layer
-  //----------------------------------
-
   public function get designLayer():DesignLayer {
     return null;
   }
@@ -1966,18 +1773,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   public function set designLayer(value:DesignLayer):void {
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: Display
-  //
-  //--------------------------------------------------------------------------
-
-  //----------------------------------
-  //  $alpha
-  //----------------------------------
-
   /**
-   *  @private
    *  This property allows access to the Player's native implementation
    *  of the 'alpha' property, which can be useful since components
    *  can override 'alpha' and thereby hide the native implementation.
@@ -1992,9 +1788,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     super.alpha = value;
   }
 
-  //----------------------------------
-  //  $blendMode
-  //----------------------------------
 
   /**
    *  @private
@@ -2008,27 +1801,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.blendMode;
   }
 
-  /**
-   *  @private
-   */
   mx_internal final function set $blendMode(value:String):void {
     super.blendMode = value;
   }
 
-  //----------------------------------
-  //  $blendShader
-  //----------------------------------
-
-  /**
-   *  @private
-   */
   mx_internal final function set $blendShader(value:Shader):void {
     super.blendShader = value;
   }
-
-  //----------------------------------
-  //  $parent
-  //----------------------------------
 
   /**
    *  @private
@@ -2042,10 +1821,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.parent;
   }
 
-  //----------------------------------
-  //  $x
-  //----------------------------------
-
   /**
    *  @private
    *  This property allows access to the Player's native implementation
@@ -2058,16 +1833,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.x;
   }
 
-  /**
-   *  @private
-   */
   mx_internal final function set $x(value:Number):void {
     super.x = value;
   }
-
-  //----------------------------------
-  //  $y
-  //----------------------------------
 
   /**
    *  @private
@@ -2088,10 +1856,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     super.y = value;
   }
 
-  //----------------------------------
-  //  $width
-  //----------------------------------
-
   /**
    *  @private
    *  This property allows access to the Player's native implementation
@@ -2104,9 +1868,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.width;
   }
 
-  /**
-   *  @private
-   */
   mx_internal final function set $width(value:Number):void {
     super.width = value;
   }
@@ -2127,16 +1888,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.height;
   }
 
-  /**
-   *  @private
-   */
   mx_internal final function set $height(value:Number):void {
     super.height = value;
   }
-
-  //----------------------------------
-  //  $visible
-  //----------------------------------
 
   /**
    *  @private
@@ -2150,56 +1904,20 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.visible;
   }
 
-  /**
-   *  @private
-   */
   mx_internal final function set $visible(value:Boolean):void {
     super.visible = value;
   }
 
-  //----------------------------------
-  //  tweeningProperties
-  //----------------------------------
-
-  /**
-   *  @private
-   */
   private var _tweeningProperties:Array;
 
   [Inspectable(environment="none")]
-
-  /**
-   *  Array of properties that are currently being tweened on this object.
-   *
-   *  <p>Used to alert the EffectManager that certain properties of this object
-   *  are being tweened, so that the EffectManger doesn't attempt to animate
-   *  the same properties.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get tweeningProperties():Array {
     return _tweeningProperties;
   }
 
-  /**
-   *  @private
-   */
   public function set tweeningProperties(value:Array):void {
     _tweeningProperties = value;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: Manager access
-  //
-  //--------------------------------------------------------------------------
-
-  //----------------------------------
-  //  cursorManager
-  //----------------------------------
 
   /**
    *  Gets the CursorManager that controls the cursor for this component
@@ -2226,14 +1944,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return CursorManager.getInstance();
   }
 
-  //----------------------------------
-  //  focusManager
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the focusManager property.
-   */
   private var _focusManager:IFocusManager;
 
   [Inspectable(environment="none")]
@@ -2269,7 +1979,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   /**
-   *  @private
    *  IFocusManagerContainers have this property assigned by the framework
    */
   public function set focusManager(value:IFocusManager):void {
@@ -2277,13 +1986,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new FlexEvent(FlexEvent.ADD_FOCUS_MANAGER));
   }
 
-  //----------------------------------
-  //  systemManager
-  //----------------------------------
-
   /**
-   *  @private
-   *  Storage for the systemManager property.
    *  Set by the SystemManager so that each UIComponent
    *  has a references to its SystemManager
    */
@@ -2296,16 +1999,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    */
   private var _systemManagerDirty:Boolean = false;
 
-  [Inspectable(environment="none")]
-
-  /**
-   *  Returns the SystemManager object used by this component.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get systemManager():ISystemManager {
     if (!_systemManager || _systemManagerDirty) {
       var r:DisplayObject = root;
@@ -2373,9 +2066,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return sm;
   }
 
-  /**
-   *  @private
-   */
   protected function invalidateSystemManager():void {
     var n:int = numChildren;
     for (var i:int = 0; i < n; i++) {
@@ -2415,56 +2105,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: MXML
-  //
-  //--------------------------------------------------------------------------
-
-  //----------------------------------
-  //  document
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the document property.
-   *  This variable is initialized in the init() method.
-   *  A document object (i.e., an Object at the top of the hierarchy
-   *  of a Flex application, MXML component, or AS component) has an
-   *  autogenerated override of initalize() which sets its _document to
-   *  'this', so that its 'document' property is a reference to itself.
-   *  Other UIComponents set their _document to their parent's _document,
-   *  so that their 'document' property refers to the document object
-   *  that they are inside.
-   */
   mx_internal var _document:Object;
-
-  [Inspectable(environment="none")]
-
-  /**
-   *  A reference to the document object associated with this UIComponent.
-   *  A document object is an Object at the top of the hierarchy of a
-   *  Flex application, MXML component, or AS component.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get document():Object {
     return _document;
   }
 
-  /**
-   *  A reference to the document object associated with this UIComponent.
-   *  A document object is an Object at the top of the hierarchy of a
-   *  Flex application, MXML component, or AS component.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function set document(value:Object):void {
     var n:int = numChildren;
     for (var i:int = 0; i < n; i++) {
@@ -2506,10 +2151,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _id = value;
   }
 
-  //----------------------------------
-  //  isDocument
-  //----------------------------------
-
   /**
    *  Contains <code>true</code> if this UIComponent instance is a document object.
    *  That means it is at the top of the hierarchy of a Flex
@@ -2523,10 +2164,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   public function get isDocument():Boolean {
     return document == this;
   }
-
-  //----------------------------------
-  //  parentDocument
-  //----------------------------------
 
   [Bindable("initialize")]
 
@@ -2569,38 +2206,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  screen
-  //----------------------------------
-
-  /**
-   *  Returns an object that contains the size and position of the base
-   *  drawing surface for this object.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function get screen():Rectangle {
-    var sm:ISystemManager = systemManager;
-    return sm ? sm.screen : null;
-  }
-
-
   private var _focusPane:Sprite;
-
-  [Inspectable(environment="none")]
-
-  /**
-   *  The focus pane associated with this object.
-   *  An object has a focus pane when one of its children has focus.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get focusPane():Sprite {
     return _focusPane;
   }
@@ -2623,13 +2229,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  focusEnabled
-  //----------------------------------
-
-  /**
-   *  Storage for the focusEnabled property.
-   */
   private var _focusEnabled:Boolean = true;
 
   [Inspectable(defaultValue="true")]
@@ -2774,9 +2373,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _tabFocusEnabled;
   }
 
-  /**
-   *  @private
-   */
   public function set tabFocusEnabled(value:Boolean):void {
     if (value != _tabFocusEnabled) {
       _tabFocusEnabled = value;
@@ -2784,22 +2380,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  Storage for the measuredMinWidth property.
-   */
   private var _measuredMinWidth:Number = 0;
-
-  [Inspectable(environment="none")]
-
-  /**
-   *  The default minimum width of the component, in pixels.
-   *  This value is set by the <code>measure()</code> method.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get measuredMinWidth():Number {
     return _measuredMinWidth;
   }
@@ -2808,70 +2389,28 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _measuredMinWidth = value;
   }
 
-  /**
-   *  Storage for the measuredMinHeight property.
-   */
   private var _measuredMinHeight:Number = 0;
 
-  [Inspectable(environment="none")]
-
-  /**
-   *  The default minimum height of the component, in pixels.
-   *  This value is set by the <code>measure()</code> method.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get measuredMinHeight():Number {
     return _measuredMinHeight;
   }
 
-  /**
-   *  @private
-   */
   public function set measuredMinHeight(value:Number):void {
     _measuredMinHeight = value;
   }
 
   private var _measuredWidth:Number = 0;
 
-  [Inspectable(environment="none")]
-
-  /**
-   *  The default width of the component, in pixels.
-   *  This value is set by the <code>measure()</code> method.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get measuredWidth():Number {
     return _measuredWidth;
   }
 
-  /**
-   *  @private
-   */
   public function set measuredWidth(value:Number):void {
     _measuredWidth = value;
   }
 
   private var _measuredHeight:Number = 0;
 
-  [Inspectable(environment="none")]
-
-  /**
-   *  The default height of the component, in pixels.
-   *  This value is set by the <code>measure()</code> method.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get measuredHeight():Number {
     return _measuredHeight;
   }
@@ -2880,128 +2419,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _measuredHeight = value;
   }
 
-  [Bindable("resize")]
-  [Inspectable(environment="none")]
-
-  /**
-   *  Specifies the width of a component as a percentage
-   *  of its parent's size. Allowed values are 0-100. The default value is NaN.
-   *  Setting the <code>width</code> or <code>explicitWidth</code> properties
-   *  resets this property to NaN.
-   *
-   *  <p>This property returns a numeric value only if the property was
-   *  previously set; it does not reflect the exact size of the component
-   *  in percent.</p>
-   *
-   *  <p>This property is always set to NaN for the UITextField control.</p>
-   *
-   *  <p>When used with Spark layouts, this property is used to calculate the
-   *  width of the component's bounds after scaling and rotation. For example
-   *  if the component is rotated at 90 degrees, then specifying
-   *  <code>percentWidth</code> will affect the component's height.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function get percentWidth():Number {
-    return _layoutMetrics.percentWidth;
-  }
-
-  /**
-   *  @private
-   */
-  public function set percentWidth(value:Number):void {
-    if (_layoutMetrics.percentWidth == value) {
-      return;
-    }
-
-    if (!isNaN(value)) {
-      _layoutMetrics.width = NaN;
-    }
-
-    _layoutMetrics.percentWidth = value;
-
-    invalidateParentSizeAndDisplayList();
-  }
-
-  [Bindable("resize")]
-  [Inspectable(environment="none")]
-
-  /**
-   *  Specifies the height of a component as a percentage
-   *  of its parent's size. Allowed values are 0-100. The default value is NaN.
-   *  Setting the <code>height</code> or <code>explicitHeight</code> properties
-   *  resets this property to NaN.
-   *
-   *  <p>This property returns a numeric value only if the property was
-   *  previously set; it does not reflect the exact size of the component
-   *  in percent.</p>
-   *
-   *  <p>This property is always set to NaN for the UITextField control.</p>
-   *
-   *  <p>When used with Spark layouts, this property is used to calculate the
-   *  height of the component's bounds after scaling and rotation. For example
-   *  if the component is rotated at 90 degrees, then specifying
-   *  <code>percentHeight</code> will affect the component's width.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function get percentHeight():Number {
-    return _layoutMetrics.percentHeight;
-  }
-
-  public function set percentHeight(value:Number):void {
-    if (_layoutMetrics.percentHeight == value) {
-      return;
-    }
-
-    if (!isNaN(value)) {
-      _layoutMetrics.height = NaN;
-    }
-
-    _layoutMetrics.percentHeight = value;
-
-    invalidateParentSizeAndDisplayList();
-  }
-
   [Bindable("explicitMinWidthChanged")]
   [Inspectable(category="Size", defaultValue="0")]
 
-  /**
-   *  The minimum recommended width of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels. The default value depends on
-   *  the component's implementation.
-   *
-   *  <p>If the application developer sets the value of minWidth,
-   *  the new value is stored in explicitMinWidth. The default value of minWidth
-   *  does not change. As a result, at layout time, if
-   *  minWidth was explicitly set by the application developer, then the value of
-   *  explicitMinWidth is used for the component's minimum recommended width.
-   *  If minWidth is not set explicitly by the application developer, then the value of
-   *  measuredMinWidth is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>minWidth</code> with respect to its parent
-   *  is affected by the <code>scaleX</code> property.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get minWidth():Number {
+  public function get minWidth():Number {
     if (!isNaN(explicitMinWidth)) {
       return explicitMinWidth;
     }
@@ -3020,36 +2441,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   [Bindable("explicitMinHeightChanged")]
   [Inspectable(category="Size", defaultValue="0")]
 
-  /**
-   *  The minimum recommended height of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels. The default value depends on
-   *  the component's implementation.
-   *
-   *  <p>If the application developer sets the value of minHeight,
-   *  the new value is stored in explicitMinHeight. The default value of minHeight
-   *  does not change. As a result, at layout time, if
-   *  minHeight was explicitly set by the application developer, then the value of
-   *  explicitMinHeight is used for the component's minimum recommended height.
-   *  If minHeight is not set explicitly by the application developer, then the value of
-   *  measuredMinHeight is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>minHeight</code> with respect to its parent
-   *  is affected by the <code>scaleY</code> property.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get minHeight():Number {
+  public function get minHeight():Number {
     if (!isNaN(explicitMinHeight)) {
       return explicitMinHeight;
     }
@@ -3068,43 +2460,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   [Bindable("explicitMaxWidthChanged")]
   [Inspectable(category="Size", defaultValue="10000")]
 
-  /**
-   *  The maximum recommended width of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels. The default value of this property is
-   *  set by the component developer.
-   *
-   *  <p>The component developer uses this property to set an upper limit on the
-   *  width of the component.</p>
-   *
-   *  <p>If the application developer overrides the default value of maxWidth,
-   *  the new value is stored in explicitMaxWidth. The default value of maxWidth
-   *  does not change. As a result, at layout time, if
-   *  maxWidth was explicitly set by the application developer, then the value of
-   *  explicitMaxWidth is used for the component's maximum recommended width.
-   *  If maxWidth is not set explicitly by the user, then the default value is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>maxWidth</code> with respect to its parent
-   *  is affected by the <code>scaleX</code> property.
-   *  Some components have no theoretical limit to their width.
-   *  In those cases their <code>maxWidth</code> is set to
-   *  <code>UIComponent.DEFAULT_MAX_WIDTH</code>.</p>
-   *
-   *  @default 10000
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get maxWidth():Number {
+  public function get maxWidth():Number {
     return !isNaN(explicitMaxWidth) ? explicitMaxWidth : DEFAULT_MAX_WIDTH;
   }
 
@@ -3116,51 +2472,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     explicitMaxWidth = value;
   }
 
-  //----------------------------------
-  //  maxHeight
-  //----------------------------------
-
   [Bindable("explicitMaxHeightChanged")]
   [Inspectable(category="Size", defaultValue="10000")]
 
-  /**
-   *  The maximum recommended height of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels. The default value of this property is
-   *  set by the component developer.
-   *
-   *  <p>The component developer uses this property to set an upper limit on the
-   *  height of the component.</p>
-   *
-   *  <p>If the application developer overrides the default value of maxHeight,
-   *  the new value is stored in explicitMaxHeight. The default value of maxHeight
-   *  does not change. As a result, at layout time, if
-   *  maxHeight was explicitly set by the application developer, then the value of
-   *  explicitMaxHeight is used for the component's maximum recommended height.
-   *  If maxHeight is not set explicitly by the user, then the default value is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>maxHeight</code> with respect to its parent
-   *  is affected by the <code>scaleY</code> property.
-   *  Some components have no theoretical limit to their height.
-   *  In those cases their <code>maxHeight</code> is set to
-   *  <code>UIComponent.DEFAULT_MAX_HEIGHT</code>.</p>
-   *
-   *  @default 10000
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get maxHeight():Number {
+  public function get maxHeight():Number {
     return !isNaN(explicitMaxHeight) ? explicitMaxHeight : DEFAULT_MAX_HEIGHT;
   }
 
@@ -3177,37 +2492,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   [Bindable("explicitMinWidthChanged")]
   [Inspectable(environment="none")]
 
-  /**
-   *  The minimum recommended width of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels.
-   *
-   *  <p>Application developers typically do not set the explicitMinWidth property. Instead, they
-   *  set the value of the minWidth property, which sets the explicitMinWidth property. The
-   *  value of minWidth does not change.</p>
-   *
-   *  <p>At layout time, if minWidth was explicitly set by the application developer, then
-   *  the value of explicitMinWidth is used. Otherwise, the value of measuredMinWidth
-   *  is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>minWidth</code> with respect to its parent
-   *  is affected by the <code>scaleX</code> property.</p>
-   *
-   *  @default NaN
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get explicitMinWidth():Number {
     return _explicitMinWidth;
   }
@@ -3235,43 +2519,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   [Bindable("explictMinHeightChanged")]
   [Inspectable(environment="none")]
 
-  /**
-   *  The minimum recommended height of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels.
-   *
-   *  <p>Application developers typically do not set the explicitMinHeight property. Instead, they
-   *  set the value of the minHeight property, which sets the explicitMinHeight property. The
-   *  value of minHeight does not change.</p>
-   *
-   *  <p>At layout time, if minHeight was explicitly set by the application developer, then
-   *  the value of explicitMinHeight is used. Otherwise, the value of measuredMinHeight
-   *  is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>minHeight</code> with respect to its parent
-   *  is affected by the <code>scaleY</code> property.</p>
-   *
-   *  @default NaN
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get explicitMinHeight():Number {
+  public function get explicitMinHeight():Number {
     return _explicitMinHeight;
   }
 
-  /**
-   *  @private
-   */
   public function set explicitMinHeight(value:Number):void {
     if (_explicitMinHeight == value) {
       return;
@@ -3287,59 +2538,15 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new Event("explicitMinHeightChanged"));
   }
 
-  //----------------------------------
-  //  explicitMaxWidth
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the maxWidth property.
-   */
   mx_internal var _explicitMaxWidth:Number;
 
   [Bindable("explicitMaxWidthChanged")]
   [Inspectable(environment="none")]
 
-  /**
-   *  The maximum recommended width of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels.
-   *
-   *  <p>Application developers typically do not set the explicitMaxWidth property. Instead, they
-   *  set the value of the maxWidth property, which sets the explicitMaxWidth property. The
-   *  value of maxWidth does not change.</p>
-   *
-   *  <p>At layout time, if maxWidth was explicitly set by the application developer, then
-   *  the value of explicitMaxWidth is used. Otherwise, the default value for maxWidth
-   *  is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>maxWidth</code> with respect to its parent
-   *  is affected by the <code>scaleX</code> property.
-   *  Some components have no theoretical limit to their width.
-   *  In those cases their <code>maxWidth</code> is set to
-   *  <code>UIComponent.DEFAULT_MAX_WIDTH</code>.</p>
-   *
-   *  @default NaN
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get explicitMaxWidth():Number {
+  public function get explicitMaxWidth():Number {
     return _explicitMaxWidth;
   }
 
-  /**
-   *  @private
-   */
   public function set explicitMaxWidth(value:Number):void {
     if (_explicitMaxWidth == value) {
       return;
@@ -3355,59 +2562,15 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new Event("explicitMaxWidthChanged"));
   }
 
-  //----------------------------------
-  //  explicitMaxHeight
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the maxHeight property.
-   */
   mx_internal var _explicitMaxHeight:Number;
 
   [Bindable("explicitMaxHeightChanged")]
   [Inspectable(environment="none")]
 
-  /**
-   *  The maximum recommended height of the component to be considered
-   *  by the parent during layout. This value is in the
-   *  component's coordinates, in pixels.
-   *
-   *  <p>Application developers typically do not set the explicitMaxHeight property. Instead, they
-   *  set the value of the maxHeight property, which sets the explicitMaxHeight property. The
-   *  value of maxHeight does not change.</p>
-   *
-   *  <p>At layout time, if maxHeight was explicitly set by the application developer, then
-   *  the value of explicitMaxHeight is used. Otherwise, the default value for maxHeight
-   *  is used.</p>
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>maxHeight</code> with respect to its parent
-   *  is affected by the <code>scaleY</code> property.
-   *  Some components have no theoretical limit to their height.
-   *  In those cases their <code>maxHeight</code> is set to
-   *  <code>UIComponent.DEFAULT_MAX_HEIGHT</code>.</p>
-   *
-   *  @default NaN
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */ public function get explicitMaxHeight():Number {
+  public function get explicitMaxHeight():Number {
     return _explicitMaxHeight;
   }
 
-  /**
-   *  @private
-   */
   public function set explicitMaxHeight(value:Number):void {
     if (_explicitMaxHeight == value) {
       return;
@@ -3423,118 +2586,87 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new Event("explicitMaxHeightChanged"));
   }
 
-  //----------------------------------
-  //  explicitWidth
-  //----------------------------------
-
-  [Inspectable(environment="none")]
-
-  /**
-   *  Number that specifies the explicit width of the component,
-   *  in pixels, in the component's coordinates.
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>explicitWidth</code> with respect to its parent
-   *  is affected by the <code>scaleX</code> property.</p>
-   *  <p>Setting the <code>width</code> property also sets this property to
-   *  the specified width value.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get explicitWidth():Number {
-    return _layoutMetrics.width;
+    return _layoutMetrics.flags & LayoutMetrics.PERCENT_WIDTH ? NaN : _layoutMetrics.width;
   }
 
-  /**
-   *  @private
-   */
   public function set explicitWidth(value:Number):void {
-    if (_layoutMetrics.width == value) {
-      return;
+    if (_layoutMetrics.flags & LayoutMetrics.PERCENT_WIDTH) {
+      _layoutMetrics.flags ^= LayoutMetrics.PERCENT_WIDTH;
     }
-
-    if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
+    else if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
       _layoutMetrics = new LayoutMetrics();
     }
-    // width can be pixel or percent not both
-    else if (!isNaN(value)) {
-      _layoutMetrics.percentWidth = NaN;
+    else if (_layoutMetrics.width == value) {
+      return;
     }
 
     _layoutMetrics.width = value;
 
-    // We invalidate size because locking in width
-    // may change the measured height in flow-based components.
+    // We invalidate size because locking in width may change the measured height in flow-based components.
     invalidateSize();
     invalidateParentSizeAndDisplayList();
-
-    //dispatchEvent(new Event("explicitWidthChanged"));
   }
 
-  [Inspectable(environment="none")]
-  /**
-   *  Number that specifies the explicit height of the component,
-   *  in pixels, in the component's coordinates.
-   *
-   *  <p>This value is used by the container in calculating
-   *  the size and position of the component.
-   *  It is not used by the component itself in determining
-   *  its default size.
-   *  Thus this property may not have any effect if parented by
-   *  Container, or containers that don't factor in
-   *  this property.
-   *  Because the value is in component coordinates,
-   *  the true <code>explicitHeight</code> with respect to its parent
-   *  is affected by the <code>scaleY</code> property.</p>
-   *  <p>Setting the <code>height</code> property also sets this property to
-   *  the specified height value.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get explicitHeight():Number {
-    return _layoutMetrics.height;
+    return _layoutMetrics.flags & LayoutMetrics.PERCENT_HEIGHT ? NaN : _layoutMetrics.height;
   }
 
   public function set explicitHeight(value:Number):void {
-    if (_layoutMetrics.height == value) {
-      return;
+    if (_layoutMetrics.flags & LayoutMetrics.PERCENT_HEIGHT) {
+      _layoutMetrics.flags ^= LayoutMetrics.PERCENT_HEIGHT;
     }
-
-    if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
+    else if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
       _layoutMetrics = new LayoutMetrics();
     }
-    // height can be pixel or percent, not both
-    else if (!isNaN(value)) {
-      _layoutMetrics.percentHeight = NaN;
+    else if (_layoutMetrics.height == value) {
+      return;
     }
 
     _layoutMetrics.height = value;
 
-    // We invalidate size because locking in height
-    // may change the measured width in flow-based components.
+    // We invalidate size because locking in height may change the measured width in flow-based components.
     invalidateSize();
     invalidateParentSizeAndDisplayList();
-
-    //		dispatchEvent(new Event("explicitHeightChanged"));
   }
 
-  /**
-   * when false, the transform on this component consists only of translation.  Otherwise, it may be arbitrarily complex.
-   */
-  private var _hasComplexLayoutMatrix:Boolean = false;
+  public function get percentWidth():Number {
+    return _layoutMetrics.flags & LayoutMetrics.PERCENT_WIDTH ? _layoutMetrics.width : NaN;
+  }
+
+  public function set percentWidth(value:Number):void {
+    if ((_layoutMetrics.flags & LayoutMetrics.PERCENT_WIDTH) == 0) {
+      if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
+        _layoutMetrics = new LayoutMetrics();
+      }
+      _layoutMetrics.flags |= LayoutMetrics.PERCENT_WIDTH;
+    }
+    else if (_layoutMetrics.width == value) {
+      return;
+    }
+
+    _layoutMetrics.width = value;
+    invalidateParentSizeAndDisplayList();
+  }
+
+  public function get percentHeight():Number {
+    return _layoutMetrics.flags & LayoutMetrics.PERCENT_HEIGHT ? _layoutMetrics.height : NaN;
+  }
+
+  public function set percentHeight(value:Number):void {
+    if ((_layoutMetrics.flags & LayoutMetrics.PERCENT_HEIGHT) == 0) {
+      if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
+        _layoutMetrics = new LayoutMetrics();
+      }
+      _layoutMetrics.flags |= LayoutMetrics.PERCENT_HEIGHT;
+    }
+    else if (_layoutMetrics.height == value) {
+      return;
+    }
+
+    _layoutMetrics.height = value;
+    invalidateParentSizeAndDisplayList();
+  }
 
   /**
    *  Returns <code>true</code> if the UIComponent has any non-translation (x,y) transform properties.
@@ -3549,21 +2681,22 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     // because sometimes when those are set, we don't allocate a layoutFeatures object.
 
     // if the flag isn't set, we def. don't have a complex layout matrix.
-    // if the flag is set and we don't have an AdvancedLayoutFeatures object,
-    // then we'll check the transform and see if it's actually transformed.
-    // otherwise we'll check the layoutMatrix on the AdvancedLayoutFeatures object,
-    // to see if we're actually transformed.
-    if (!_hasComplexLayoutMatrix) {
+    // if the flag is set and we don't have an AdvancedLayoutFeatures object, then we'll check the transform and see if it's actually transformed.
+    // otherwise we'll check the layoutMatrix on the AdvancedLayoutFeatures object, to see if we're actually transformed.
+    if ((flags & COMPLEX_LAYOUT_MATRIX) == 0) {
       return false;
     }
-    else {
-      if (_layoutFeatures == null) {
-        _hasComplexLayoutMatrix = !MatrixUtil.isDeltaIdentity(super.transform.matrix);
-        return _hasComplexLayoutMatrix;
+    else if (_layoutFeatures == null) {
+      if (MatrixUtil.isDeltaIdentity(super.transform.matrix)) {
+        return false;
       }
       else {
-        return !MatrixUtil.isDeltaIdentity(_layoutFeatures.layoutMatrix);
+        flags |= COMPLEX_LAYOUT_MATRIX;
+        return true;
       }
+    }
+    else {
+      return !MatrixUtil.isDeltaIdentity(_layoutFeatures.layoutMatrix);
     }
   }
 
@@ -3585,7 +2718,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  public function get includeInLayout():Boolean {
+  public final function get includeInLayout():Boolean {
     return (flags & EXCLUDE_FROM_LAYOUT) == 0;
   }
 
@@ -3701,14 +2834,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  //----------------------------------
-  //  toolTip
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the toolTip property.
-   */
   mx_internal var _toolTip:String;
 
   [Bindable("toolTipChanged")]
@@ -3728,9 +2853,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _toolTip;
   }
 
-  /**
-   *  @private
-   */
   public function set toolTip(value:String):void {
     var oldValue:String = _toolTip;
     _toolTip = value;
@@ -3740,136 +2862,25 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     dispatchEvent(new Event("toolTipChanged"));
   }
 
-  //----------------------------------
-  //  uid
-  //----------------------------------
-
-  /**
-   *  @private
-   */
-  private var _uid:String;
-
-  /**
-   *  A unique identifier for the object.
-   *  Flex data-driven controls, including all controls that are
-   *  subclasses of List class, use a UID to track data provider items.
-   *
-   *  <p>Flex can automatically create and manage UIDs.
-   *  However, there are circumstances when you must supply your own
-   *  <code>uid</code> property by implementing the IUID interface,
-   *  or when supplying your own <code>uid</code> property improves processing efficiency.
-   *  UIDs do not need to be universally unique for most uses in Flex.
-   *  One exception is for messages sent by data services.</p>
-   *
-   *  @see IUID
-   *  @see mx.utils.UIDUtil
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function get uid():String {
-    if (!_uid) {
-      _uid = toString();
-    }
-
-    return _uid;
-  }
-
-  /**
-   *  @private
-   */
-  public function set uid(uid:String):void {
-    this._uid = uid;
-  }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: Popups
-  //
-  //--------------------------------------------------------------------------
-
-  //----------------------------------
-  //  isPopUp
-  //----------------------------------
-
-  /**
-   *  @private
-   */
-  private var _isPopUp:Boolean;
-
-  [Inspectable(environment="none")]
-
-  /**
-   *  Set to <code>true</code> by the PopUpManager to indicate
-   *  that component has been popped up.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get isPopUp():Boolean {
-    return _isPopUp;
+    return false;
   }
 
   public function set isPopUp(value:Boolean):void {
-    _isPopUp = value;
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: Required to support automated testing
-  //
-  //--------------------------------------------------------------------------
-
-  //----------------------------------
-  //  automationDelegate
-  //----------------------------------
-
-  /**
-   *  @private
-   */
   private var _automationDelegate:IAutomationObject;
 
-  /**
-   *  The delegate object that handles the automation-related functionality.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get automationDelegate():Object {
     return _automationDelegate;
   }
 
-  /**
-   *  @private
-   */
   public function set automationDelegate(value:Object):void {
     _automationDelegate = value as IAutomationObject;
   }
 
-  //----------------------------------
-  //  automationName
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the <code>automationName</code> property.
-   */
   private var _automationName:String = null;
 
-  /**
-   *  @inheritDoc
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get automationName():String {
     if (_automationName) {
       return _automationName;
@@ -3881,21 +2892,10 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return "";
   }
 
-  /**
-   *  @private
-   */
   public function set automationName(value:String):void {
     _automationName = value;
   }
 
-  /**
-   *  @copy mx.automation.IAutomationObject#automationValue
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get automationValue():Array {
     if (automationDelegate) {
       return automationDelegate.automationValue;
@@ -3904,40 +2904,15 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return [];
   }
 
-  //----------------------------------
-  //  showInAutomationHierarchy
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the <code>showInAutomationHierarchy</code> property.
-   */
   private var _showInAutomationHierarchy:Boolean = true;
 
-  /**
-   *  @inheritDoc
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get showInAutomationHierarchy():Boolean {
     return _showInAutomationHierarchy;
   }
 
-  /**
-   *  @private
-   */
   public function set showInAutomationHierarchy(value:Boolean):void {
     _showInAutomationHierarchy = value;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Overridden methods
-  //
-  //--------------------------------------------------------------------------
 
   override public function addChild(child:DisplayObject):DisplayObject {
     var formerParent:DisplayObjectContainer = child.parent;
@@ -4289,7 +3264,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  public function invalidateProperties():void {
+  public final function invalidateProperties():void {
     if ((flags & INVALID_PROPERTIES) == 0) {
       flags |= INVALID_PROPERTIES;
 
@@ -4461,23 +3436,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return true; // fucked adobe
   }
 
-  /**
-   *  Validate and update the properties and layout of this object
-   *  and redraw it, if necessary.
-   *
-   *  Processing properties that require substantial computation are normally
-   *  not processed until the script finishes executing.
-   *  For example setting the <code>width</code> property is delayed, because it can
-   *  require recalculating the widths of the objects children or its parent.
-   *  Delaying the processing prevents it from being repeated
-   *  multiple times if the script sets the <code>width</code> property more than once.
-   *  This method lets you manually override this behavior.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function validateNow():void {
     UIComponentGlobals.layoutManager.validateClient(this);
   }
@@ -4535,17 +3493,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     // trace("<<calllater " + this)
   }
 
-  /**
-   *  Used by layout logic to validate the properties of a component
-   *  by calling the <code>commitProperties()</code> method.
-   *  In general, subclassers should
-   *  override the <code>commitProperties()</code> method and not this method.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function validateProperties():void {
     if (flags & INVALID_PROPERTIES) {
       commitProperties();
@@ -4600,45 +3547,36 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
         switch (_blendMode) {
           case "color":
-          {
             $blendShader = new ColorShader();
             break;
-          }
+
           case "colordodge":
-          {
             $blendShader = new ColorDodgeShader();
             break;
-          }
+
           case "colorburn":
-          {
             $blendShader = new ColorBurnShader();
             break;
-          }
+
           case "exclusion":
-          {
             $blendShader = new ExclusionShader();
             break;
-          }
+
           case "hue":
-          {
             $blendShader = new HueShader();
             break;
-          }
+
           case "luminosity":
-          {
             $blendShader = new LuminosityShader();
             break;
-          }
+
           case "saturation":
-          {
             $blendShader = new SaturationShader();
             break;
-          }
+
           case "softlight":
-          {
             $blendShader = new SoftLightShader();
             break;
-          }
         }
       }
     }
@@ -4815,43 +3753,13 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     measuredHeight = 0;
   }
 
-  /**
-   *  A convenience method for determining whether to use the
-   *  explicit or measured width
-   *
-   *  @return A Number which is explicitWidth if defined
-   *  or measuredWidth if not.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function getExplicitOrMeasuredWidth():Number {
     return !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
   }
 
-  /**
-   *  A convenience method for determining whether to use the
-   *  explicit or measured height
-   *
-   *  @return A Number which is explicitHeight if defined
-   *  or measuredHeight if not.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function getExplicitOrMeasuredHeight():Number {
     return !isNaN(_layoutMetrics.height) ? _layoutMetrics.height : measuredHeight;
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Methods: Drawing and Child Layout
-  //
-  //--------------------------------------------------------------------------
 
   protected function validateMatrix():void {
     if (_layoutFeatures != null && _layoutFeatures.updatePending) {
@@ -4940,7 +3848,17 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   public function set left(value:Object):void {
+    if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
+      _layoutMetrics = new LayoutMetrics();
+    }
+    else if (_layoutMetrics.left == value) {
+      return;
+    }
+
     _layoutMetrics.left = Number(value);
+    invalidateSize();
+    invalidateParentSizeAndDisplayList();
+    invalidateDisplayList();
   }
 
   public function get right():Object {
@@ -5016,29 +3934,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _layoutMetrics.baseline = Number(value);
   }
 
-  /**
-   *  Moves the component to a specified position within its parent.
-   *  Calling this method is exactly the same as
-   *  setting the component's <code>x</code> and <code>y</code> properties.
-   *
-   *  <p>If you are overriding the <code>updateDisplayList()</code> method
-   *  in a custom component, call the <code>move()</code> method
-   *  rather than setting the <code>x</code> and <code>y</code> properties.
-   *  The difference is that the <code>move()</code> method changes the location
-   *  of the component and then dispatches a <code>move</code> event when you
-   *  call the method, while setting the <code>x</code> and <code>y</code>
-   *  properties changes the location of the component and dispatches
-   *  the event on the next screen refresh.</p>
-   *
-   *  @param x Left position of the component within its parent.
-   *
-   *  @param y Top position of the component within its parent.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function move(x:Number, y:Number):void {
     var changed:Boolean = false;
 
@@ -5078,26 +3973,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  Sizes the object.
-   *  Unlike directly setting the <code>width</code> and <code>height</code>
-   *  properties, calling the <code>setActualSize()</code> method
-   *  does not set the <code>explictWidth</code> and
-   *  <code>explicitHeight</code> properties, so a future layout
-   *  calculation can result in the object returning to its previous size.
-   *  This method is used primarily by component developers implementing
-   *  the <code>updateDisplayList()</code> method, by Effects,
-   *  and by the LayoutManager.
-   *
-   *  @param w Width of the object.
-   *
-   *  @param h Height of the object.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function setActualSize(w:Number, h:Number):void {
     // trace("setActualSize: " + this + " width = " + w + " height = " + h);
 
@@ -5165,19 +4040,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return null;
   }
 
-  /**
-   *  Sets the focus to this component.
-   *  The component can in turn pass focus to a subcomponent.
-   *
-   *  <p><b>Note:</b> Only the TextInput and TextArea controls show a highlight
-   *  when this method sets the focus.
-   *  All controls show a highlight when the user tabs to the control.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function setFocus():void {
     var sm:ISystemManager = systemManager;
     if (sm && (sm.stage || usingBridge)) {
@@ -5250,14 +4112,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  @private
-   */
   mx_internal var _effectsStarted:Array = [];
-
-  /**
-   *  @private
-   */
   mx_internal var _affectedProperties:Object = {};
 
   /**
@@ -5549,19 +4404,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     filters = _filters;
   }
 
-  /**
-   *  Returns <code>true</code> if the chain of <code>owner</code> properties
-   *  points from <code>child</code> to this UIComponent.
-   *
-   *  @param child A UIComponent.
-   *
-   *  @return <code>true</code> if the child is parented or owned by this UIComponent.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function owns(child:DisplayObject):Boolean {
     if (contains(child)) {
       return true;
@@ -5690,7 +4532,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   protected function initAdvancedLayoutFeatures():void {
     var features:AdvancedLayoutFeatures = new AdvancedLayoutFeatures();
 
-    _hasComplexLayoutMatrix = true;
+    flags |= COMPLEX_LAYOUT_MATRIX;
 
     features.layoutScaleX = scaleX;
     features.layoutScaleY = scaleY;
@@ -5707,7 +4549,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   /**
-   *  @private
    *  Helper function to update the storage vairable _transform.
    *  Also updates the <code>target</code> property of the new and the old
    *  values.
@@ -5732,14 +4573,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return super.transform;
   }
 
-  /**
-   *  @private
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   override public function get transform():flash.geom.Transform {
     if (_transform == null) {
       setTransform(new mx.geom.Transform(this));
@@ -5747,9 +4580,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _transform;
   }
 
-  /**
-   *  @private
-   */
   override public function set transform(value:flash.geom.Transform):void {
     var m:Matrix = value.matrix;
     var m3:Matrix3D = value.matrix3D;
@@ -5796,9 +4626,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return (_layoutFeatures != null) ? _layoutFeatures.postLayoutTransformOffsets : null;
   }
 
-  /**
-   * @private
-   */
   public function set postLayoutTransformOffsets(value:TransformOffsets):void {
     // validateMatrix when switching between 2D/3D, works around player bug see sdk-23421
     var was3D:Boolean = is3D;
@@ -5843,7 +4670,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     // validateMatrix when switching between 2D/3D, works around player bug
     // see sdk-23421
     var was3D:Boolean = is3D;
-    _hasComplexLayoutMatrix = true;
+    flags |= COMPLEX_LAYOUT_MATRIX;
 
     if (_layoutFeatures == null) {
       // flash will make a copy of this on assignment.
@@ -6070,7 +4897,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   }
 
   public function get depth():Number {
-    return (_layoutFeatures == null) ? 0 : _layoutFeatures.depth;
+    return _layoutFeatures == null ? 0 : _layoutFeatures.depth;
   }
 
   public function set depth(value:Number):void {
@@ -6127,12 +4954,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
       invalidateTransform();
     }
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  ILayoutElement
-  //
-  //--------------------------------------------------------------------------
 
   public function getPreferredBoundsWidth(postLayoutTransform:Boolean = true):Number {
     return LayoutElementUIComponentUtils.getPreferredBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
@@ -6237,41 +5058,23 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return _layoutFeatures.layoutMatrix3D.clone();
   }
 
-  /**
-   *  @private
-   */
   protected function nonDeltaLayoutMatrix():Matrix {
     if (!hasComplexLayoutMatrix) {
       return null;
     }
-    if (_layoutFeatures != null) {
-      return _layoutFeatures.layoutMatrix;
-    }
-    else {
-      return super.transform.matrix;
-    }
+    return _layoutFeatures != null ? _layoutFeatures.layoutMatrix : super.transform.matrix;
   }
 }
 }
 
-class MethodQueueElement {
+final class MethodQueueElement {
    /**
    *  A reference to the method to be called.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
    */
   private var method:Function;
 
   /**
    *  The arguments to be passed to the method.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
    */
   private var args:Array /* of Object */;
 

@@ -21,15 +21,8 @@ public class Menu extends AbstractComponent {
     itemGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE; // delegate to MenuController (see PopUpMenuController)
   }
 
-  private var pendingSelectedIndex:int = 0;
-
   public function set selectedIndex(value:int):void {
-    if (itemGroup == null) {
-      pendingSelectedIndex = value;
-    }
-    else {
-      itemGroup.selectedIndex = value;
-    }
+    itemGroup.selectedIndex = value;
   }
 
   public function getItemAt(index:int):Object {
@@ -89,8 +82,6 @@ public class Menu extends AbstractComponent {
     if (itemsChanged) {
       itemsChanged = false;
       itemGroup.dataProvider = _items;
-      itemGroup.selectedIndex = pendingSelectedIndex;
-      pendingSelectedIndex = ListSelection.NO_SELECTION;
 
       _items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler, false, -1 /* after itemGroup handler */);
     }

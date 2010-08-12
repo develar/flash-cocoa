@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
-		<!--<flexMojos.version>3.8-de1</flexMojos.version>-->
-	</properties>
+    <!--<flexMojos.version>3.8-de1</flexMojos.version>-->
+  </properties>
 
   <name>Cocoa Aggregator</name>
   <groupId>org.flyti.cocoa</groupId>
@@ -26,9 +26,54 @@
     <module>aquaLaFAssetBuilder</module>
     <module>demo</module>
   </modules>
-  
+
   <scm>
     <connection>scm:git:git@github.com:develar/flash-cocoa.git</connection>
     <url>http://github.com/develar/flash-cocoa</url>
   </scm>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>air-framework</artifactId>
+        <version>${fdk.version}</version>
+        <type>pom</type>
+        <exclusions>
+          <exclusion>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>utilities</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>osmf</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>rpc</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>${fdk.version}</version>
+        <type>pom</type>
+        <exclusions>
+          <exclusion>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>utilities</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>osmf</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>rpc</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
