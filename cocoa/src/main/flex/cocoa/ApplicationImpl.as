@@ -28,7 +28,7 @@ import mx.utils.LoaderUtil;
 
 use namespace mx_internal;
 
-[Frame(factoryClass='cocoa.SystemManager')]
+[Frame(factoryClass="cocoa.SystemManager")]
 
 [DefaultProperty("mxmlContent")]
 public class ApplicationImpl extends LayoutlessContainer implements Application, IFocusManagerContainer {
@@ -54,8 +54,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
     if (FlexGlobals.topLevelApplication == null) {
       FlexGlobals.topLevelApplication = this;
     }
-
-    showInAutomationHierarchy = true;
 
     var version:Array = Capabilities.version.split(' ')[1].split(',');
     synchronousResize = (parseFloat(version[0]) > 10 || (parseFloat(version[0]) == 10 && parseFloat(version[1]) >= 1)) && (Capabilities.playerType != "Desktop");
@@ -88,12 +86,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
     if (creationPolicy == ContainerCreationPolicy.ALL) {
       createDeferredContent();
     }
-  }
-
-  override protected function childrenCreated():void {
-    MateManager.instance.container.checkInjectors(new InjectorEvent(this));
-
-    super.childrenCreated();
   }
 
   private function injectHandler(event:InjectorEvent):void {
@@ -204,31 +196,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
     super.invalidateParentSizeAndDisplayList();
   }
 
-  override public function initialize():void {
-    var sm:ISystemManager = systemManager;
-
-    _url = LoaderUtil.normalizeURL(sm.loaderInfo);
-    _parameters = sm.loaderInfo.parameters;
-
-    var focusManager:FocusManager = new FocusManager(this);
-    var awm:IActiveWindowManager = IActiveWindowManager(systemManager.getImplementation("mx.managers::IActiveWindowManager"));
-    awm == null ? focusManager.activate() : awm.activate(this);
-
-    // Setup the default context menu here. This allows the application
-    // developer to override it in the initialize event, if desired.
-    initContextMenu();
-
-    super.initialize();
-
-    // Stick a timer here so that we will execute script every 1.5s
-    // no matter what.
-    // This is strictly for the debugger to be able to halt.
-    // Note: isDebugger is true only with a Debugger Player.
-    if (sm.isTopLevel() && Capabilities.isDebugger) {
-      setInterval(debugTickler, 1500);
-    }
-  }
-
   override protected function commitProperties():void {
     super.commitProperties();
 
@@ -268,8 +235,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
    *  Disable all the built-in items except "Print...".
    */
   private function initContextMenu():void {
-    // context menu already set
-    // nothing to init
+    // context menu already set, nothing to init
     if (flexContextMenu != null) {
       // make sure we set it back on systemManager b/c it may have been overridden by now
       if (systemManager is InteractiveObject) {
@@ -281,7 +247,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
     var defaultMenu:ContextMenu = new ContextMenu();
     defaultMenu.hideBuiltInItems();
     defaultMenu.builtInItems.print = true;
-
     contextMenu = defaultMenu;
 
     if (systemManager is InteractiveObject) {
@@ -373,7 +338,25 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
   }
 
   override protected function createChildren():void {
-    // для app LaF ставиться явно
+    var sm:ISystemManager = systemManager;
+
+    _url = LoaderUtil.normalizeURL(sm.loaderInfo);
+    _parameters = sm.loaderInfo.parameters;
+
+    var focusManager:FocusManager = new FocusManager(this);
+    var awm:IActiveWindowManager = IActiveWindowManager(systemManager.getImplementation("mx.managers::IActiveWindowManager"));
+    awm == null ? focusManager.activate() : awm.activate(this);
+
+    initContextMenu();
+
+    // Stick a timer here so that we will execute script every 1.5s no matter what. This is strictly for the debugger to be able to halt.
+    if (sm.isTopLevel() && Capabilities.isDebugger) {
+      setInterval(debugTickler, 1500);
+    }
+
+    MateManager.instance.container.checkInjectors(new InjectorEvent(this));
+
+    // ignore super — для app LaF ставиться явно
   }
 }
 }

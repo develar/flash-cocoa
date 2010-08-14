@@ -744,6 +744,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   private static const DEFAULT_MAX_WIDTH:Number = 10000;
   private static const DEFAULT_MAX_HEIGHT:Number = 10000;
 
+  /**
+   *  List of methods used by callLater().
+   */
+  private var methodQueue:Vector.<MethodQueueElement>;
+
   public function AbstractView() {
     super();
 
@@ -764,14 +769,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     _height = super.height;
   }
 
-  /**
-   *  List of methods used by callLater().
-   */
-  private var methodQueue:Vector.<MethodQueueElement>;
-
-  [Inspectable(environment="none")]
-
-
   public function get initialized():Boolean {
     return (flags & INITIALIZED) != 0;
   }
@@ -781,11 +778,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     if (value) {
       setVisible(_visible, true);
-      dispatchEvent(new FlexEvent(FlexEvent.CREATION_COMPLETE));
+      if (hasEventListener(FlexEvent.CREATION_COMPLETE)) {
+        dispatchEvent(new FlexEvent(FlexEvent.CREATION_COMPLETE));
+      }
     }
   }
-
-  [Inspectable(environment="none")]
 
   public function get processedDescriptors():Boolean {
     return (flags & PROCESSED_DESCRIPTORS) != 0;
@@ -3087,8 +3084,8 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     else if (child is View && !View(child).initialized) {
       View(child).initialize();
     }
-    else if (child is UIComponent && !UIComponent(child).initialized) {
-      UIComponent(child).initialize();
+    else if (child is IUIComponent) {
+      IUIComponent(child).initialize();
     }
   }
 
@@ -3102,108 +3099,25 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     }
   }
 
-  /**
-   *  Initializes the internal structure of this component.
-   *
-   *  <p>Initializing a UIComponent is the fourth step in the creation
-   *  of a visual component instance, and happens automatically
-   *  the first time that the instance is added to a parent.
-   *  Therefore, you do not generally need to call
-   *  <code>initialize()</code>; the Flex framework calls it for you
-   *  from UIComponent's override of the <code>addChild()</code>
-   *  and <code>addChildAt()</code> methods.</p>
-   *
-   *  <p>The first step in the creation of a visual component instance
-   *  is construction, with the <code>new</code> operator:</p>
-   *
-   *  <pre>
-   *  var okButton:Button = new Button();</pre>
-   *
-   *  <p>After construction, the new Button instance is a solitary
-   *  DisplayObject; it does not yet have a UITextField as a child
-   *  to display its label, and it doesn't have a parent.</p>
-   *
-   *  <p>The second step is configuring the newly-constructed instance
-   *  with the appropriate properties, styles, and event handlers:</p>
-   *
-   *  <pre>
-   *  okButton.label = "OK";
-   *  okButton.setStyle("cornerRadius", 0);
-   *  okButton.addEventListener(MouseEvent.CLICK, clickHandler);</pre>
-   *
-   *  <p>The third step is adding the instance to a parent:</p>
-   *
-   *  <pre>
-   *  someContainer.addChild(okButton);</pre>
-   *
-   *  <p>A side effect of calling <code>addChild()</code>
-   *  or <code>addChildAt()</code>, when adding a component to a parent
-   *  for the first time, is that <code>initialize</code> gets
-   *  automatically called.</p>
-   *
-   *  <p>This method first dispatches a <code>preinitialize</code> event,
-   *  giving developers using this component a chance to affect it
-   *  before its internal structure has been created.
-   *  Next it calls the <code>createChildren()</code> method
-   *  to create the component's internal structure; for a Button,
-   *  this method creates and adds the UITextField for the label.
-   *  Then it dispatches an <code>initialize</code> event,
-   *  giving developers a chance to affect the component
-   *  after its internal structure has been created.</p>
-   *
-   *  <p>Note that it is the act of attaching a component to a parent
-   *  for the first time that triggers the creation of its internal structure.
-   *  If its internal structure includes other UIComponents, then this is a
-   *  recursive process in which the tree of DisplayObjects grows by one leaf
-   *  node at a time.</p>
-   *
-   *  <p>If you are writing a component, you do not need
-   *  to override this method.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function initialize():void {
     if (initialized) {
       return;
     }
 
     // The "preinitialize" event gets dispatched after everything about this
-    // DisplayObject has been initialized, and it has been attached to
-    // its parent, but before any of its children have been created.
-    // This allows a "preinitialize" event handler to set properties which
-    // affect child creation.
-    // Note that this implies that "preinitialize" handlers are called
-    // top-down; i.e., parents before children.
-    dispatchEvent(new FlexEvent(FlexEvent.PREINITIALIZE));
+    // DisplayObject has been initialized, and it has been attached to its parent, but before any of its children have been created.
+    // This allows a "preinitialize" event handler to set properties which affect child creation.
+    // Note that this implies that "preinitialize" handlers are called top-down; i.e., parents before children.
+    if (hasEventListener(FlexEvent.PREINITIALIZE)) {
+      dispatchEvent(new FlexEvent(FlexEvent.PREINITIALIZE));
+    }
 
-    // Create child objects.
     createChildren();
-    childrenCreated();
 
-    // This should always be the last thing that initialize() calls.
-    initializationComplete();
-  }
+    invalidateProperties();
+    invalidateSize();
+    invalidateDisplayList();
 
-  /**
-   *  Finalizes the initialization of this component.
-   *
-   *  <p>This method is the last code that executes when you add a component
-   *  to a parent for the first time using <code>addChild()</code>
-   *  or <code>addChildAt()</code>.
-   *  It handles some housekeeping related to dispatching
-   *  the <code>initialize</code> event.
-   *  If you are writing a component, you do not need
-   *  to override this method.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  protected function initializationComplete():void {
     processedDescriptors = true;
   }
 
@@ -3296,7 +3210,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  public function invalidateSize():void {
+  public final function invalidateSize():void {
     if ((flags & INVALID_SIZE) == 0) {
       flags |= INVALID_SIZE;
 
@@ -3351,11 +3265,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-  public function invalidateDisplayList():void {
+  public final function invalidateDisplayList():void {
     if ((flags & INVALID_DISPLAY_LIST) == 0) {
       flags |= INVALID_DISPLAY_LIST;
 
-      if (isOnDisplayList()) {
+      if (parent != null) {
         UIComponentGlobals.layoutManager.invalidateDisplayList(this);
       }
     }
@@ -3364,7 +3278,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   private function invalidateTransform():void {
     if (_layoutFeatures && !_layoutFeatures.updatePending) {
       _layoutFeatures.updatePending = true;
-      if (isOnDisplayList() && (flags & INVALID_DISPLAY_LIST) == 0) {
+      if (parent != null && (flags & INVALID_DISPLAY_LIST) == 0) {
         UIComponentGlobals.layoutManager.invalidateDisplayList(this);
       }
     }
@@ -3422,18 +3336,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   private function transformOffsetsChangedHandler(e:Event):void {
     invalidateTransform();
-  }
-
-  private function isOnDisplayList():Boolean {
-    try {
-      return super.parent != null;
-    }
-    catch (e:SecurityError) {
-      return true; // we are on the display list but the parent is in another sandbox
-    }
-
-    //noinspection UnreachableCodeJS
-    return true; // fucked adobe
   }
 
   public function validateNow():void {
