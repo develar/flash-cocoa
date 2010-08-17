@@ -12,6 +12,7 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
 
     addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
     addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+    addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
   }
 
   private function mouseOutHandler(event:MouseEvent):void {
@@ -50,6 +51,8 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
     highlightIndicator.x = cellX;
     highlightIndicator.y = cellY;
     highlightIndicator.visible = true;
+
+    event.stopPropagation();
   }
 
   private function createHighlightIndicator():void {
@@ -57,6 +60,11 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
     highlightIndicator.graphics.lineStyle(1, 0xb4d4ff, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE);
     highlightIndicator.graphics.drawRect(0.5, 0.5, swatchWidth + (cellPadding * 2) - 1, swatchHeight + (cellPadding * 2) - 1);
     addChild(highlightIndicator);
+  }
+
+  private function mouseUpHandler(event:MouseEvent):void {
+    
+     event.stopPropagation();
   }
 }
 }

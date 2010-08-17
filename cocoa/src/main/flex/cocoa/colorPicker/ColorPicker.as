@@ -59,5 +59,9 @@ public class ColorPicker extends PopUpButton {
   //			this.menu = menu;
   //		}
   //	}
+  
+  override public function setSelectedIndex(value:int, callUserInitiatedActionHandler:Boolean = true):void {
+    super.setSelectedIndex(value, callUserInitiatedActionHandler);
+  }
 }
 }

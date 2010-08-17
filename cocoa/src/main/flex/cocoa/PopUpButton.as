@@ -79,7 +79,7 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
       _action();
     }
 
-    if (skin != null) {
+    if (_menu != null && skin != null) {
       synchronizeTitleAndSelectedItem();
     }
   }
@@ -87,7 +87,9 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
   override protected function skinAttachedHandler():void {
     super.skinAttachedHandler();
 
-    synchronizeTitleAndSelectedItem();
+    if (_menu != null) {
+      synchronizeTitleAndSelectedItem();
+    }
   }
 
   protected function synchronizeTitleAndSelectedItem(event:Event = null):void {

@@ -5,12 +5,11 @@ import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-import com.asfusion.mate.events.InjectorEvent;
-
 import mx.core.IStateClient;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
+import org.flyti.plexus.events.InjectorEvent;
 
 use namespace mx_internal;
 

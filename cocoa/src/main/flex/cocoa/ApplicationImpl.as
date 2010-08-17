@@ -1,8 +1,4 @@
 package cocoa {
-import com.asfusion.mate.core.EventMap;
-import com.asfusion.mate.core.MateManager;
-import com.asfusion.mate.events.InjectorEvent;
-
 import flash.display.DisplayObject;
 import flash.display.InteractiveObject;
 import flash.events.Event;
@@ -25,6 +21,10 @@ import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
 import mx.utils.LoaderUtil;
+
+import org.flyti.plexus.EventMap;
+import org.flyti.plexus.PlexusManager;
+import org.flyti.plexus.events.InjectorEvent;
 
 use namespace mx_internal;
 
@@ -91,7 +91,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
 
   private function injectHandler(event:InjectorEvent):void {
     event.stopImmediatePropagation();
-    MateManager.instance.container.checkInjectors(event);
+    PlexusManager.instance.container.checkInjectors(event);
   }
 
   public function createDeferredContent():void {
@@ -355,7 +355,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
       setInterval(debugTickler, 1500);
     }
 
-    MateManager.instance.container.checkInjectors(new InjectorEvent(this));
+    PlexusManager.instance.container.checkInjectors(new InjectorEvent(this));
 
     // ignore super — для app LaF ставиться явно
   }

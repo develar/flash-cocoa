@@ -1,14 +1,14 @@
 package cocoa.keyboard {
 import cocoa.text.EditableTextView;
 
-import com.asfusion.mate.events.ContextEventDispatcher;
-
 import flash.display.InteractiveObject;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 import flash.utils.Dictionary;
 
-public class KeyboardManager extends ContextEventDispatcher {
+import org.flyti.plexus.AbstractComponent;
+
+public class KeyboardManager extends AbstractComponent {
   private var commandShortcuts:Dictionary;
   private var commandShiftShortcuts:Dictionary;
   private var shortcuts:Dictionary;

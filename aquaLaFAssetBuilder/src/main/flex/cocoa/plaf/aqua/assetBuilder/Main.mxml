@@ -10,9 +10,8 @@
     import cocoa.dialog.events.ShowDialogEvent;
     import cocoa.plaf.aqua.AquaLookAndFeel;
 
-    import com.asfusion.mate.core.EventMap;
-    import com.asfusion.mate.core.MateManager;
-
+    import org.flyti.plexus.EventMap;
+    import org.flyti.plexus.PlexusManager;
     import org.flyti.util.ArrayList;
 
     private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
@@ -45,15 +44,15 @@
       laf = new AquaLookAndFeel();
       createDeferredContent();
 
-      MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
+      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
       return;
-      MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
+      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
 
       var hudWindow:HUDWindow = new HUDWindow();
       hudWindow.resizable = false;
       hudWindow.title = "Test";
       hudWindow.contentView = new TestHUDWindow();
-      MateManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(hudWindow, false));
+      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(hudWindow, false));
     }
 
     override protected function initializeMaps():void {

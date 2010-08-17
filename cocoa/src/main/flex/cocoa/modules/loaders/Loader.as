@@ -1,6 +1,5 @@
 package cocoa.modules.loaders
 {
-import com.asfusion.mate.utils.Dispatcher;
 import cocoa.message.ApplicationErrorEvent;
 import cocoa.modules.events.LoaderEvent;
 
@@ -16,6 +15,8 @@ import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 import flash.utils.IDataInput;
 import flash.utils.getDefinitionByName;
+
+import org.flyti.plexus.Dispatcher;
 
 public class Loader extends EventDispatcher
 {

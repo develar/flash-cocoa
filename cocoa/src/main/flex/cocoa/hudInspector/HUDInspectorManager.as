@@ -1,5 +1,4 @@
-package cocoa.hudInspector
-{
+package cocoa.hudInspector {
 import cocoa.HUDWindow;
 import cocoa.View;
 import cocoa.Viewable;
@@ -14,129 +13,106 @@ import flash.utils.Dictionary;
 import mx.core.IUIComponent;
 import mx.core.IVisualElement;
 
-import org.flyti.plexus.plexus;
+public class HUDInspectorManager {
+  private static const WINDOW_PADDING:Number = 10;
 
-use namespace plexus;
+  private static var sharedPoint:Point = new Point();
 
-public class HUDInspectorManager
-{
-	private static const WINDOW_PADDING:Number = 10;
+  private var inspectorSetMap:Dictionary/*<Class, PaneItem>*/ = new Dictionary();
+  private var currentInspector:HUDWindow;
 
-	private static var sharedPoint:Point = new Point();
+  private var cache:Dictionary/*<PaneItem, HUDWindow>*/;
 
-	private var inspectorSetMap:Dictionary/*<Class, PaneItem>*/ = new Dictionary();
-	private var currentInspector:HUDWindow;
+  public function register(objectClass:Class, inspectorItem:PaneItem):void {
+    inspectorSetMap[objectClass] = inspectorItem;
+  }
 
-	private var cache:Dictionary/*<PaneItem, HUDWindow>*/;
+  private var dialogManager:DialogManager;
 
-	public function register(objectClass:Class, inspectorItem:PaneItem):void
-	{
-		inspectorSetMap[objectClass] = inspectorItem;
-	}
+  public function HUDInspectorManager(dialogManager:DialogManager) {
+    this.dialogManager = dialogManager;
+  }
 
-	private var dialogManager:DialogManager;
-	//noinspection InfiniteRecursionJS
-	plexus function set dialogManager(value:DialogManager):void
-	{
-		dialogManager = value;
-	}
+  public function changeCurrentVisibility(visible:Boolean):void {
+    if (currentInspector != null) {
+      IVisualElement(currentInspector.skin).visible = visible;
+    }
+  }
 
-	public function changeCurrentVisibility(visible:Boolean):void
-	{
-		if (currentInspector != null)
-		{
-			IVisualElement(currentInspector.skin).visible = visible;
-		}
-	}
+  public function show(element:Object, elementView:View):void {
+    var inspectorContentView:Viewable;
+    // такое будет если при hide мы обнаруживаем что новый элемент имеет такой же тип и не скрываем инспектор, а ничего не делаем
+    if (currentInspector != null) {
+      inspectorContentView = currentInspector.contentView;
+    }
+    else {
+      var clazz:Class = Class(element.constructor);
+      var inspectorItem:PaneItem = inspectorSetMap[clazz];
+      if (inspectorItem == null) {
+        return;
+      }
 
-	public function show(element:Object, elementView:View):void
-	{
-		var inspectorContentView:Viewable;
-		// такое будет если при hide мы обнаруживаем что новый элемент имеет такой же тип и не скрываем инспектор, а ничего не делаем 
-		if (currentInspector != null)
-		{
-			inspectorContentView = currentInspector.contentView;
-		}
-		else
-		{
-			var clazz:Class = Class(element.constructor);
-			var inspectorItem:PaneItem = inspectorSetMap[clazz];
-			if (inspectorItem == null)
-			{
-				return;
-			}
+      if (cache == null) {
+        cache = new Dictionary();
+      }
+      else {
+        currentInspector = cache[inspectorItem];
+      }
 
-			if (cache == null)
-			{
-				cache = new Dictionary();
-			}
-			else
-			{
-				currentInspector = cache[inspectorItem];
-			}
+      if (currentInspector == null) {
+        currentInspector = new HUDWindow();
+        currentInspector.resizable = false;
+        currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
+        inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
+        cache[inspectorItem] = currentInspector;
 
-			if (currentInspector == null)
-			{
-				currentInspector = new HUDWindow();
-				currentInspector.resizable = false;
-				currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
-				inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
-				cache[inspectorItem] = currentInspector;
+        currentInspector.addEventListener(Event.CLOSE, userCloseHandler, false, 1);
+      }
 
-				currentInspector.addEventListener(Event.CLOSE, userCloseHandler, false, 1);
-			}
+      inspectorContentView = inspectorItem.view
+    }
 
-			inspectorContentView = inspectorItem.view
-		}
+    if (inspectorContentView is ElementRecipient) {
+      ElementRecipient(inspectorContentView).element = element;
+    }
 
-		if (inspectorContentView is ElementRecipient)
-		{
-			ElementRecipient(inspectorContentView).element = element;
-		}
+    dialogManager.open(currentInspector, false, false);
 
-		dialogManager.open(currentInspector, false, false);
+    sharedPoint.x = elementView.x;
+    sharedPoint.y = elementView.y;
+    sharedPoint = elementView.parent.localToGlobal(sharedPoint);
 
-		sharedPoint.x = elementView.x;
-		sharedPoint.y = elementView.y;
-		sharedPoint = elementView.parent.localToGlobal(sharedPoint);
+    var inspectorView:IUIComponent = currentInspector.skin;
+    var windowHeightWithPadding:Number = inspectorView.height + WINDOW_PADDING;
+    var y:Number = sharedPoint.y - windowHeightWithPadding;
+    if (y < 0) {
+      y = sharedPoint.y + elementView.height + windowHeightWithPadding;
+    }
 
-		var inspectorView:IUIComponent = currentInspector.skin;
-		var windowHeightWithPadding:Number = inspectorView.height + WINDOW_PADDING;
-		var y:Number = sharedPoint.y - windowHeightWithPadding;
-		if (y < 0)
-		{
-			y = sharedPoint.y + elementView.height + windowHeightWithPadding;
-		}
+    inspectorView.move(Math.round(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
+  }
 
-		inspectorView.move(Math.round(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
-	}
+  private function userCloseHandler(event:Event):void {
+    event.stopImmediatePropagation();
 
-	private function userCloseHandler(event:Event):void
-	{
-		event.stopImmediatePropagation();
+    close();
+  }
 
-		close();
-	}
+  public function hide(element:Object, relatedElement:Object):void {
+    if (currentInspector == null || (relatedElement != null && element.constructor == relatedElement.constructor)) {
+      return;
+    }
 
-	public function hide(element:Object, relatedElement:Object):void
-	{
-		if (currentInspector == null || (relatedElement != null && element.constructor == relatedElement.constructor))
-		{
-			return;
-		}
+    close();
+  }
 
-		close();
-	}
+  private function close():void {
+    if (currentInspector.contentView is ElementRecipient) {
+      ElementRecipient(currentInspector.contentView).element = null;
+    }
 
-	private function close():void
-	{
-		if (currentInspector.contentView is ElementRecipient)
-		{
-			ElementRecipient(currentInspector.contentView).element = null;
-		}
-
-		dialogManager.close(currentInspector);
-		currentInspector = null;
-	}
+    dialogManager.close(currentInspector);
+    currentInspector = null;
+  }
 }
 }

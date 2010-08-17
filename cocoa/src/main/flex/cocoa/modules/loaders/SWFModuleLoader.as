@@ -4,11 +4,11 @@ import cocoa.modules.ModuleInfo;
 import cocoa.modules.events.LoaderEvent;
 import cocoa.modules.events.ModuleLoaderEvent;
 
-import com.asfusion.mate.utils.Dispatcher;
-
 import flash.display.LoaderInfo;
 import flash.events.Event;
 import flash.system.ApplicationDomain;
+
+import org.flyti.plexus.Dispatcher;
 
 public class SWFModuleLoader extends Loader implements ModuleLoader {
   private var rootURI:String;
