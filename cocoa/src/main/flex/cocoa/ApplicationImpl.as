@@ -35,6 +35,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
   public var frameRate:Number;
   public var pageTitle:String;
   public var preloader:Object;
+  public var usePreloader:Boolean;
 
   protected var maps:Vector.<EventMap>;
 
