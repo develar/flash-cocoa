@@ -5,8 +5,6 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
-import com.asfusion.mate.events.InjectorEvent;
-
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
@@ -15,6 +13,7 @@ import mx.core.IVisualElementContainer;
 import mx.core.mx_internal;
 
 import org.flyti.plexus.Injectable;
+import org.flyti.plexus.events.InjectorEvent;
 
 import spark.components.Group;
 import spark.components.supportClasses.GroupBase;

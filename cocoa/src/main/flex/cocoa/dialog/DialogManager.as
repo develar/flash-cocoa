@@ -7,13 +7,13 @@ import cocoa.dialog.events.DialogEvent;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
-import com.asfusion.mate.events.InjectorEvent;
-
 import flash.display.DisplayObject;
 import flash.events.Event;
 
 import mx.core.FlexGlobals;
 import mx.managers.PopUpManager;
+
+import org.flyti.plexus.events.InjectorEvent;
 
 public class DialogManager
 {

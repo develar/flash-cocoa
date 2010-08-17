@@ -7,8 +7,6 @@ import cocoa.UIPartProvider;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-import com.asfusion.mate.events.InjectorEvent;
-
 import flash.geom.Point;
 
 import flashx.textLayout.formats.ITextLayoutFormat;
@@ -16,6 +14,7 @@ import flashx.textLayout.formats.ITextLayoutFormat;
 import mx.core.IFactory;
 
 import org.flyti.plexus.Injectable;
+import org.flyti.plexus.events.InjectorEvent;
 
 /**
  * Default base skin implementation for view

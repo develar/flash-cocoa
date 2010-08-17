@@ -4,13 +4,12 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.LookAndFeelUtil;
 
-import com.asfusion.mate.events.InjectorEvent;
-
 import flash.display.DisplayObject;
 
 import mx.core.ILayoutElement;
 
 import org.flyti.plexus.Injectable;
+import org.flyti.plexus.events.InjectorEvent;
 
 import spark.components.supportClasses.GroupBase;
 import spark.components.supportClasses.SkinnableComponent;
