@@ -24,6 +24,7 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
     super();
 
     mouseEnabled = false;
+    mouseEnabledWhereTransparent = false;
   }
 
   private var _laf:LookAndFeel;

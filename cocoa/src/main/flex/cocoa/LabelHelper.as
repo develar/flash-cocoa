@@ -19,10 +19,12 @@ use namespace mx_internal;
 public class LabelHelper {
   private static const emptyArgs:Array = [];
   private static const textBlockCreateTextLineArgs:Array = [null, 0];
+  private static const textBlockRecreateTextLineArgs:Array = [null, null, 0];
 
   private static const TRUNCATION_INDICATOR:String = "…";
 
   private static var truncationIndicatorMap:Dictionary;
+  private static var textLineForTruncationIndicator:TextLine;
 
   private static const textElement:TextElement = new TextElement();
   private static const textBlock:TextBlock = new TextBlock(textElement);
@@ -89,6 +91,10 @@ public class LabelHelper {
     return _text
   }
 
+  /**
+   * Мы не рассчитываем на установку пустого текста для ui-компонента после того, как ему был назначен некий текст — то есть ли вы установили текст,
+   * а потом установили его в null, то мы никак не скрываем с display list уже созданный textLine
+   */
   public function set text(value:String):void {
     if (value != _text) {
       invalid = true;
@@ -159,48 +165,57 @@ public class LabelHelper {
 
     invalid = false;
 
-    if (_textLine != null) {
-      container.removeDisplayObject(_textLine);
+    if (_text == null) {
+      return;
     }
 
-    if (_text != null) {
-      textElement.elementFormat = _textFormat.format;
-      textElement.text = _text;
-      if (_rotation != null) {
-        textBlock.lineRotation = _rotation;
-      }
+    textElement.elementFormat = _textFormat.format;
+    textElement.text = _text;
+    if (_rotation != null) {
+      textBlock.lineRotation = _rotation;
+    }
 
-      if (_textFormat.swfContext == null) {
-        _textLine = textBlock.createTextLine(null, availableWidth);
-      }
-      else {
-        textBlockCreateTextLineArgs[1] = availableWidth;
-        _textLine = _textFormat.swfContext.callInContext(textBlock.createTextLine, textBlock, textBlockCreateTextLineArgs);
-      }
-
+    if (_textFormat.swfContext == null) {
       if (_textLine == null) {
-        trace(container + " " + this + " " + textBlock.textLineCreationResult);
-      }
-      else {
-        truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
-        if (truncated && _useTruncationIndicator) {
-          textElement.text = _text.slice(0, getTruncationPosition(_textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
-
-          _textLine = _textFormat.swfContext == null ? textBlock.createTextLine() : _textFormat.swfContext.callInContext(textBlock.createTextLine, textBlock, emptyArgs);
-        }
-
-        textBlock.releaseLines(_textLine, _textLine);
-        _textLine.mouseEnabled = false;
-        _textLine.mouseChildren = false;
+        _textLine = textBlock.createTextLine(null, availableWidth);
         container.addDisplayObject(_textLine);
       }
-
-      if (_rotation != null) {
-        textBlock.lineRotation = TextRotation.ROTATE_0;
+      else {
+        textBlock.recreateTextLine(_textLine, null, availableWidth);
       }
     }
     else {
-      _textLine = null;
+      if (_textLine == null) {
+        textBlockCreateTextLineArgs[1] = availableWidth;
+        _textLine = _textFormat.swfContext.callInContext(textBlock.createTextLine, textBlock, textBlockCreateTextLineArgs);
+        container.addDisplayObject(_textLine);
+      }
+      else {
+        textBlockRecreateTextLineArgs[0] = _textLine;
+        textBlockRecreateTextLineArgs[2] = availableWidth;
+        _textFormat.swfContext.callInContext(textBlock.recreateTextLine, textBlock, textBlockRecreateTextLineArgs);
+      }
+    }
+
+    if (_textLine == null) {
+      trace(container + " " + this + " " + textBlock.textLineCreationResult);
+    }
+    else {
+      truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
+      if (truncated && _useTruncationIndicator) {
+        textElement.text = _text.slice(0, getTruncationPosition(_textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
+        
+        if (_textFormat.swfContext == null) {
+          textBlock.recreateTextLine(_textLine);
+        }
+        else {
+          _textFormat.swfContext.callInContext(textBlock.recreateTextLine, textBlock, emptyArgs);
+        }
+      }
+    }
+
+    if (_rotation != null) {
+      textBlock.lineRotation = TextRotation.ROTATE_0;
     }
   }
 
@@ -212,25 +227,25 @@ public class LabelHelper {
     var width:Number = truncationIndicatorMap[format];
     if (isNaN(width)) {
       textElement.text = TRUNCATION_INDICATOR;
-      var textLine:TextLine = textBlock.createTextLine();
-      textBlock.releaseLines(textLine, textLine);
+      if (textLineForTruncationIndicator == null) {
+        textLineForTruncationIndicator = textBlock.createTextLine();
+      }
+      else {
+        textBlock.recreateTextLine(textLineForTruncationIndicator);
+      }
 
-      width = textLine.textWidth;
-      truncationIndicatorMap[format] = width;
-      return width;
+      truncationIndicatorMap[format] = width = textLineForTruncationIndicator.textWidth;
     }
-    else {
-      return truncationIndicatorMap[format];
-    }
+
+    return width;
   }
 
   private function getTruncationPosition(line:TextLine, allowedWidth:Number):int {
     var consumedWidth:Number = 0;
     var charPosition:int = line.textBlockBeginIndex;
-
-    var n:Number = line.textBlockBeginIndex + line.rawTextLength;
+    var n:Number = charPosition + line.rawTextLength;
     while (charPosition < n) {
-      var atomIndex:int = line.getAtomIndexAtCharIndex(charPosition);
+      const atomIndex:int = line.getAtomIndexAtCharIndex(charPosition);
       consumedWidth += line.getAtomBounds(atomIndex).width;
       if (consumedWidth > allowedWidth) {
         break;

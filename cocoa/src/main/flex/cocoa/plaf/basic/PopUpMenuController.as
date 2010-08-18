@@ -60,7 +60,7 @@ public class PopUpMenuController extends AbstractListController {
       case Keyboard.ENTER:
       case Keyboard.SPACE:
         if (highlightedRenderer != null) {
-          popUpButton.setSelectedIndex(highlightedRenderer.itemIndex);
+          setSelectedIndex(highlightedRenderer.itemIndex);
         }
         close();
         break;
@@ -84,7 +84,7 @@ public class PopUpMenuController extends AbstractListController {
       return;
     }
 
-    menu.selectedIndex = popUpButton.selectedIndex;
+     menu.selectedIndex = popUpButton.selectedIndex;
     popUpButton.state = CellState.ON;
 
     popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -94,7 +94,7 @@ public class PopUpMenuController extends AbstractListController {
     setPopUpPosition();
 
     itemGroup = menu.itemGroup;
-    super.addHandlers();
+    addHandlers();
 
     popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
     popUpButtonSkin.stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDownHandler);
@@ -128,6 +128,7 @@ public class PopUpMenuController extends AbstractListController {
   }
 
   private function stageMouseUpHandler(event:MouseEvent):void {
+    trace("c up");
     var proposedSelectedIndex:int = -1;
     // проверка на border (как в Cocoa — можно кликнуть на border, и при этом и меню не будет скрыто, и выделенный item не изменится)
     if (!menu.skin.hitTestPoint(event.stageX, event.stageY)) {
@@ -137,7 +138,7 @@ public class PopUpMenuController extends AbstractListController {
       }
     }
     else if (event.target != menu.skin && event.target != itemGroup) {
-      proposedSelectedIndex = highlightedRenderer is IItemRenderer ? IItemRenderer(event.target).itemIndex : itemGroup.getElementIndex(IVisualElement(event.target));
+      proposedSelectedIndex = highlightedRenderer is IItemRenderer ? IItemRenderer(highlightedRenderer).itemIndex : findItemIndexForEventTarget(DisplayObject(event.target));
     }
     else {
       return;
@@ -145,7 +146,7 @@ public class PopUpMenuController extends AbstractListController {
 
     if (mouseDownTime == -1 || (getTimer() - mouseDownTime) > MOUSE_CLICK_INTERVAL) {
       if (proposedSelectedIndex != -1) {
-        popUpButton.setSelectedIndex(proposedSelectedIndex);
+        setSelectedIndex(proposedSelectedIndex);
       }
       close();
     }
@@ -154,12 +155,24 @@ public class PopUpMenuController extends AbstractListController {
     }
   }
 
+  private function findItemIndexForEventTarget(target:DisplayObject):int {
+    while (target.parent != itemGroup) {
+      target = target.parent;
+    }
+
+    return target is IItemRenderer ? IItemRenderer(target).itemIndex : itemGroup.getElementIndex(IVisualElement(target));
+  }
+
   // данный обработчик будет вызван и в первый раз после mouseDownHandler — событие пойдет вниз до stage —
   // а мы не может ни preventDefault, ни stopPropagation — так как на них завязан FocusManager, поэтому мы делаем проверку на mouseDownTime
   private function stageMouseDownHandler(event:MouseEvent):void {
     if (mouseDownTime == -1 && !menu.skin.hitTestPoint(event.stageX, event.stageY)) {
       close();
     }
+  }
+
+  protected function setSelectedIndex(value:int):void {
+    popUpButton.setSelectedIndex(value);
   }
 }
 }

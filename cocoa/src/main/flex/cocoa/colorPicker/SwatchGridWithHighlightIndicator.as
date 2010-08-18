@@ -7,6 +7,8 @@ import flash.events.MouseEvent;
 public class SwatchGridWithHighlightIndicator extends SwatchGrid {
   private var highlightIndicator:Shape;
 
+  private var colorIndex:int = -1;
+
   public function SwatchGridWithHighlightIndicator() {
     super();
 
@@ -19,6 +21,8 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
     if (highlightIndicator != null) {
       highlightIndicator.visible = false;
     }
+
+    colorIndex = -1;
   }
 
   private function mouseMoveHandler(event:MouseEvent):void {
@@ -35,14 +39,11 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
 
     var cellX:Number = event.localX;
     cellX -= (cellX - xOffset) % xStep;
-    var columnIndex:int = (cellX - xOffset) / xStep;
-
 
     var cellY:Number = event.localY;
     cellY -= (cellY - yOffset) % yStep;
-    var rowIndex:int = (cellY - yOffset) / yStep;
 
-    var colorIndex:int = (rowIndex * columnCount) + columnIndex;
+    colorIndex = (((cellY - yOffset) / yStep) * columnCount) + ((cellX - xOffset) / xStep);
     if (colorIndex >= list.length) {
       mouseOutHandler(null);
       return;
@@ -63,8 +64,9 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
   }
 
   private function mouseUpHandler(event:MouseEvent):void {
-    
-     event.stopPropagation();
+    if (colorIndex != -1) {
+      dispatchEvent(new ColorEvent(list[colorIndex]));
+    }
   }
 }
 }

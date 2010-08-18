@@ -21,8 +21,8 @@ public class ColorPickerMenu extends Menu {
     _items = new ArrayList(new <Object>[PANEL, "No Color"]);
   }
 
-  public function isNoColorItem(index:int):Boolean {
-    return index == 1;
+  public function get noColorItemIndex():int {
+    return 1;
   }
 
   private var _colorChangeHandler:Function;

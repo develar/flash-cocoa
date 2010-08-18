@@ -42,7 +42,12 @@
 			listView.dataProvider = (listView.dataProvider == listData) ? shortListData : listData;
 		}
 
-		]]></fx:Script>
+    private function updateTextValue():void {
+      colorValue.title = String(colorPicker.color);
+    }
+
+
+    ]]></fx:Script>
 
 	<Container>
 		<layout>
@@ -61,7 +66,8 @@
 			</Menu>
 		</PopUpButton>
 
-    <ColorPicker width="44"/>
+    <ColorPicker id="colorPicker" width="44" action="updateTextValue"/>
+    <Label id="colorValue"/>
 
 		<ImageView/>
 
