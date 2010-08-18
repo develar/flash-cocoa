@@ -10,7 +10,7 @@ public class ColorPicker extends PopUpButton {
   public function ColorPicker() {
     super();
 
-    _menu = new ColorPickerMenu();
+    _menu = ColorPickerMenu.create();
   }
 
   public function get argb():uint {
@@ -18,7 +18,7 @@ public class ColorPicker extends PopUpButton {
   }
 
   public function get hasSelectedColor():Boolean {
-    return selectedIndex == ColorPickerMenu(menu).noColorItemIndex;
+    return selectedIndex != ColorPickerMenu(menu).noColorItemIndex;
   }
 
   private var _color:uint;
@@ -35,7 +35,6 @@ public class ColorPicker extends PopUpButton {
   }
 
   override protected function synchronizeTitleAndSelectedItem(event:Event = null):void {
-
   }
 
   public function setColorAndCallUserInitiatedActionHandler(index:int, value:Number):void {

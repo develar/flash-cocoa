@@ -2,6 +2,7 @@ package cocoa.colorPicker {
 import cocoa.Menu;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
+import cocoa.resources.ResourceManager;
 import cocoa.ui;
 
 import mx.core.IFactory;
@@ -10,15 +11,32 @@ import org.flyti.util.ArrayList;
 
 use namespace ui;
 
+[ResourceBundle("ColorPickerMenu")]
 public class ColorPickerMenu extends Menu {
   private static const PANEL:int = 1;
 
   private var laf:LookAndFeel;
 
-  public function ColorPickerMenu() {
-    super();
+  private static var menu:ColorPickerMenu;
+  private static var menuWithoutNoColor:ColorPickerMenu;
 
-    _items = new ArrayList(new <Object>[PANEL, "No Color"]);
+  public static function create():ColorPickerMenu {
+    if (menu == null) {
+      menu = new ColorPickerMenu();
+      menu._items = new ArrayList(new <Object>[PANEL, "noColor"]);
+      menu.labelFunction = menu.stringItemLabelFunction;
+    }
+
+    return menu;
+  }
+
+  public static function createWithoutNoColor():ColorPickerMenu {
+    if (menuWithoutNoColor == null) {
+      menuWithoutNoColor = new ColorPickerMenu();
+      menuWithoutNoColor._items = new ArrayList(new <Object>[PANEL]);
+    }
+
+    return menuWithoutNoColor;
   }
 
   public function get noColorItemIndex():int {
@@ -58,6 +76,10 @@ public class ColorPickerMenu extends Menu {
       default: return itemGroup.itemRenderer;
       //			default: throw new ArgumentError();
     }
+  }
+
+  private function stringItemLabelFunction(item:Object):String {
+    return ResourceManager.instance.getString("ColorPickerMenu", String(item));
   }
 }
 }

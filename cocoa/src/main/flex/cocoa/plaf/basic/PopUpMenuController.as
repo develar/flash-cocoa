@@ -128,7 +128,6 @@ public class PopUpMenuController extends AbstractListController {
   }
 
   private function stageMouseUpHandler(event:MouseEvent):void {
-    trace("c up");
     var proposedSelectedIndex:int = -1;
     // проверка на border (как в Cocoa — можно кликнуть на border, и при этом и меню не будет скрыто, и выделенный item не изменится)
     if (!menu.skin.hitTestPoint(event.stageX, event.stageY)) {

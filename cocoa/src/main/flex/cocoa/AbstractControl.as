@@ -1,82 +1,65 @@
-package cocoa
-{
-public class AbstractControl extends AbstractComponent implements Control
-{
-	protected var _action:Function;
-	public function set action(value:Function):void
-	{
-		_action = value;
-	}
+package cocoa {
+public class AbstractControl extends AbstractComponent implements Control {
+  protected var _action:Function;
+  public function set action(value:Function):void {
+    _action = value;
+  }
 
-	protected var _toolTip:String;
-	public function set toolTip(value:String):void
-	{
-		if (value != _toolTip)
-		{
-			_toolTip = value;
-			if (skin != null)
-			{
-				skin.toolTip = _toolTip;
-			}
-		}
-	}
+  protected var _toolTip:String;
+  public function set toolTip(value:String):void {
+    if (value != _toolTip) {
+      _toolTip = value;
+      if (skin != null) {
+        skin.toolTip = _toolTip;
+      }
+    }
+  }
 
-	protected var _actionRequireTarget:Boolean;
-	public function set actionRequireTarget(value:Boolean):void
-	{
-		_actionRequireTarget = value;
-	}
+  protected var _actionRequireTarget:Boolean;
+  public function set actionRequireTarget(value:Boolean):void {
+    _actionRequireTarget = value;
+  }
 
-	private var _state:int = CellState.OFF;
-	public final function get state():int
-	{
-		return _state;
-	}
-	public function set state(value:int):void
-	{
-		_state = value;
-		if (skin != null)
-		{
-			skin.invalidateDisplayList();
+  private var _state:int = CellState.OFF;
+  public final function get state():int {
+    return _state;
+  }
 
-			if (_alternateToolTip != null)
-			{
-				skin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
-			}
-		}
-	}
+  public function set state(value:int):void {
+    _state = value;
+    if (skin != null) {
+      skin.invalidateDisplayList();
 
-	public function get objectValue():Object
-	{
-		throw new Error("abstract");
-	}
+      if (_alternateToolTip != null) {
+        skin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
+      }
+    }
+  }
 
-	public function set objectValue(value:Object):void
-	{
-		throw new Error("abstract");
-	}
+  public function get objectValue():Object {
+    throw new Error("abstract");
+  }
 
-	override protected function skinAttachedHandler():void
-    {
-		super.skinAttachedHandler();
+  public function set objectValue(value:Object):void {
+    throw new Error("abstract");
+  }
 
-		if (_toolTip != null)
-		{
-			skin.toolTip = _toolTip;
-		}
-	}
+  override protected function skinAttachedHandler():void {
+    super.skinAttachedHandler();
 
-	private var _alternateToolTip:String;
-	public function set alternateToolTip(value:String):void
-	{
-		if (value != _alternateToolTip)
-		{
-			_alternateToolTip = value;
-			if (skin != null && state == CellState.ON)
-			{
-				skin.toolTip = _alternateToolTip;
-			}
-		}
-	}
+    if (_toolTip != null) {
+      skin.toolTip = _toolTip;
+    }
+  }
+
+  private var _alternateToolTip:String;
+  public function set alternateToolTip(value:String):void {
+    if (value != _alternateToolTip) {
+      _alternateToolTip = value;
+      if (skin != null && state == CellState.ON) {
+        skin.toolTip = _alternateToolTip;
+      }
+    }
+  }
 }
 }

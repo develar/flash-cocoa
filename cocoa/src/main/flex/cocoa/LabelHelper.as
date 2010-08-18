@@ -9,10 +9,6 @@ import flash.text.engine.TextLineCreationResult;
 import flash.text.engine.TextRotation;
 import flash.utils.Dictionary;
 
-import mx.core.mx_internal;
-
-use namespace mx_internal;
-
 /**
  * http://developer.apple.com/mac/library/DOCUMENTATION/UserExperience/Conceptual/AppleHIGuidelines/XHIGText/XHIGText.html#//apple_ref/doc/uid/TP30000365-TPXREF113
  */
@@ -209,7 +205,8 @@ public class LabelHelper {
           textBlock.recreateTextLine(_textLine);
         }
         else {
-          _textFormat.swfContext.callInContext(textBlock.recreateTextLine, textBlock, emptyArgs);
+          textBlockRecreateTextLineArgs[2] = 1000000;
+          _textFormat.swfContext.callInContext(textBlock.recreateTextLine, textBlock, textBlockRecreateTextLineArgs);
         }
       }
     }

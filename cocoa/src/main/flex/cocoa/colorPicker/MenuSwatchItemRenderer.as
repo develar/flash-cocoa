@@ -3,19 +3,12 @@ import cocoa.AbstractView;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.Graphics;
-import flash.events.MouseEvent;
 
 public class MenuSwatchItemRenderer extends AbstractView {
   private var swatchGrid:SwatchGrid;
 
   public function MenuSwatchItemRenderer() {
     super();
-
-    addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-  }
-
-  private function mouseMoveHandler(event:MouseEvent):void {
-    //event.stopImmediatePropagation();
   }
 
   private var _laf:LookAndFeel;

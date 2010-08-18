@@ -52,8 +52,6 @@ public class SwatchGridWithHighlightIndicator extends SwatchGrid {
     highlightIndicator.x = cellX;
     highlightIndicator.y = cellY;
     highlightIndicator.visible = true;
-
-    event.stopPropagation();
   }
 
   private function createHighlightIndicator():void {
