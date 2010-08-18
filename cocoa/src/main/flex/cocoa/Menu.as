@@ -15,14 +15,25 @@ public class Menu extends AbstractComponent {
     return _skinParts;
   }
 
+  private var pendingIndex:int = -1;
+
   ui var itemGroup:SingleSelectionDataGroup;
 
   ui function itemGroupAdded():void {
     itemGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE; // delegate to MenuController (see PopUpMenuController)
+    if (pendingIndex != -1) {
+      itemGroup.selectedIndex = pendingIndex;
+      pendingIndex = -1;
+    }
   }
 
   public function set selectedIndex(value:int):void {
-    itemGroup.selectedIndex = value;
+    if (itemGroup == null) {
+      pendingIndex = value;
+    }
+    else {
+     itemGroup.selectedIndex = value;
+    }
   }
 
   public function getItemAt(index:int):Object {

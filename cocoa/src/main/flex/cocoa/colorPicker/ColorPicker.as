@@ -10,58 +10,61 @@ public class ColorPicker extends PopUpButton {
   public function ColorPicker() {
     super();
 
-    _menu = new ColorPickerMenu();
-  }
-
-  private function colorChangeHandler(value:uint):void {
-
+    _menu = ColorPickerMenu.create();
   }
 
   public function get argb():uint {
-    return (0xff << 24) | selectedColor;
+    return (0xff << 24) | color;
   }
 
   public function get hasSelectedColor():Boolean {
-    return ColorPickerMenu(menu).isNoColorItem(selectedIndex);
+    return selectedIndex != ColorPickerMenu(menu).noColorItemIndex;
   }
 
-  public function get selectedColor():uint {
-    return 9;
+  private var _color:uint;
+  public function get color():uint {
+    return _color;
   }
 
-  public function set selectedColor(value:uint):void {
-  }
-
-  public function set dataProvider(value:Object):void {
-
+  public function set color(value:uint):void {
+    _color = value;
   }
 
   override protected function get primaryLaFKey():String {
     return "ColorPicker";
   }
 
-  override public function get objectValue():Object {
-    return 3;
-  }
-
   override protected function synchronizeTitleAndSelectedItem(event:Event = null):void {
-
   }
 
-  //	override public function commitProperties():void
-  //	{
-  //		super.commitProperties();
-  //
-  //		if (_menu == null)
-  //		{
-  //			var menu:Menu = new Menu();
-  //			menu.items = new ArrayList(WebSafePalette.getList());
-  //			this.menu = menu;
-  //		}
-  //	}
-  
-  override public function setSelectedIndex(value:int, callUserInitiatedActionHandler:Boolean = true):void {
-    super.setSelectedIndex(value, callUserInitiatedActionHandler);
+  public function setColorAndCallUserInitiatedActionHandler(index:int, value:Number):void {
+    if (index == ColorPickerMenu(menu).noColorItemIndex) {
+      setSelectedIndex(index, true);
+    }
+    else if (!isNaN(value) && value != color) {
+      color = value;
+      selectedIndex = index;
+      
+      if (_action != null) {
+        _action();
+      }
+    }
+  }
+
+  /**
+   * @return color if hasColor, or null
+   */
+  override public function get objectValue():Object {
+    return hasSelectedColor ? color : null;
+  }
+
+  override public function set objectValue(value:Object):void {
+    if (value is uint) {
+      color = uint(value);
+    }
+    else {
+      selectedIndex = ColorPickerMenu(menu).noColorItemIndex;
+    }
   }
 }
 }

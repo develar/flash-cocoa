@@ -682,14 +682,6 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
 
-  /**
-   *  @private
-   *  There is a bug (139381) where we occasionally get callLaterDispatcher()
-   *  even though we didn't expect it.
-   *  That causes us to do a removeEventListener() twice,
-   *  which messes up some internal thing in the player so that
-   *  the next addEventListener() doesn't actually get us the render event.
-   */
   private static const INITIALIZED:uint = 1 << 0;
   private static const DISABLED:uint = 1 << 11;
   private static const EXCLUDE_FROM_LAYOUT:uint = 1 << 12;
@@ -706,6 +698,11 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
   private static const BLEND_MODE_CHANGED:uint = 1 << 9;
 
   private static const MAINTAIN_PROJECTION_CENTER:uint = 1 << 10;
+
+  /**
+   * if component has been reparented, we need to potentially reassign systemManager, cause we could be in a new Window.
+   */
+  private static const SYSTEM_MANAGER_DIRTY:uint = 1 << 14;
 
   /**
    * when false, the transform on this component consists only of translation.  Otherwise, it may be arbitrarily complex.
@@ -1989,35 +1986,23 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
    */
   private var _systemManager:ISystemManager;
 
-  /**
-   *  @private
-   *  if component has been reparented, we need to potentially
-   *  reassign systemManager, cause we could be in a new Window.
-   */
-  private var _systemManagerDirty:Boolean = false;
-
   public function get systemManager():ISystemManager {
-    if (!_systemManager || _systemManagerDirty) {
+    if (_systemManager == null || (flags & SYSTEM_MANAGER_DIRTY) != 0) {
       var r:DisplayObject = root;
-      if (_systemManager && _systemManager.isProxy) {
+      if (_systemManager != null && _systemManager.isProxy) {
         // keep the existing proxy
       }
-      else if (r && !(r is Stage)) {
-        // If this object is attached to the display list, then
-        // the root property holds its SystemManager.
-        _systemManager = (r as ISystemManager);
-      }
-      else if (r) {
+      else if (r != null) {
+        // If this object is attached to the display list, then the root property holds its SystemManager.
         // if the root is the Stage, then we are in a second AIR window
-        _systemManager = Stage(r).getChildAt(0) as ISystemManager;
+        _systemManager = ISystemManager(r is Stage ? Stage(r).getChildAt(0) : r);
       }
       else {
-        // If this object isn't attached to the display list, then
-        // we need to walk up the parent chain ourselves.
+        // If this object isn't attached to the display list, then we need to walk up the parent chain ourselves.
         var o:DisplayObjectContainer = parent;
-        while (o) {
+        while (o != null) {
           var ui:IUIComponent = o as IUIComponent;
-          if (ui) {
+          if (ui != null) {
             _systemManager = ui.systemManager;
             break;
           }
@@ -2028,7 +2013,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
           o = o.parent;
         }
       }
-      _systemManagerDirty = false;
+      flags ^= SYSTEM_MANAGER_DIRTY;
     }
 
     return _systemManager;
@@ -2036,7 +2021,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
   public function set systemManager(value:ISystemManager):void {
     _systemManager = value;
-    _systemManagerDirty = false;
+    flags ^= SYSTEM_MANAGER_DIRTY;
   }
 
   /**
@@ -2063,7 +2048,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
     return sm;
   }
 
-  protected function invalidateSystemManager():void {
+  private function invalidateSystemManager():void {
     var n:int = numChildren;
     for (var i:int = 0; i < n; i++) {
       var child:AbstractView = getChildAt(i) as AbstractView;
@@ -2071,7 +2056,7 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
         child.invalidateSystemManager();
       }
     }
-    _systemManagerDirty = true;
+    flags |= SYSTEM_MANAGER_DIRTY;
   }
 
   private var _nestLevel:int = 0;

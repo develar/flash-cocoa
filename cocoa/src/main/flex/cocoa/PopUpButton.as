@@ -38,7 +38,10 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
 
       _menu = value;
       _menu.addEventListener(Event.CHANGE, synchronizeTitleAndSelectedItem);
-      invalidateProperties();
+
+      if (skin != null) {
+        synchronizeTitleAndSelectedItem();
+      }
     }
   }
 
@@ -101,6 +104,9 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
     return "PopUpButton";
   }
 
+  /**
+   * selected item
+   */
   override public function get objectValue():Object {
     return selectedItem;
   }

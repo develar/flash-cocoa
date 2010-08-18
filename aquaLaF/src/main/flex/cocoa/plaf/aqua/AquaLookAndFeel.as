@@ -11,25 +11,23 @@ import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9BitmapBorder;
+import cocoa.plaf.TextFormatID;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BitmapIcon;
-import cocoa.plaf.TextFormatID;
-import cocoa.plaf.basic.MenuSkin;
-import cocoa.plaf.basic.PullDownMenuController;
-import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.BoxSkin;
+import cocoa.plaf.basic.ColorPickerMenuController;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
+import cocoa.plaf.basic.MenuSkin;
+import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
-
 import cocoa.text.TextLayoutFormatImpl;
 
 import flash.display.BlendMode;
 import flash.utils.ByteArray;
 
 import flashx.textLayout.edit.SelectionFormat;
-
 import flashx.textLayout.formats.LineBreak;
 
 import mx.core.ClassFactory;
@@ -97,7 +95,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["ColorPicker"] = PushButtonSkin;
     data["ColorPicker.border"] = borders[BorderPosition.popUpButtonTexturedRounded];
-    data["ColorPicker.menuController"] = new SingletonClassFactory(PullDownMenuController);
+    data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
 
     data["Menu"] = MenuSkin;
     data["Menu.border"] = borders[BorderPosition.menu];
@@ -233,16 +231,16 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
 import cocoa.Border;
 import cocoa.plaf.LookAndFeelUtil;
-import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
+import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.MenuItemBorder;
 import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
-import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.TextInputSkin;
+import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.text.TextFormat;
 import cocoa.text.TextLayoutFormatImpl;
 

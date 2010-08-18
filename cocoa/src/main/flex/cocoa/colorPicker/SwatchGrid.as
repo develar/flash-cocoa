@@ -32,11 +32,6 @@ public class SwatchGrid extends Sprite {
 
   public function SwatchGrid() {
     mouseChildren = false;
-    addEventListener(MouseEvent.CLICK, clickHandler);
-  }
-
-  private function clickHandler(event:MouseEvent):void {
-    
   }
 
   public function drawGrid(list:Vector.<uint>, border:Border):void {

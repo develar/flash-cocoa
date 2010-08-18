@@ -45,8 +45,9 @@ public class AbstractListController {
       highlightedRenderer = event.target as HighlightableItemRenderer;
       if (highlightedRenderer != null) {
         highlightedRenderer.highlighted = true;
-        event.updateAfterEvent();
       }
+
+       event.updateAfterEvent();
     }
     else if (highlightedRenderer != null) {
       highlightedRenderer.highlighted = false;
