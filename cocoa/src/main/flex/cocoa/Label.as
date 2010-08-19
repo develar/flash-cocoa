@@ -174,15 +174,11 @@ public class Label extends AbstractView {
     switch (_textAlign) {
       case TextAlign.START:
       case TextAlign.LEFT:
-      {
         labelHelper.move(_paddingLeft, textY);
-      }
         break;
 
       case TextAlign.CENTER:
-      {
         labelHelper.moveToCenter(w, textY);
-      }
         break;
     }
   }

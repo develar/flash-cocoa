@@ -126,7 +126,6 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
     layoutMetrics.height = value;
   }
 
-  /* Component */
   public function createView(laf:LookAndFeel):Skin {
     if (_skinClass == null) {
       _skinClass = laf.getClass(lafKey);

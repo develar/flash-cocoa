@@ -14,7 +14,11 @@ public class ColorPicker extends PopUpButton {
   }
 
   public function get argb():uint {
-    return (0xff << 24) | color;
+    return _showsAlpha ? color : ((0xff << 24) | color);
+  }
+
+  public function get rgb():uint {
+    return _showsAlpha ? (color & 0x00ffffff) : color;
   }
 
   public function get hasSelectedColor():Boolean {
@@ -27,7 +31,20 @@ public class ColorPicker extends PopUpButton {
   }
 
   public function set color(value:uint):void {
-    _color = value;
+    if (value != _color) {
+      _color = value;
+      if (skin != null) {
+        skin.invalidateDisplayList();
+      }
+    }
+  }
+
+  private var _showsAlpha:Boolean = true;
+  public function get showsAlpha():Boolean {
+    return _showsAlpha;
+  }
+  public function set showsAlpha(value:Boolean):void {
+    _showsAlpha = value;
   }
 
   override protected function get primaryLaFKey():String {
@@ -35,6 +52,7 @@ public class ColorPicker extends PopUpButton {
   }
 
   override protected function synchronizeTitleAndSelectedItem(event:Event = null):void {
+    skin.invalidateDisplayList();
   }
 
   public function setColorAndCallUserInitiatedActionHandler(index:int, value:Number):void {
