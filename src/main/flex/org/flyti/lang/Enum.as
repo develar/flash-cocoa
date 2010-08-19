@@ -9,18 +9,18 @@ public class Enum
 	}
 
 	protected var _name:String;
-	public function get name():String
+	public final function get name():String
 	{
 		return _name;
 	}
 
 	private var _ordinal:int;
-	public function get ordinal():int
+	public final function get ordinal():int
 	{
 		return _ordinal;
 	}
 
-	public function toString():String
+	public final function toString():String
 	{
 		return _name;
 	}
