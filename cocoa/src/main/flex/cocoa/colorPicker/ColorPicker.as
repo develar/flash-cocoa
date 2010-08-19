@@ -22,7 +22,7 @@ public class ColorPicker extends PopUpButton {
   }
 
   public function get hasSelectedColor():Boolean {
-    return selectedIndex != ColorPickerMenu(menu).noColorItemIndex;
+    return selectedIndex == ColorPickerMenu(menu).colorItemIndex;
   }
 
   private var _color:uint;
@@ -31,8 +31,9 @@ public class ColorPicker extends PopUpButton {
   }
 
   public function set color(value:uint):void {
-    if (value != _color) {
+    if (value != _color || selectedIndex == ColorPickerMenu(menu).noColorItemIndex) {
       _color = value;
+      selectedIndex = ColorPickerMenu(menu).colorItemIndex;
       if (skin != null) {
         skin.invalidateDisplayList();
       }

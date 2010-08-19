@@ -1,6 +1,4 @@
-package cocoa.util {
-import cocoa.keyboard.Shortcut;
-
+package cocoa.keyboard {
 import flash.system.Capabilities;
 import flash.ui.Keyboard;
 

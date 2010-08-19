@@ -43,6 +43,10 @@ public class ColorPickerMenu extends Menu {
     return 1;
   }
 
+  public function get colorItemIndex():int {
+    return 0;
+  }
+
   private var _colorChangeHandler:Function;
   public function set colorChangeHandler(value:Function):void {
     _colorChangeHandler = value;
