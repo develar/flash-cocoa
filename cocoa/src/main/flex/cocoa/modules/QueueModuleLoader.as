@@ -1,67 +1,63 @@
-package cocoa.modules
-{
-import cocoa.modules.events.LoaderEvent;
-import cocoa.modules.events.ModuleLoaderEvent;
-import cocoa.modules.events.QueueModuleLoaderEvent;
+package cocoa.modules {
 import cocoa.modules.loaders.ModuleLoader;
 
-import flash.events.EventDispatcher;
+import flash.display.LoaderInfo;
+import flash.utils.Dictionary;
 
-import org.flyti.util.HashMap;
-import org.flyti.util.Map;
+public class QueueModuleLoader {
+  private var queueLoaderMap:Dictionary;
 
-public class QueueModuleLoader extends EventDispatcher
-{
-	private var queueLoaderMap:Map;
+  /**
+   * (queue:ModuleLoaderQueue):void
+   */
+  private var completeHandler:Function;
+  private var errorHandler:Function;
+  
+  public function QueueModuleLoader(completeHandler:Function, errorHandler:Function = null) {
+    this.completeHandler = completeHandler;
+    this.errorHandler = errorHandler;
+  }
 
-	public function load(queue:ModuleLoaderQueue):void
-	{
-		queue.initialize();
+  public function load(queue:ModuleLoaderQueue):void {
+    queue.initialize();
 
-		if (queueLoaderMap == null)
-		{
-			queueLoaderMap = new HashMap();
-		}
+    if (queueLoaderMap == null) {
+      queueLoaderMap = new Dictionary();
+    }
 
-		loadNext(queue);
-	}
+    loadNext(queue);
+  }
 
-	private function loadNext(queue:ModuleLoaderQueue):void
-	{
-		var loader:ModuleLoader = queue.next();
-		loader.addEventListener(LoaderEvent.COMPLETE, loadCompleteHandler);
-		loader.addEventListener(LoaderEvent.ERROR, loadErrorHandler);
+  private function loadNext(queue:ModuleLoaderQueue):void {
+    var loader:ModuleLoader = queue.next();
+    loader.completeHandler = loadCompleteHandler;
+    loader.errorHandler = loadErrorHandler;
 
-		queueLoaderMap.put(loader, queue);
-		loader.load();
-	}
+    queueLoaderMap[loader] = queue;
+    loader.load();
+  }
 
-	protected function loadCompleteHandler(event:ModuleLoaderEvent):void
-	{
-		removeLoaderEventListeners(event.loader);
+  protected function loadCompleteHandler(loader:ModuleLoader, loaderInfo:LoaderInfo):void {
 
-		var queue:ModuleLoaderQueue = ModuleLoaderQueue(queueLoaderMap.remove(event.loader));
-		event.loader.moduleInfo.ready = true;
-		if (queue.hasNext)
-		{
-			loadNext(queue);
-		}
-		else
-		{
-			dispatchEvent(new QueueModuleLoaderEvent(queue));
-		}
-	}
+    var queue:ModuleLoaderQueue = queueLoaderMap[loader];
+    delete queueLoaderMap[loader];
+    loader.moduleInfo.ready = true;
 
-	protected function loadErrorHandler(event:ModuleLoaderEvent):void
-	{
-		removeLoaderEventListeners(event.loader);
-		queueLoaderMap.remove(event.loader);
-	}
+    var itemCompleteHandler:Function = queue.getCurrentCompleteHandler();
+    if (itemCompleteHandler != null) {
+      itemCompleteHandler(loader, loaderInfo);
+    }
 
-	protected function removeLoaderEventListeners(loader:ModuleLoader):void
-	{
-		loader.removeEventListener(LoaderEvent.COMPLETE, loadCompleteHandler);
-		loader.removeEventListener(LoaderEvent.ERROR, loadErrorHandler);
-	}
+    if (queue.hasNext) {
+      loadNext(queue);
+    }
+    else {
+      completeHandler(queue);
+    }
+  }
+
+  protected function loadErrorHandler(loader:ModuleLoader):void {
+    delete queueLoaderMap[loader];
+  }
 }
 }

@@ -1,12 +1,9 @@
-package cocoa.modules.loaders
-{
+package cocoa.modules.loaders {
 import cocoa.message.ApplicationErrorEvent;
-import cocoa.modules.events.LoaderEvent;
 
 import flash.display.Loader;
 import flash.display.LoaderInfo;
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLRequest;
@@ -18,117 +15,115 @@ import flash.utils.getDefinitionByName;
 
 import org.flyti.plexus.Dispatcher;
 
-public class Loader extends EventDispatcher
-{
-	protected var uri:String;
+public class Loader {
+  protected var uri:String;
 
-	private static var fileClass:Class;
-	if (ApplicationDomain.currentDomain.hasDefinition("flash.filesystem.File"))
-	{
-		fileClass = getDefinitionByName("flash.filesystem.File") as Class;
-	}
+  /**
+   * (loader:Loader, loaderInfo:LoaderInfo):void
+   */
+  private var _completeHandler:Function;
+  public function set completeHandler(value:Function):void {
+    assert(_completeHandler == null);
+    _completeHandler = value;
+  }
 
-	public function Loader(uri:String = null, applicationDomain:ApplicationDomain = null)
-	{
-		this.uri = uri;
-		_applicationDomain = applicationDomain;
-	}
+  private var _errorHandler:Function;
+  public function set errorHandler(value:Function):void {
+    assert(_errorHandler == null);
+    _errorHandler = value;
+  }
 
-	private var _applicationDomain:ApplicationDomain;
-	public function get applicationDomain():ApplicationDomain
-	{
-		return _applicationDomain;
-	}
+  private static var fileClass:Class;
+  if (ApplicationDomain.currentDomain.hasDefinition("flash.filesystem.File")) {
+    fileClass = getDefinitionByName("flash.filesystem.File") as Class;
+  }
 
-	protected function get loadErrorMessage():String
-	{
-		return "errorLoad";
-	}
+  public function Loader(uri:String = null, applicationDomain:ApplicationDomain = null) {
+    this.uri = uri;
+    _applicationDomain = applicationDomain;
+  }
 
-	public function load():void
-	{
-		var loader:flash.display.Loader = new flash.display.Loader();
-		addLoaderListeners(loader.contentLoaderInfo);
-		adjustURI();
+  private var _applicationDomain:ApplicationDomain;
+  public function get applicationDomain():ApplicationDomain {
+    return _applicationDomain;
+  }
 
-		var loaderContext:LoaderContext = new LoaderContext(false, applicationDomain);
+  protected function get loadErrorMessage():String {
+    return "errorLoad";
+  }
 
-		const protocolNotSpecified:Boolean = fileClass != null && uri.indexOf(":/") == -1;
-		if (fileClass != null && (protocolNotSpecified || uri.indexOf("file://") == 0))
-		{
-			var filePath:String = uri;
-			if (!protocolNotSpecified)
-			{
-				filePath = filePath.substr(7);
-			}
+  public function load():void {
+    var loader:flash.display.Loader = new flash.display.Loader();
+    addLoaderListeners(loader.contentLoaderInfo);
+    adjustURI();
 
-			if (filePath.charAt(0) != "/")
-			{
-				filePath = Object(fileClass).applicationDirectory.nativePath + "/" + filePath;
-			}
-			var file:Object = new fileClass(filePath);
+    var loaderContext:LoaderContext = new LoaderContext(false, applicationDomain);
 
-			const fileStreamClass:Class = Class(getDefinitionByName("flash.filesystem.FileStream"));
-			var fileStream:Object = new fileStreamClass();
-			fileStream.open(file, "read");
-			var data:ByteArray = new ByteArray();
-			IDataInput(fileStream).readBytes(data);
-			fileStream.close();
+    const protocolNotSpecified:Boolean = fileClass != null && uri.indexOf(":/") == -1;
+    if (fileClass != null && (protocolNotSpecified || uri.indexOf("file://") == 0)) {
+      var filePath:String = uri;
+      if (!protocolNotSpecified) {
+        filePath = filePath.substr(7);
+      }
 
-			loaderContext["allowLoadBytesCodeExecution"] = true;
-			loader.loadBytes(data, loaderContext);
-		}
-		else
-		{
-			loader.load(new URLRequest(uri), loaderContext);
-		}
-	}
+      if (filePath.charAt(0) != "/") {
+        filePath = fileClass.applicationDirectory.nativePath + "/" + filePath;
+      }
+      var file:Object = new fileClass(filePath);
 
-	protected function adjustURI():void
-	{
+      const fileStreamClass:Class = Class(getDefinitionByName("flash.filesystem.FileStream"));
+      var fileStream:Object = new fileStreamClass();
+      fileStream.open(file, "read");
+      var data:ByteArray = new ByteArray();
+      IDataInput(fileStream).readBytes(data);
+      fileStream.close();
 
-	}
+      loaderContext.allowCodeImport = true;
+      loader.loadBytes(data, loaderContext);
+    }
+    else {
+      loader.load(new URLRequest(uri), loaderContext);
+    }
+  }
 
-	protected function addLoaderListeners(dispatcher:LoaderInfo):void
-	{
-		dispatcher.addEventListener(IOErrorEvent.IO_ERROR, loadErrorHandler);
-		dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadErrorHandler);
-		dispatcher.addEventListener(Event.COMPLETE, loadCompleteHandler);
-	}
+  protected function adjustURI():void {
 
-	private function removeLoaderListeners(dispatcher:LoaderInfo):void
-	{
-		dispatcher.removeEventListener(IOErrorEvent.IO_ERROR, loadErrorHandler);
-		dispatcher.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, loadErrorHandler);
-		dispatcher.removeEventListener(Event.COMPLETE, loadCompleteHandler);
-	}
+  }
 
-	protected function dispatchCompleteEvent(event:Event):void
-	{
-		dispatchEvent(new LoaderEvent(LoaderEvent.COMPLETE, LoaderInfo(event.currentTarget)));
-	}
+  private function addLoaderListeners(dispatcher:LoaderInfo):void {
+    dispatcher.addEventListener(IOErrorEvent.IO_ERROR, loadErrorHandler);
+    dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadErrorHandler);
+    dispatcher.addEventListener(Event.COMPLETE, loadCompleteHandler);
+  }
 
-	protected function dispatchErrorEvent(event:Event):void
-	{
-		dispatchEvent(new LoaderEvent(LoaderEvent.ERROR, LoaderInfo(event.currentTarget)));
-		Dispatcher.dispatch(new ApplicationErrorEvent(loadErrorMessage, event));
-	}
+  private function removeLoaderListeners(dispatcher:LoaderInfo):void {
+    dispatcher.removeEventListener(IOErrorEvent.IO_ERROR, loadErrorHandler);
+    dispatcher.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, loadErrorHandler);
+    dispatcher.removeEventListener(Event.COMPLETE, loadCompleteHandler);
+  }
 
-	protected function loadCompleteHandler(event:Event):void
-	{
-		dispatchCompleteEvent(event);
-		clear(event);
-	}
+  protected function loadCompleteHandler(event:Event):void {
+    _completeHandler(this, event.currentTarget as LoaderInfo);
+    clear(event);
 
-	protected function loadErrorHandler(event:Event):void
-	{
-		dispatchErrorEvent(event);
-		clear(event);
-	}
+    _completeHandler = null;
+    _errorHandler = null;
+  }
 
-	protected function clear(event:Event):void
-	{
-		removeLoaderListeners(LoaderInfo(event.currentTarget));
-	}
+  protected function loadErrorHandler(event:Event):void {
+    if (_errorHandler != null) {
+      _errorHandler(this);
+    }
+    Dispatcher.dispatch(new ApplicationErrorEvent(loadErrorMessage, event));
+
+    clear(event);
+
+    _completeHandler = null;
+    _errorHandler = null;
+  }
+
+  protected function clear(event:Event):void {
+    removeLoaderListeners(LoaderInfo(event.currentTarget));
+  }
 }
 }
