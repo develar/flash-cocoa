@@ -19,6 +19,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>foundation</module>
     <module>asset-builder-maven-plugin</module>
     <module>cocoa</module>
     <module>acocoa</module>

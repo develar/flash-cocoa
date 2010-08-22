@@ -1,6 +1,6 @@
 package cocoa.keyboard
 {
-public class Shortcut
+public final class Shortcut
 {
 	public static const ANY_PROFILE:uint = 0;
 	

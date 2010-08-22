@@ -12,11 +12,18 @@ public class ColorPickerMenuController extends PullDownMenuController {
   }
 
   private function setColorHandler(event:ColorEvent):void {
-    proposedColor = event.color;
+    // пока что нам приходит только rgb
+    proposedColor = ColorPicker(popUpButton).showsAlpha ? ((0xff << 24) | event.color) : event.color;
   }
 
   override protected function setSelectedIndex(value:int):void {
     ColorPicker(popUpButton).setColorAndCallUserInitiatedActionHandler(value, proposedColor);
+  }
+
+  override protected function close():void {
+    super.close();
+
+    proposedColor = NaN;
   }
 }
 }

@@ -677,7 +677,7 @@ use namespace mx_internal;
  *  class for other classes.</p>
  */
 [Abstract]
-public class AbstractView extends FlexSprite implements View, IAutomationObject, IInvalidating, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
+public class AbstractView extends FlexSprite implements View, IAutomationObject, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
   public static const LAYOUT_DIRECTION_LTR:String = "ltr";
 
   private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
