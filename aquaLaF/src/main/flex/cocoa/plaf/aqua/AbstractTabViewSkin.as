@@ -3,7 +3,7 @@ package cocoa.plaf.aqua
 import cocoa.Insets;
 import cocoa.ItemMouseSelectionMode;
 import cocoa.SingleSelectionDataGroup;
-import cocoa.layout.CardLayout;
+import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.basic.AbstractSkin;
@@ -15,7 +15,7 @@ import mx.core.ILayoutElement;
 public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 {
 	protected var segmentedControl:SingleSelectionDataGroup;
-	protected var viewStack:CardLayout;
+	protected var viewStack:ViewStack;
 
 	public function childCanSkipMeasurement(element:ILayoutElement):Boolean
 	{
@@ -34,7 +34,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout
 
 		if (viewStack == null)
 		{
-			viewStack = new CardLayout();
+			viewStack = new ViewStack();
 			viewStack.laf = laf;
 			viewStack.move(contentInsets.left, contentInsets.top);
 			addChild(viewStack);

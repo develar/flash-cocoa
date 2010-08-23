@@ -17,7 +17,7 @@ public class Box extends AbstractComponent implements ViewContainerProvider
 		return _skinParts;
 	}
 
-	ui var contentGroup:Group;
+	ui var contentGroup:Container;
 
 	public function Box()
 	{

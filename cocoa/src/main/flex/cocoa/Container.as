@@ -27,12 +27,12 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class Group extends GroupBase implements ViewContainer, LookAndFeelProvider, IVisualElementContainer
+public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider, IVisualElementContainer
 {
 	private var createChildrenCalled:Boolean;
 	private var subviewsChanged:Boolean;
 
-	public function Group()
+	public function Container()
 	{
 		super();
 
