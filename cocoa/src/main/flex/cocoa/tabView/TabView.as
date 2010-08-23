@@ -1,7 +1,7 @@
 package cocoa.tabView {
 import cocoa.ListSelection;
 import cocoa.SingleSelectionBar;
-import cocoa.ViewStack;
+import cocoa.layout.CardLayout;
 import cocoa.Viewable;
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
@@ -27,7 +27,7 @@ public class TabView extends SingleSelectionBar {
     return _skinParts;
   }
 
-  ui var viewStack:ViewStack;
+  ui var viewStack:CardLayout;
 
   override protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void {
     var oldItem:PaneItem;

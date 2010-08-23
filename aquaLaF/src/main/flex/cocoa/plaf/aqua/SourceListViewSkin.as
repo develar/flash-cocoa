@@ -1,6 +1,6 @@
 package cocoa.plaf.aqua
 {
-import cocoa.Container;
+import cocoa.Group;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.LayoutMetrics;
 import cocoa.plaf.basic.AbstractSkin;
@@ -14,7 +14,7 @@ public class SourceListViewSkin extends AbstractSkin implements AdvancedLayout
 	private static const STROKE_THICKNESS:Number = 1;
 	private static const STROKE_OFFSET:Number = STROKE_THICKNESS / 2;
 
-	private var contentGroup:Container;
+	private var contentGroup:Group;
 
 	public function SourceListViewSkin()
 	{
@@ -34,7 +34,7 @@ public class SourceListViewSkin extends AbstractSkin implements AdvancedLayout
 	{
 		if (contentGroup == null)
 		{
-			contentGroup = new Container();
+			contentGroup = new Group();
 			addChild(contentGroup);
 			component.uiPartAdded("contentGroup", contentGroup);
 		}

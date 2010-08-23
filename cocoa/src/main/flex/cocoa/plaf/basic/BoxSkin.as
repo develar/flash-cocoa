@@ -1,10 +1,10 @@
 package cocoa.plaf.basic
 {
-import cocoa.Container;
+import cocoa.Group;
 
 public class BoxSkin extends AbstractSkin
 {
-	protected var contentGroup:Container;
+	protected var contentGroup:Group;
 
 	override protected function createChildren():void
 	{
@@ -12,7 +12,7 @@ public class BoxSkin extends AbstractSkin
 
 		if (contentGroup == null)
 		{
-			contentGroup = new Container();
+			contentGroup = new Group();
 			component.uiPartAdded("contentGroup", contentGroup);
 			addChild(contentGroup);
 		}

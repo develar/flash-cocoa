@@ -1,11 +1,11 @@
 package cocoa.tabView
 {
-import cocoa.Container;
+import cocoa.Group;
 
 import spark.layouts.HorizontalLayout;
 
 [Abstract]
-public class Tab extends Container
+public class Tab extends Group
 {
 	protected var _active:Boolean;
 	public function set active(value:Boolean):void

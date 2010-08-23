@@ -95,7 +95,7 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
 		{
 			if (_mxmlContent.length > 1)
 			{
-				var container:Container = new Container();
+				var container:Group = new Group();
 				container.subviews = _mxmlContent;
 				mySkin.contentView = container;
 			}
