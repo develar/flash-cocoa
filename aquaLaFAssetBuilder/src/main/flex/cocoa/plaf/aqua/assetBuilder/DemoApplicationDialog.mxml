@@ -66,6 +66,20 @@
 			</Menu>
 		</PopUpButton>
 
+    <Container>
+      <layout>
+        <CenterEqualizedLayout labelBelow="true" fieldGap="3" maxRowCount="3"/>
+      </layout>
+
+      <Label title="Width"/>
+      <TextInput id="widthNumericStepper"/>
+
+      <Label title="Height"/>
+      <TextInput id="heightNumericStepper"/>
+
+      <CheckBox id="constrainProportionsCheckBox" title="Constrain proportions"/>
+    </Container>
+
     <ColorPicker id="colorPicker" width="44" action="updateTextValue"/>
     <Label id="colorValue"/>
 
@@ -82,4 +96,4 @@
 
 		<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}" height="400"/>
 	</Container>
-</Didwdwfwefweffqwefqwefqwdddddddwdvcqerwdalog>
+</Dialog>

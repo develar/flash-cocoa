@@ -1,0 +1,52 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="aquaLaF [asset-builder generate]" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings">
+        <MavenGeneralSettings>
+          <option name="checksumPolicy" value="FAIL" />
+          <option name="failureBehavior" value="FAST" />
+          <option name="mavenHome" value="" />
+          <option name="mavenSettingsFile" value="" />
+          <option name="nonRecursive" value="false" />
+          <option name="overridenLocalRepository" value="" />
+          <option name="pluginUpdatePolicy" value="DO_NOT_UPDATE" />
+          <option name="printErrorStackTraces" value="true" />
+          <option name="snapshotUpdatePolicy" value="DO_NOT_UPDATE" />
+          <option name="usePluginRegistry" value="false" />
+          <option name="workOffline" value="true" />
+        </MavenGeneralSettings>
+      </option>
+      <option name="myRunnerSettings">
+        <MavenRunnerSettings>
+          <option name="jreName" value="1.6" />
+          <option name="mavenProperties">
+            <map />
+          </option>
+          <option name="runMavenInBackground" value="true" />
+          <option name="skipTests" value="false" />
+          <option name="vmOptions" value="" />
+        </MavenRunnerSettings>
+      </option>
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="goals">
+            <list>
+              <option value="org.flyti:asset-builder-maven-plugin:1.1-SNAPSHOT:generate" />
+            </list>
+          </option>
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="workingDirPath" value="$PROJECT_DIR$/aquaLaF" />
+        </MavenRunnerParameters>
+      </option>
+    </MavenSettings>
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="52742" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
+    <ConfigurationWrapper RunnerId="Debug" />
+    <method />
+  </configuration>
+</component>

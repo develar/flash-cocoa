@@ -1,41 +1,29 @@
 package org.flyti.assetBuilder;
 
-import org.simpleframework.xml.Attribute;
+public class Insets {
+  public int left;
+  public int top;
+  public int right;
+  public int bottom;
 
-public class Insets
-{
-	@Attribute(required = false)
-	public int left;
-	@Attribute(required = false)
-	public int top;
-	@Attribute(required = false)
-	public int right;
-	@Attribute(required = false)
-	public int bottom;
+  public byte truncatedTailMargin = -1;
 
-	@Attribute(required = false)
-	public byte truncatedTailMargin = -1;
+  public Insets(int left, int top, int right, int bottom) {
+    this.left = left;
+    this.top = top;
+    this.right = right;
+    this.bottom = bottom;
+  }
 
-	public Insets(int left, int top, int right, int bottom)
-	{
-		this.left = left;
-		this.top = top;
-		this.right = right;
-		this.bottom = bottom;
-	}
+  @SuppressWarnings({"UnusedDeclaration"})
+  public Insets() {
+  }
 
-	@SuppressWarnings({"UnusedDeclaration"})
-	public Insets()
-	{
-	}
+  public int getWidth() {
+    return left + right;
+  }
 
-	public int getWidth()
-	{
-		return left + right;
-	}
-
-	public int getHeight()
-	{
-		return top + bottom;
-	}
+  public int getHeight() {
+    return top + bottom;
+  }
 }

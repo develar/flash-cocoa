@@ -21,6 +21,13 @@
     </dependency>
 
     <dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>mx</artifactId>
+			<version>${fdk.version}</version>
+			<type>swc</type>
+		</dependency>
+
+    <dependency>
       <groupId>com.adobe.flex.framework</groupId>
       <artifactId>flex-framework</artifactId>
       <type>pom</type>

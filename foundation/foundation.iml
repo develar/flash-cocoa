@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="flex" name="Flex">
       <configuration flex_sdk="compiler-4.5.0.17440.pom">
-        <option name="DO_BUILD" value="true" />
+        <option name="DO_BUILD" value="false" />
         <option name="OUTPUT_TYPE" value="Library" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
         <option name="USE_CUSTOM_CONFIG_FILE" value="true" />
@@ -41,16 +41,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.1.0.17251" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flash:playerglobal:swc:10.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flexunit:flexunit:swc:4.0-rc-1.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-as3:swc:1.0.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.digitalprimates.fluint:fluint:swc:1.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: flash.flashx:textLayout:swc:1.1.0.604" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:spark:swc:4.1.0.17251" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.1.0.17251" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.1.0.17251" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.1.0.17251" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flexunit:uiRunner:swc:4.0-rc-1.1" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.17440" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flash:playerglobal:swc:10.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flexunit:flexunit:swc:4.0-rc-1.1" level="project" />

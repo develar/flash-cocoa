@@ -15,7 +15,7 @@ import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
 /**
- * https://astra.rit.com:8443/display/~v.krivosheev/Cocoa+lib+and+Aqua+LaF+for+Flex#CocoalibandAquaLaFforFlex-Layout
+ * http://astra.rit.com:8443/display/~v.krivosheev/Cocoa+lib+and+Aqua+LaF+for+Flex#CocoalibandAquaLaFforFlex-Layout
  */
 public class CenterEqualizedLayout extends LayoutBase {
   private var columns:Vector.<Column>;

@@ -7,8 +7,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.IOUtil;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -48,7 +49,7 @@ public class AssetBuilderMojo extends AbstractMojo {
   private File output;
 
   /**
-   * @parameter default-value="src/main/resources/assets.xml"
+   * @parameter default-value="src/main/resources/assets.yml"
    */
   @SuppressWarnings({"UnusedDeclaration"})
   private File descriptor;
@@ -65,7 +66,7 @@ public class AssetBuilderMojo extends AbstractMojo {
     }
 
     if (!descriptor.exists()) {
-      getLog().warn("");
+      getLog().warn("Can't find assets descriptor");
       return;
     }
 
@@ -76,13 +77,17 @@ public class AssetBuilderMojo extends AbstractMojo {
       throw new MojoExecutionException("Can't set up images source directories", e);
     }
 
-    Serializer serializer = new Persister();
-    AssetSet assetSet;
+    final Constructor constructor = new Constructor(AssetSet.class);
+    final TypeDescription borderDescription = new TypeDescription(AssetSet.class);
+    borderDescription.putListPropertyType("borders", Border.class);
+    constructor.addTypeDescription(borderDescription);
+    final Yaml yaml = new Yaml(constructor);
+    final AssetSet assetSet;
     try {
-      assetSet = serializer.read(AssetSet.class, descriptor);
+      assetSet = (AssetSet) yaml.load(new FileInputStream(descriptor));
     }
-    catch (Exception e) {
-      throw new MojoExecutionException("Can't parse descriptor", e);
+    catch (FileNotFoundException e) {
+       throw new MojoExecutionException("Can't read descriptor", e);
     }
 
     //noinspection ResultOfMethodCallIgnored
