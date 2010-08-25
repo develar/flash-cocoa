@@ -1,38 +1,13 @@
 package org.flyti.assetBuilder;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
+public class Border {
+  public String key;
+  public String subkey;
 
-//public class Border
-//{
-//	@Attribute
-//	public String key;
-//	@Attribute(required = false)
-//	public String subkey;
-//
-//	@Attribute
-//	public String type;
-//
-//	@Element(required = false)
-//	public Insets contentInsets;
-//
-//	@Element(required = false)
-//	public Insets frameInsets;
-//
-//	@Attribute(required = false)
-//	public String appleResource;
-//}
+  public BorderType type;
 
-public class Border
-{
-	public String key;
-	public String subkey;
+  public Insets contentInsets;
+  public Insets frameInsets;
 
-	public String type;
-
-	public Insets contentInsets;
-
-	public Insets frameInsets;
-
-	public String appleResource;
+  public String appleResource;
 }

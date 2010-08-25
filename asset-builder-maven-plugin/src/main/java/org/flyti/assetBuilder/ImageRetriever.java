@@ -17,6 +17,9 @@ import java.util.List;
 public class ImageRetriever {
   private static final FileFilter ASSET_FILE_FILTER = new SuffixFileFilter(new String[]{".png"});
   private static final String[] BUTTON_IMAGE_PARTS = {"Left", "Fill", "Right"};
+  private static final String[] CHECK_BOX_STATE_PARTS = {"Off", "On"};
+
+  private static final String[] DEFAULT_APPLE_STATES = {"N", "P"};
 
   private List<File> sources;
 
@@ -25,7 +28,16 @@ public class ImageRetriever {
   }
 
   // Ищет изображения как они в Apple app resources
-  public BufferedImage[] getImagesFromAppleResources(String appleResource, String[] states) throws MojoExecutionException, IOException {
+  public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws MojoExecutionException, IOException {
+    if (appleResource.endsWith("_")) {
+      return getImagesForCheckBoxFromAppleResources(appleResource, DEFAULT_APPLE_STATES);
+    }
+    else {
+      return getImagesForButtonFromAppleResources(appleResource, DEFAULT_APPLE_STATES);
+    }
+  }
+
+  private BufferedImage[] getImagesForButtonFromAppleResources(final String appleResource, final String[] states) throws MojoExecutionException, IOException {
     BufferedImage[] images = new BufferedImage[3 * 2];
 
     int imageIndex = 0;
@@ -52,6 +64,30 @@ public class ImageRetriever {
 
         for (String partName : BUTTON_IMAGE_PARTS) {
           images[imageIndex++] = JAI.create("fileload", prefix + partName + "-D.tiff").getAsBufferedImage();
+        }
+      }
+
+      return images;
+    }
+
+    throw new MojoExecutionException("Can't find image for " + appleResource);
+  }
+
+  private BufferedImage[] getImagesForCheckBoxFromAppleResources(final String appleResource, final String[] states) throws MojoExecutionException, IOException {
+    BufferedImage[] images = new BufferedImage[4];
+
+    int imageIndex = 0;
+    sl:
+    for (File sourceDirectory : sources) {
+      final String prefix = sourceDirectory.getAbsolutePath() + File.separator + appleResource;
+      for (int i = 0; i < 2; i++) {
+        for (String partName : CHECK_BOX_STATE_PARTS) {
+          File file = new File(prefix + partName + "-" + states[i] + ".tiff");
+          if (imageIndex == 0 && !file.exists()) {
+            continue sl;
+          }
+
+          images[imageIndex++] = JAI.create("fileload", file.getAbsolutePath()).getAsBufferedImage();
         }
       }
 

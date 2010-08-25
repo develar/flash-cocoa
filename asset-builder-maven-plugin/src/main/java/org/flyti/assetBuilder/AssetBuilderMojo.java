@@ -26,7 +26,6 @@ import java.util.List;
  */
 public class AssetBuilderMojo extends AbstractMojo {
   private static final String[] DEFAULT_STATES = {"off", "on", "over"};
-  private static final String[] DEFAULT_APPLE_STATES = {"N", "P"};
 
   /**
    * @parameter expression="${asset.builder.skip}"
@@ -173,23 +172,21 @@ public class AssetBuilderMojo extends AbstractMojo {
     ImageRetriever imageRetriever = new ImageRetriever(sources);
 
     for (Border border : borders) {
-      BorderType borderType = BorderType.valueOf(border.type);
-
       final String key = border.subkey == null ? border.key : (border.subkey + "." + border.key);
       out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".border") : key);
 
       final BufferedImage[] sourceImages;
       if (border.appleResource == null) {
-        sourceImages = imageRetriever.getImages(key, borderType == BorderType.OneBitmap ? null : DEFAULT_STATES);
+        sourceImages = imageRetriever.getImages(key, border.type == BorderType.OneBitmap ? null : DEFAULT_STATES);
       }
       else {
-        sourceImages = imageRetriever.getImagesFromAppleResources(border.appleResource, DEFAULT_APPLE_STATES);
+        sourceImages = imageRetriever.getImagesFromAppleResources(border.appleResource);
       }
 
-      if (borderType == BorderType.Scale3EdgeHBitmap) {
+      if (border.type == BorderType.Scale3EdgeHBitmap) {
         if (border.appleResource == null) {
           if ((sourceImages[0].getWidth() == sourceImages[1].getWidth())) {
-            out.writeByte(borderType.ordinal());
+            out.writeByte(border.type.ordinal());
             // мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
             // иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
             // Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
@@ -201,13 +198,13 @@ public class AssetBuilderMojo extends AbstractMojo {
           }
         }
         else {
-          out.writeByte(borderType.ordinal());
+          out.writeByte(border.type.ordinal());
           out.write(joinButtonAppleResources(sourceImages));
         }
       }
       else {
-        out.writeByte(borderType.ordinal());
-        switch (borderType) {
+        out.writeByte(border.type.ordinal());
+        switch (border.type) {
           case OneBitmap: {
             out.write(sourceImages[0]);
           }

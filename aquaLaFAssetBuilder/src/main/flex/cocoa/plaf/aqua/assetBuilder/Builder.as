@@ -87,15 +87,6 @@ public class Builder
 	[Embed(source="/hud/HUD-SliderTrack-RightCap.png")]
 	private static var hudSliderTrackRightCap:Class;
 
-	[Embed(source="/hud/HUD-Checkbox_Off-N.png")]
-	private static var hudCheckBoxOff:Class;
-	[Embed(source="/hud/HUD-Checkbox_Off-P.png")]
-	private static var hudCheckBoxOffH:Class;
-	[Embed(source="/hud/HUD-Checkbox_On-N.png")]
-	private static var hudCheckBoxOn:Class;
-	[Embed(source="/hud/HUD-Checkbox_On-P.png")]
-	private static var hudCheckBoxOnH:Class;
-
 	[Embed(source="/hud/HUDCloseButtonNormal.png")]
 	private static var hudTitleBarCloseButtonOff:Class;
 	[Embed(source="/hud/HUDCloseButtonPressed.png")]
@@ -196,8 +187,8 @@ public class Builder
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(), new <Class>[hudSliderTrackLeftCap, hudSliderTrackFill, hudSliderTrackRightCap], BorderPosition.sliderTrack);
 
 		// HUD CheckBox
-		borders[BorderPosition.checkBox] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudCheckBoxOff, hudCheckBoxOffH, hudCheckBoxOn, hudCheckBoxOnH]),
-																		new Insets(12 + 6, 0, 0, 2), new FrameInsets(-1, 0, -1, -1));
+//		borders[BorderPosition.checkBox] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudCheckBoxOff, hudCheckBoxOffH, hudCheckBoxOn, hudCheckBoxOnH]),
+//																		new Insets(12 + 6, 0, 0, 2), new FrameInsets(-1, 0, -1, -1));
 
 		borders[BorderPosition.hudTitleBarCloseButton] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudTitleBarCloseButtonOff, hudTitleBarCloseButtonOn, hudTitleBarCloseButtonDisabled]));
 

@@ -282,6 +282,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     data[TextFormatID.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
 
     LookAndFeelUtil.initAssets(data, assetsDataClass);
+    assetsDataClass = null;
 
     data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
@@ -309,8 +310,6 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
 
     data["Slider.thumb"] = borders[BorderPosition.sliderThumb];
     data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
-
-    data["CheckBox.border"] = borders[BorderPosition.checkBox];
 
     data["TitleBar.PushButton"] = _parent.getClass("PushButton");
     data["TitleBar.PushButton.border"] = borders[BorderPosition.hudTitleBarCloseButton];
