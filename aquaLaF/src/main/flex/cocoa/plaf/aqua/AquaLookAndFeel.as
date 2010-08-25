@@ -1,5 +1,6 @@
 package cocoa.plaf.aqua {
 import cocoa.Border;
+import cocoa.ClassFactory;
 import cocoa.FrameInsets;
 import cocoa.Icon;
 import cocoa.SingletonClassFactory;
@@ -29,8 +30,6 @@ import flash.utils.ByteArray;
 
 import flashx.textLayout.edit.SelectionFormat;
 import flashx.textLayout.formats.LineBreak;
-
-import mx.core.ClassFactory;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
@@ -139,6 +138,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["NumericStepper"] = NumericStepperSkin;
     data["CheckBox"] = CheckBoxSkin;
+    data["CheckBox.border"] = borders[BorderPosition.pushButtonRounded];
     data["HSlider"] = HSliderSkin;
 
     data["TextInput"] = TextInputSkin;
@@ -312,7 +312,6 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
 
     data["TitleBar.PushButton"] = _parent.getClass("PushButton");
-    data["TitleBar.PushButton.border"] = borders[BorderPosition.hudTitleBarCloseButton];
   }
 
   private function createDefaultTextFormat():TextLayoutFormatImpl {

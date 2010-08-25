@@ -25,9 +25,7 @@ public final class BorderPosition {
   public static const sliderThumb:int = spinnerButton + 2;
   public static const sliderTrack:int = sliderThumb + 1;
 
-  public static const hudTitleBarCloseButton:int = sliderTrack + 1;
-
-  public static const treeItem:int = hudTitleBarCloseButton + 1;
+  public static const treeItem:int = sliderTrack + 1;
   public static const treeDisclosureSideBar:int = treeItem + 1;
 
   public static const textField:int = treeDisclosureSideBar + 2;

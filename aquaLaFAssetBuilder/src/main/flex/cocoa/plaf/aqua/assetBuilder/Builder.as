@@ -87,13 +87,6 @@ public class Builder
 	[Embed(source="/hud/HUD-SliderTrack-RightCap.png")]
 	private static var hudSliderTrackRightCap:Class;
 
-	[Embed(source="/hud/HUDCloseButtonNormal.png")]
-	private static var hudTitleBarCloseButtonOff:Class;
-	[Embed(source="/hud/HUDCloseButtonPressed.png")]
-	private static var hudTitleBarCloseButtonOn:Class;
-	[Embed(source="/hud/HUDCloseButtonDisabled.png")]
-	private static var hudTitleBarCloseButtonDisabled:Class;
-
 	[Embed(source="/Tree.border.png")]
 	private static var treeBorder:Class;
 
@@ -137,18 +130,6 @@ public class Builder
 		return Scale1BitmapBorder.create(bitmaps, null, frameInsets == null ? new FrameInsets(-1, 0, -1, on == hudSpinnerIncrementButtonOn ? 0 : -2) : frameInsets);
 	}
 
-	private function bitmapClassesToBitmaps(bitmapClasses:Vector.<Class>):Vector.<BitmapData>
-	{
-		bitmapClasses.fixed = true;
-		var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(bitmapClasses.length, true);
-		for (var i:int = 0; i < bitmapClasses.length; i++)
-		{
-			bitmaps[i] = Bitmap(new bitmapClasses[i]).bitmapData;
-		}
-
-		return bitmaps;
-	}
-
 	private var borders:Vector.<Border>;
 
 	public function build(testContainer:DisplayObjectContainer):void
@@ -185,12 +166,6 @@ public class Builder
 
 		// HUD Slider Track
 		compoundImageReader.readButtonAdditionalBitmaps(Scale3EdgeHBitmapBorder.create(), new <Class>[hudSliderTrackLeftCap, hudSliderTrackFill, hudSliderTrackRightCap], BorderPosition.sliderTrack);
-
-		// HUD CheckBox
-//		borders[BorderPosition.checkBox] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudCheckBoxOff, hudCheckBoxOffH, hudCheckBoxOn, hudCheckBoxOnH]),
-//																		new Insets(12 + 6, 0, 0, 2), new FrameInsets(-1, 0, -1, -1));
-
-		borders[BorderPosition.hudTitleBarCloseButton] = Scale1BitmapBorder.create(bitmapClassesToBitmaps(new <Class>[hudTitleBarCloseButtonOff, hudTitleBarCloseButtonOn, hudTitleBarCloseButtonDisabled]));
 
 		// для tree content insets left это h gap между иконкой/текстом
 		borders[BorderPosition.treeItem] = OneBitmapBorder.create(Bitmap(new treeBorder()).bitmapData, new Insets(4, 0, 7, 6));

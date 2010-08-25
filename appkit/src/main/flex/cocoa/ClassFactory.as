@@ -1,19 +1,15 @@
-package cocoa
-{
+package cocoa {
 import mx.core.IFactory;
 
-public class ClassFactory implements IFactory
-{
-	private var clazz:Class;
+public class ClassFactory implements IFactory {
+  private var clazz:Class;
 
-	public function ClassFactory(clazz:Class)
-	{
-		this.clazz = clazz;
-	}
+  public function ClassFactory(clazz:Class) {
+    this.clazz = clazz;
+  }
 
-	public function newInstance():*
-	{
-		return new clazz();
-	}
+  public function newInstance():* {
+    return new clazz();
+  }
 }
 }
