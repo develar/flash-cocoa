@@ -68,14 +68,14 @@
 
     <Container>
       <layout>
-        <CenterEqualizedLayout labelBelow="true" fieldGap="3" maxRowCount="3"/>
+        <CenterEqualizedLayout labelBelow="true" fieldGap="3" maxRowCount="2"/>
       </layout>
 
       <Label title="Width"/>
-      <TextInput id="widthNumericStepper"/>
+      <TextInput id="widthNumericStepper" width="100"/>
 
       <Label title="Height"/>
-      <TextInput id="heightNumericStepper"/>
+      <TextInput id="heightNumericStepper" width="100"/>
 
       <CheckBox id="constrainProportionsCheckBox" title="Constrain proportions"/>
     </Container>

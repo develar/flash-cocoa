@@ -3,28 +3,22 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.flyti.cocoa</groupId>
-    <artifactId>cocoaAggregator</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <groupId>org.flyti</groupId>
+    <artifactId>flash-forge</artifactId>
+    <version>1.0.13</version>
   </parent>
 
+  <properties>
+		<fdk.version>4.5.0.17440</fdk.version>
+		<flex.sdk.version>4.5.0.17440</flex.sdk.version>
+		<flexMojos.version>3.8-de3.1</flexMojos.version>
+	</properties>
+
   <artifactId>foundation</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
   <packaging>swc</packaging>
 
   <dependencies>
-    <dependency>
-      <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>framework</artifactId>
-      <type>swc</type>
-    </dependency>
-    <dependency>
-      <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>spark</artifactId>
-      <type>css</type>
-      <version>${fdk.version}</version>
-      <classifier>theme</classifier>
-    </dependency>
     <dependency>
       <groupId>com.adobe.flash</groupId>
       <artifactId>playerglobal</artifactId>

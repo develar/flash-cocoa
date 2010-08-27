@@ -7,12 +7,12 @@
         <option name="OUTPUT_TYPE" value="Library" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
         <option name="USE_CUSTOM_CONFIG_FILE" value="true" />
-        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/foundation-1.1.6-config-report.xml" />
+        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/foundation-1.1.7-config-report.xml" />
         <option name="USE_CUSTOM_CONFIG_FILE_FOR_TESTS" value="false" />
         <option name="CUSTOM_CONFIG_FILE_FOR_TESTS" value="" />
         <option name="APPLICATION_ENTRY_POINT" value="" />
         <option name="MAIN_CLASS" value="" />
-        <option name="OUTPUT_FILE_NAME" value="foundation-1.1.6.swc" />
+        <option name="OUTPUT_FILE_NAME" value="foundation-1.1.7.swc" />
         <option name="USE_FACET_COMPILE_OUTPUT_PATH" value="true" />
         <option name="FACET_COMPILE_OUTPUT_PATH" value="$MODULE_DIR$/target" />
         <option name="FACET_COMPILE_OUTPUT_PATH_FOR_TESTS" value="$MODULE_DIR$/target/test-classes" />
@@ -45,16 +45,19 @@
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.1.0.17251" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.1.0.17251" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.1.0.17251" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.17440" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flash:playerglobal:swc:10.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flexunit:flexunit:swc:4.0-rc-1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-as3:swc:1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.digitalprimates.fluint:fluint:swc:1.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.17440" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: flash.flashx:textLayout:swc:1.1.0.604" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:spark:swc:4.5.0.17440" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.5.0.17440" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:rpc:swc:4.5.0.17440" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.5.0.17440" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.0.17440" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:rpc:rb.swc:4.5.0.17440" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flex.framework:osmf:swc:4.5.0.17440" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.adobe.flexunit:uiRunner:swc:4.0-rc-1.1" level="project" />
   </component>
 </module>

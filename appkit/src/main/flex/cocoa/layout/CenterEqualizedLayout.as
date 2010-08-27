@@ -39,6 +39,11 @@ public class CenterEqualizedLayout extends LayoutBase {
     _labelBelow = value;
   }
 
+  private var _labelBaseline:Number = 12;
+  public function set labelBaseline(value:Number):void {
+    _labelBaseline = value;
+  }
+
   private var _maxRowCount:int = 99;
   public function get maxRowCount():int {
     return _maxRowCount;
@@ -153,7 +158,7 @@ public class CenterEqualizedLayout extends LayoutBase {
         }
 
         if (!skipAdd) {
-          column.addElement(element, _controlWidth);
+          column.addElement(element, _controlWidth, _labelBelow);
         }
       }
 
@@ -240,18 +245,21 @@ public class CenterEqualizedLayout extends LayoutBase {
           }
 
           var element:ILayoutElement = composition[elementIndex];
-          if (!isRightAlignLabel || elementIndex != 0) {
-            element.setLayoutBoundsPosition(localX, localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
+          if ((!isRightAlignLabel && !_labelBelow) || elementIndex != 0) {
+            element.setLayoutBoundsPosition(localX, localY + (_labelBelow ? 0 : (((compositionHeight - element.getPreferredBoundsHeight()) / 2))));
           }
 
           if (elementIndex == 0) {
-            var columnPartWidth:Number = column.labelMaxWidth;
-            if (isRightAlignLabel) {
-              element.setLayoutBoundsPosition(composition.length == 1 ? (localX + columnPartWidth + _labelGap) : (localX + columnPartWidth - element.getPreferredBoundsWidth()),
-                      localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
+            if (!_labelBelow) {
+              localX += column.labelMaxWidth;
+              if (isRightAlignLabel) {
+                element.setLayoutBoundsPosition(composition.length == 1 /* то есть нет label, а просто checkBox или иной такой вот компонент */ ? (localX + _labelGap) : (localX - element.getPreferredBoundsWidth()),
+                        localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
+              }
             }
-
-            localX += columnPartWidth;
+            else {
+              element.setLayoutBoundsPosition(localX + ((column.totalWidth - element.getPreferredBoundsWidth()) / 2), localY + compositionHeight - element.getPreferredBoundsHeight());
+            }
           }
           else {
             localX += element.getPreferredBoundsWidth() + _controlGap;

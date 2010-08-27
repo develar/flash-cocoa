@@ -81,10 +81,6 @@ internal final class Column {
       result += gap + auxiliaryElement.getPreferredBoundsHeight();
     }
 
-    if (labelBelow) {
-      result += heights.length * 4;
-    }
-
     return result;
   }
 
@@ -97,9 +93,10 @@ internal final class Column {
     compositions.push(currentComposition);
   }
 
-  public function addElement(element:ILayoutElement, controlWidth:Number):void {
+  public function addElement(element:ILayoutElement, controlWidth:Number, labelBelow:Boolean):void {
     const rowIndex:int = compositions.length - 1;
-    const columnIndex:int = currentComposition.push(element) - 1;
+    const columnIndex:int = currentComposition.length;
+    currentComposition[columnIndex] = element;
 
     const width:Number = element.getPreferredBoundsWidth();
     if (columnIndex == 0) {
@@ -111,9 +108,12 @@ internal final class Column {
       currentRowWidth += isNaN(controlWidth) ? width : controlWidth;
     }
 
-    const height:Number = element.getPreferredBoundsHeight();
+    var height:Number = element.getPreferredBoundsHeight();
+    if (labelBelow) {
+      height += currentComposition[0].getPreferredBoundsHeight() + 5;
+    }
     if (heights.length == rowIndex) {
-      heights.push(height);
+      heights[rowIndex] = height;
     }
     else if (height > heights[rowIndex]) {
       heights[rowIndex] = height;

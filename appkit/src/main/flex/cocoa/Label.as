@@ -3,6 +3,7 @@ import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatID;
 import cocoa.text.TextFormat;
 
+import flash.display.Graphics;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.utils.Dictionary;
@@ -180,6 +181,16 @@ public class Label extends AbstractView {
       case TextAlign.CENTER:
         labelHelper.moveToCenter(w, textY);
         break;
+    }
+  }
+
+  override public function get baselinePosition():Number {
+    if (labelHelper.hasText) {
+      labelHelper.validate();
+      return _paddingTop + labelHelper.textLine.ascent;
+    }
+    else {
+      return 0;
     }
   }
 }
