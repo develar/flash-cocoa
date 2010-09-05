@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import cocoa.pane.TitledPane;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
@@ -12,143 +11,120 @@ import flash.events.IEventDispatcher;
 import org.flyti.plexus.Injectable;
 
 [DefaultProperty("mxmlContent")]
-public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher
-{
-	protected var mySkin:WindowSkin;
-	protected var flags:uint = RESIZABLE | CLOSABLE;
+public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher {
+  protected var mySkin:WindowSkin;
+  protected var flags:uint = RESIZABLE | CLOSABLE;
 
-	protected static const RESIZABLE:uint = 1 << 0;
-	protected static const CLOSABLE:uint = 1 << 1;
+  protected static const RESIZABLE:uint = 1 << 0;
+  protected static const CLOSABLE:uint = 1 << 1;
 
-	public function Window()
-	{
-		super();
+  public function Window() {
+    super();
 
-		listenResourceChange();
-	}
+    listenResourceChange();
+  }
 
-	protected var toolbar:Toolbar;
+  protected var toolbar:Toolbar;
 
-	protected final function l(key:String):String
-	{
-		return resourceManager.getString(_resourceBundle, key);
-	}
+  protected final function l(key:String):String {
+    return resourceManager.getString(_resourceBundle, key);
+  }
 
-	public function get resizable():Boolean
-	{
-		return (flags & RESIZABLE) != 0;
-	}
-	public function set resizable(value:Boolean):void
-	{
-		if (value == ((flags & RESIZABLE) == 0))
-		{
-			value ? flags |= RESIZABLE : flags ^= RESIZABLE;
-		}
-	}
+  public function get resizable():Boolean {
+    return (flags & RESIZABLE) != 0;
+  }
 
-	public function get closable():Boolean
-	{
-		return (flags & CLOSABLE) != 0;
-	}
-	public function set closable(value:Boolean):void
-	{
-		if (value == ((flags & CLOSABLE) == 0))
-		{
-			value ? flags |= CLOSABLE : flags ^= CLOSABLE;
-		}
-	}
+  public function set resizable(value:Boolean):void {
+    if (value == ((flags & RESIZABLE) == 0)) {
+      value ? flags |= RESIZABLE : flags ^= RESIZABLE;
+    }
+  }
 
-	private var _mxmlContent:Array;
-	public function set mxmlContent(value:Array):void
-	{
-		_mxmlContent = value;
-	}
+  public function get closable():Boolean {
+    return (flags & CLOSABLE) != 0;
+  }
 
-	protected var _resourceBundle:String;
-	public function set resourceBundle(value:String):void
-	{
-		_resourceBundle = value;
-	}
+  public function set closable(value:Boolean):void {
+    if (value == ((flags & CLOSABLE) == 0)) {
+      value ? flags |= CLOSABLE : flags ^= CLOSABLE;
+    }
+  }
 
-	public function close():void
-	{
-		dispatchEvent(new Event(Event.CLOSE));
-	}
+  private var _mxmlContent:Array;
+  public function set mxmlContent(value:Array):void {
+    _mxmlContent = value;
+  }
 
-	override protected function skinAttachedHandler():void
-	{
-		super.skinAttachedHandler();
+  protected var _resourceBundle:String;
+  public function set resourceBundle(value:String):void {
+    _resourceBundle = value;
+  }
 
-		mySkin = WindowSkin(skin);
+  public function close():void {
+    dispatchEvent(new Event(Event.CLOSE));
+  }
 
-		if (title == null && _resourceBundle != null)
-		{
-			title = resourceManager.getNullableString(_resourceBundle, "windowTitle");
-		}
+  override protected function skinAttachedHandler():void {
+    super.skinAttachedHandler();
 
-		if (toolbar != null)
-		{
-			mySkin.toolbar = toolbar;
-		}
+    mySkin = WindowSkin(skin);
 
-		if (_mxmlContent != null)
-		{
-			if (_mxmlContent.length > 1)
-			{
-				var container:Container = new Container();
-				container.subviews = _mxmlContent;
-				mySkin.contentView = container;
-			}
-			else
-			{
-				_contentView = _mxmlContent[0];
-			}
-			_mxmlContent = null;
-		}
+    if (title == null && _resourceBundle != null) {
+      title = resourceManager.getNullableString(_resourceBundle, "windowTitle");
+    }
 
-		if (_contentView != null)
-		{
-			if (_contentView is Component)
-			{
-				mySkin.contentView = Component(_contentView).skin == null ? Component(_contentView).createView(laf) : Component(_contentView).skin;
-			}
-			else
-			{
-				mySkin.contentView = View(_contentView);
-			}
-		}
-		
-		super.skinAttachedHandler();
-	}
+    if (toolbar != null) {
+      mySkin.toolbar = toolbar;
+    }
 
-	private var _contentView:Viewable;
-	public function get contentView():Viewable
-	{
-		return _contentView;
-	}
-	public function set contentView(view:Viewable):void
-	{
-		_contentView = view;
-	}
+    if (_mxmlContent != null) {
+      if (_mxmlContent.length > 1) {
+        var container:Container = new Container();
+        container.subviews = _mxmlContent;
+        mySkin.contentView = container;
+      }
+      else {
+        _contentView = _mxmlContent[0];
+      }
+      _mxmlContent = null;
+    }
 
-	private var _laf:LookAndFeel;
-	public function get laf():LookAndFeel
-	{
-		return _laf;
-	}
-	public function set laf(value:LookAndFeel):void
-	{
-		_laf = value;
-	}
+    if (_contentView != null) {
+      if (_contentView is Component) {
+        mySkin.contentView = Component(_contentView).skin == null ? Component(_contentView).createView(laf) : Component(_contentView).skin;
+      }
+      else {
+        mySkin.contentView = View(_contentView);
+      }
+    }
 
-	override public function createView(laf:LookAndFeel):Skin
-	{
-		if (_laf == null)
-		{
-			_laf = laf;
-		}
-		
-		return super.createView(laf);
-	}
+    super.skinAttachedHandler();
+  }
+
+  private var _contentView:Viewable;
+  public function get contentView():Viewable {
+    return _contentView;
+  }
+
+  public function set contentView(view:Viewable):void {
+    _contentView = view;
+  }
+
+  private var _laf:LookAndFeel;
+  public function get laf():LookAndFeel {
+    return _laf;
+  }
+
+  public function set laf(value:LookAndFeel):void {
+    _laf = value;
+  }
+
+  override public function createView(laf:LookAndFeel):Skin {
+    if (_laf == null) {
+      _laf = laf;
+    }
+
+    return super.createView(laf);
+  }
 }
 }
