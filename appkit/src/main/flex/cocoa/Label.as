@@ -3,7 +3,6 @@ import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatID;
 import cocoa.text.TextFormat;
 
-import flash.display.Graphics;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.utils.Dictionary;

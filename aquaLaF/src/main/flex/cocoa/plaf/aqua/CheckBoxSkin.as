@@ -10,7 +10,7 @@ import flash.display.Graphics;
 
 public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
   override protected function updateDisplayList(w:Number, h:Number):void {
-//    MultipleBorder(border).stateIndex = calculateBorderStateIndex();
+    MultipleBorder(border).stateIndex = calculateBorderStateIndex();
     alpha = enabled ? 1 : 0.5;
 
     if (labelHelper != null && labelHelper.hasText) {
@@ -20,27 +20,16 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
       }
 
       labelHelper.validate();
-//      labelHelper.moveByInsets(h, border.contentInsets);
-      labelHelper.moveToCenter(w, 5);
+      labelHelper.moveByInsets(h, border.contentInsets);
     }
 
     var g:Graphics = graphics;
     g.clear();
-//    border.draw(this, g, border.layoutWidth, h);
-  }
-
-  override protected function get bordered():Boolean {
-    return false;
+    border.draw(this, g, border.layoutWidth, h);
   }
 
   protected function calculateBorderStateIndex():int {
     return AbstractButton(myComponent).isMouseDown ? (myComponent.state == CellState.ON ? 1 : 3) : (myComponent.state == CellState.ON ? 2 : 0);
-  }
-
-  override protected function measure():void {
-    labelHelper.validate();
-    measuredWidth = Math.round(labelHelper.textWidth);
-    measuredHeight = 22;
   }
 }
 }

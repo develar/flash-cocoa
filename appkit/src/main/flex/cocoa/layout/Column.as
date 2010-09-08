@@ -46,17 +46,11 @@ internal final class Column {
     return _totalWidth;
   }
 
-  public function calculateTotalWidth(labelGap:Number, controlGap:Number, labelBelow:Boolean):Number {
-    _totalWidth = rowMaxWidth;
-    if (!labelBelow) {
-      _totalWidth += _labelMaxWidth;
-    }
+  public function calculateTotalWidth(labelGap:Number, controlGap:Number):Number {
+    _totalWidth = rowMaxWidth + _labelMaxWidth;
 
     if (_maxControlLengthInComposition > 1) {
-      _totalWidth += ((_maxControlLengthInComposition - 2) * controlGap);
-      if (!labelBelow) {
-        _totalWidth += labelGap;
-      }
+      _totalWidth += ((_maxControlLengthInComposition - 2) * controlGap) + labelGap;
     }
 
     if (auxiliaryElement != null) {
@@ -69,14 +63,13 @@ internal final class Column {
     return _totalWidth;
   }
 
-  public function calculateTotalHeight(gap:Number, labelBelow:Boolean):Number {
+  public function calculateTotalHeight(gap:Number):Number {
     var result:Number = 0;
     for each (var number:Number in heights) {
       result += number;
     }
 
     result += gap * (heights.length - 1);
-
     if (auxiliaryElement != null) {
       result += gap + auxiliaryElement.getPreferredBoundsHeight();
     }
@@ -93,7 +86,7 @@ internal final class Column {
     compositions.push(currentComposition);
   }
 
-  public function addElement(element:ILayoutElement, controlWidth:Number, labelBelow:Boolean):void {
+  public function addElement(element:ILayoutElement, controlWidth:Number):void {
     const rowIndex:int = compositions.length - 1;
     const columnIndex:int = currentComposition.length;
     currentComposition[columnIndex] = element;
@@ -108,10 +101,7 @@ internal final class Column {
       currentRowWidth += isNaN(controlWidth) ? width : controlWidth;
     }
 
-    var height:Number = element.getPreferredBoundsHeight();
-    if (labelBelow) {
-      height += currentComposition[0].getPreferredBoundsHeight() + 5;
-    }
+    const height:Number = element.getPreferredBoundsHeight();
     if (heights.length == rowIndex) {
       heights[rowIndex] = height;
     }

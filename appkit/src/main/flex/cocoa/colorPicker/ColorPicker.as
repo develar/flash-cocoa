@@ -1,4 +1,5 @@
 package cocoa.colorPicker {
+import cocoa.Menu;
 import cocoa.PopUpButton;
 import cocoa.ui;
 
@@ -11,6 +12,7 @@ public class ColorPicker extends PopUpButton {
     super();
 
     _menu = ColorPickerMenu.create();
+    selectedIndex = ColorPickerMenu(_menu).noColorItemIndex;
   }
 
   public function get argb():uint {
@@ -83,6 +85,13 @@ public class ColorPicker extends PopUpButton {
     }
     else {
       selectedIndex = ColorPickerMenu(menu).noColorItemIndex;
+    }
+  }
+
+  override public function set menu(value:Menu):void {
+    super.menu = value;
+    if (menu.numberOfItems > 1) {
+     selectedIndex = ColorPickerMenu(menu).noColorItemIndex; 
     }
   }
 }

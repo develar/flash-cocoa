@@ -2,7 +2,7 @@ package cocoa.pane {
 import flash.errors.IllegalOperationError;
 import flash.utils.Dictionary;
 
-import org.flyti.lang.Enum;
+import cocoa.lang.Enum;
 import org.flyti.util.ArrayList;
 import org.flyti.util.List;
 

@@ -3,6 +3,8 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.text.EditableTextView;
 
+import cocoa.util.StringUtil;
+
 import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.events.FocusEvent;
@@ -11,8 +13,6 @@ import flash.events.KeyboardEvent;
 import mx.core.UIComponent;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
-
-import org.flyti.util.StringUtil;
 
 import spark.components.Spinner;
 

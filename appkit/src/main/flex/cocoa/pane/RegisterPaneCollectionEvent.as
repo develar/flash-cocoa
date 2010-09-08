@@ -2,7 +2,7 @@ package cocoa.pane
 {
 import flash.events.Event;
 
-import org.flyti.lang.Enum;
+import cocoa.lang.Enum;
 import org.flyti.util.List;
 
 public class RegisterPaneCollectionEvent extends Event

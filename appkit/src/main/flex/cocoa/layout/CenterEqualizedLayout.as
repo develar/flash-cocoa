@@ -34,11 +34,6 @@ public class CenterEqualizedLayout extends LayoutBase {
     }
   }
 
-  private var _labelBelow:Boolean;
-  public function set labelBelow(value:Boolean):void {
-    _labelBelow = value;
-  }
-
   private var _labelBaseline:Number = 12;
   public function set labelBaseline(value:Number):void {
     _labelBaseline = value;
@@ -158,7 +153,7 @@ public class CenterEqualizedLayout extends LayoutBase {
         }
 
         if (!skipAdd) {
-          column.addElement(element, _controlWidth, _labelBelow);
+          column.addElement(element, _controlWidth);
         }
       }
 
@@ -169,9 +164,9 @@ public class CenterEqualizedLayout extends LayoutBase {
       if (oldColumn != null) {
         columns[columns.length] = oldColumn;
         oldColumn.finalize();
-        measuredWidth += oldColumn.calculateTotalWidth(_labelGap, _controlGap, _labelBelow);
+        measuredWidth += oldColumn.calculateTotalWidth(_labelGap, _controlGap);
 
-        const currentHeight:Number = oldColumn.calculateTotalHeight(fieldGap, _labelBelow);
+        const currentHeight:Number = oldColumn.calculateTotalHeight(fieldGap);
         if (currentHeight > measuredHeight) {
           measuredHeight = currentHeight;
         }
@@ -245,20 +240,15 @@ public class CenterEqualizedLayout extends LayoutBase {
           }
 
           var element:ILayoutElement = composition[elementIndex];
-          if ((!isRightAlignLabel && !_labelBelow) || elementIndex != 0) {
-            element.setLayoutBoundsPosition(localX, localY + (_labelBelow ? 0 : (((compositionHeight - element.getPreferredBoundsHeight()) / 2))));
+          if (!isRightAlignLabel || elementIndex != 0) {
+            element.setLayoutBoundsPosition(localX, localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
           }
 
           if (elementIndex == 0) {
-            if (!_labelBelow) {
-              localX += column.labelMaxWidth;
-              if (isRightAlignLabel) {
-                element.setLayoutBoundsPosition(composition.length == 1 /* то есть нет label, а просто checkBox или иной такой вот компонент */ ? (localX + _labelGap) : (localX - element.getPreferredBoundsWidth()),
-                        localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
-              }
-            }
-            else {
-              element.setLayoutBoundsPosition(localX + ((column.totalWidth - element.getPreferredBoundsWidth()) / 2), localY + compositionHeight - element.getPreferredBoundsHeight());
+            localX += column.labelMaxWidth;
+            if (isRightAlignLabel) {
+              element.setLayoutBoundsPosition(composition.length == 1 /* то есть нет label, а просто checkBox или иной такой вот компонент */ ? (localX + _labelGap) : (localX - element.getPreferredBoundsWidth()),
+                      localY + ((compositionHeight - element.getPreferredBoundsHeight()) / 2));
             }
           }
           else {

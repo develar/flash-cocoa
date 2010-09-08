@@ -27,7 +27,6 @@ import mx.core.AdvancedLayoutFeatures;
 import mx.core.DesignLayer;
 import mx.core.EventPriority;
 import mx.core.FlexGlobals;
-import mx.core.FlexSprite;
 import mx.core.IInvalidating;
 import mx.core.ILayoutDirectionElement;
 import mx.core.IUIComponent;
@@ -677,7 +676,7 @@ use namespace mx_internal;
  *  class for other classes.</p>
  */
 [Abstract]
-public class AbstractView extends FlexSprite implements View, IAutomationObject, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
+public class AbstractView extends Sprite implements View, IAutomationObject, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
   public static const LAYOUT_DIRECTION_LTR:String = "ltr";
 
   private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
@@ -2841,7 +2840,9 @@ public class AbstractView extends FlexSprite implements View, IAutomationObject,
 
     ToolTipManager.instance.registerToolTip(this, oldValue, value);
 
-    dispatchEvent(new Event("toolTipChanged"));
+    if (hasEventListener("toolTipChanged")) {
+      dispatchEvent(new Event("toolTipChanged"));
+    }
   }
 
   public function get isPopUp():Boolean {

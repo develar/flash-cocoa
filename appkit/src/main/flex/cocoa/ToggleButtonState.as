@@ -1,6 +1,6 @@
 package cocoa
 {
-import org.flyti.lang.Enum;
+import cocoa.lang.Enum;
 
 public final class ToggleButtonState extends Enum
 {
