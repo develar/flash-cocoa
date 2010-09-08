@@ -68,6 +68,10 @@ public class PopUpMenuController extends AbstractListController {
   }
 
   private function mouseDownHandler(event:MouseEvent):void {
+    if (popUpButton != null) {
+      close();
+    }
+
     popUpButton = PopUpButton(Skin(event.currentTarget).component);
     menu = popUpButton.menu;
 
@@ -84,7 +88,7 @@ public class PopUpMenuController extends AbstractListController {
       return;
     }
 
-     menu.selectedIndex = popUpButton.selectedIndex;
+    menu.selectedIndex = popUpButton.selectedIndex;
     popUpButton.state = CellState.ON;
 
     popUpButton.skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);

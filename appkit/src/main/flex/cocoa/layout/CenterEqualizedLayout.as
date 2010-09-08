@@ -15,7 +15,7 @@ import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
 /**
- * http://astra.rit.com:8443/display/~v.krivosheev/Cocoa+lib+and+Aqua+LaF+for+Flex#CocoalibandAquaLaFforFlex-Layout
+ * http://flyti.org/display/FC/Cocoa+lib+and+Aqua+LaF+for+Flex#CocoalibandAquaLaFforFlex-Layout
  */
 public class CenterEqualizedLayout extends LayoutBase {
   private var columns:Vector.<Column>;
@@ -136,7 +136,7 @@ public class CenterEqualizedLayout extends LayoutBase {
           }
 
           if (column.maxControlLengthInComposition > 1 &&
-                  (i == numElements || ((column.compositions.length + 1) == effectiveMaxRowCount && isAnotherColumnElement(layoutTarget.getElementAt(i))))) {
+                  (i == numElements || ((column.compositions.length + 1) == effectiveMaxRowCount && isAnotherColumnElement(layoutTarget.getElementAt(i)))) && column.auxiliaryElement == null) {
             column.auxiliaryElement = element;
             skipAdd = true;
           }

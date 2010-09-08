@@ -35,7 +35,7 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
   }
 
   public function get labelLeftMargin():Number {
-    return border.contentInsets.left + border.frameInsets.left;
+    return border.contentInsets.left;
   }
 
   override protected function createChildren():void {

@@ -3,7 +3,7 @@ borders:
   type: Scale3EdgeHBitmap
   appleResource: HUD-Button
   frameInsets: {left: -1, right: -1, bottom: -2}
-  contentInsets: {left: 10, right: 10, bottom: 5}
+  contentInsets: {left: 9, right: 9, bottom: 5}
 
 - key: PopUpButton
   type: Scale3EdgeHBitmap

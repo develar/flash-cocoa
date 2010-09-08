@@ -53,7 +53,7 @@
 		<layout>
 			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
 		</layout>
-		<PushButton title="Help H"/>
+		<PushButton title="Item Help H"/>
 		<PopUpButton>
 			<Menu>
 				<items>{testData}</items>
@@ -66,19 +66,19 @@
 			</Menu>
 		</PopUpButton>
 
-    <Container>
-      <layout>
-        <CenterEqualizedLayout labelBelow="true" fieldGap="3" maxRowCount="2"/>
-      </layout>
+    <!--<Container>-->
+      <!--<layout>-->
+        <!--<CenterEqualizedLayout labelBelow="true" fieldGap="3" maxRowCount="2"/>-->
+      <!--</layout>-->
 
-      <Label title="Width"/>
-      <TextInput id="widthNumericStepper" width="100"/>
+      <!--<Label title="Width"/>-->
+      <!--<TextInput id="widthNumericStepper" width="100"/>-->
 
-      <Label title="Height"/>
-      <TextInput id="heightNumericStepper" width="100"/>
+      <!--<Label title="Height"/>-->
+      <!--<TextInput id="heightNumericStepper" width="100"/>-->
 
-      <CheckBox id="constrainProportionsCheckBox" title="Constrain proportions"/>
-    </Container>
+      <!--<CheckBox id="constrainProportionsCheckBox" title="Constrain proportions"/>-->
+    <!--</Container>-->
 
     <ColorPicker id="colorPicker" width="44" action="updateTextValue"/>
     <Label id="colorValue"/>

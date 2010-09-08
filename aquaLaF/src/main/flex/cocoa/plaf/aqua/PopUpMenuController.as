@@ -28,7 +28,7 @@ public class PopUpMenuController extends cocoa.plaf.basic.PopUpMenuController {
     sharedPoint.x = - (menuBorderContentInsets.left + selectedItemRenderer.labelLeftMargin) + popUpButtonSkin.labelLeftMargin;
     sharedPoint.y = - menuBorderContentInsets.top - selectedItemRenderer.baselinePosition + popUpButtonSkin.baselinePosition - selectedItemRenderer.y;
     //		sharedPoint.x = 250;
-    //		sharedPoint.y = 20;
+    		sharedPoint.y = 20;
     var globalPosition:Point = popUpButtonSkin.localToGlobal(sharedPoint);
 
     var x:Number = globalPosition.x;
