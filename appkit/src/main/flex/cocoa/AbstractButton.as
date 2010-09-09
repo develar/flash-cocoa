@@ -4,7 +4,7 @@ import cocoa.plaf.TitledComponentSkin;
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-public class AbstractButton extends AbstractControl implements Cell {
+public class AbstractButton extends AbstractControl {
   private var oldState:int = -1;
 
   private var _title:String;
@@ -27,7 +27,7 @@ public class AbstractButton extends AbstractControl implements Cell {
 
   [Bindable(event="selectedChanged")]
   public function get selected():Boolean {
-    return state == CellState.ON;
+    return _state == CellState.ON;
   }
 
   public function set selected(value:Boolean):void {
@@ -55,7 +55,7 @@ public class AbstractButton extends AbstractControl implements Cell {
   }
 
   private function mouseDownHandler(event:MouseEvent):void {
-    oldState = state;
+    oldState = _state;
 
     skin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
@@ -78,7 +78,7 @@ public class AbstractButton extends AbstractControl implements Cell {
     if (event.target == skin) {
       // может быть уже отвалидировано в roll over/out
       if (toggled) {
-        if (state == oldState) {
+        if (_state == oldState) {
           state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
           event.updateAfterEvent();
         }
@@ -87,7 +87,7 @@ public class AbstractButton extends AbstractControl implements Cell {
           skin.invalidateDisplayList();
         }
       }
-      else if (state == CellState.ON) {
+      else if (_state == CellState.ON) {
         state = CellState.OFF;
         event.updateAfterEvent();
       }

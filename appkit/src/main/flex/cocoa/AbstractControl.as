@@ -1,5 +1,5 @@
 package cocoa {
-public class AbstractControl extends AbstractComponent implements Control {
+public class AbstractControl extends AbstractComponent implements Control, Cell {
   protected var _action:Function;
   public function set action(value:Function):void {
     _action = value;
@@ -20,7 +20,7 @@ public class AbstractControl extends AbstractComponent implements Control {
     _actionRequireTarget = value;
   }
 
-  private var _state:int = CellState.OFF;
+  protected var _state:int = CellState.OFF;
   public final function get state():int {
     return _state;
   }
@@ -56,7 +56,7 @@ public class AbstractControl extends AbstractComponent implements Control {
   public function set alternateToolTip(value:String):void {
     if (value != _alternateToolTip) {
       _alternateToolTip = value;
-      if (skin != null && state == CellState.ON) {
+      if (skin != null && _state == CellState.ON) {
         skin.toolTip = _alternateToolTip;
       }
     }

@@ -1,6 +1,7 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
 import cocoa.Cell;
+import cocoa.CellState;
 import cocoa.Component;
 import cocoa.Insets;
 import cocoa.TextInsets;
@@ -61,14 +62,25 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     if (labelHelper != null && labelHelper.hasText) {
-      if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth))) {
-        var titleInsets:Insets = border.contentInsets;
-        labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
+      if (myComponent.state == CellState.MIXED) {
+        if (labelHelper.textLine != null && labelHelper.textLine.parent != null) {
+          removeDisplayObject(labelHelper.textLine);
+        }
       }
+      else {
+        if (labelHelper.textLine != null && labelHelper.textLine.parent == null) {
+          addDisplayObject(labelHelper.textLine);
+        }
 
-      labelHelper.validate();
-      labelHelper.alpha = enabled ? 1 : 0.5;
-      labelHelper.moveByInsets(h, border.contentInsets);
+        if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth))) {
+          var titleInsets:Insets = border.contentInsets;
+          labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
+        }
+
+        labelHelper.validate();
+        labelHelper.textLine.alpha = enabled ? 1 : 0.5;
+        labelHelper.moveByInsets(h, border.contentInsets);
+      }
     }
 
     var g:Graphics = graphics;

@@ -13,7 +13,6 @@ import flash.utils.Dictionary;
  * http://developer.apple.com/mac/library/DOCUMENTATION/UserExperience/Conceptual/AppleHIGuidelines/XHIGText/XHIGText.html#//apple_ref/doc/uid/TP30000365-TPXREF113
  */
 public class LabelHelper {
-  private static const emptyArgs:Array = [];
   private static const textBlockCreateTextLineArgs:Array = [null, 0];
   private static const textBlockRecreateTextLineArgs:Array = [null, null, 0];
 
@@ -66,12 +65,6 @@ public class LabelHelper {
 
   public function get textLine():TextLine {
     return _textLine;
-  }
-
-  public function set alpha(value:Number):void {
-    if (_textLine != null) {
-      _textLine.alpha = value;
-    }
   }
 
   private var _textFormat:TextFormat;

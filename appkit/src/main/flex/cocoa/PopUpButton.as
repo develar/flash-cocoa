@@ -57,7 +57,12 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
   }
 
   public function set selectedItem(value:Object):void {
-    selectedIndex = _menu.getItemIndex(value);
+    if (value != null) {
+      selectedIndex = _menu.getItemIndex(value);
+    }
+    else if (_state != CellState.MIXED) {
+      state = CellState.MIXED;
+    }
   }
 
   private var _selectedIndex:int = 0;
@@ -66,6 +71,9 @@ public class PopUpButton extends AbstractControl implements Cell, LookAndFeelPro
   }
 
   public function set selectedIndex(value:int):void {
+    if (_state == CellState.MIXED) {
+      _state = CellState.OFF;
+    }
     setSelectedIndex(value, false);
   }
 
