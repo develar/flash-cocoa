@@ -1,5 +1,6 @@
 package cocoa {
 import cocoa.text.TextFormat;
+import cocoa.util.TextLineUtil;
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.TextBlock;
@@ -13,9 +14,6 @@ import flash.utils.Dictionary;
  * http://developer.apple.com/mac/library/DOCUMENTATION/UserExperience/Conceptual/AppleHIGuidelines/XHIGText/XHIGText.html#//apple_ref/doc/uid/TP30000365-TPXREF113
  */
 public class LabelHelper {
-  private static const textBlockCreateTextLineArgs:Array = [null, 0];
-  private static const textBlockRecreateTextLineArgs:Array = [null, null, 0];
-
   private static const TRUNCATION_INDICATOR:String = "…";
 
   private static var truncationIndicatorMap:Dictionary;
@@ -164,26 +162,12 @@ public class LabelHelper {
       textBlock.lineRotation = _rotation;
     }
 
-    if (_textFormat.swfContext == null) {
-      if (_textLine == null) {
-        _textLine = textBlock.createTextLine(null, availableWidth);
-        container.addDisplayObject(_textLine);
-      }
-      else {
-        textBlock.recreateTextLine(_textLine, null, availableWidth);
-      }
+    if (_textLine == null) {
+      _textLine = TextLineUtil.create(textBlock, _textFormat.swfContext, null, availableWidth);
+      container.addDisplayObject(_textLine);
     }
     else {
-      if (_textLine == null) {
-        textBlockCreateTextLineArgs[1] = availableWidth;
-        _textLine = _textFormat.swfContext.callInContext(textBlock.createTextLine, textBlock, textBlockCreateTextLineArgs);
-        container.addDisplayObject(_textLine);
-      }
-      else {
-        textBlockRecreateTextLineArgs[0] = _textLine;
-        textBlockRecreateTextLineArgs[2] = availableWidth;
-        _textFormat.swfContext.callInContext(textBlock.recreateTextLine, textBlock, textBlockRecreateTextLineArgs);
-      }
+      TextLineUtil.create(textBlock, _textFormat.swfContext, _textLine, availableWidth);
     }
 
     if (_textLine == null) {
@@ -193,14 +177,7 @@ public class LabelHelper {
       truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
       if (truncated && _useTruncationIndicator) {
         textElement.text = _text.slice(0, getTruncationPosition(_textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
-        
-        if (_textFormat.swfContext == null) {
-          textBlock.recreateTextLine(_textLine);
-        }
-        else {
-          textBlockRecreateTextLineArgs[2] = 1000000;
-          _textFormat.swfContext.callInContext(textBlock.recreateTextLine, textBlock, textBlockRecreateTextLineArgs);
-        }
+        TextLineUtil.create(textBlock, _textFormat.swfContext, _textLine);
       }
     }
 
@@ -217,11 +194,12 @@ public class LabelHelper {
     var width:Number = truncationIndicatorMap[format];
     if (isNaN(width)) {
       textElement.text = TRUNCATION_INDICATOR;
+
       if (textLineForTruncationIndicator == null) {
-        textLineForTruncationIndicator = textBlock.createTextLine();
+        textLineForTruncationIndicator = TextLineUtil.create(textBlock, _textFormat.swfContext, null);
       }
       else {
-        textBlock.recreateTextLine(textLineForTruncationIndicator);
+        TextLineUtil.create(textBlock, _textFormat.swfContext, textLineForTruncationIndicator);
       }
 
       truncationIndicatorMap[format] = width = textLineForTruncationIndicator.textWidth;
@@ -233,7 +211,7 @@ public class LabelHelper {
   private function getTruncationPosition(line:TextLine, allowedWidth:Number):int {
     var consumedWidth:Number = 0;
     var charPosition:int = line.textBlockBeginIndex;
-    var n:Number = charPosition + line.rawTextLength;
+    var n:int = charPosition + line.rawTextLength;
     while (charPosition < n) {
       const atomIndex:int = line.getAtomIndexAtCharIndex(charPosition);
       consumedWidth += line.getAtomBounds(atomIndex).width;

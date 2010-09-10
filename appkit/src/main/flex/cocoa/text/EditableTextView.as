@@ -1,4 +1,6 @@
 package cocoa.text {
+import cocoa.util.TextLineUtil;
+
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.events.Event;
@@ -31,6 +33,7 @@ import flashx.textLayout.events.DamageEvent;
 import flashx.textLayout.events.FlowOperationEvent;
 import flashx.textLayout.events.SelectionEvent;
 import flashx.textLayout.events.StatusChangeEvent;
+import flashx.textLayout.formats.BaselineOffset;
 import flashx.textLayout.formats.BlockProgression;
 import flashx.textLayout.formats.Category;
 import flashx.textLayout.formats.ITextLayoutFormat;
@@ -63,8 +66,21 @@ use namespace tlf_internal;
 public class EditableTextView extends AbstractTextView implements IFocusManagerComponent, IIMESupport, ISystemCursorClient {
   private static const textElement:TextElement = new TextElement();
   private static const textBlock:TextBlock = new TextBlock(textElement);
+  private static var textLine:TextLine;
 
-  private static var textBlockCreateTextLineArgs:Array;
+  private static const IGNORE_DAMAGE_EVENT:uint = 1 << 0;
+  /**
+   * If the selection was via the selectRange() or selectAll() api,
+   * remember that until the next selection is set, either interactively or via the API.
+   */
+  private static const HAS_PROGRAMMATIC_SELECTION_RANGE:uint = 1 << 1;
+
+   /**
+   *  True if this component sizes itself based on its actual contents.
+   */
+  private static const AUTO_SIZE:uint = 1 << 2;
+
+  private var flags:uint;
 
   private static var plainTextImporter:ITextImporter;
 
@@ -94,13 +110,14 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private var dispatchChangeAndChangingEvents:Boolean = true;
 
-  mx_internal var ignoreDamageEvent:Boolean = false;
-  mx_internal var passwordChar:String = "*";
+  private static const passwordChar:String = "*";
 
   internal var undoManager:IUndoManager;
-  mx_internal var clearUndoOnFocusOut:Boolean = true;
+  private var clearUndoOnFocusOut:Boolean = true;
 
   private var embeddedFontContext:ISWFContext;
+
+  protected var textContainerManager:EditableTextContainerManager;
 
   /**
    *  @private
@@ -126,38 +143,26 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  Cache the width constraint as set by the layout in setLayoutBoundsSize()
    *  so that text reflow can be calculated during a subsequent measure pass.
    */
-  private var widthConstraint:Number = NaN;
+  private var widthConstraint:Number;
 
   /**
    *  Cache the height constraint as set by the layout in setLayoutBoundsSize()
    *  so that text reflow can be calculated during a subsequent measure pass.
    */
-  private var heightConstraint:Number = NaN;
-
-  /**
-   *  If the selection was via the selectRange() or selectAll() api, remember
-   *  that until the next selection is set, either interactively or via the
-   *  API.
-   */
-  private var hasProgrammaticSelectionRange:Boolean = false;
-
-  /**
-   *  True if this component sizes itself based on its actual contents.
-   */
-  private var autoSize:Boolean = false;
+  private var heightConstraint:Number;
 
   public function EditableTextView() {
     super();
 
-    _textContainerManager = new EditableTextContainerManager(this, configuration);
-    _textContainerManager.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textContainerManager_compositionCompleteHandler);
-    _textContainerManager.addEventListener(DamageEvent.DAMAGE, textContainerManager_damageHandler);
-    _textContainerManager.addEventListener(Event.SCROLL, textContainerManager_scrollHandler);
-    _textContainerManager.addEventListener(SelectionEvent.SELECTION_CHANGE, textContainerManager_selectionChangeHandler);
-    _textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_BEGIN, textContainerManager_flowOperationBeginHandler);
-    _textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_END, textContainerManager_flowOperationEndHandler);
-    _textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_COMPLETE, textContainerManager_flowOperationCompleteHandler);
-    _textContainerManager.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, textContainerManager_inlineGraphicStatusChangeHandler);
+    textContainerManager = new EditableTextContainerManager(this, configuration);
+    textContainerManager.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, textContainerManager_compositionCompleteHandler);
+    textContainerManager.addEventListener(DamageEvent.DAMAGE, textContainerManager_damageHandler);
+    textContainerManager.addEventListener(Event.SCROLL, textContainerManager_scrollHandler);
+    textContainerManager.addEventListener(SelectionEvent.SELECTION_CHANGE, textContainerManager_selectionChangeHandler);
+    textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_BEGIN, textContainerManager_flowOperationBeginHandler);
+    textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_END, textContainerManager_flowOperationEndHandler);
+    textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_COMPLETE, textContainerManager_flowOperationCompleteHandler);
+    textContainerManager.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, textContainerManager_inlineGraphicStatusChangeHandler);
   }
 
   private static function splice(str:String, start:int, end:int, strToInsert:String):String {
@@ -165,7 +170,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   override protected function get scrollController():ScrollController {
-    return _textContainerManager;
+    return textContainerManager;
   }
 
   private var _multiline:Boolean = true;
@@ -197,8 +202,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       textElement.elementFormat = null;
     }
 
-    _textContainerManager.hostFormat = _textFormat;
-    _textContainerManager.swfContext = ISWFContext(embeddedFontContext);
+    textContainerManager.hostFormat = _textFormat;
+    textContainerManager.swfContext = ISWFContext(embeddedFontContext);
 
     _ascent = NaN;
     _descent = NaN;
@@ -346,21 +351,21 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       selectableChanged = false;
     }
 
-    return _textContainerManager.editingMode;
+    return textContainerManager.editingMode;
   }
 
   private function set editingMode(value:String):void {
-    var lastEditingMode:String = _textContainerManager.editingMode;
+    var lastEditingMode:String = textContainerManager.editingMode;
     if (lastEditingMode == value) {
       return;
     }
 
-    _textContainerManager.editingMode = value;
+    textContainerManager.editingMode = value;
 
     // Make sure the selection manager selection is in sync with the current selection.
     if (value != EditingMode.READ_ONLY && _selectionAnchorPosition != -1 && _selectionActivePosition != -1) {
-      _textContainerManager.beginInteraction().selectRange(_selectionAnchorPosition, _selectionActivePosition);
-      _textContainerManager.endInteraction();
+      textContainerManager.beginInteraction().selectRange(_selectionAnchorPosition, _selectionActivePosition);
+      textContainerManager.endInteraction();
     }
   }
 
@@ -368,7 +373,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     return editable;
   }
 
-  private var _heightInLines:Number = NaN;
+  private var _heightInLines:int = -1;
   private var heightInLinesChanged:Boolean = false;
 
   /**
@@ -411,11 +416,11 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  public function get heightInLines():Number {
+  public function get heightInLines():int {
     return _heightInLines;
   }
 
-  public function set heightInLines(value:Number):void {
+  public function set heightInLines(value:int):void {
     if (value == _heightInLines) {
       return;
     }
@@ -595,12 +600,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     //		invalidateDisplayList();
   }
 
-  private var _textContainerManager:EditableTextContainerManager;
-
-  mx_internal function get textContainerManager():TextContainerManager {
-    return _textContainerManager;
-  }
-
   /**
    *  The TextFlow representing the rich text displayed by this component.
    *
@@ -667,15 +666,15 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Make sure the interactionManager is added to this textFlow.
     if (textChanged || textFlowChanged) {
-      _textContainerManager.setTextFlow(_textFlow);
+      textContainerManager.setTextFlow(_textFlow);
       textChanged = textFlowChanged = false;
     }
 
     // If not read-only, make sure the textFlow has a composer in
     // place so that it can be modified by the caller if desired.
     if (editingMode != EditingMode.READ_ONLY) {
-      _textContainerManager.beginInteraction();
-      _textContainerManager.endInteraction();
+      textContainerManager.beginInteraction();
+      textContainerManager.endInteraction();
     }
 
     return _textFlow;
@@ -710,7 +709,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   /**
    *  @private
    */
-  private var _widthInChars:Number = NaN;
+  private var _widthInChars:int = -1;
 
   /**
    *  @private
@@ -760,14 +759,14 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  public function get widthInChars():Number {
+  public function get widthInChars():int {
     return _widthInChars;
   }
 
   /**
    *  @private
    */
-  public function set widthInChars(value:Number):void {
+  public function set widthInChars(value:int):void {
     if (value == _widthInChars)
       return;
 
@@ -801,8 +800,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   override public function parentChanged(p:DisplayObjectContainer):void {
     if (focusManager) {
-      focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, _textContainerManager.activateHandler);
-      focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, _textContainerManager.deactivateHandler);
+      focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, textContainerManager.activateHandler);
+      focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, textContainerManager.deactivateHandler);
     }
 
     super.parentChanged(p);
@@ -853,10 +852,10 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // will be true; the other two will be false because each setter guarantees this.
 
     if (textChanged) {
-      _textContainerManager.setText(_text);
+      textContainerManager.setText(_text);
     }
     else if (textFlowChanged) {
-      _textContainerManager.setTextFlow(_textFlow);
+      textContainerManager.setTextFlow(_textFlow);
     }
 
     if (textChanged || textFlowChanged) {
@@ -883,18 +882,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         // Make sure _text is set with the actual text before we change the displayed text.
         _text = text;
         // Paragraph terminators are lost during this substitution.
-        _textContainerManager.setText(StringUtil.repeat(passwordChar, _text.length));
+        textContainerManager.setText(StringUtil.repeat(passwordChar, _text.length));
       }
       else {
         // Text was displayed as password.  Now display as plain text.
-        _textContainerManager.setText(_text);
+        textContainerManager.setText(_text);
       }
 
       if (editingMode != EditingMode.READ_ONLY) {
         // Must preserve the selection, if there was one.
         // The visible selection will be refreshed during the update.
-        _textContainerManager.beginInteraction().selectRange(oldAnchorPosition, oldActivePosition);
-        _textContainerManager.endInteraction();
+        textContainerManager.beginInteraction().selectRange(oldAnchorPosition, oldActivePosition);
+        textContainerManager.endInteraction();
       }
 
       displayAsPasswordChanged = false;
@@ -902,28 +901,24 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   override protected function canSkipMeasurement():Boolean {
-    autoSize = false;
+    flags ^= AUTO_SIZE;
     return super.canSkipMeasurement();
   }
 
   override protected function measure():void {
-    // Don't want to trigger a another remeasure when we modify the
-    // textContainerManager or compose the text.
-    ignoreDamageEvent = true;
+    // Don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
+    flags |= IGNORE_DAMAGE_EVENT;
 
     super.measure();
 
-    // percentWidth and/or percentHeight will come back in as constraints
-    // on the remeasure if we're autoSizing.
-
+    // percentWidth and/or percentHeight will come back in as constraints on the remeasure if we're autoSizing.
     if (isMeasureFixed()) {
-      autoSize = false;
+      flags ^= AUTO_SIZE;
 
-      // Go large.  For performance reasons, want to avoid a scrollRect
-      // whenever possible in drawBackgroundAndSetScrollRect().  This is
-      // particularly true for 1 line TextInput components.
-      measuredWidth = !isNaN(explicitWidth) ? explicitWidth : Math.ceil(calculateWidthInChars());
-      measuredHeight = !isNaN(explicitHeight) ? explicitHeight : Math.ceil(calculateHeightInLines());
+      // Go large. For performance reasons, want to avoid a scrollRect whenever possible in drawBackgroundAndSetScrollRect().
+      // This is particularly true for 1 line TextInput components.
+      measuredWidth = !isNaN(explicitWidth) ? explicitWidth : (_widthInChars == -1 ? 0 : Math.ceil(calculateWidthInChars()));
+      measuredHeight = !isNaN(explicitHeight) ? explicitHeight : (_heightInLines == -1 ? 0 : Math.ceil(calculateHeightInLines()));
     }
     else {
       var composeWidth:Number;
@@ -931,37 +926,41 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
       var bounds:Rectangle;
 
-      // If we're here, then at one or both of the width and height can
-      // grow to fit the text.  It is important to figure out whether
-      // or not autoSize should be allowed to continue.  If in
-      // updateDisplayList(), autoSize is true, then the
-      // compositionHeight is NaN to allow the text to grow.
-      autoSize = true;
+      // If we're here, then at one or both of the width and height can grow to fit the text.
+      // It is important to figure out whether or not autoSize should be allowed to continue.
+      // If in updateDisplayList(), autoSize is true, then the compositionHeight is NaN to allow the text to grow.
+      flags |= AUTO_SIZE;
 
       if (!isNaN(widthConstraint) || !isNaN(explicitWidth) || !isNaN(widthInChars)) {
         // width specified but no height
         // if no text, start at one line high and grow
-
-        if (!isNaN(widthConstraint))
-          composeWidth = widthConstraint; else if (!isNaN(explicitWidth))
+        if (!isNaN(widthConstraint)) {
+          composeWidth = widthConstraint;
+        }
+        else if (!isNaN(explicitWidth)) {
           composeWidth = explicitWidth;
-        else
+        }
+        else {
           composeWidth = Math.ceil(calculateWidthInChars());
+        }
 
-        // The composeWidth may be adjusted for minWidth/maxWidth
-        // except if we're using the explicitWidth.
+        // The composeWidth may be adjusted for minWidth/maxWidth except if we're using the explicitWidth.
         bounds = measureTextSize(composeWidth);
 
-        measuredWidth = _textContainerManager.compositionWidth;
+        measuredWidth = textContainerManager.compositionWidth;
         measuredHeight = Math.ceil(bounds.bottom);
-      } else if (!isNaN(heightConstraint) || !isNaN(explicitHeight) || !isNaN(_heightInLines)) {
+      }
+      else if (!isNaN(heightConstraint) || !isNaN(explicitHeight) || _heightInLines != -1) {
         // if no text, 1 char wide with specified height and grow
-
-        if (!isNaN(heightConstraint))
-          composeHeight = heightConstraint; else if (!isNaN(explicitHeight))
+        if (!isNaN(heightConstraint)) {
+          composeHeight = heightConstraint;
+        }
+        else if (!isNaN(explicitHeight)) {
           composeHeight = explicitHeight;
-        else
+        }
+        else {
           composeHeight = calculateHeightInLines();
+        }
 
         // The composeWidth may be adjusted for minWidth/maxWidth.
         bounds = measureTextSize(NaN, composeHeight);
@@ -969,12 +968,11 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         measuredWidth = Math.ceil(bounds.right);
         measuredHeight = composeHeight;
 
-        // Have we already hit the limit with the existing text?  If we
-        // are beyond the composeHeight we can assume we've maxed out on
-        // the compose width as well (or the composeHeight isn't
-        // large enough for even one line of text).
-        if (bounds.bottom > composeHeight)
-          autoSize = false;
+        // Have we already hit the limit with the existing text?  If we are beyond the composeHeight we can assume we've maxed out on
+        // the compose width as well (or the composeHeight isn't large enough for even one line of text).
+        if (bounds.bottom > composeHeight) {
+          flags ^= AUTO_SIZE;
+        }
       }
       else {
         // The composeWidth may be adjusted for minWidth/maxWidth.
@@ -992,20 +990,20 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         // Reached max height so can't grow anymore.
         if (!isNaN(explicitMaxHeight) && measuredHeight > explicitMaxHeight) {
           measuredHeight = explicitMaxHeight;
-          autoSize = false;
+          flags ^= AUTO_SIZE;
         }
       }
 
       // Make sure we weren't previously scrolled.
-      if (autoSize) {
-        _textContainerManager.horizontalScrollPosition = 0;
-        _textContainerManager.verticalScrollPosition = 0;
+      if ((flags & AUTO_SIZE) != 0) {
+        textContainerManager.horizontalScrollPosition = 0;
+        textContainerManager.verticalScrollPosition = 0;
       }
 
       invalidateDisplayList();
     }
 
-    ignoreDamageEvent = false;
+    flags ^= IGNORE_DAMAGE_EVENT;
 
     //trace("measure", measuredWidth, measuredHeight, "autoSize", autoSize);
   }
@@ -1016,7 +1014,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   override protected function updateDisplayList(w:Number, h:Number):void {
     // Check if the auto-size text is constrained in some way and needs to be remeasured.  If one of the dimension changes, the text may
     // compose differently and have a different size which the layout manager needs to know.
-    if (autoSize && remeasureText(w, h)) {
+    if ((flags & AUTO_SIZE) != 0 && remeasureText(w, h)) {
       return;
     }
 
@@ -1024,19 +1022,19 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // If we're autoSizing we're telling the layout manager one set of values and TLF another set of values so there is room for the text to grow.
     // autoSize for blockProgression=="rl" is implemented
-    if (!autoSize) {
-      _textContainerManager.compositionWidth = w;
-      _textContainerManager.compositionHeight = h;
+    if ((flags & AUTO_SIZE) == 0) {
+      textContainerManager.compositionWidth = w;
+      textContainerManager.compositionHeight = h;
     }
 
     // If scrolling, always compose with the composer so we get consistent measurements. The factory and the composer produce slightly
     // different results which can confuse the scroller.  If there isn't a composer, this calls updateContainer so do it here now that the
     // composition sizes are set so the results can be used.
-    if (clipAndEnableScrolling && _textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
-      _textContainerManager.convertToTextFlowWithComposer();
+    if (clipAndEnableScrolling && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
+      textContainerManager.convertToTextFlowWithComposer();
     }
 
-    _textContainerManager.updateContainer();
+    textContainerManager.updateContainer();
   }
 
   /**
@@ -1069,9 +1067,9 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // mouseOverHandler and the mouseDownHandler do so that the user can
     // type in this component without using the mouse first.  We need to
     // put a textFlow with a composer in place.
-    if (editingMode != EditingMode.READ_ONLY && _textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
-      _textContainerManager.beginInteraction();
-      _textContainerManager.endInteraction();
+    if (editingMode != EditingMode.READ_ONLY && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
+      textContainerManager.beginInteraction();
+      textContainerManager.endInteraction();
     }
 
     super.setFocus();
@@ -1162,19 +1160,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       textContainerManager_selectionChangeHandler(selectionEvent);
     }
     else {
-      var im:ISelectionManager = _textContainerManager.beginInteraction();
+      var im:ISelectionManager = textContainerManager.beginInteraction();
 
       im.selectRange(anchorPosition, activePosition);
 
       // Refresh the selection.  This does not cause a damage event.
       im.refreshSelection();
 
-      _textContainerManager.endInteraction();
+      textContainerManager.endInteraction();
     }
 
-    // Remember if the current selection is a range which was set
-    // programatically.
-    hasProgrammaticSelectionRange = (anchorPosition != activePosition);
+    // Remember if the current selection is a range which was set programatically.
+    (anchorPosition != activePosition) ? flags |= HAS_PROGRAMMATIC_SELECTION_RANGE : flags ^= HAS_PROGRAMMATIC_SELECTION_RANGE;
   }
 
   /**
@@ -1274,15 +1271,15 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     if (needContainerFormat) {
-      containerFormat = _textContainerManager.getCommonContainerFormat();
+      containerFormat = textContainerManager.getCommonContainerFormat();
     }
 
     if (needParagraphFormat) {
-      paragraphFormat = _textContainerManager.getCommonParagraphFormat(anchorPosition, activePosition);
+      paragraphFormat = textContainerManager.getCommonParagraphFormat(anchorPosition, activePosition);
     }
 
     if (needCharacterFormat) {
-      characterFormat = _textContainerManager.getCommonCharacterFormat(anchorPosition, activePosition);
+      characterFormat = textContainerManager.getCommonCharacterFormat(anchorPosition, activePosition);
     }
 
     // Extract the requested formats to return.
@@ -1393,7 +1390,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Apply the three format objects to the current selection if selectionState is null, else the specified selection.
-    _textContainerManager.applyFormatOperation(characterFormat, paragraphFormat, containerFormat, anchorPosition, activePosition);
+    textContainerManager.applyFormatOperation(characterFormat, paragraphFormat, containerFormat, anchorPosition, activePosition);
   }
 
   /**
@@ -1405,13 +1402,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Is there some sort of width and some sort of height?
-    return (!isNaN(explicitWidth) || !isNaN(_widthInChars) || !isNaN(widthConstraint)) && (!isNaN(explicitHeight) || !isNaN(_heightInLines) || !isNaN(heightConstraint));
+    return (!isNaN(explicitWidth) || _widthInChars != -1 || !isNaN(widthConstraint)) && (!isNaN(explicitHeight) || _heightInLines != -1 || !isNaN(heightConstraint));
   }
 
   /**
-   *  Returns the bounds of the measured text.  The initial composeWidth may
-   *  be adjusted for minWidth or maxWidth.  The value used for the compose
-   *  is in _textContainerManager.compositionWidth.
+   * Returns the bounds of the measured text. The initial composeWidth may be adjusted for minWidth or maxWidth.
+   * The value used for the compose is in _textContainerManager.compositionWidth.
    */
   private function measureTextSize(composeWidth:Number, composeHeight:Number = NaN):Rectangle {
     // Adjust for explicit min/maxWidth so the measurement is accurate.
@@ -1426,27 +1422,27 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // If the width is NaN it can grow up to TextLine.MAX_LINE_WIDTH wide.
     // If the height is NaN it can grow to allow all the text to fit.
-    _textContainerManager.compositionWidth = composeWidth;
-    _textContainerManager.compositionHeight = composeHeight;
+    textContainerManager.compositionWidth = composeWidth;
+    textContainerManager.compositionHeight = composeHeight;
 
     // If scrolling, always compose with the composer so we get consistent
     // measurements.  The factory and the composer produce slightly
     // different results which can confuse the scroller.  If there isn't a
     // composer, this calls updateContainer so do it here now that the
     // composition sizes are set so the results can be used.
-    if (clipAndEnableScrolling && _textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
-      _textContainerManager.convertToTextFlowWithComposer();
+    if (clipAndEnableScrolling && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
+      textContainerManager.convertToTextFlowWithComposer();
     }
 
     // Compose only.  The display should not be updated.
-    _textContainerManager.compose();
+    textContainerManager.compose();
 
     // Adjust width and height for text alignment.
-    var bounds:Rectangle = _textContainerManager.getContentBounds();
+    var bounds:Rectangle = textContainerManager.getContentBounds();
 
     // If it's an empty text flow, there is one line with one character so the height is good for the line but we
     // need to give it some width other than optional padding.
-    if (_textContainerManager.getText().length == 0) {
+    if (textContainerManager.getText().length == 0) {
       // Empty text flow.  One Em wide so there
       // is a place to put the insertion cursor.
       bounds.width = bounds.width + effectiveTextFormat.fontSize;
@@ -1470,9 +1466,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       return false;
     }
 
-    // Either constraints are preventing auto-sizing or we need to
-    // remeasure which will reset autoSize.
-    autoSize = false;
+    // Either constraints are preventing auto-sizing or we need to remeasure which will reset autoSize.
+    flags ^= AUTO_SIZE;
 
     // If no width or height, there is nothing to remeasure since
     // there is no room for text.
@@ -1488,7 +1483,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       }
 
       // No reflow for explicit lineBreak
-      if (_textContainerManager.hostFormat.lineBreak == "explicit") {
+      if (textContainerManager.hostFormat.lineBreak == "explicit") {
         return false;
       }
     }
@@ -1496,7 +1491,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     if (!isNaN(heightConstraint)) {
       // Do we have a constrained height and an explicit width?
       // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitWidth) || !isNaN(_widthInChars)) {
+      if (!isNaN(explicitWidth) || _widthInChars != -1) {
         return false;
       }
     }
@@ -1514,6 +1509,10 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    * It calculates the 'ascent', 'descent', and instance variables, which are used in measure().
    */
   private function calculateFontMetrics():void {
+    if (_textFormat == null) {
+//      textElement.elementFormat = effectiveTextFormat;
+    }
+
     var textLine:TextLine = measureText("M");
     _ascent = textLine.ascent;
     _descent = textLine.descent;
@@ -1521,19 +1520,19 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   public function measureText(text:String):TextLine {
     textElement.text = text;
-    if (embeddedFontContext == null) {
-      return textBlock.createTextLine(null, 1000);
+
+    if (textLine == null) {
+      textLine = TextLineUtil.create(textBlock, embeddedFontContext, null);
     }
     else {
-      if (textBlockCreateTextLineArgs == null) {
-        textBlockCreateTextLineArgs = [null, 1000];
-      }
-      return embeddedFontContext.callInContext(textBlock.createTextLine, textBlock, textBlockCreateTextLineArgs);
+      TextLineUtil.create(textBlock, embeddedFontContext, textLine);
     }
+
+    return textLine;
   }
 
   private function calculateWidthInChars():Number {
-    var effectiveWidthInChars:int = isNaN(_widthInChars) ? (isNaN(_heightInLines) ? 10 : 1) : _widthInChars;
+    var effectiveWidthInChars:int = _widthInChars == -1 ? (_heightInLines == -1 ? 10 : 1) : _widthInChars;
     // Without the explicit casts, if padding values are non-zero, the returned width is a very large number.
     return effectiveTextFormat.paddingLeft + (effectiveWidthInChars * effectiveTextFormat.fontSize) + effectiveTextFormat.paddingRight;
   }
@@ -1547,28 +1546,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       return height;
     }
 
-    var effectiveHeightInLines:int;
-    // If both height and width are NaN use 10 lines.  Otherwise if only height is NaN, use 1.
-    effectiveHeightInLines = isNaN(_heightInLines) ? (isNaN(_widthInChars) ? 10 : 1) : _heightInLines;
-
-    // Position of the baseline of first line in the container.
-    value = effectiveTextFormat.firstBaselineOffset;
-    if (value == lineHeight) {
+    const lineHeight:Number = TextLineUtil.calculateLineHeight(effectiveTextFormat.lineHeight, effectiveTextFormat.fontSize);
+    const firstBaselineOffset:Object = effectiveTextFormat.firstBaselineOffset;
+    if (firstBaselineOffset == BaselineOffset.LINE_HEIGHT) {
       height += lineHeight;
     }
     else {
-      height += value is Number ? Number(value) : ascent;
+      height += firstBaselineOffset is Number ? Number(firstBaselineOffset) : ascent;
     }
 
-    // Distance from baseline to baseline.  Can be +/- number or +/- percent (in form "120%") or "undefined".
+    // If both height and width are NaN use 10 lines. Otherwise if only height is NaN, use 1.
+    const effectiveHeightInLines:int = _heightInLines == -1 ? (_widthInChars == -1 ? 10 : 1) : _heightInLines;
     if (effectiveHeightInLines > 1) {
-      var value:Object = effectiveTextFormat.lineHeight;
-      var lineHeight:Number = TextUtil.getNumberOrPercentOf(value, effectiveTextFormat.fontSize);
-      // Default is 120%
-      if (isNaN(lineHeight)) {
-        lineHeight = effectiveTextFormat.fontSize * 1.2;
-      }
-
       height += (effectiveHeightInLines - 1) * lineHeight;
     }
 
@@ -1611,7 +1600,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // This will update the selection after the operation is done.
-    if (_textContainerManager.insertTextOperation(newText, _selectionAnchorPosition, _selectionActivePosition)) {
+    if (textContainerManager.insertTextOperation(newText, _selectionAnchorPosition, _selectionActivePosition)) {
       dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
     }
   }
@@ -1643,7 +1632,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // We know it's an EditManager or we wouldn't have gotten here.
-    var editManager:IEditManager = IEditManager(_textContainerManager.beginInteraction());
+    var editManager:IEditManager = IEditManager(textContainerManager.beginInteraction());
 
     // Generate a CHANGING event for the PasteOperation but not for the
     // DeleteTextOperation or the InsertTextOperation which are also part of the paste.
@@ -1658,7 +1647,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     editManager.insertText(pastedText, selectionState);
 
     // All done with the edit manager.
-    _textContainerManager.endInteraction();
+    textContainerManager.endInteraction();
 
     dispatchChangeAndChangingEvents = true;
   }
@@ -1678,8 +1667,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private function addActivateHandlers():void {
     if (focusManager != null) {
-      focusManager.addEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, _textContainerManager.activateHandler, false, 0, true);
-      focusManager.addEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, _textContainerManager.deactivateHandler, false, 0, true);
+      focusManager.addEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, textContainerManager.activateHandler, false, 0, true);
+      focusManager.addEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, textContainerManager.deactivateHandler, false, 0, true);
     }
   }
 
@@ -1711,20 +1700,20 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       // handle the selection.  Otherwise it was because we tabbed in
       // or we programatically set the focus.
       if (!mouseDown) {
-        var selectionManager:ISelectionManager = _textContainerManager.beginInteraction();
+        var selectionManager:ISelectionManager = textContainerManager.beginInteraction();
 
         if (multiline) {
           if (!selectionManager.hasSelection()) {
             selectionManager.selectRange(0, 0);
           }
         }
-        else if (!hasProgrammaticSelectionRange) {
+        else if ((flags & HAS_PROGRAMMATIC_SELECTION_RANGE) == 0) {
           selectionManager.selectAll();
         }
 
         selectionManager.refreshSelection();
 
-        _textContainerManager.endInteraction();
+        textContainerManager.endInteraction();
       }
 
       if (_imeMode != null) {
@@ -1773,7 +1762,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   /**
-   *  @private
    *  RichEditableTextContainerManager overrides keyDownHandler and calls
    *  this before executing its own keyDownHandler.
    */
@@ -1782,8 +1770,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       return;
 
     // We always handle the 'enter' key since we would have to recreate
-    // the container manager to change the configuration if multiline
-    // changes.
+    // the container manager to change the configuration if multiline changes.
     if (event.keyCode == Keyboard.ENTER) {
       if (!multiline) {
         dispatchEvent(new FlexEvent(FlexEvent.ENTER));
@@ -1797,12 +1784,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         return;
       }
 
-      var editManager:IEditManager = EditManager(_textContainerManager.beginInteraction());
+      var editManager:IEditManager = EditManager(textContainerManager.beginInteraction());
 
       if (editManager.hasSelection())
         editManager.splitParagraph();
 
-      _textContainerManager.endInteraction();
+      textContainerManager.endInteraction();
 
       event.preventDefault();
     }
@@ -1811,10 +1798,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   mx_internal function mouseDownHandler(event:MouseEvent):void {
     mouseDown = true;
 
-    // Need to get called even if mouse events are dispatched
-    // outside of this component.  For example, when the user does
-    // a mouse down in RET, drags the mouse outside of the
-    /// component, and then releases the mouse.
+    // Need to get called even if mouse events are dispatched outside of this component. For example, when the user does
+    // a mouse down in RET, drags the mouse outside of the component, and then releases the mouse.
     systemManager.getSandboxRoot().addEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
   }
 
@@ -1862,8 +1847,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private function adjustContentBoundsForScroller(bounds:Rectangle):void {
     // Already reported bounds at least once for this generation of
-    // the text flow so we have to be careful to mantain consistency
-    // for the scroller.
+    // the text flow so we have to be careful to mantain consistency for the scroller.
     if (_textFlow.generation == lastContentBoundsGeneration) {
       if (bounds.width < _contentWidth) {
         if (effectiveTextFormat.lineBreak == LineBreak.TO_FIT) {
@@ -1872,9 +1856,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
           }
         }
         else {
-          // The width may get smaller if the compose height is
-          // reduced and fewer lines are composed.  Use the old
-          // content width which is more accurate.
+          // The width may get smaller if the compose height is reduced and fewer lines are composed.
+          // Use the old content width which is more accurate.
           bounds.width = _contentWidth;
         }
       }
@@ -1889,7 +1872,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function textContainerManager_compositionCompleteHandler(event:CompositionCompleteEvent):void {
     var oldContentWidth:Number = _contentWidth;
     var oldContentHeight:Number = _contentHeight;
-    var newContentBounds:Rectangle = _textContainerManager.getContentBounds();
+    var newContentBounds:Rectangle = textContainerManager.getContentBounds();
 
     // Try to prevent the scroller from getting into a loop while adding/removing scroll bars.
     if (_textFlow && clipAndEnableScrolling) {
@@ -1918,7 +1901,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  The TextFlow could have been modified interactively or programatically.
    */
   private function textContainerManager_damageHandler(event:DamageEvent):void {
-    if (ignoreDamageEvent || event.damageLength == 0) {
+    if ((flags & IGNORE_DAMAGE_EVENT) != 0 || event.damageLength == 0) {
       return;
     }
 
@@ -1954,7 +1937,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Invalidate _text and _content.
     _text = null;
-    _textFlow = _textContainerManager.getTextFlow();
+    _textFlow = textContainerManager.getTextFlow();
 
     lastGeneration = _textFlow.generation;
 
@@ -1974,7 +1957,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private function textContainerManager_scrollHandler(event:Event):void {
     var oldHorizontalScrollPosition:Number = _horizontalScrollPosition;
-    var newHorizontalScrollPosition:Number = _textContainerManager.horizontalScrollPosition;
+    var newHorizontalScrollPosition:Number = textContainerManager.horizontalScrollPosition;
 
     if (newHorizontalScrollPosition != oldHorizontalScrollPosition) {
       _horizontalScrollPosition = newHorizontalScrollPosition;
@@ -1982,7 +1965,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     var oldVerticalScrollPosition:Number = _verticalScrollPosition;
-    var newVerticalScrollPosition:Number = _textContainerManager.verticalScrollPosition;
+    var newVerticalScrollPosition:Number = textContainerManager.verticalScrollPosition;
     if (newVerticalScrollPosition != oldVerticalScrollPosition) {
       _verticalScrollPosition = newVerticalScrollPosition;
       dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, newVerticalScrollPosition);
@@ -2007,7 +1990,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Selection changed so reset.
-    hasProgrammaticSelectionRange = false;
+    flags |= HAS_PROGRAMMATIC_SELECTION_RANGE;
 
     // Only dispatch the event if the selection has really changed.
     if (oldAnchor != _selectionAnchorPosition || oldActive != _selectionActivePosition) {
@@ -2021,9 +2004,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function textContainerManager_flowOperationBeginHandler(event:FlowOperationEvent):void {
     var op:FlowOperation = event.operation;
 
-    // The text flow's generation will be incremented if the text flow
-    // is modified in any way by this operation.
-
+    // The text flow's generation will be incremented if the text flow is modified in any way by this operation.
     if (op is InsertTextOperation) {
       var insertTextOperation:InsertTextOperation = InsertTextOperation(op);
       var textToInsert:String = insertTextOperation.text;
@@ -2125,20 +2106,17 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   /**
    *  Called when a InlineGraphicElement is resized due to having width or
-   *  height as auto or percent and the graphic has finished loading. The
-   *  size of the graphic is now known.
+   *  height as auto or percent and the graphic has finished loading. The size of the graphic is now known.
    */
   private function textContainerManager_inlineGraphicStatusChangeHandler(event:StatusChangeEvent):void {
     if (event.status == InlineGraphicElementStatus.SIZE_PENDING && event.element is InlineGraphicElement) {
-      // Force InlineGraphicElement.applyDelayedElementUpdate to
-      // execute and finish loading the graphic.  This is a workaround
-      // for the case when the image is in a compiled text flow.
-      InlineGraphicElement(event.element).updateForMustUseComposer(_textContainerManager.getTextFlow());
+      // Force InlineGraphicElement.applyDelayedElementUpdate to execute and finish loading the graphic.
+      // This is a workaround for the case when the image is in a compiled text flow.
+      InlineGraphicElement(event.element).updateForMustUseComposer(textContainerManager.getTextFlow());
     }
     else if (event.status == InlineGraphicElementStatus.READY) {
-      // Now that the actual size of the graphic is available need to
-      // optionally remeasure and updateContainer.
-      if (autoSize) {
+      // Now that the actual size of the graphic is available need to optionally remeasure and updateContainer.
+      if ((flags & AUTO_SIZE) != 0) {
         invalidateSize();
       }
 

@@ -2,8 +2,6 @@ package cocoa.util {
 import flash.utils.ByteArray;
 
 public class StringUtil {
-  private static const ALTERNATE_MULTIPLICATION_SIGN:Array = ['\u25CF', '\u2020'];
-
   private static const MAX_PATHNAME_LENGTH:uint = 20;
   private static const SUMMARY_LENGTH:uint = 150;
 
@@ -103,7 +101,7 @@ public class StringUtil {
   }
 
   public static function repeat(string:String, multiplier:int):String {
-    var result:String = '';
+    var result:String = "";
     while (multiplier--) {
       result += string;
     }
