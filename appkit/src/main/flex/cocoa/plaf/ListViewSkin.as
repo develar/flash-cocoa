@@ -1,12 +1,15 @@
-package cocoa.plaf
-{
-public interface ListViewSkin
-{
-	function set verticalScrollPolicy(value:uint):void;
-	function set horizontalScrollPolicy(value:uint):void;
+package cocoa.plaf {
+import cocoa.ScrollView;
 
-	function set laf(value:LookAndFeel):void;
+public interface ListViewSkin {
+  function set verticalScrollPolicy(value:uint):void;
 
-	function set bordered(value:Boolean):void;
+  function set horizontalScrollPolicy(value:uint):void;
+
+  function set laf(value:LookAndFeel):void;
+
+  function set bordered(value:Boolean):void;
+
+  function get scrollView():ScrollView;
 }
 }

@@ -22,8 +22,12 @@ import spark.core.IViewport;
  */
 [DefaultProperty("documentView")]
 public class ScrollView extends AbstractView implements IFocusManagerComponent {
-  private var horizontalScrollBar:HScrollBar;
-  private var verticalScrollBar:VScrollBar;
+  private var _horizontalScrollBar:HScrollBar;
+  private var _verticalScrollBar:VScrollBar;
+
+  public function get horizontalScrollBar():HScrollBar {
+    return _horizontalScrollBar;
+  }
 
   /**
    *  SDT - Scrollbar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
@@ -51,8 +55,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   public function set verticalScrollPolicy(value:uint):void {
     _verticalScrollPolicy = value;
 
-    if (verticalScrollBar != null) {
-      verticalScrollBar.visible = _verticalScrollPolicy != ScrollPolicy.OFF;
+    if (_verticalScrollBar != null) {
+      _verticalScrollBar.visible = _verticalScrollPolicy != ScrollPolicy.OFF;
     }
   }
 
@@ -60,8 +64,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   public function set horizontalScrollPolicy(value:uint):void {
     _horizontalScrollPolicy = value;
 
-    if (horizontalScrollBar != null) {
-      horizontalScrollBar.visible = _horizontalScrollPolicy != ScrollPolicy.OFF;
+    if (_horizontalScrollBar != null) {
+      _horizontalScrollBar.visible = _horizontalScrollPolicy != ScrollPolicy.OFF;
     }
   }
 
@@ -72,13 +76,13 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     super.createChildren();
 
     if (_verticalScrollPolicy != ScrollPolicy.OFF) {
-      verticalScrollBar = new VScrollBar();
-      addChild(verticalScrollBar);
+      _verticalScrollBar = new VScrollBar();
+      addChild(_verticalScrollBar);
     }
 
     if (_horizontalScrollPolicy != ScrollPolicy.OFF) {
-      horizontalScrollBar = new HScrollBar();
-      addChild(horizontalScrollBar);
+      _horizontalScrollBar = new HScrollBar();
+      addChild(_horizontalScrollBar);
     }
   }
 
@@ -101,11 +105,11 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
         _documentView.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, documentViewPropertyChangeHandler);
       }
 
-      if (verticalScrollBar != null) {
-        verticalScrollBar.viewport = _documentView;
+      if (_verticalScrollBar != null) {
+        _verticalScrollBar.viewport = _documentView;
       }
-      if (horizontalScrollBar != null) {
-        horizontalScrollBar.viewport = _documentView;
+      if (_horizontalScrollBar != null) {
+        _horizontalScrollBar.viewport = _documentView;
       }
     }
   }
@@ -114,17 +118,15 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     switch (event.property) {
       case "contentWidth":
       case "contentHeight":
-      {
         invalidateSize();
         invalidateDisplayList();
-      }
         break;
     }
   }
 
   private function get hsbVisible():Boolean {
-    var hsb:HScrollBar = horizontalScrollBar;
-    return hsb && hsb.visible;
+    var hsb:HScrollBar = _horizontalScrollBar;
+    return hsb != null && hsb.visible;
   }
 
   private var hsbScaleX:Number = 1;
@@ -134,15 +136,15 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   private var vsbScaleY:Number = 1;
 
   private function hsbRequiredHeight():Number {
-    return Math.max(minViewportInset, horizontalScrollBar.getPreferredBoundsHeight(hsbVisible) * (hsbVisible ? 1 : hsbScaleY));
+    return Math.max(minViewportInset, _horizontalScrollBar.getPreferredBoundsHeight(hsbVisible) * (hsbVisible ? 1 : hsbScaleY));
   }
 
   private function get vsbVisible():Boolean {
-    return verticalScrollBar && verticalScrollBar.visible;
+    return _verticalScrollBar && _verticalScrollBar.visible;
   }
 
   private function vsbRequiredWidth():Number {
-    return Math.max(minViewportInset, verticalScrollBar.getPreferredBoundsWidth(vsbVisible) * (vsbVisible ? 1 : vsbScaleX));
+    return Math.max(minViewportInset, _verticalScrollBar.getPreferredBoundsWidth(vsbVisible) * (vsbVisible ? 1 : vsbScaleX));
   }
 
   private var minViewportInset:Number = 0;
@@ -151,9 +153,12 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     // TODO(hmuller):prefer to do nothing if transform doesn't change size, see UIComponent/nonDeltaLayoutMatrix()
     var cw:Number = viewport.contentWidth;
     var ch:Number = viewport.contentHeight;
-    if (((cw == 0) && (ch == 0)) || (isNaN(cw) || isNaN(ch)))
+    if ((cw == 0 && ch == 0) || (isNaN(cw) || isNaN(ch))) {
       return new Point(0, 0);
-    return MatrixUtil.transformSize(cw, ch, viewport.getLayoutMatrix());
+    }
+    else {
+      return MatrixUtil.transformSize(cw, ch, viewport.getLayoutMatrix());
+    }
   }
 
   override protected function measure():void {
@@ -161,7 +166,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     var measuredH:Number = 0;
 
     const measuredSizeIncludesScrollBars:Boolean = true;
-    const hsb:ScrollBarBase = horizontalScrollBar;
+    const hsb:ScrollBarBase = _horizontalScrollBar;
     var showHSB:Boolean = false;
     var hAuto:Boolean = false;
     if (measuredSizeIncludesScrollBars) {
@@ -185,7 +190,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
       }
     }
 
-    const vsb:ScrollBarBase = verticalScrollBar;
+    const vsb:ScrollBarBase = _verticalScrollBar;
     var showVSB:Boolean = false;
     var vAuto:Boolean = false;
     if (measuredSizeIncludesScrollBars) {
@@ -209,8 +214,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
       }
     }
 
-    measuredH += (showHSB) ? hsbRequiredHeight() : minViewportInset;
-    measuredW += (showVSB) ? vsbRequiredWidth() : minViewportInset;
+    measuredH += showHSB ? hsbRequiredHeight() : minViewportInset;
+    measuredW += showVSB ? vsbRequiredWidth() : minViewportInset;
 
     // The measured size of the viewport is just its preferredBounds, except:
     // don't give up space if doing so would make an auto scrollbar visible.
@@ -278,13 +283,12 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   /**
-   *  @private
    *  To make the scrollbars invisible to methods like getRect() and getBounds()
    *  as well as to methods based on them like hitTestPoint(), we set their scale
    *  to 0.  More info about this here: http://bugs.adobe.com/jira/browse/SDK-21540
    */
   private function set hsbVisible(value:Boolean):void {
-    var hsb:ScrollBarBase = horizontalScrollBar;
+    var hsb:ScrollBarBase = _horizontalScrollBar;
     if (!hsb)
       return;
 
@@ -305,11 +309,10 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   /**
-   *  @private
    *  The logic here is the same as for the horizontal scrollbar, see above.
    */
   private function set vsbVisible(value:Boolean):void {
-    var vsb:ScrollBarBase = verticalScrollBar;
+    var vsb:ScrollBarBase = _verticalScrollBar;
     if (!vsb)
       return;
 
@@ -331,28 +334,28 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
 
   private function hsbFits(w:Number, h:Number, includeVSB:Boolean = true):Boolean {
     if (vsbVisible && includeVSB) {
-      var vsb:ScrollBarBase = verticalScrollBar;
+      var vsb:ScrollBarBase = _verticalScrollBar;
       w -= vsb.getPreferredBoundsWidth();
       h -= vsb.getMinBoundsHeight();
     }
-    var hsb:ScrollBarBase = horizontalScrollBar;
+    var hsb:ScrollBarBase = _horizontalScrollBar;
     return (w >= hsb.getMinBoundsWidth()) && (h >= hsb.getPreferredBoundsHeight());
   }
 
   private function vsbFits(w:Number, h:Number, includeHSB:Boolean = true):Boolean {
     if (hsbVisible && includeHSB) {
-      var hsb:ScrollBarBase = horizontalScrollBar;
+      var hsb:ScrollBarBase = _horizontalScrollBar;
       w -= hsb.getMinBoundsWidth();
       h -= hsb.getPreferredBoundsHeight();
     }
-    var vsb:ScrollBarBase = verticalScrollBar;
+    var vsb:ScrollBarBase = _verticalScrollBar;
     return (w >= vsb.getPreferredBoundsWidth()) && (h >= vsb.getMinBoundsHeight());
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     var viewport:IViewport = _documentView;
-    var hsb:ScrollBarBase = horizontalScrollBar;
-    var vsb:ScrollBarBase = verticalScrollBar;
+    var hsb:ScrollBarBase = _horizontalScrollBar;
+    var vsb:ScrollBarBase = _verticalScrollBar;
     var minViewportInset:Number = minViewportInset;
 
     var contentW:Number = 0;

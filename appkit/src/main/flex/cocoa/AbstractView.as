@@ -31,7 +31,6 @@ import mx.core.IInvalidating;
 import mx.core.ILayoutDirectionElement;
 import mx.core.IUIComponent;
 import mx.core.IVisualElement;
-import mx.core.IVisualElementContainer;
 import mx.core.LayoutDirection;
 import mx.core.LayoutElementUIComponentUtils;
 import mx.core.UIComponent;
@@ -1427,7 +1426,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *  @playerversion AIR 1.1
    *  @productversion Flex 3
    */
-
   override public function get scaleX():Number {
     return (_layoutFeatures == null) ? super.scaleX : _layoutFeatures.layoutScaleX;
   }
@@ -2662,19 +2660,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
   }
 
-  //----------------------------------
-  //  layoutDirection
-  //----------------------------------
-
-  /**
-   *  Checked at commitProperties() time to see if our layoutDirection has changed,
-   *  or our parent's layoutDirection has changed.  This variable is reset after the
-   *  entire validateProperties() phase is complete so that it's possible for a child
-   *  to check if its parent's layoutDirection has changed, see commitProperties().
-   *  The flag is cleared in validateDisplayList().
-   */
-  private var oldLayoutDirection:String = null;
-
   public function get layoutDirection():String {
     return LAYOUT_DIRECTION_LTR;
   }
@@ -3103,37 +3088,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
       _layoutFeatures.mirror = mirror;
       invalidateTransform();
     }
-
-    // Children are notified only if the component's layoutDirection has changed.
-    if (oldLayoutDirection != layoutDirection) {
-      var i:int;
-
-      //  If we have children, the styleChanged() machinery (via commitProperties()) will
-      //  deal with UIComponent children. We have to deal with IVisualElement and
-      //  ILayoutDirectionElement children that don't support styles, like GraphicElements, here.
-      if (this is IVisualElementContainer) {
-        const thisContainer:IVisualElementContainer = IVisualElementContainer(this);
-        const thisContainerNumElements:int = thisContainer.numElements;
-
-        for (i = 0; i < thisContainerNumElements; i++) {
-          var elt:IVisualElement = thisContainer.getElementAt(i);
-          // Can be null if IUITextField or IUIFTETextField.
-          if (elt && !(elt is IStyleClient)) {
-            elt.invalidateLayoutDirection();
-          }
-        }
-      }
-      else {
-        const thisNumChildren:int = numChildren;
-
-        for (i = 0; i < thisNumChildren; i++) {
-          var child:DisplayObject = getChildAt(i);
-          if (!(child is IStyleClient) && child is ILayoutDirectionElement) {
-            ILayoutDirectionElement(child).invalidateLayoutDirection();
-          }
-        }
-      }
-    }
+    // develar: removed children validation, we don't support layout direction
   }
 
   private function transformOffsetsChangedHandler(e:Event):void {
@@ -3479,8 +3434,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   }
 
   public function validateDisplayList():void {
-    oldLayoutDirection = layoutDirection;
-
     if (flags & INVALID_DISPLAY_LIST) {
       // Check if our parent is the top level system manager
       var sm:ISystemManager = parent as ISystemManager;

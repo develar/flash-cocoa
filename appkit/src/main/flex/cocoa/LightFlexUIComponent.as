@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import flash.display.DisplayObject;
 
 import mx.core.UIComponent;
@@ -7,24 +6,20 @@ import mx.core.mx_internal;
 
 use namespace mx_internal;
 
-public class LightFlexUIComponent extends UIComponent implements View
-{
-	include "../../unwantedLegacy.as";
+public class LightFlexUIComponent extends UIComponent implements View {
+  include "../../unwantedLegacy.as";
 
-	include "../../legacyConstraints.as";
+  include "../../legacyConstraints.as";
 
-	override public function set currentState(value:String):void
-    {
-    }
+  override public function set currentState(value:String):void {
+  }
 
-	public function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
-	{
-		$addChildAt(displayObject, index == -1 ? numChildren : index);
-	}
+  public function addDisplayObject(displayObject:DisplayObject, index:int = -1):void {
+    $addChildAt(displayObject, index == -1 ? numChildren : index);
+  }
 
-	public function removeDisplayObject(displayObject:DisplayObject):void
-	{
-		$removeChild(displayObject);
-	}
+  public function removeDisplayObject(displayObject:DisplayObject):void {
+    $removeChild(displayObject);
+  }
 }
 }

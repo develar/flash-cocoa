@@ -14,11 +14,15 @@ import flash.display.Graphics;
 import mx.core.IUIComponent;
 
 public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.ListViewSkin {
-  private var scrollView:ScrollView;
+  private var _scrollView:ScrollView;
   protected var dataGroup:FlexDataGroup;
   private var contentView:IUIComponent;
 
   private var border:Border;
+
+  public function get scrollView():ScrollView {
+    return _scrollView;
+  }
 
   private var _bordered:Boolean = true;
   public function set bordered(value:Boolean):void {
@@ -34,14 +38,14 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
     dataGroup = new FlexDataGroup();
 
     if (_horizontalScrollPolicy != ScrollPolicy.OFF && _verticalScrollPolicy != ScrollPolicy.OFF) {
-      scrollView = new ScrollView();
-      scrollView.hasFocusableChildren = false;
-      scrollView.documentView = dataGroup;
+      _scrollView = new ScrollView();
+      _scrollView.hasFocusableChildren = false;
+      _scrollView.documentView = dataGroup;
 
-      scrollView.horizontalScrollPolicy = _horizontalScrollPolicy;
-      scrollView.verticalScrollPolicy = _verticalScrollPolicy;
+      _scrollView.horizontalScrollPolicy = _horizontalScrollPolicy;
+      _scrollView.verticalScrollPolicy = _verticalScrollPolicy;
 
-      contentView = scrollView;
+      contentView = _scrollView;
     }
     else {
       contentView = dataGroup;
@@ -60,16 +64,16 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
   private var _verticalScrollPolicy:int;
   public function set verticalScrollPolicy(value:uint):void {
     _verticalScrollPolicy = value;
-    if (scrollView != null) {
-      scrollView.verticalScrollPolicy = value;
+    if (_scrollView != null) {
+      _scrollView.verticalScrollPolicy = value;
     }
   }
 
   private var _horizontalScrollPolicy:int;
   public function set horizontalScrollPolicy(value:uint):void {
     _horizontalScrollPolicy = value;
-    if (scrollView != null) {
-      scrollView.horizontalScrollPolicy = value;
+    if (_scrollView != null) {
+      _scrollView.horizontalScrollPolicy = value;
     }
   }
 
