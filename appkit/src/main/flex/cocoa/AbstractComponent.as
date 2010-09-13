@@ -6,14 +6,13 @@ import cocoa.resources.ResourceManager;
 
 import flash.events.Event;
 
-import mx.core.IMXMLObject;
 import mx.core.IStateClient2;
 import mx.core.IVisualElement;
 
 use namespace ui;
 
 [Abstract]
-public class AbstractComponent extends ComponentBase implements Component, IMXMLObject {
+public class AbstractComponent extends ComponentBase implements Component {
   // только как прокси
   private var layoutMetrics:LayoutMetrics;
 
@@ -202,20 +201,6 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
     if (hasEventListener("enabledChanged")) {
       dispatchEvent(new Event("enabledChanged"));
     }
-  }
-
-  /* IID */
-  private var _id:String;
-  public function get id():String {
-    return _id;
-  }
-
-  public function set id(value:String):void {
-    _id = value;
-  }
-
-  public function initialized(document:Object, id:String):void {
-    this.id = id;
   }
 }
 }

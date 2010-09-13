@@ -2040,7 +2040,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     //			sm = ISystemManager(SystemManager.getSWFRoot(this));
     //		}
 
-    if (!sm) {
+    if (sm == null) {
       return SystemManagerGlobals.topLevelSystemManagers[0];
     }
 
@@ -2051,7 +2051,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     var n:int = numChildren;
     for (var i:int = 0; i < n; i++) {
       var child:AbstractView = getChildAt(i) as AbstractView;
-      if (child) {
+      if (child != null) {
         child.invalidateSystemManager();
       }
     }
@@ -2086,7 +2086,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
   }
 
-  mx_internal var _document:Object;
+  private var _document:Object;
   public function get document():Object {
     return _document;
   }
@@ -2130,61 +2130,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set id(value:String):void {
     _id = value;
-  }
-
-  /**
-   *  Contains <code>true</code> if this UIComponent instance is a document object.
-   *  That means it is at the top of the hierarchy of a Flex
-   *  application, MXML component, or ActionScript component.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function get isDocument():Boolean {
-    return document == this;
-  }
-
-  [Bindable("initialize")]
-
-  /**
-   *  A reference to the parent document object for this UIComponent.
-   *  A document object is a UIComponent at the top of the hierarchy
-   *  of a Flex application, MXML component, or AS component.
-   *
-   *  <p>For the Application object, the <code>parentDocument</code>
-   *  property is null.
-   *  This property  is useful in MXML scripts to go up a level
-   *  in the chain of document objects.
-   *  It can be used to walk this chain using
-   *  <code>parentDocument.parentDocument</code>, and so on.</p>
-   *
-   *  <p>It is typed as Object so that authors can access properties
-   *  and methods on ancestor document objects without casting.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function get parentDocument():Object {
-    if (document == this) {
-      var p:IUIComponent = parent as IUIComponent;
-      if (p) {
-        return p.document;
-      }
-
-      var sm:ISystemManager = parent as ISystemManager;
-      if (sm) {
-        return sm.document;
-      }
-
-      return null;
-    }
-    else {
-      return document;
-    }
   }
 
   private var _focusPane:Sprite;
@@ -2730,30 +2675,12 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    */
   private var oldLayoutDirection:String = null;
 
-  /**
-   *  @inheritDoc
-   */
   public function get layoutDirection():String {
     return LAYOUT_DIRECTION_LTR;
   }
 
-  /**
-   *  @private
-   *  Changes to the layoutDirection style cause an invalidateProperties() call,
-   *  see StyleProtoChain/styleChanged().  At commitProperties() time we use
-   *  invalidateLayoutDirection() to add/remove the mirroring transform.
-   *
-   *  layoutDirection=undefined or layoutDirection=null has the same effect
-   *  as setStyle(“layoutDirection”, undefined).
-   */
   public function set layoutDirection(value:String):void {
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Properties: Other
-  //
-  //--------------------------------------------------------------------------
 
   public function get baselinePosition():Number {
     throw new Error("abstract");
@@ -2776,14 +2703,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     return _effectsStarted;
   }
 
-  //----------------------------------
-  //  flexContextMenu
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the flexContextMenu property.
-   */
   private var _flexContextMenu:IFlexContextMenu;
 
   /**
@@ -2820,16 +2739,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   [Bindable("toolTipChanged")]
   [Inspectable(category="General", defaultValue="null")]
 
-  /**
-   *  Text to display in the ToolTip.
-   *
-   *  @default null
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function get toolTip():String {
     return _toolTip;
   }
@@ -2949,26 +2858,10 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     super.setChildIndex(child, newIndex);
   }
 
-  /**
-   *  @private
-   *  This method allows access to the Player's native implementation
-   *  of removeChildAt(), which can be useful since components
-   *  can override removeChildAt() and thereby hide the native implementation.
-   *  Note that this "base method" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
   mx_internal final function $removeChildAt(index:int):DisplayObject {
     return super.removeChildAt(index);
   }
 
-  /**
-   *  @private
-   *  This method allows access to the Player's native implementation
-   *  of setChildIndex(), which can be useful since components
-   *  can override setChildIndex() and thereby hide the native implementation.
-   *  Note that this "base method" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
   mx_internal final function $setChildIndex(child:DisplayObject, index:int):void {
     super.setChildIndex(child, index);
   }
@@ -3004,17 +2897,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
   }
 
-  /**
-   *  Called by Flex when a UIComponent object is added to or removed from a parent.
-   *  Developers typically never need to call this method.
-   *
-   *  @param p The parent of this UIComponent object.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public function parentChanged(p:DisplayObjectContainer):void {
     if (p == null) {
       _nestLevel = 0;
@@ -3142,28 +3024,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     invalidateDisplayList();
   }
 
-  /**
-   *  Marks a component so that its <code>commitProperties()</code>
-   *  method gets called during a later screen update.
-   *
-   *  <p>Invalidation is a useful mechanism for eliminating duplicate
-   *  work by delaying processing of changes to a component until a
-   *  later screen update.
-   *  For example, if you want to change the text color and size,
-   *  it would be wasteful to update the color immediately after you
-   *  change it and then update the size when it gets set.
-   *  It is more efficient to change both properties and then render
-   *  the text with its new size and color once.</p>
-   *
-   *  <p>Invalidation methods rarely get called.
-   *  In general, setting a property on a component automatically
-   *  calls the appropriate invalidation method.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public final function invalidateProperties():void {
     if ((flags & INVALID_PROPERTIES) == 0) {
       flags |= INVALID_PROPERTIES;
@@ -3174,28 +3034,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
   }
 
-  /**
-   *  Marks a component so that its <code>measure()</code>
-   *  method gets called during a later screen update.
-   *
-   *  <p>Invalidation is a useful mechanism for eliminating duplicate
-   *  work by delaying processing of changes to a component until a
-   *  later screen update.
-   *  For example, if you want to change the text and font size,
-   *  it would be wasteful to update the text immediately after you
-   *  change it and then update the size when it gets set.
-   *  It is more efficient to change both properties and then render
-   *  the text with its new size once.</p>
-   *
-   *  <p>Invalidation methods rarely get called.
-   *  In general, setting a property on a component automatically
-   *  calls the appropriate invalidation method.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public final function invalidateSize():void {
     if ((flags & INVALID_SIZE) == 0) {
       flags |= INVALID_SIZE;
@@ -3229,28 +3067,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     p.invalidateDisplayList();
   }
 
-  /**
-   *  Marks a component so that its <code>updateDisplayList()</code>
-   *  method gets called during a later screen update.
-   *
-   *  <p>Invalidation is a useful mechanism for eliminating duplicate
-   *  work by delaying processing of changes to a component until a
-   *  later screen update.
-   *  For example, if you want to change the width and height,
-   *  it would be wasteful to update the component immediately after you
-   *  change the width and then update again with the new height.
-   *  It is more efficient to change both properties and then render
-   *  the component with its new size once.</p>
-   *
-   *  <p>Invalidation methods rarely get called.
-   *  In general, setting a property on a component automatically
-   *  calls the appropriate invalidation method.</p>
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
   public final function invalidateDisplayList():void {
     if ((flags & INVALID_DISPLAY_LIST) == 0) {
       flags |= INVALID_DISPLAY_LIST;
@@ -4096,18 +3912,12 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
   }
 
-  /**
-   *  @private
-   */
   private function updateCompleteHandler(event:FlexEvent):void {
     UIComponentGlobals.layoutManager.removeEventListener(FlexEvent.UPDATE_COMPLETE, updateCompleteHandler);
     processEffectFinished(_endingEffectInstances);
     _endingEffectInstances = [];
   }
 
-  /**
-   *  @private
-   */
   private function processEffectFinished(effectInsts:Array):void {
     // Find the instance in our list.
     for (var i:int = _effectsStarted.length - 1; i >= 0; i--) {
@@ -4273,7 +4083,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   }
 
   /**
-   *  @private
    *  There is a bug (139390) where setting focus from within callLaterDispatcher
    *  screws up the ActiveX player.  We defer focus until enterframe.
    */

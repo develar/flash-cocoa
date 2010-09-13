@@ -482,10 +482,6 @@ class EditableTextEditManager extends EditManager {
     }
 
     if (event.ctrlKey && event.shiftKey && event.keyCode == KeyCode.Z) {
-      if (!Configuration.versionIsAtLeast(10, 1) && (Capabilities.os.search("Mac OS") > -1)) {
-        ignoreNextTextEvent = true;
-      }
-
       redo();
       event.preventDefault();
     }

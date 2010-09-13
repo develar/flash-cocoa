@@ -1,6 +1,4 @@
-package cocoa
-{
-public interface Viewable
-{
+package cocoa {
+public interface Viewable {
 }
 }
