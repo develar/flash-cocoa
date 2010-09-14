@@ -24,22 +24,22 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
   override protected function createChildren():void {
     var laf:LookAndFeel = LookAndFeelUtil.find(parent);
 
-    offBorder = laf.getBorder("Scrollbar.track." + orientation + ".off");
+    offBorder = laf.getBorder("ScrollBar.track." + orientation + ".off");
 
     track = new TrackOrThumbButton();
-    track.border = laf.getBorder("Scrollbar.track." + orientation);
+    track.border = laf.getBorder("ScrollBar.track." + orientation);
     addChild(track);
 
     decrementButton = new ArrowButton();
-    decrementButton.attach(laf, "Scrollbar.decrementButton." + orientation);
+    decrementButton.attach(laf, "ScrollBar.decrementButton." + orientation);
     addChild(decrementButton);
 
     incrementButton = new ArrowButton();
-    incrementButton.attach(laf, "Scrollbar.incrementButton." + orientation);
+    incrementButton.attach(laf, "ScrollBar.incrementButton." + orientation);
     addChild(incrementButton);
 
     thumb = new TrackOrThumbButton();
-    thumb.border = laf.getBorder("Scrollbar.thumb." + orientation);
+    thumb.border = laf.getBorder("ScrollBar.thumb." + orientation);
     addChild(thumb);
 
     var uiPartController:UIPartController = UIPartController(parent);

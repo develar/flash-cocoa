@@ -39,3 +39,7 @@ borders:
   type: Scale1
   appleResource: HUD-SliderKnob_round
   frameInsets: {left: -1, right: -1, bottom: -2}
+
+- key: ScrollBar.thumb
+  type: CappedSmart
+  appleResource: RSS-scroll

@@ -1,4 +1,7 @@
 package cocoa {
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelUtil;
+
 import flash.display.DisplayObject;
 import flash.geom.Point;
 
@@ -30,7 +33,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   /**
-   *  SDT - Scrollbar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
+   *  SDT - ScrollBar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
    * For example, if the contentWidth >= viewport width + SDT, show the horizontal scrollbar.
    */
   private static const SDT:Number = 1.0;
@@ -73,15 +76,17 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   override protected function createChildren():void {
-    super.createChildren();
+    var laf:LookAndFeel = LookAndFeelUtil.find(parent);
 
     if (_verticalScrollPolicy != ScrollPolicy.OFF) {
       _verticalScrollBar = new VScrollBar();
+      _verticalScrollBar.attach(laf);
       addChild(_verticalScrollBar);
     }
 
     if (_horizontalScrollPolicy != ScrollPolicy.OFF) {
       _horizontalScrollBar = new HScrollBar();
+      _horizontalScrollBar.attach(laf);
       addChild(_horizontalScrollBar);
     }
   }
@@ -519,7 +524,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
       vsb.setLayoutBoundsPosition(w - vsbW, 0);
     }
 
-    if ((((vsbVisible != oldShowVSB) && vAuto) || ((hsbVisible != oldShowHSB) && hAuto))) {
+    if (((vsbVisible != oldShowVSB && vAuto) || (hsbVisible != oldShowHSB && hAuto))) {
       invalidateSize();
 
       // If the viewport's layout is virtual, it's possible that its

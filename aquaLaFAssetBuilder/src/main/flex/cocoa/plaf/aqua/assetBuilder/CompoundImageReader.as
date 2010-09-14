@@ -10,7 +10,7 @@ import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
-import cocoa.border.Scale9BitmapBorder;
+import cocoa.border.Scale9EdgeBitmapBorder;
 import cocoa.plaf.basic.BitmapIcon;
 import cocoa.plaf.aqua.BorderPosition;
 
@@ -242,7 +242,7 @@ internal final class CompoundImageReader
 		borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
 	}
 
-	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9BitmapBorder, itemHeight:Number):void
+	public function readMenu(icons:Vector.<Icon>, bitmapDataClass:Class, listBorder:Scale9EdgeBitmapBorder, itemHeight:Number):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -273,7 +273,7 @@ internal final class CompoundImageReader
 		borders[BorderPosition.menu] = listBorder;
 	}
 
-	public function readScale9(bitmapDataClass:Class, borderPosition:int, border:Scale9BitmapBorder, equalLength:int = -1):void
+	public function readScale9(bitmapDataClass:Class, borderPosition:int, border:Scale9EdgeBitmapBorder, equalLength:int = -1):void
 	{
 		compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
 		var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);

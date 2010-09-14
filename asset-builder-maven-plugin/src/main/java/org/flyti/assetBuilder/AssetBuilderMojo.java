@@ -205,20 +205,21 @@ public class AssetBuilderMojo extends AbstractMojo {
       else {
         out.writeByte(border.type.ordinal());
         switch (border.type) {
-          case One: {
+          case One:
             out.write(sourceImages[0]);
-          }
-          break;
+            break;
 
-          case Scale1: {
+          case Scale1:
+          case CappedSmart:
             out.write(sourceImages);
-          }
-          break;
+            break;
         }
       }
 
       lazyWriteInsets(border.contentInsets, true);
-      lazyWriteInsets(border.frameInsets, false);
+      if (border.type != BorderType.CappedSmart) {
+        lazyWriteInsets(border.frameInsets, false);
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 package cocoa {
-import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
+import cocoa.plaf.LookAndFeel;
 
 import flash.events.MouseEvent;
 
@@ -11,6 +11,8 @@ import spark.components.VScrollBar;
 use namespace mx_internal;
 
 public class VScrollBar extends spark.components.VScrollBar implements UIPartController {
+  private var skinClass:Class;
+
   public function uiPartAdded(id:String, instance:Object):void {
     this[id] = instance;
     partAdded(id, instance);
@@ -20,7 +22,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
     switch (styleProp) {
       case "repeatDelay": return 500;
       case "repeatInterval": return 35;
-      case "skinClass": return VScrollBarSkin;
+      case "skinClass": return skinClass;
     }
 
     return undefined;
@@ -56,8 +58,12 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
       skin.invalidateDisplayList();
     }
 
-    var thumbTopPadding:Number = FlexButton(track).border.contentInsets.top;
-    trackSize -= thumbTopPadding;
+    var thumbTopPadding:Number = 0;
+    var trackBorder:Border = FlexButton(track).border;
+    if (trackBorder != null) {
+      thumbTopPadding = trackBorder.contentInsets.top;
+      trackSize -= thumbTopPadding;
+    }
 
     var thumbSize:Number = Math.max(thumb.minHeight, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));
     thumb.setLayoutBoundsSize(NaN, thumbSize);
@@ -73,11 +79,15 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
   }
 
   override protected function createChildren():void {
-    mySkin = new VScrollBarSkin();
+    mySkin = new skinClass();
 
     addingChild(mySkin);
     $addChildAt(mySkin, 0);
     childAdded(mySkin);
+  }
+
+  public function attach(laf:LookAndFeel):void {
+    skinClass = laf.getClass("ScrollBar.v");
   }
 
   override protected function attachSkin():void {

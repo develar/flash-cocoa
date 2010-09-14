@@ -229,6 +229,11 @@ public class ImageRetriever {
           }
           break;
 
+        // -top, -fill, -bottom
+        case 't': return 0;
+        case 'f': return 1;
+        case 'b': return 2;
+
         default:
           throw new IllegalArgumentException("unknown " + s);
       }

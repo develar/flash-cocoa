@@ -3,10 +3,8 @@ import cocoa.Border;
 import cocoa.Icon;
 import cocoa.plaf.CursorData;
 import cocoa.plaf.LookAndFeel;
-
 import cocoa.text.TextFormat;
 
-import flash.text.engine.ElementFormat;
 import flash.utils.Dictionary;
 
 import flashx.textLayout.edit.SelectionFormat;

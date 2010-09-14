@@ -1,5 +1,5 @@
 package cocoa {
-import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
+import cocoa.plaf.LookAndFeel;
 
 import flash.events.MouseEvent;
 
@@ -11,6 +11,8 @@ import spark.components.HScrollBar;
 use namespace mx_internal;
 
 public class HScrollBar extends spark.components.HScrollBar implements UIPartController {
+  private var skinClass:Class;
+
   public function uiPartAdded(id:String, instance:Object):void {
     this[id] = instance;
     partAdded(id, instance);
@@ -19,8 +21,9 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
   override public function getStyle(styleProp:String):* {
     switch (styleProp) {
       case "repeatDelay": return 500;
+      case "incrementButton": return 500;
       case "repeatInterval": return 35;
-      case "skinClass": return HScrollBarSkin;
+      case "skinClass": return skinClass;
     }
 
     return undefined;
@@ -56,8 +59,12 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
       skin.invalidateDisplayList();
     }
 
-    var thumbleftPadding:Number = FlexButton(track).border.contentInsets.left;
-    trackSize -= thumbleftPadding;
+    var thumbleftPadding:Number = 0;
+    var trackBorder:Border = FlexButton(track).border;
+    if (trackBorder != null) {
+      thumbleftPadding = trackBorder.contentInsets.left;
+      trackSize -= thumbleftPadding;
+    }
 
     var thumbSize:Number = Math.max(thumb.minWidth, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));
     thumb.setLayoutBoundsSize(thumbSize, NaN);
@@ -74,11 +81,15 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
   }
 
   override protected function createChildren():void {
-    mySkin = new HScrollBarSkin();
+    mySkin = new skinClass;
 
     addingChild(mySkin);
     $addChildAt(mySkin, 0);
     childAdded(mySkin);
+  }
+
+  public function attach(laf:LookAndFeel):void {
+    skinClass = laf.getClass("ScrollBar.h");
   }
 
   override protected function attachSkin():void {

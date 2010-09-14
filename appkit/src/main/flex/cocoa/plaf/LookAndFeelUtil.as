@@ -1,12 +1,13 @@
 package cocoa.plaf {
 import cocoa.border.AbstractBitmapBorder;
+import cocoa.border.CappedSmartBorder;
 import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorderWithSmartFrameInsets;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
-import cocoa.border.Scale9BitmapBorder;
+import cocoa.border.Scale9EdgeBitmapBorder;
 import cocoa.plaf.basic.BitmapIcon;
 
 import flash.display.DisplayObjectContainer;
@@ -44,11 +45,12 @@ public final class LookAndFeelUtil {
       switch (assetsData.readUnsignedByte()) {
         case 0: border = new Scale3EdgeHBitmapBorder(); break;
         case 1: border = new Scale1BitmapBorder(); break;
-        case 2: border = new Scale9BitmapBorder(); break;
+        case 2: border = new Scale9EdgeBitmapBorder(); break;
         case 3: border = new OneBitmapBorder(); break;
         case 4: border = new Scale3HBitmapBorder(); break;
         case 5: border = new Scale3VBitmapBorder(); break;
         case 6: border = new Scale3EdgeHBitmapBorderWithSmartFrameInsets(); break;
+        case 7: border = new CappedSmartBorder(); break;
 
         default: throw new Error("unknown border type marker");
       }

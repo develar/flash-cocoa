@@ -11,7 +11,7 @@ import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
-import cocoa.border.Scale9BitmapBorder;
+import cocoa.border.Scale9EdgeBitmapBorder;
 import cocoa.plaf.basic.BitmapIcon;
 import cocoa.plaf.ExternalizableResource;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -97,12 +97,12 @@ public class Builder {
     finalizeRowsInfo(buttonRowsInfo, 22);
     compoundImageReader.read(assetsClass, buttonRowsInfo);
     // image view bezel border (imagewell border)
-    borders[BorderPosition.imageView] = Scale9BitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
+    borders[BorderPosition.imageView] = Scale9EdgeBitmapBorder.create(new FrameInsets(-3, -3, -3, -3), new Insets(4, 4, 4, 4)).configure(compoundImageReader.parseScale9Grid(new Rectangle(0, 352, 50, 50), new Insets(8, 8, 8, 8)));
 
-    borders[BorderPosition.textField] = Scale9BitmapBorder.create(null, new Insets(4, 3, 4, 2)).configure(compoundImageReader.parseScale9Grid(new Rectangle(120, 332, 100, 100)));
+    borders[BorderPosition.textField] = Scale9EdgeBitmapBorder.create(null, new Insets(4, 3, 4, 2)).configure(compoundImageReader.parseScale9Grid(new Rectangle(120, 332, 100, 100)));
 
     var icons:Vector.<Icon> = new Vector.<Icon>(2, true);
-    compoundImageReader.readMenu(icons, popUpMenuClass, Scale9BitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
+    compoundImageReader.readMenu(icons, popUpMenuClass, Scale9EdgeBitmapBorder.create(new FrameInsets(-13, -3, -13, -23), new Insets(0, 4, 0, 4)), 18);
     borders[BorderPosition.hudMenuItem] = OneBitmapBorder.create(Bitmap(new hudMenuItemH()).bitmapData, new Insets(21, NaN, 21, 4));
 
     var windowBottomBarFrameInsets:FrameInsets = new FrameInsets(-33, 0, -33, -48);
@@ -116,7 +116,7 @@ public class Builder {
 
     compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.window);
     compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.windowWithToolbar);
-    compoundImageReader.readScale9(hudTitleBarAndContentClass, BorderPosition.hudWindow, Scale9BitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
+    compoundImageReader.readScale9(hudTitleBarAndContentClass, BorderPosition.hudWindow, Scale9EdgeBitmapBorder.create(new FrameInsets(-7, -2, -7, -10)), 25);
 
     // для tree content insets left это h gap между иконкой/текстом
     borders[BorderPosition.treeItem] = OneBitmapBorder.create(Bitmap(new treeBorder()).bitmapData, new Insets(4, 0, 7, 6));
@@ -156,7 +156,7 @@ public class Builder {
         switch (data.readUnsignedByte()) {
           case 0: border = new Scale3EdgeHBitmapBorder(); break;
           case 1: border = new Scale1BitmapBorder(); break;
-          case 2: border = new Scale9BitmapBorder(); break;
+          case 2: border = new Scale9EdgeBitmapBorder(); break;
           case 3: border = new OneBitmapBorder(); break;
           case 4: border = new Scale3HBitmapBorder(); break;
           case 5: border = new Scale3VBitmapBorder(); break;

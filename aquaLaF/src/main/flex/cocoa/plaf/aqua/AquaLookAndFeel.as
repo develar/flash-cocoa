@@ -11,7 +11,8 @@ import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
-import cocoa.border.Scale9BitmapBorder;
+import cocoa.border.Scale9EdgeBitmapBorder;
+import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BitmapIcon;
@@ -23,6 +24,9 @@ import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
+import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
+import cocoa.plaf.basic.scrollbar.MiniScrollBarSkin;
+import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.TextLayoutFormatImpl;
 
 import flash.display.BlendMode;
@@ -43,7 +47,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     initialize();
   }
 
+   [Embed(source="../../../../../../target/assets", mimeType="application/octet-stream")]
+  private static var assetsDataClass2:Class;
+
   protected function initialize():void {
+
+    LookAndFeelUtil.initAssets(data, assetsDataClass2);
+    assetsDataClass2 = null;
+
     initAssets();
 
     data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT;
@@ -112,26 +123,33 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["SegmentItem.border"] = borders[BorderPosition.segmentItem];
     Scale1BitmapBorder(borders[BorderPosition.segmentItem]).frameInsets = new FrameInsets(0, 0, 0, -3);
 
-    data["Scrollbar.track.v"] = borders[BorderPosition.scrollbar];
-    data["Scrollbar.track.h"] = borders[BorderPosition.scrollbar + 1];
+    data["ScrollBar.track.v"] = borders[BorderPosition.scrollbar];
+    data["ScrollBar.track.h"] = borders[BorderPosition.scrollbar + 1];
 
-    data["Scrollbar.decrementButton.h"] = borders[BorderPosition.scrollbar + 2];
-    data["Scrollbar.decrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 3];
+//    data["ScrollBar.h"] = HScrollBarSkin;
+//    data["ScrollBar.v"] = VScrollBarSkin;
 
-    data["Scrollbar.incrementButton.h"] = borders[BorderPosition.scrollbar + 4];
-    data["Scrollbar.incrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 5];
+    data["ScrollBar.h"] = MiniScrollBarSkin;
+    data["ScrollBar.v"] = MiniScrollBarSkin;
+//    data["ScrollBar.thumb"] = borders[BorderPosition.scrollbar + 10];
 
-    data["Scrollbar.decrementButton.v"] = borders[BorderPosition.scrollbar + 6];
-    data["Scrollbar.decrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 7];
+    data["ScrollBar.decrementButton.h"] = borders[BorderPosition.scrollbar + 2];
+    data["ScrollBar.decrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 3];
 
-    data["Scrollbar.incrementButton.v"] = borders[BorderPosition.scrollbar + 8];
-    data["Scrollbar.incrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 9];
+    data["ScrollBar.incrementButton.h"] = borders[BorderPosition.scrollbar + 4];
+    data["ScrollBar.incrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 5];
 
-    data["Scrollbar.thumb.v"] = borders[BorderPosition.scrollbar + 10];
-    data["Scrollbar.thumb.h"] = borders[BorderPosition.scrollbar + 11];
+    data["ScrollBar.decrementButton.v"] = borders[BorderPosition.scrollbar + 6];
+    data["ScrollBar.decrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 7];
 
-    data["Scrollbar.track.v.off"] = borders[BorderPosition.scrollbar + 12];
-    data["Scrollbar.track.h.off"] = borders[BorderPosition.scrollbar + 13];
+    data["ScrollBar.incrementButton.v"] = borders[BorderPosition.scrollbar + 8];
+    data["ScrollBar.incrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 9];
+
+    data["ScrollBar.thumb.v"] = borders[BorderPosition.scrollbar + 10];
+    data["ScrollBar.thumb.h"] = borders[BorderPosition.scrollbar + 11];
+
+    data["ScrollBar.track.v.off"] = borders[BorderPosition.scrollbar + 12];
+    data["ScrollBar.track.h.off"] = borders[BorderPosition.scrollbar + 13];
 
     data["VSeparator"] = SeparatorSkin;
     data["HSeparator"] = SeparatorSkin;
@@ -176,7 +194,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
       switch (typeMarker) {
         case 0: border = new Scale3EdgeHBitmapBorder(); break;
         case 1: border = new Scale1BitmapBorder(); break;
-        case 2: border = new Scale9BitmapBorder(); break;
+        case 2: border = new Scale9EdgeBitmapBorder(); break;
         case 3: border = new OneBitmapBorder(); break;
         case 4: border = new Scale3HBitmapBorder(); break;
         case 5: border = new Scale3VBitmapBorder(); break;
