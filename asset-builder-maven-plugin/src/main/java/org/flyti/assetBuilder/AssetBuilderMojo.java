@@ -177,13 +177,13 @@ public class AssetBuilderMojo extends AbstractMojo {
 
       final BufferedImage[] sourceImages;
       if (border.appleResource == null) {
-        sourceImages = imageRetriever.getImages(key, border.type == BorderType.OneBitmap ? null : DEFAULT_STATES);
+        sourceImages = imageRetriever.getImages(key, border.type == BorderType.One ? null : DEFAULT_STATES);
       }
       else {
         sourceImages = imageRetriever.getImagesFromAppleResources(border.appleResource);
       }
 
-      if (border.type == BorderType.Scale3EdgeHBitmap) {
+      if (border.type == BorderType.Scale3EdgeH) {
         if (border.appleResource == null) {
           if ((sourceImages[0].getWidth() == sourceImages[1].getWidth())) {
             out.writeByte(border.type.ordinal());
@@ -193,7 +193,7 @@ public class AssetBuilderMojo extends AbstractMojo {
             out.write(slice3H(sourceImages, sliceCalculator.calculate(sourceImages[1])));
           }
           else { // see note in Scale3EdgeHBitmapBorderWithSmartFrameInsets, only for Fluent
-            out.writeByte(BorderType.Scale3EdgeHBitmapBorderWithSmartFrameInsets.ordinal());
+            out.writeByte(BorderType.Scale3EdgeHWithSmartFrameInsets.ordinal());
             out.write(slice3H(sourceImages, sliceCalculator));
           }
         }
@@ -205,12 +205,12 @@ public class AssetBuilderMojo extends AbstractMojo {
       else {
         out.writeByte(border.type.ordinal());
         switch (border.type) {
-          case OneBitmap: {
+          case One: {
             out.write(sourceImages[0]);
           }
           break;
 
-          case Scale1Bitmap: {
+          case Scale1: {
             out.write(sourceImages);
           }
           break;

@@ -1,50 +1,22 @@
-package cocoa.plaf.basic.scrollbar
-{
-import spark.components.supportClasses.ScrollBarBase;
+package cocoa.plaf.basic.scrollbar {
+public class VScrollBarSkin extends AbstractScrollBarSkin {
+  override protected function get orientation():String {
+    return "v";
+  }
 
-public class VScrollBarSkin extends AbstractScrollBarSkin
-{
-	override protected function get orientation():String
-	{
-		return "v";
-	}
+  override protected function measure():void {
+    measuredMinWidth = measuredWidth = track.getExplicitOrMeasuredWidth();
+    measuredMinHeight = measuredHeight = thumb.getExplicitOrMeasuredHeight() + decrementButton.getExplicitOrMeasuredHeight() + incrementButton.getExplicitOrMeasuredHeight();
+  }
 
-	override protected function measure():void
-	{
-		measuredMinWidth = measuredWidth = track.getExplicitOrMeasuredWidth();
-		measuredMinHeight = measuredHeight = thumb.getExplicitOrMeasuredHeight() + decrementButton.getExplicitOrMeasuredHeight() + incrementButton.getExplicitOrMeasuredHeight();
-	}
+  override protected function layoutTrackAndButtons(w:Number, h:Number):void {
+    const incrementButtonHeight:Number = incrementButton.getPreferredBoundsHeight();
+    const decrementButtonY:Number = h - decrementButton.getPreferredBoundsHeight() - incrementButtonHeight;
 
-	override protected function updateDisplayList(w:Number, h:Number):void
-	{
-		var isOff:Boolean = ScrollBarBase(parent).maximum <= ScrollBarBase(parent).minimum;
+    track.setLayoutBoundsSize(NaN, decrementButtonY);
 
-		if (isOff == track.visible)
-		{
-			graphics.clear();
-			track.visible = !isOff;
-			thumb.visible = !isOff;
-			decrementButton.visible = !isOff;
-			incrementButton.visible = !isOff;
-		}
-
-		if (isOff)
-		{
-			offBorder.draw(null, graphics, w, h);
-		}
-		else
-		{
-			var incrementButtonHeight:Number = incrementButton.getPreferredBoundsHeight();
-			var decrementButtonY:Number = h - decrementButton.getPreferredBoundsHeight() - incrementButtonHeight;
-
-			track.setLayoutBoundsSize(NaN, decrementButtonY);
-
-			decrementButton.setLayoutBoundsSize(NaN, NaN);
-			incrementButton.setLayoutBoundsSize(NaN, NaN);
-
-			decrementButton.setLayoutBoundsPosition(0, decrementButtonY);
-			incrementButton.setLayoutBoundsPosition(0, h - incrementButtonHeight);
-		}
-	}
+    decrementButton.setLayoutBoundsPosition(0, decrementButtonY);
+    incrementButton.setLayoutBoundsPosition(0, h - incrementButtonHeight);
+  }
 }
 }

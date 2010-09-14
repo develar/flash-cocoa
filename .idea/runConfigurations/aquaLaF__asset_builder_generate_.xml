@@ -3,7 +3,7 @@
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
-          <option name="checksumPolicy" value="FAIL" />
+          <option name="checksumPolicy" value="NOT_SET" />
           <option name="failureBehavior" value="FAST" />
           <option name="mavenHome" value="" />
           <option name="mavenSettingsFile" value="" />

@@ -9,118 +9,90 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+// если для key найдено изображение для какого-либо состояния, то мы считаем, что и все остальные изображения в этой же source directory
 public class ImageRetriever {
   private static final FileFilter ASSET_FILE_FILTER = new SuffixFileFilter(new String[]{".png"});
-  private static final String[] BUTTON_IMAGE_PARTS = {"Left", "Fill", "Right"};
-  private static final String[] CHECK_BOX_STATE_PARTS = {"Off", "On"};
-  private static final String[] LONG_STATES = {"Normal", "Pressed", "Disabled"};
-
-  private static final String[] DEFAULT_APPLE_STATES = {"N", "P"};
 
   private List<File> sources;
 
+  private Map<File, String[]> directoryContentCache;
+
   public ImageRetriever(List<File> sources) {
     this.sources = sources;
+
+    directoryContentCache = new HashMap<File, String[]>(sources.size());
   }
 
   // Ищет изображения как они в Apple app resources
   public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws MojoExecutionException, IOException {
-    if (appleResource.endsWith("_")) {
-      return getImagesForCheckBoxFromAppleResources(appleResource, DEFAULT_APPLE_STATES);
-    }
-    else if (!appleResource.startsWith("HUD-")) {
-      return getImagesFromAppleResources(appleResource, LONG_STATES);
-    }
-    else {
-      return getImagesForButtonFromAppleResources(appleResource, DEFAULT_APPLE_STATES);
-    }
-  }
-
-  private BufferedImage[] getImagesForButtonFromAppleResources(final String appleResource, final String[] states) throws MojoExecutionException, IOException {
-    BufferedImage[] images = new BufferedImage[3 * 2];
-
-    int imageIndex = 0;
-    sl:
     for (File sourceDirectory : sources) {
-      final String prefix = sourceDirectory.getAbsolutePath() + File.separator + appleResource;
-      for (int i = 0, n = states.length; i < n; i++) {
-        for (String partName : BUTTON_IMAGE_PARTS) {
-          File file = new File(prefix + partName + "-" + states[i] + ".tiff");
-          if (imageIndex == 0 && !file.exists()) {
-            continue sl;
-          }
-
-          images[imageIndex++] = JAI.create("fileload", file.getAbsolutePath()).getAsBufferedImage();
-        }
+      String[] files = directoryContentCache.get(sourceDirectory);
+      if (files == null) {
+        files = sourceDirectory.list();
+        Arrays.sort(files);
+        directoryContentCache.put(sourceDirectory, files);
       }
 
-      // optional disabled state
-      File file = new File(prefix + BUTTON_IMAGE_PARTS[0] + "-D.tiff");
-      if (file.exists()) {
-        BufferedImage[] imagesWithDisabled = new BufferedImage[3 * 3];
-        System.arraycopy(images, 0, imagesWithDisabled, 0, 6);
-        images = imagesWithDisabled;
-
-        for (String partName : BUTTON_IMAGE_PARTS) {
-          images[imageIndex++] = JAI.create("fileload", prefix + partName + "-D.tiff").getAsBufferedImage();
+      int index = binarySearch(files, appleResource);
+      if (index > -1) {
+        if (index > 0) {
+          //noinspection StatementWithEmptyBody
+          while (index > 0 && files[--index].startsWith(appleResource));
+          index++;
         }
-      }
 
-      return images;
+        int endIndex = index + 1;
+        //noinspection StatementWithEmptyBody
+        while (endIndex < files.length && files[endIndex].startsWith(appleResource)) {
+          endIndex++;
+        }
+
+        final int imageFilesLength = endIndex - index;
+        BufferedImage[] images = new BufferedImage[imageFilesLength];
+        String[] imageFiles = new String[imageFilesLength];
+        System.arraycopy(files, index, imageFiles, 0, imageFilesLength);
+
+        Arrays.sort(imageFiles, new StringComparator(appleResource.length()));
+        System.out.print(Arrays.toString(imageFiles) + "\n");
+        for (int i = 0; i < imageFilesLength; i++) {
+          images[i] = JAI.create("fileload", sourceDirectory.getPath() + File.separator + imageFiles[i]).getAsBufferedImage();
+        }
+
+        return images;
+      }
     }
 
     throw new MojoExecutionException("Can't find image for " + appleResource);
   }
 
-  private BufferedImage[] getImagesForCheckBoxFromAppleResources(final String appleResource, final String[] states) throws MojoExecutionException, IOException {
-    BufferedImage[] images = new BufferedImage[4];
+  private static int binarySearch(String[] list, String prefix) {
+    int low = 0;
+    int high = list.length - 1;
 
-    int imageIndex = 0;
-    sl:
-    for (File sourceDirectory : sources) {
-      final String prefix = sourceDirectory.getAbsolutePath() + File.separator + appleResource;
-      for (int i = 0, n = states.length; i < n; i++) {
-        for (String partName : CHECK_BOX_STATE_PARTS) {
-          File file = new File(prefix + partName + "-" + states[i] + ".tiff");
-          if (imageIndex == 0 && !file.exists()) {
-            continue sl;
-          }
+    final int prefixLength = prefix.length();
 
-          images[imageIndex++] = JAI.create("fileload", file.getAbsolutePath()).getAsBufferedImage();
-        }
+    while (low <= high) {
+      int mid = (low + high) >>> 1;
+      String midValue = list[mid];
+      if (midValue.length() > prefixLength) {
+        midValue = midValue.substring(0, prefixLength);
       }
 
-      return images;
-    }
-
-    throw new MojoExecutionException("Can't find image for " + appleResource);
-  }
-
-  private BufferedImage[] getImagesFromAppleResources(final String appleResource, final String[] states) throws MojoExecutionException, IOException {
-    BufferedImage[] images = new BufferedImage[states.length];
-
-    int imageIndex = 0;
-    sl:
-    for (File sourceDirectory : sources) {
-      final String prefix = sourceDirectory.getAbsolutePath() + File.separator + appleResource;
-      for (String stateName : states) {
-        File file = new File(prefix + stateName + ".tiff");
-        if (imageIndex == 0 && !file.exists()) {
-          continue sl;
-        }
-
-        images[imageIndex++] = JAI.create("fileload", file.getAbsolutePath()).getAsBufferedImage();
+      int cmp = midValue.compareTo(prefix);
+      if (cmp < 0) {
+        low = mid + 1;
       }
-
-      return images;
+      else if (cmp > 0) {
+        high = mid - 1;
+      }
+      else {
+        return mid; // key found
+      }
     }
 
-    throw new MojoExecutionException("Can't find image for " + appleResource);
+    return -(low + 1);  // key not found.
   }
 
   public BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException, IOException {
@@ -181,5 +153,99 @@ public class ImageRetriever {
     }
 
     throw new MojoExecutionException("Can't find image for " + key);
+  }
+
+  private static class StringComparator implements Comparator<String> {
+    private int prefixLength;
+    private int start = -1;
+
+    public StringComparator(int prefixLength) {
+      this.prefixLength = prefixLength;
+    }
+
+    @Override
+    public int compare(String s1, String s2) {
+      if (start == -1) {
+        final char testChar = s1.charAt(prefixLength);
+        start = testChar == '_' || testChar == '-' ? prefixLength + 1 : prefixLength;
+      }
+      return getWeight(s1) - getWeight(s2);
+    }
+
+    public int getWeight(String s) {
+      final int weight;
+      final int stateIndex;
+      switch (s.charAt(start)) {
+        case 'L': // Left
+          if (s.charAt(start + 4) == 'C') {
+            return 1;
+          }
+          else {
+            weight = 10;
+            stateIndex = 5;
+          }
+          break;
+
+        case 'F': // Fill
+          if (s.charAt(start + 4) == '.') {
+            return 2;
+          }
+          else {
+            weight = 20;
+            stateIndex = 5;
+          }
+          break;
+
+        case 'R':
+          if (s.charAt(start + 1) == 'i') {
+            if (s.charAt(start + 5) == 'C') {
+              return 3;
+            }
+            else {
+              weight = 30; // Right
+              stateIndex = 6;
+            }
+          }
+          else {
+            return 4; // Rollover
+          }
+          break;
+
+        case 'N': // Normal
+          return 1;
+        case 'P': // Pressed
+          return 2;
+        case 'D': // Disabled
+          return 3;
+
+        case 'O':
+          if (s.charAt(start + 1) == 'f') {
+            weight = 10;
+            stateIndex = 4;
+          }
+          else {
+            weight = 20;
+            stateIndex = 3;
+          }
+          break;
+
+        default:
+          throw new IllegalArgumentException("unknown " + s);
+      }
+
+      switch (s.charAt(start + stateIndex)) {
+        case 'N':
+          return weight + 100;
+
+        case 'P':
+          return weight + 200;
+
+        case 'D':
+          return weight + 300;
+
+        default:
+          throw new IllegalArgumentException("unknown " + s);
+      }
+    }
   }
 }

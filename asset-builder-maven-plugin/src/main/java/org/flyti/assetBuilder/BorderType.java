@@ -1,5 +1,5 @@
 package org.flyti.assetBuilder;
 
 public enum BorderType {
-  Scale3EdgeHBitmap, Scale1Bitmap, Scale9Bitmap, OneBitmap, Scale3HBitmapBorder, Scale3VBitmapBorder, Scale3EdgeHBitmapBorderWithSmartFrameInsets
+  Scale3EdgeH, Scale1, Scale9, One, Scale3H, Scale3V, Scale3EdgeHWithSmartFrameInsets
 }

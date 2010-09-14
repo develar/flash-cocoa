@@ -45,7 +45,7 @@
       createDeferredContent();
 
       PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
-      return;
+//      return;
 //      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
 
       var hudWindow:HUDWindow = new HUDWindow();

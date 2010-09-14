@@ -305,12 +305,6 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     numericStepperTextFormat.$textAlign = TextAlign.END;
     data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
 
-    data["NumericStepper.incrementButton"] = borders[BorderPosition.spinnerButton];
-    data["NumericStepper.decrementButton"] = borders[BorderPosition.spinnerButton + 1];
-
-    data["Slider.thumb"] = borders[BorderPosition.sliderThumb];
-    data["Slider.track.h"] = borders[BorderPosition.sliderTrack];
-
     data["TitleBar.PushButton"] = _parent.getClass("PushButton");
   }
 

@@ -1,23 +1,41 @@
 borders:
 - key: PushButton
-  type: Scale3EdgeHBitmap
+  type: Scale3EdgeH
   appleResource: HUD-Button
   frameInsets: {left: -1, right: -1, bottom: -2}
   contentInsets: {left: 9, right: 9, bottom: 5}
 
 - key: PopUpButton
-  type: Scale3EdgeHBitmap
+  type: Scale3EdgeH
   appleResource: HUD-Popup
   frameInsets: {left: -2, right: -2, bottom: -2}
   contentInsets: {left: 7, right: 25, bottom: 5, truncatedTailMargin: 18}
 
 - key: CheckBox
-  type: Scale1Bitmap
-  appleResource: HUD-Checkbox_
+  type: Scale1
+  appleResource: HUD-Checkbox
   frameInsets: {left: -1, right: -1, bottom: -1}
   contentInsets: {left: 18, bottom: 2}
 
 - key: PushButton
   subkey: TitleBar
-  type: Scale1Bitmap
+  type: Scale1
   appleResource: HUDCloseButton
+
+- key: Slider.track.h
+  type: Scale3EdgeH
+  appleResource: HUD-SliderTrack
+
+- key: NumericStepper.incrementButton
+  type: Scale1
+  appleResource: HUD-SpinnerTop
+  frameInsets: {left: -1, right: -1}
+- key: NumericStepper.decrementButton
+  type: Scale1
+  appleResource: HUD-SpinnerBottom
+  frameInsets: {left: -1, right: -1, bottom: -2}
+
+- key: Slider.thumb
+  type: Scale1
+  appleResource: HUD-SliderKnob_round
+  frameInsets: {left: -1, right: -1, bottom: -2}

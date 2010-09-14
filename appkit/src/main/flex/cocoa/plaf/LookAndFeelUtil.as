@@ -50,7 +50,7 @@ public final class LookAndFeelUtil {
         case 5: border = new Scale3VBitmapBorder(); break;
         case 6: border = new Scale3EdgeHBitmapBorderWithSmartFrameInsets(); break;
 
-        default: throw new Error("unknown type marker");
+        default: throw new Error("unknown border type marker");
       }
       border.readExternal(assetsData);
       data[key] = border;
