@@ -12,10 +12,6 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder {
   protected var size:Number;
   protected var lastSize:Number;
 
-  protected function get serialTypeId():int {
-    throw new Error("Abstract");
-  }
-
   protected function init(frameInsets:FrameInsets = null, contentInsets:Insets = null):void {
     if (frameInsets != null) {
       _frameInsets = frameInsets;
@@ -38,15 +34,7 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder {
   override public function readExternal(input:ByteArray):void {
     super.readExternal(input);
 
-    lazyReadFrameInsets(input);
     initTransient();
-  }
-
-  override public function writeExternal(output:ByteArray):void {
-    output.writeByte(serialTypeId);
-    super.writeExternal(output);
-
-    lazyWriteFrameInsets(output);
   }
 }
 }

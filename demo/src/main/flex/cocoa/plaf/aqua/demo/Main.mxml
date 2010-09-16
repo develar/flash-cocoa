@@ -1,21 +1,52 @@
 <?xml version="1.0"?>
-<c:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="library://ns.adobe.com/flex/spark"
-			 xmlns:c="cocoa"
-			 creationComplete="creationCompleteHandler()" width="1000">
+<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa"
+                        xmlns:ac="acocoa"
+                        creationPolicy="none" width="1500" height="1500"
+                        creationComplete="creationCompleteHandler()">
 
-	<fx:Script><![CDATA[
-		import org.flyti.util.ArrayList;
+  <fx:Script><![CDATA[
+    import cocoa.HUDWindow;
+    import cocoa.dialog.DialogEventMap;
+    import cocoa.dialog.events.ShowDialogEvent;
+    import cocoa.plaf.aqua.AquaLookAndFeel;
 
-		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
-		private static const testDataWithLongLabels:ArrayList = new ArrayList(new <Object>["Short Label", "Item 2", "Loooooooooong Item Label"]);
+    import cocoa.plaf.aqua.demo.DemoApplicationDialog;
+    import cocoa.plaf.aqua.demo.TestHUDWindow;
 
-		private function creationCompleteHandler():void
-		{
+    import org.flyti.plexus.EventMap;
+    import org.flyti.plexus.PlexusManager;
+    import org.flyti.util.ArrayList;
 
-		}
-		]]></fx:Script>
+    private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
+    private static const testDataWithLongLabels:ArrayList = new ArrayList(new <Object>["Short Label", "Item 2", "Loooooooooong Item Label"]);
 
-	<!--<c:Dialog>-->
-		<!--<c:PopUpButton dataProvider="{testData}"/>-->
-	<!--</c:Dialog>-->
-</c:Application>
+    private function creationCompleteHandler():void {
+      laf = new AquaLookAndFeel();
+      createDeferredContent();
+
+      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
+      return;
+//      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
+
+      var hudWindow:HUDWindow = new HUDWindow();
+      hudWindow.resizable = false;
+      hudWindow.title = "Test";
+      hudWindow.contentView = new TestHUDWindow();
+      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(hudWindow, false));
+    }
+
+    override protected function initializeMaps():void {
+      maps = new <EventMap>[
+        new DialogEventMap()
+      ];
+    }
+
+    ]]></fx:Script>
+
+  <Container id="container">
+    <!--<c:PushButton title="Textured Rounded" skinClass="{PushButtonSkin}"/>-->
+
+    <!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testData}"/>-->
+    <!--<c:PopUpButton skinClass="{PopUpButtonSkin}" dataProvider="{testDataWithLongLabels}"/>-->
+  </Container>
+</ac:WindowedApplication>

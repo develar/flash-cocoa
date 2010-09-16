@@ -11,10 +11,6 @@ import flash.display.Graphics;
 public class Scale3HBitmapBorder extends AbstractScale3BitmapBorder {
   protected var firstSize:Number;
 
-  override protected function get serialTypeId():int {
-    return 4;
-  }
-
   public static function create(frameInsets:FrameInsets, contentInsets:Insets = null):Scale3HBitmapBorder {
     var border:Scale3HBitmapBorder = new Scale3HBitmapBorder();
     border.init(frameInsets, contentInsets);

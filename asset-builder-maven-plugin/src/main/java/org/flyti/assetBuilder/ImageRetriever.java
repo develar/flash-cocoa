@@ -39,7 +39,10 @@ public class ImageRetriever {
       if (index > -1) {
         if (index > 0) {
           //noinspection StatementWithEmptyBody
-          while (index > 0 && files[--index].startsWith(appleResource));
+          do {
+            index--;
+          }
+          while (index > -1 && files[index].startsWith(appleResource));
           index++;
         }
 
@@ -55,7 +58,7 @@ public class ImageRetriever {
         System.arraycopy(files, index, imageFiles, 0, imageFilesLength);
 
         Arrays.sort(imageFiles, new StringComparator(appleResource.length()));
-        System.out.print(Arrays.toString(imageFiles) + "\n");
+//        System.out.print(Arrays.toString(imageFiles) + "\n");
         for (int i = 0; i < imageFilesLength; i++) {
           images[i] = JAI.create("fileload", sourceDirectory.getPath() + File.separator + imageFiles[i]).getAsBufferedImage();
         }

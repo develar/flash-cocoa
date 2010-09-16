@@ -10,4 +10,6 @@ public class Border {
   public Insets frameInsets;
 
   public String appleResource;
+
+  public int equalLength = -1;
 }

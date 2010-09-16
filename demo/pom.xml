@@ -48,8 +48,10 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
 					<debug>true</debug>
-					<accessible>false</accessible>
 					<sourceFile>cocoa/plaf/aqua/demo/Main.mxml</sourceFile>
+          <compiledLocales>
+            <locale>en_US</locale>
+          </compiledLocales>
 				</configuration>
 			</plugin>
 		</plugins>

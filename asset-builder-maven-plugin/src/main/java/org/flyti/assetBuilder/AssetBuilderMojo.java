@@ -55,6 +55,12 @@ public class AssetBuilderMojo extends AbstractMojo {
 
   private List<File> sources;
 
+  /**
+   * @parameter
+   */
+  @SuppressWarnings({"UnusedDeclaration"})
+  private File[] inputs;
+
   private AssetOutputStream out = null;
 
   @Override
@@ -109,6 +115,11 @@ public class AssetBuilderMojo extends AbstractMojo {
   }
 
   private void setUpImageDirectories() throws IOException, ClassNotFoundException {
+    if (inputs != null) {
+      sources = Arrays.asList(inputs);
+      return;
+    }
+
     sources = new ArrayList<File>();
     //noinspection unchecked
     for (Resource resource : (List<Resource>) project.getResources()) {
@@ -177,7 +188,7 @@ public class AssetBuilderMojo extends AbstractMojo {
 
       final BufferedImage[] sourceImages;
       if (border.appleResource == null) {
-        sourceImages = imageRetriever.getImages(key, border.type == BorderType.One ? null : DEFAULT_STATES);
+        sourceImages = imageRetriever.getImages(key, (border.type == BorderType.One || border.type == BorderType.Scale9Edge) ? null : DEFAULT_STATES);
       }
       else {
         sourceImages = imageRetriever.getImagesFromAppleResources(border.appleResource);
@@ -212,6 +223,10 @@ public class AssetBuilderMojo extends AbstractMojo {
           case Scale1:
           case CappedSmart:
             out.write(sourceImages);
+            break;
+
+          case Scale9Edge:
+            out.write(slice9(sourceImages[0], sliceCalculator, border.equalLength));
             break;
         }
       }
@@ -283,6 +298,22 @@ public class AssetBuilderMojo extends AbstractMojo {
       images[imageIndex++] = sourceImage.getSubimage(0, 0, sliceSize.left + 1, sourceImage.getHeight());
       images[imageIndex++] = sourceImage.getSubimage(sourceImage.getWidth() - sliceSize.right, 0, sliceSize.right, sourceImage.getHeight());
     }
+
+    return images;
+  }
+
+  private BufferedImage[] slice9(BufferedImage sourceImage, SliceCalculator sliceCalculator, int equalLength) {
+    BufferedImage[] images = new BufferedImage[4];
+    Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(sourceImage);
+    Insets sliceSize = sliceCalculator.calculate(sourceImage, frameRectangle, 0, true, true, equalLength);
+
+    final int topHeight = sliceSize.top + 1;
+    images[0] = sourceImage.getSubimage(frameRectangle.x, frameRectangle.y, sliceSize.left + 1, topHeight);
+    final int rightX = frameRectangle.x + frameRectangle.width - sliceSize.right;
+    images[1] = sourceImage.getSubimage(rightX, frameRectangle.y, sliceSize.right, topHeight);
+    final int y = frameRectangle.y + frameRectangle.height - sliceSize.bottom;
+    images[2] = sourceImage.getSubimage(frameRectangle.x, y, sliceSize.left + 1, sliceSize.bottom);
+    images[3] = sourceImage.getSubimage(rightX, y, sliceSize.right, sliceSize.bottom);
 
     return images;
   }

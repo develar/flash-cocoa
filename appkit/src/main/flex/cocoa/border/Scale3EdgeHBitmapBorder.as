@@ -40,10 +40,6 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder {
     _layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
   }
 
-  override protected function get serialTypeId():int {
-    return 0;
-  }
-
   override public function set stateIndex(value:int):void {
     _bitmapIndex = value << 1;
   }

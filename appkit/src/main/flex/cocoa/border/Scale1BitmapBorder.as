@@ -50,18 +50,8 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
   override public function readExternal(input:ByteArray):void {
     super.readExternal(input);
 
-    lazyReadFrameInsets(input);
-
     _layoutWidth = bitmaps[0].width + _frameInsets.left + _frameInsets.right;
     _layoutHeight = bitmaps[0].height + _frameInsets.top + _frameInsets.bottom;
-  }
-
-  override public function writeExternal(output:ByteArray):void {
-    output.writeByte(1);
-
-    super.writeExternal(output);
-
-    lazyWriteFrameInsets(output);
   }
 
   public function set frameInsets(value:FrameInsets):void {

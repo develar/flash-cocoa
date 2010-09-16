@@ -1,15 +1,17 @@
-package cocoa.plaf.basic.scrollbar {
+package cocoa.plaf.aqua {
 import cocoa.HScrollBar;
 import cocoa.LightFlexUIComponent;
 import cocoa.UIPartController;
 import cocoa.UIPartProvider;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
+import cocoa.plaf.basic.scrollbar.TrackOrThumbButton;
 
 import flash.display.Graphics;
 
 import spark.components.supportClasses.ScrollBarBase;
 
+[BorderRequirement("ScrollBar.thumb")]
 public class MiniScrollBarSkin extends LightFlexUIComponent implements UIPartProvider {
   private var thumb:TrackOrThumbButton;
   protected var track:TrackButton;
@@ -61,7 +63,7 @@ import cocoa.FlexButton;
 
 import flash.display.Graphics;
 
-class TrackButton extends FlexButton {
+final class TrackButton extends FlexButton {
   override protected function measure():void {
 
   }

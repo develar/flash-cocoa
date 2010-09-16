@@ -8,10 +8,6 @@ import flash.display.Graphics;
 public class Scale3VBitmapBorder extends AbstractScale3BitmapBorder {
   protected var firstSize:Number;
 
-  override protected function get serialTypeId():int {
-    return 5;
-  }
-
   private var _layoutWidth:Number;
   override public function get layoutWidth():Number {
     return _layoutWidth;

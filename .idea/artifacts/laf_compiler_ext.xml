@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="laf-compiler-ext">
+    <output-path>$PROJECT_DIR$/laf-compiler-ext/target</output-path>
+    <root id="archive" name="laf-compiler-ext-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="laf-compiler-ext" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/laf-compiler-ext/src/test/resources/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

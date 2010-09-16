@@ -51,12 +51,19 @@ public class SliceCalculator {
   }
 
   public Insets calculate(BufferedImage image) {
-    return calculate(image, null, 0, false, false, image.getWidth() > (DEFAULT_EQUAL_LENGTH * 3) ? DEFAULT_EQUAL_LENGTH : 1);
+    return calculate(image, null);
+  }
+
+  public Insets calculate(BufferedImage image, Rectangle frameRectangle) {
+    return calculate(image, frameRectangle, 0, false, false, -1);
   }
 
   public Insets calculate(BufferedImage image, Rectangle frameRectangle, int top, boolean strict, boolean allSide, int equalLength) {
     if (frameRectangle != null) {
       frameRectangle.y += top;
+    }
+    if (equalLength == -1) {
+      equalLength = image.getWidth() > (DEFAULT_EQUAL_LENGTH * 3) ? DEFAULT_EQUAL_LENGTH : 1;
     }
 
     init(image, frameRectangle);

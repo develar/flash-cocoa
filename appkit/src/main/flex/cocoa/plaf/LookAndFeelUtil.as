@@ -36,7 +36,6 @@ public final class LookAndFeelUtil {
 
   public static function initAssets(data:Dictionary, assetsDataClass:Class):void {
     var assetsData:ByteArray = new assetsDataClass();
-    assetsDataClass = null;
 
     const n:int = assetsData.readUnsignedByte();
     var border:AbstractBitmapBorder;

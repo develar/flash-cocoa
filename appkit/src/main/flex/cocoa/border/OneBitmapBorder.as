@@ -54,25 +54,11 @@ public class OneBitmapBorder extends AbstractBitmapBorder {
     g.endFill();
   }
 
-  override public function writeExternal(output:ByteArray):void {
-    output.writeByte(3);
-
-    output.writeByte(bitmap.width);
-    output.writeByte(bitmap.height);
-    output.writeBytes(bitmap.getPixels(bitmap.rect));
-
-    super.writeExternal(output);
-
-    lazyWriteFrameInsets(output);
-  }
-
   override public function readExternal(input:ByteArray):void {
     bitmap = new BitmapData(input.readUnsignedByte(), input.readUnsignedByte(), true, 0);
     bitmap.setPixels(bitmap.rect, input);
 
     super.readExternal(input);
-
-    lazyReadFrameInsets(input);
 
     _layoutHeight = bitmap.height + _frameInsets.top + _frameInsets.bottom;
     _layoutWidth = bitmap.width + _frameInsets.left + _frameInsets.right;

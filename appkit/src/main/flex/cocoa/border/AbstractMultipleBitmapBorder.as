@@ -29,22 +29,6 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implement
     super.readExternal(input);
   }
 
-  override public function writeExternal(output:ByteArray):void {
-    output.writeByte(bitmaps.length);
-    for each (var bitmap:BitmapData in bitmaps) {
-      if (bitmap == null) {
-        output.writeByte(0);
-      }
-      else {
-        output.writeByte(bitmap.width);
-        output.writeByte(bitmap.height);
-        output.writeBytes(bitmap.getPixels(bitmap.rect));
-      }
-    }
-
-    super.writeExternal(output);
-  }
-
   // for debug purposes only
   public final function getBitmaps():Vector.<BitmapData> {
     return bitmaps;

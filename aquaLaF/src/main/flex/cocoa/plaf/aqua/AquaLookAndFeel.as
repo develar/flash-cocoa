@@ -1,21 +1,11 @@
 package cocoa.plaf.aqua {
-import cocoa.Border;
 import cocoa.ClassFactory;
 import cocoa.FrameInsets;
-import cocoa.Icon;
 import cocoa.SingletonClassFactory;
-import cocoa.border.AbstractBitmapBorder;
 import cocoa.border.LinearGradientBorder;
-import cocoa.border.OneBitmapBorder;
-import cocoa.border.Scale1BitmapBorder;
-import cocoa.border.Scale3EdgeHBitmapBorder;
-import cocoa.border.Scale3HBitmapBorder;
-import cocoa.border.Scale3VBitmapBorder;
-import cocoa.border.Scale9EdgeBitmapBorder;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.basic.AbstractLookAndFeel;
-import cocoa.plaf.basic.BitmapIcon;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.ColorPickerMenuController;
 import cocoa.plaf.basic.IconButtonSkin;
@@ -25,37 +15,25 @@ import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
 import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
-import cocoa.plaf.basic.scrollbar.MiniScrollBarSkin;
 import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.TextLayoutFormatImpl;
 
 import flash.display.BlendMode;
-import flash.utils.ByteArray;
 
 import flashx.textLayout.edit.SelectionFormat;
 import flashx.textLayout.formats.LineBreak;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
-  //	[Embed(source="/Users/develar/workspace/XpressPages/client/editor/skins/xpBlue/target/editorSkins/assets", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
-
-  private static var borders:Vector.<Border>;
-  private static var icons:Vector.<Icon>;
 
   public function AquaLookAndFeel() {
     initialize();
   }
 
-   [Embed(source="../../../../../../target/assets", mimeType="application/octet-stream")]
-  private static var assetsDataClass2:Class;
-
   protected function initialize():void {
-
-    LookAndFeelUtil.initAssets(data, assetsDataClass2);
-    assetsDataClass2 = null;
-
-    initAssets();
+    LookAndFeelUtil.initAssets(data, assetsDataClass);
+    assetsDataClass = null;
 
     data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT;
     data[TextFormatID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
@@ -72,8 +50,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
-    data["ImageView.border"] = borders[BorderPosition.imageView];
-
     data["Box"] = BoxSkin;
 
     data["Toolbar"] = ToolbarSkin;
@@ -81,10 +57,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["Dialog"] = WindowSkin;
     data["HUDWindow"] = HUDWindowSkin;
-    data["Window.border"] = borders[BorderPosition.window];
-    data["Window.border.toolbar"] = borders[BorderPosition.windowWithToolbar];
-    data["Window.bottomBar.application"] = borders[BorderPosition.windowApplicationBottomBar];
-    data["Window.bottomBar.chooseDialog"] = borders[BorderPosition.windowChooseDialogBottomBar];
 
     data["SourceListView"] = SourceListViewSkin;
     data["ListView"] = ListViewSkin;
@@ -95,76 +67,44 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TabView.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
 
     data["PushButton"] = PushButtonSkin;
-    data["PushButton.border"] = borders[BorderPosition.pushButtonRounded];
 
     data["IconButton"] = IconButtonSkin;
 
     data["PopUpButton"] = PushButtonSkin;
-    data["PopUpButton.border"] = borders[BorderPosition.popUpButtonTexturedRounded];
     data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuController);
 
     data["ColorPicker"] = PushButtonSkin;
-    data["ColorPicker.border"] = borders[BorderPosition.popUpButtonTexturedRounded];
+    data["ColorPicker.border"] = data["PopUpButton.border"];
     data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
 
     data["Menu"] = MenuSkin;
-    data["Menu.border"] = borders[BorderPosition.menu];
     data["Menu.itemRenderer"] = new ClassFactory(MenuItemRenderer);
 
-    data["MenuItem.onStateIcon"] = icons[0];
-    data["MenuItem.onStateIcon.highlighted"] = icons[1];
-
-    data["MenuItem.border"] = new MenuItemBorder(borders[BorderPosition.menuItem]);
-    data["MenuItem.border.highlighted"] = borders[BorderPosition.menuItem];
+    data["MenuItem.border"] = new MenuItemBorder(data["MenuItem.border.highlighted"]);
     data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
     data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
-    data["SegmentItem.border"] = borders[BorderPosition.segmentItem];
-    Scale1BitmapBorder(borders[BorderPosition.segmentItem]).frameInsets = new FrameInsets(0, 0, 0, -3);
+    data["ScrollBar.h"] = HScrollBarSkin;
+    data["ScrollBar.v"] = VScrollBarSkin;
 
-    data["ScrollBar.track.v"] = borders[BorderPosition.scrollbar];
-    data["ScrollBar.track.h"] = borders[BorderPosition.scrollbar + 1];
-
-//    data["ScrollBar.h"] = HScrollBarSkin;
-//    data["ScrollBar.v"] = VScrollBarSkin;
-
-    data["ScrollBar.h"] = MiniScrollBarSkin;
-    data["ScrollBar.v"] = MiniScrollBarSkin;
+//    data["ScrollBar.h"] = MiniScrollBarSkin;
+//    data["ScrollBar.v"] = MiniScrollBarSkin;
 //    data["ScrollBar.thumb"] = borders[BorderPosition.scrollbar + 10];
-
-    data["ScrollBar.decrementButton.h"] = borders[BorderPosition.scrollbar + 2];
-    data["ScrollBar.decrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 3];
-
-    data["ScrollBar.incrementButton.h"] = borders[BorderPosition.scrollbar + 4];
-    data["ScrollBar.incrementButton.h.highlighted"] = borders[BorderPosition.scrollbar + 5];
-
-    data["ScrollBar.decrementButton.v"] = borders[BorderPosition.scrollbar + 6];
-    data["ScrollBar.decrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 7];
-
-    data["ScrollBar.incrementButton.v"] = borders[BorderPosition.scrollbar + 8];
-    data["ScrollBar.incrementButton.v.highlighted"] = borders[BorderPosition.scrollbar + 9];
-
-    data["ScrollBar.thumb.v"] = borders[BorderPosition.scrollbar + 10];
-    data["ScrollBar.thumb.h"] = borders[BorderPosition.scrollbar + 11];
-
-    data["ScrollBar.track.v.off"] = borders[BorderPosition.scrollbar + 12];
-    data["ScrollBar.track.h.off"] = borders[BorderPosition.scrollbar + 13];
 
     data["VSeparator"] = SeparatorSkin;
     data["HSeparator"] = SeparatorSkin;
 
     data["NumericStepper"] = NumericStepperSkin;
     data["CheckBox"] = CheckBoxSkin;
-    data["CheckBox.border"] = borders[BorderPosition.pushButtonRounded];
+    data["CheckBox.border"] = data["PushButton.border"];
     data["HSlider"] = HSliderSkin;
 
     data["TextInput"] = TextInputSkin;
-    data["TextInput.border"] = borders[BorderPosition.textField];
     data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
     data["TextArea"] = TextAreaSkin;
-    data["TextArea.border"] = borders[BorderPosition.textField];
+    data["TextArea.border"] = data["TextInput.border"];
     data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
     TextLayoutFormatImpl(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
 
@@ -172,59 +112,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["HSeparator.border"] = new SeparatorBorder();
 
-    data["Tree.border"] = borders[BorderPosition.treeItem];
     data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
-    data["Tree.disclosureIcon.open"] = borders[BorderPosition.treeDisclosureSideBar];
-    data["Tree.disclosureIcon.close"] = borders[BorderPosition.treeDisclosureSideBar + 1];
-  }
-
-  private static function initAssets():void {
-    if (borders != null) {
-      return;
-    }
-
-    var data:ByteArray = new assetsDataClass();
-    assetsDataClass = null;
-
-    var n:int = data.readUnsignedByte();
-    borders = new Vector.<Border>(n, true);
-    var border:AbstractBitmapBorder;
-    for (var i:int = 0; i < n; i++) {
-      var typeMarker:int = data.readUnsignedByte();
-      switch (typeMarker) {
-        case 0: border = new Scale3EdgeHBitmapBorder(); break;
-        case 1: border = new Scale1BitmapBorder(); break;
-        case 2: border = new Scale9EdgeBitmapBorder(); break;
-        case 3: border = new OneBitmapBorder(); break;
-        case 4: border = new Scale3HBitmapBorder(); break;
-        case 5: border = new Scale3VBitmapBorder(); break;
-
-        default: throw new Error("unknown type marker" + typeMarker);
-      }
-      border.readExternal(data);
-      borders[i] = border;
-    }
-
-    n = data.readUnsignedByte();
-    var icon:BitmapIcon;
-    icons = new Vector.<Icon>(n, true);
-    for (i = 0; i < n; i++) {
-      icon = new BitmapIcon();
-      icon.readExternal(data);
-      icons[i] = icon;
-    }
-  }
-
-  public static function _setBordersAndIcons(borders:Vector.<Border>, icons:Vector.<Icon>):void {
-    AquaLookAndFeel.borders = borders;
-    AquaLookAndFeel.icons = icons;
   }
 
   private var windowFrameLookAndFeel:WindowFrameLookAndFeel;
 
   public function createWindowFrameLookAndFeel():WindowFrameLookAndFeel {
     if (windowFrameLookAndFeel == null) {
-      windowFrameLookAndFeel = new WindowFrameLookAndFeel(borders, this);
+      windowFrameLookAndFeel = new WindowFrameLookAndFeel(this);
     }
     return windowFrameLookAndFeel;
   }
@@ -233,7 +128,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
   public function createHUDLookAndFeel():HUDLookAndFeel {
     if (hudLookAndFeel == null) {
-      hudLookAndFeel = new HUDLookAndFeel(borders, this);
+      hudLookAndFeel = new HUDLookAndFeel(this);
     }
     return hudLookAndFeel;
   }
@@ -247,11 +142,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 }
 }
 
-import cocoa.Border;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
-import cocoa.plaf.aqua.BorderPosition;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
 import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.MenuItemBorder;
@@ -272,13 +165,17 @@ import flashx.textLayout.formats.LineBreak;
 import flashx.textLayout.formats.TextAlign;
 
 final class WindowFrameLookAndFeel extends AbstractLookAndFeel {
-  public function WindowFrameLookAndFeel(borders:Vector.<Border>, parent:AquaLookAndFeel) {
-    initialize(borders);
+  [Embed(source="/frameAssets", mimeType="application/octet-stream")]
+  private static var assetsDataClass:Class;
+
+  public function WindowFrameLookAndFeel(parent:AquaLookAndFeel) {
+    initialize();
     this.parent = parent;
   }
 
-  private function initialize(borders:Vector.<Border>):void {
-    data["PushButton.border"] = borders[BorderPosition.pushButtonTexturedRounded];
+  private function initialize():void {
+    LookAndFeelUtil.initAssets(data, assetsDataClass);
+    assetsDataClass = null;
   }
 }
 
@@ -286,12 +183,12 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="../../../../../../target/assets", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
 
-  public function HUDLookAndFeel(borders:Vector.<Border>, parent:AquaLookAndFeel) {
+  public function HUDLookAndFeel(parent:AquaLookAndFeel) {
     this.parent = parent;
-    initialize(borders);
+    initialize();
   }
 
-  private function initialize(borders:Vector.<Border>):void {
+  private function initialize():void {
     data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
     data[TextFormatID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HUD_HIGHLIGHTED;
     data[TextFormatID.VIEW] = AquaFonts.VIEW_FONT_HUD;
@@ -304,8 +201,6 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
 
     data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
-    data["Window.border"] = borders[BorderPosition.hudWindow];
-
     data["TextInput.border"] = new HUDTextInputBorder();
     data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
@@ -313,8 +208,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
 
     data["PushButton"] = HUDPushButtonSkin;
 
-    data["MenuItem.border"] = new MenuItemBorder(borders[BorderPosition.hudMenuItem]);
-    data["MenuItem.border.highlighted"] = borders[BorderPosition.hudMenuItem];
+    data["MenuItem.border"] = new MenuItemBorder(data["MenuItem.border.highlighted"]);
 
     data["NumericStepper.TextInput"] = TextInputSkin;
     data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();

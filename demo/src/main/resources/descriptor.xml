@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/2.0">
+  <id>org.flyti.aqua.demo</id>
+  <filename>testToolApp</filename>
+  <name>Aqua LaF Demo</name>
+  <version>1.2-SNAPSHOT</version>
+  <initialWindow>
+    <systemChrome>none</systemChrome>
+    <transparent>true</transparent>
+    <content>demo-1.2-SNAPSHOT.swf</content>
+    <x>150</x>
+    <y>150</y>
+  </initialWindow>
+</application>

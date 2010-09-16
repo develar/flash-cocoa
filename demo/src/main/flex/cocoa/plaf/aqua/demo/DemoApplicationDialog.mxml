@@ -4,7 +4,8 @@
 		import cocoa.MenuItem;
 		import cocoa.pane.PaneItem;
 		import cocoa.plaf.DialogSkin;
-		import cocoa.plaf.basic.BottomBarStyle;
+    import cocoa.plaf.aqua.demo.TestPane;
+    import cocoa.plaf.basic.BottomBarStyle;
 		import cocoa.plaf.basic.MenuItemRenderer;
 		import cocoa.resources.ResourceMetadata;
 

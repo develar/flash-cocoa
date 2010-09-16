@@ -43,3 +43,12 @@ borders:
 - key: ScrollBar.thumb
   type: CappedSmart
   appleResource: RSS-scroll
+
+- key: MenuItem.border.highlighted
+  type: One
+  contentInsets: {left: 21, right: 21, bottom: 4}
+
+- key: Window
+  type: Scale9Edge
+  frameInsets: {left: -7, top: -2, right: -7, bottom: 10}
+  equalLength: 25

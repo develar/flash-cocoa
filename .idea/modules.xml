@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/cocoaAggregator.iml" filepath="$PROJECT_DIR$/cocoaAggregator.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/foundation/foundation.iml" filepath="$PROJECT_DIR$/foundation/foundation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/laf-compiler-ext/laf-compiler-ext.iml" filepath="$PROJECT_DIR$/laf-compiler-ext/laf-compiler-ext.iml" />
     </modules>
   </component>
 </project>

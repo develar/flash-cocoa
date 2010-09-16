@@ -71,18 +71,8 @@ public final class Scale9EdgeBitmapBorder extends AbstractMultipleBitmapBorder {
   override public function readExternal(input:ByteArray):void {
     super.readExternal(input);
 
-    _frameInsets = readFrameInsets(input);
-
     rightSliceInnerWidth = bitmaps[1].width + _frameInsets.right;
     bottomSliceInnerHeight = bitmaps[2].height + _frameInsets.bottom;
-  }
-
-  override public function writeExternal(output:ByteArray):void {
-    output.writeByte(2);
-
-    super.writeExternal(output);
-
-    writeFrameInsets(output);
   }
 
   override public function set stateIndex(value:int):void {

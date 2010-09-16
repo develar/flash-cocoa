@@ -5,7 +5,7 @@ import cocoa.FlexButton;
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-internal final class TrackOrThumbButton extends FlexButton {
+public final class TrackOrThumbButton extends FlexButton {
   override public function set border(value:Border):void {
     super.border = value;
 

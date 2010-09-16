@@ -33,7 +33,8 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
 					<includeFiles>
-						<file>borders</file>
+            <!-- только чтобы flexmojos вcе resources не включил -->
+						<file>assets.yml</file>
 					</includeFiles>
 				</configuration>
 			</plugin>
@@ -48,8 +49,10 @@
 						</goals>
 					</execution>
 				</executions>
-
 				<configuration>
+          <inputs>
+            <input>src/main/resources/hud</input>
+          </inputs>
 				</configuration>
 			</plugin>
 		</plugins>
