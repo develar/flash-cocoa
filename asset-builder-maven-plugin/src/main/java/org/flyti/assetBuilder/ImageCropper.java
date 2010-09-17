@@ -13,7 +13,9 @@ public final class ImageCropper {
     int y = getTransparentFromTop(raster, image.getColorModel(), bands);
     int bottom = getTransparentFromBottom(raster, image.getColorModel(), bands, y);
     int x = getTransparentFromLeft(raster, image.getColorModel(), bands, y, bottom);
-    return new Rectangle(x, y, getTransparentFromRight(raster, image.getColorModel(), bands, y, bottom) - x + 1, bottom - y + 1);
+    int width = getTransparentFromRight(raster, image.getColorModel(), bands, y, bottom) - x + 1;
+    int height = bottom - y + 1;
+    return (width == raster.getWidth() && height == raster.getHeight()) ? null : new Rectangle(x, y, width, height);
   }
 
   private static int getTransparentFromTop(Raster raster, ColorModel colorModel, byte[] bands) {

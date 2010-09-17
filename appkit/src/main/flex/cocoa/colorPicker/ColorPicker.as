@@ -46,6 +46,7 @@ public class ColorPicker extends PopUpButton {
   public function get showsAlpha():Boolean {
     return _showsAlpha;
   }
+
   public function set showsAlpha(value:Boolean):void {
     _showsAlpha = value;
   }
@@ -65,7 +66,7 @@ public class ColorPicker extends PopUpButton {
     else if (!isNaN(value) && value != color) {
       color = value;
       selectedIndex = index;
-      
+
       if (_action != null) {
         _action();
       }
@@ -91,7 +92,10 @@ public class ColorPicker extends PopUpButton {
   override public function set menu(value:Menu):void {
     super.menu = value;
     if (menu.numberOfItems > 1) {
-     selectedIndex = ColorPickerMenu(menu).noColorItemIndex; 
+      selectedIndex = ColorPickerMenu(menu).noColorItemIndex;
+    }
+    else if (selectedIndex != 0) {
+      selectedIndex = 0;
     }
   }
 }

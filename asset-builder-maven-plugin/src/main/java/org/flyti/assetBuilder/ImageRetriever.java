@@ -1,23 +1,18 @@
 package org.flyti.assetBuilder;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.*;
 
 // если для key найдено изображение для какого-либо состояния, то мы считаем, что и все остальные изображения в этой же source directory
 public class ImageRetriever {
-  private static final FileFilter ASSET_FILE_FILTER = new SuffixFileFilter(new String[]{".png"});
-
   private List<File> sources;
 
-  private Map<File, String[]> directoryContentCache;
+  private final Map<File, String[]> directoryContentCache;
 
   public ImageRetriever(List<File> sources) {
     this.sources = sources;
@@ -25,8 +20,18 @@ public class ImageRetriever {
     directoryContentCache = new HashMap<File, String[]>(sources.size());
   }
 
-  // Ищет изображения как они в Apple app resources
-  public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws MojoExecutionException, IOException {
+  private AppleAssetNameComparator appleAssetNameComparator;
+  private AssetNameComparator assetNameComparator;
+
+  public BufferedImage[] getImages(String key) throws MojoExecutionException, IOException {
+    if (assetNameComparator == null) {
+      assetNameComparator = new AssetNameComparator();
+    }
+    assetNameComparator.setPrefixLength(key.length());
+    return getImages(key, assetNameComparator);
+  }
+
+  public BufferedImage getImage(String key) throws MojoExecutionException, IOException {
     for (File sourceDirectory : sources) {
       String[] files = directoryContentCache.get(sourceDirectory);
       if (files == null) {
@@ -35,20 +40,45 @@ public class ImageRetriever {
         directoryContentCache.put(sourceDirectory, files);
       }
 
-      int index = binarySearch(files, appleResource);
+      int index = binarySearch(files, key);
+      if (index > -1) {
+          return JAI.create("fileload", sourceDirectory.getPath() + File.separator + files[index]).getAsBufferedImage();
+      }
+    }
+
+    throw new MojoExecutionException("Can't find image for " + key);
+  }
+
+  // Ищет изображения как они в Apple app resources
+  public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws MojoExecutionException, IOException {
+    if (appleAssetNameComparator == null) {
+      appleAssetNameComparator = new AppleAssetNameComparator();
+    }
+    appleAssetNameComparator.setPrefixLength(appleResource.length());
+    return getImages(appleResource, appleAssetNameComparator);
+  }
+
+  private BufferedImage[] getImages(final String name, Comparator<String> assetNameComparator) throws MojoExecutionException, IOException {
+    for (File sourceDirectory : sources) {
+      String[] files = directoryContentCache.get(sourceDirectory);
+      if (files == null) {
+        files = sourceDirectory.list();
+        Arrays.sort(files);
+        directoryContentCache.put(sourceDirectory, files);
+      }
+
+      int index = binarySearch(files, name);
       if (index > -1) {
         if (index > 0) {
-          //noinspection StatementWithEmptyBody
           do {
             index--;
           }
-          while (index > -1 && files[index].startsWith(appleResource));
+          while (index > -1 && files[index].startsWith(name));
           index++;
         }
 
         int endIndex = index + 1;
-        //noinspection StatementWithEmptyBody
-        while (endIndex < files.length && files[endIndex].startsWith(appleResource)) {
+        while (endIndex < files.length && files[endIndex].startsWith(name)) {
           endIndex++;
         }
 
@@ -57,7 +87,7 @@ public class ImageRetriever {
         String[] imageFiles = new String[imageFilesLength];
         System.arraycopy(files, index, imageFiles, 0, imageFilesLength);
 
-        Arrays.sort(imageFiles, new StringComparator(appleResource.length()));
+        Arrays.sort(imageFiles, assetNameComparator);
 //        System.out.print(Arrays.toString(imageFiles) + "\n");
         for (int i = 0; i < imageFilesLength; i++) {
           images[i] = JAI.create("fileload", sourceDirectory.getPath() + File.separator + imageFiles[i]).getAsBufferedImage();
@@ -67,7 +97,7 @@ public class ImageRetriever {
       }
     }
 
-    throw new MojoExecutionException("Can't find image for " + appleResource);
+    throw new MojoExecutionException("Can't find image for " + name);
   }
 
   private static int binarySearch(String[] list, String prefix) {
@@ -98,71 +128,41 @@ public class ImageRetriever {
     return -(low + 1);  // key not found.
   }
 
-  public BufferedImage[] getImages(String key, String[] states) throws MojoExecutionException, IOException {
-    final boolean hasStates = states != null;
-    final int statesLength = hasStates ? states.length : 1;
+  private static class AssetNameComparator implements Comparator<String> {
+    private int start;
 
-    // если для key найдено изображение для какого-либо состояния, то мы считаем, что и все остальные изображения там же
-    for (File sourceDirectory : sources) {
-      String postfix = ".";
-      if (hasStates) {
-        postfix += states[0] + ".";
-      }
-      postfix += "png";
-
-      File imageFile = new File(sourceDirectory, key + postfix);
-      if (imageFile.exists()) {
-        ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(statesLength);
-        images.add(ImageIO.read(imageFile));
-        if (hasStates) {
-          for (int i = 1; i < statesLength; i++) {
-            final File file = new File(sourceDirectory, key + "." + states[i] + ".png");
-            if (file.exists()) {
-              images.add(ImageIO.read(file));
-            }
-          }
-        }
-
-        return images.toArray(new BufferedImage[images.size()]);
-      }
-      else if (hasStates) {
-        File imageDirectory = new File(sourceDirectory, key);
-        if (imageDirectory.exists()) {
-          File[] files = imageDirectory.listFiles(ASSET_FILE_FILTER);
-          BufferedImage[] images = new BufferedImage[files.length];
-
-          Arrays.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-              if (o1.getName().startsWith("off")) {
-                return o2.getName().startsWith("off") ? (o1.getName().length() - o2.getName().length()) : -1;
-              }
-              else if (o1.getName().startsWith("on")) {
-                return o2.getName().startsWith("on") ? (o1.getName().length() - o2.getName().length()) : 1;
-              }
-              else {
-                return 1;
-              }
-            }
-          });
-
-          for (int i = 0, filesLength = files.length; i < filesLength; i++) {
-            images[i] = ImageIO.read(files[i]);
-          }
-
-          return images;
-        }
-      }
+    public void setPrefixLength(int prefixLength) {
+      start = prefixLength + 2/* . + o(ff|n|ver)*/;
     }
 
-    throw new MojoExecutionException("Can't find image for " + key);
+    @Override
+    public int compare(String s1, String s2) {
+      return getWeight(s1) - getWeight(s2);
+    }
+
+    private int getWeight(String s) {
+      switch (s.charAt(start)) {
+        case 'f':
+          return 1;
+
+        case 'n':
+          return 2;
+
+        case 'v':
+          return 3;
+
+        default:
+          throw new IllegalArgumentException("unknown " + s);
+      }
+    }
   }
 
-  private static class StringComparator implements Comparator<String> {
+  private static class AppleAssetNameComparator implements Comparator<String> {
     private int prefixLength;
     private int start = -1;
 
-    public StringComparator(int prefixLength) {
+    public void setPrefixLength(int prefixLength) {
+      start = -1;
       this.prefixLength = prefixLength;
     }
 
@@ -175,7 +175,7 @@ public class ImageRetriever {
       return getWeight(s1) - getWeight(s2);
     }
 
-    public int getWeight(String s) {
+    private int getWeight(String s) {
       final int weight;
       final int stateIndex;
       switch (s.charAt(start)) {

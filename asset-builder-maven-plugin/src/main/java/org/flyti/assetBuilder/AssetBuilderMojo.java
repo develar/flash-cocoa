@@ -11,6 +11,7 @@ import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -25,8 +26,6 @@ import java.util.List;
  * При поиске мы формируем имя согласно key + "." + имя состояния. пока что считаем что список состояний равен "off, on".
  */
 public class AssetBuilderMojo extends AbstractMojo {
-  private static final String[] DEFAULT_STATES = {"off", "on", "over"};
-
   /**
    * @parameter expression="${asset.builder.skip}"
    */
@@ -89,7 +88,7 @@ public class AssetBuilderMojo extends AbstractMojo {
     final Yaml yaml = new Yaml(constructor);
     final AssetSet assetSet;
     try {
-      assetSet = (AssetSet) yaml.load(new FileInputStream(descriptor));
+      assetSet = (AssetSet) yaml.load(new BufferedInputStream(new FileInputStream(descriptor)));
     }
     catch (FileNotFoundException e) {
        throw new MojoExecutionException("Can't read descriptor", e);
@@ -178,56 +177,49 @@ public class AssetBuilderMojo extends AbstractMojo {
   private void buildBorders(List<Border> borders) throws IOException, MojoExecutionException {
     out.writeByte(borders.size());
 
-    SliceCalculator sliceCalculator = new SliceCalculator();
-
     ImageRetriever imageRetriever = new ImageRetriever(sources);
 
     for (Border border : borders) {
       final String key = border.subkey == null ? border.key : (border.subkey + "." + border.key);
       out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".b") : key);
 
-      final BufferedImage[] sourceImages;
-      if (border.appleResource == null) {
-        sourceImages = imageRetriever.getImages(key, (border.type == BorderType.One || border.type == BorderType.Scale9Edge) ? null : DEFAULT_STATES);
+      if (border.type == BorderType.One || border.type == BorderType.Scale9Edge) {
+        out.writeByte(border.type.ordinal());
+        final BufferedImage sourceImage = imageRetriever.getImage(key);
+        switch (border.type) {
+          case One:
+            out.write(sourceImage);
+            break;
+
+          case Scale9Edge:
+            out.write(slice9(sourceImage, border.minTop));
+            break;
+        }
       }
       else {
-        sourceImages = imageRetriever.getImagesFromAppleResources(border.appleResource);
-      }
-
-      if (border.type == BorderType.Scale3EdgeH) {
-        if (border.appleResource == null) {
-          if ((sourceImages[0].getWidth() == sourceImages[1].getWidth())) {
-            out.writeByte(border.type.ordinal());
-            // мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
-            // иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
-            // Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
-            out.write(slice3H(sourceImages, sliceCalculator.calculate(sourceImages[1])));
+        final BufferedImage[] sourceImages = border.appleResource == null ? imageRetriever.getImages(key) : imageRetriever.getImagesFromAppleResources(border.appleResource);
+        if (border.type == BorderType.Scale3EdgeH) {
+          if (border.appleResource == null) {
+            if ((sourceImages[0].getWidth() == sourceImages[1].getWidth())) {
+              out.writeByte(border.type.ordinal());
+              // мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
+              // иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
+              // Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
+              out.write(slice3H(sourceImages, SliceCalculator.calculate(sourceImages[1])));
+            }
+            else { // see note in Scale3EdgeHBitmapBorderWithSmartFrameInsets, only for Fluent
+              out.writeByte(BorderType.Scale3EdgeHWithSmartFrameInsets.ordinal());
+              out.write(slice3H(sourceImages));
+            }
           }
-          else { // see note in Scale3EdgeHBitmapBorderWithSmartFrameInsets, only for Fluent
-            out.writeByte(BorderType.Scale3EdgeHWithSmartFrameInsets.ordinal());
-            out.write(slice3H(sourceImages, sliceCalculator));
+          else {
+            out.writeByte(border.type.ordinal());
+            out.write(joinButtonAppleResources(sourceImages));
           }
         }
         else {
           out.writeByte(border.type.ordinal());
-          out.write(joinButtonAppleResources(sourceImages));
-        }
-      }
-      else {
-        out.writeByte(border.type.ordinal());
-        switch (border.type) {
-          case One:
-            out.write(sourceImages[0]);
-            break;
-
-          case Scale1:
-          case CappedSmart:
-            out.write(sourceImages);
-            break;
-
-          case Scale9Edge:
-            out.write(slice9(sourceImages[0], sliceCalculator, border.equalLength));
-            break;
+          out.write(sourceImages);
         }
       }
 
@@ -288,11 +280,11 @@ public class AssetBuilderMojo extends AbstractMojo {
     return images;
   }
 
-  private BufferedImage[] slice3H(BufferedImage[] sourceImages, SliceCalculator sliceCalculator) {
+  private BufferedImage[] slice3H(BufferedImage[] sourceImages) {
     BufferedImage[] images = new BufferedImage[sourceImages.length * 2];
     int imageIndex = 0;
     for (BufferedImage sourceImage : sourceImages) {
-      Insets sliceSize = sliceCalculator.calculate(sourceImage);
+      Insets sliceSize = SliceCalculator.calculate(sourceImage);
       images[imageIndex++] = sourceImage.getSubimage(0, 0, sliceSize.left + 1, sourceImage.getHeight());
       images[imageIndex++] = sourceImage.getSubimage(sourceImage.getWidth() - sliceSize.right, 0, sliceSize.right, sourceImage.getHeight());
     }
@@ -300,10 +292,13 @@ public class AssetBuilderMojo extends AbstractMojo {
     return images;
   }
 
-  private BufferedImage[] slice9(BufferedImage sourceImage, SliceCalculator sliceCalculator, int equalLength) {
+  private BufferedImage[] slice9(BufferedImage sourceImage, int minTop) {
     BufferedImage[] images = new BufferedImage[4];
     Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(sourceImage);
-    Insets sliceSize = sliceCalculator.calculate(sourceImage, frameRectangle, 0, true, true, equalLength);
+    Insets sliceSize = SliceCalculator.calculate(sourceImage, frameRectangle, true, true, minTop);
+    if (frameRectangle == null) {
+      frameRectangle = sourceImage.getRaster().getBounds();
+    }
 
     final int topHeight = sliceSize.top + 1;
     images[0] = sourceImage.getSubimage(frameRectangle.x, frameRectangle.y, sliceSize.left + 1, topHeight);
@@ -314,6 +309,18 @@ public class AssetBuilderMojo extends AbstractMojo {
     images[3] = sourceImage.getSubimage(rightX, y, sliceSize.right, sliceSize.bottom);
 
     return images;
+  }
+
+  @SuppressWarnings({"UnusedDeclaration"})
+  private static void dump(BufferedImage[] images) {
+    try {
+      for (int i = 0, imagesLength = images.length; i < imagesLength; i++) {
+        ImageIO.write(images[i], "png", new BufferedOutputStream(new FileOutputStream("/Users/develar/t" + i + ".png")));
+      }
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private void lazyWriteInsets(Insets insets, boolean isContent) throws IOException {

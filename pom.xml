@@ -26,8 +26,8 @@
     <module>laf-compiler-ext</module>
     <module>appkit</module>
     <module>acocoa</module>
-    <module>aquaLaF</module>
     <module>aquaLaFAssetBuilder</module>
+    <module>aquaLaF</module>
     <module>demo</module>
   </modules>
 

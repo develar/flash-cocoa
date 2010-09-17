@@ -23,7 +23,7 @@ public class IconPackager {
 
         String[] filenames = scanner.getIncludedFiles();
         for (String filename : filenames) {
-          out.writeUTF(filename.substring(0, filename.lastIndexOf(".")).replace('/', '.'));
+          out.writeUTF(filename.substring(0, filename.lastIndexOf('.')).replace('/', '.'));
           out.write(ImageIO.read(new File(baseDirectory, filename)));
         }
       }

@@ -11,5 +11,5 @@ public class Border {
 
   public String appleResource;
 
-  public int equalLength = -1;
+  public int minTop = 0;
 }
