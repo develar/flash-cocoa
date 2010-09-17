@@ -184,7 +184,7 @@ public class AssetBuilderMojo extends AbstractMojo {
 
     for (Border border : borders) {
       final String key = border.subkey == null ? border.key : (border.subkey + "." + border.key);
-      out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".border") : key);
+      out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".b") : key);
 
       final BufferedImage[] sourceImages;
       if (border.appleResource == null) {
@@ -232,9 +232,7 @@ public class AssetBuilderMojo extends AbstractMojo {
       }
 
       lazyWriteInsets(border.contentInsets, true);
-      if (border.type != BorderType.CappedSmart) {
-        lazyWriteInsets(border.frameInsets, false);
-      }
+      lazyWriteInsets(border.frameInsets, false);
     }
   }
 

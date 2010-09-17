@@ -54,7 +54,7 @@ public class MenuSwatchItemRenderer extends AbstractView {
     if (colorListChanged) {
       colorListChanged = false;
 
-      swatchGrid.drawGrid(_colorList, _laf.getBorder("SwatchGrid.border"));
+      swatchGrid.drawGrid(_colorList, _laf.getBorder("SwatchGrid.b"));
       width = swatchGrid.width + 16;
       height = swatchGrid.height + 16;
     }
@@ -65,7 +65,7 @@ public class MenuSwatchItemRenderer extends AbstractView {
   override protected function updateDisplayList(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
-    _laf.getBorder("MenuItem.border").draw(null, g, w, h);
+    _laf.getBorder("MenuItem.b").draw(null, g, w, h);
   }
 }
 }

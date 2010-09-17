@@ -40,11 +40,7 @@ borders:
   appleResource: HUD-SliderKnob_round
   frameInsets: {left: -1, right: -1, bottom: -2}
 
-- key: ScrollBar.thumb
-  type: CappedSmart
-  appleResource: RSS-scroll
-
-- key: MenuItem.border.highlighted
+- key: MenuItem.b.highlighted
   type: One
   contentInsets: {left: 21, right: 21, bottom: 4}
 

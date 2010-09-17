@@ -16,7 +16,7 @@ public class SeparatorSkin extends AbstractSkin {
   override protected function createChildren():void {
     super.createChildren();
 
-    border = laf.getBorder(component.lafKey + ".border");
+    border = laf.getBorder(component.lafKey + ".b");
     if (border.layoutWidth < 0) {
       percentWidth = -border.layoutWidth;
     }

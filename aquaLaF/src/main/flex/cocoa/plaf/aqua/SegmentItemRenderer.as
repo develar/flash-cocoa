@@ -28,7 +28,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer
 	{
 		super.laf = value;
 
-		border = getBorder("border");
+		border = getBorder("b");
 	}
 
 	override protected function measure():void

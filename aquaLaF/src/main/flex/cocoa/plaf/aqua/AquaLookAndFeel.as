@@ -53,14 +53,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["Box"] = BoxSkin;
 
     data["Toolbar"] = ToolbarSkin;
-    data["Toolbar.border"] = new LinearGradientBorder([0xd0d0d0, 0xa7a7a7], new FrameInsets(0, -17));
+    data["Toolbar.b"] = new LinearGradientBorder([0xd0d0d0, 0xa7a7a7], new FrameInsets(0, -17));
 
     data["Dialog"] = WindowSkin;
     data["HUDWindow"] = HUDWindowSkin;
 
     data["SourceListView"] = SourceListViewSkin;
     data["ListView"] = ListViewSkin;
-    data["SwatchGrid.border"] = data["ListView.border"] = new ListViewBorder();
+    data["SwatchGrid.b"] = data["ListView.b"] = new ListViewBorder();
 
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
@@ -74,13 +74,13 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuController);
 
     data["ColorPicker"] = PushButtonSkin;
-    data["ColorPicker.border"] = data["PopUpButton.border"];
+    data["ColorPicker.b"] = data["PopUpButton.b"];
     data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
 
     data["Menu"] = MenuSkin;
     data["Menu.itemRenderer"] = new ClassFactory(MenuItemRenderer);
 
-    data["MenuItem.border"] = new MenuItemBorder(data["MenuItem.border.highlighted"]);
+    data["MenuItem.b"] = new MenuItemBorder(data["MenuItem.b.highlighted"]);
     data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
     data["SliderNumericStepper"] = SliderNumericStepperSkin;
@@ -97,20 +97,20 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["NumericStepper"] = NumericStepperSkin;
     data["CheckBox"] = CheckBoxSkin;
-    data["CheckBox.border"] = data["PushButton.border"];
+    data["CheckBox.b"] = data["PushButton.b"];
     data["HSlider"] = HSliderSkin;
 
     data["TextInput"] = TextInputSkin;
     data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
     data["TextArea"] = TextAreaSkin;
-    data["TextArea.border"] = data["TextInput.border"];
+    data["TextArea.b"] = data["TextInput.b"];
     data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
     TextLayoutFormatImpl(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
 
     data["NumericStepper.TextInput"] = TextInputSkin;
 
-    data["HSeparator.border"] = new SeparatorBorder();
+    data["HSeparator.b"] = new SeparatorBorder();
 
     data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
   }
@@ -201,17 +201,17 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
 
     data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
-    data["TextInput.border"] = new HUDTextInputBorder();
+    data["TextInput.b"] = new HUDTextInputBorder();
     data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
-    data["HSeparator.border"] = new SeparatorBorder();
+    data["HSeparator.b"] = new SeparatorBorder();
 
     data["PushButton"] = HUDPushButtonSkin;
 
-    data["MenuItem.border"] = new MenuItemBorder(data["MenuItem.border.highlighted"]);
+    data["MenuItem.b"] = new MenuItemBorder(data["MenuItem.b.highlighted"]);
 
     data["NumericStepper.TextInput"] = TextInputSkin;
-    data["NumericStepper.TextInput.border"] = new NumericStepperTextInputBorder();
+    data["NumericStepper.TextInput.b"] = new NumericStepperTextInputBorder();
 
     var numericStepperTextFormat:TextLayoutFormatImpl = createDefaultTextFormat();
     numericStepperTextFormat.$textAlign = TextAlign.END;

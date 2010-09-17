@@ -34,7 +34,8 @@
 				<configuration>
 					<includeFiles>
             <!-- только чтобы flexmojos вcе resources не включил -->
-						<file>assets.yml</file>
+						<!--<file>assets.yml</file>-->
+            <file>${project.build.directory}/ea</file>
 					</includeFiles>
 				</configuration>
 			</plugin>
@@ -48,7 +49,20 @@
 							<goal>generate</goal>
 						</goals>
 					</execution>
-				</executions>
+          <execution>
+            <id>extra</id>
+						<goals>
+							<goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputs>
+                <input>src/main/resources/extra</input>
+              </inputs>
+              <output>${project.build.directory}/ea</output>
+              <descriptor>src/main/resources/extraAssets.yml</descriptor>
+            </configuration>
+          </execution>
+        </executions>
 				<configuration>
           <inputs>
             <input>src/main/resources/hud</input>

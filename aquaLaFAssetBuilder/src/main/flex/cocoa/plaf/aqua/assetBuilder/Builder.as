@@ -114,17 +114,15 @@ public class Builder {
 
     writeBorders(borders, icons);
 //		show(testContainer, data);
-
-//    AquaLookAndFeel._setBordersAndIcons(borders, icons);
   }
 
   private function writeBorders(borders:Vector.<Border>, icons:ByteArray):void {
     var data:ByteArray = new ByteArray();
-    var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "ImageView", "Menu", "MenuItem.border.highlighted", "SegmentItem",
+    var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted", "SegmentItem",
       "ScrollBar.track.v", "ScrollBar.track.h", "ScrollBar.decrementButton.h", "ScrollBar.decrementButton.h.highlighted", "ScrollBar.incrementButton.h", "ScrollBar.incrementButton.h.highlighted",
       "ScrollBar.decrementButton.v", "ScrollBar.decrementButton.v.highlighted", "ScrollBar.incrementButton.v", "ScrollBar.incrementButton.v.highlighted",
       "ScrollBar.thumb.v", "ScrollBar.thumb.h", "ScrollBar.track.v.off", "ScrollBar.track.h.off",
-      "Window", "Window.border.toolbar", "Window.bottomBar.application", "Window.bottomBar.chooseDialog",
+      "Window", "Window.b.toolbar", "Window.bottomBar.application", "Window.bottomBar.chooseDialog",
       "Tree", "Tree.disclosureIcon.open", "Tree.disclosureIcon.close", "TextInput"
     ];
     data.writeByte(borders.length - 1);
@@ -146,7 +144,7 @@ public class Builder {
       }
 
       var name:String = bordersNames[index];
-      data.writeUTF(name.indexOf('.') == -1 ? (name + ".border") : name);
+      data.writeUTF(name.indexOf('.') == -1 ? (name + ".b") : name);
 
       if (border is Scale3EdgeHBitmapBorder) {
         data.writeByte(0);

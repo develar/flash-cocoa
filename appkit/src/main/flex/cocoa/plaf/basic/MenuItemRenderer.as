@@ -30,7 +30,7 @@ public class MenuItemRenderer extends LabeledItemRenderer {
       enabled = mouseEnabled = true;
     }
 
-    border = getBorder(isSeparatorItem ? "separatorBorder" : "border");
+    border = getBorder(isSeparatorItem ? "separatorBorder" : "b");
 
     invalidateSize();
     invalidateDisplayList();
@@ -39,7 +39,7 @@ public class MenuItemRenderer extends LabeledItemRenderer {
   override protected function updateDisplayList(w:Number, h:Number):void {
     const highlighted:Boolean = (state & HIGHLIGHTED) != 0;
     if (!(menuItem is MenuItem && MenuItem(menuItem).isSeparatorItem)) {
-      border = getBorder(highlighted ? "border.highlighted" : "border");
+      border = getBorder(highlighted ? "b.highlighted" : "b");
 
       labelHelper.textFormat = _laf.getTextFormat(highlighted ? TextFormatID.MENU_HIGHLIGHTED : TextFormatID.MENU);
       labelHelper.validate();

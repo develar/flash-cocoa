@@ -19,7 +19,7 @@ public class TextInputSkin extends AbstractSkin
 	{
 		super.createChildren();
 
-		border = getBorder("border");
+		border = getBorder("b");
 
 		textDisplay = new EditableTextView();
 		if (!enabled)

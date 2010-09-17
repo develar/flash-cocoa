@@ -112,7 +112,7 @@ public class ImageView extends AbstractView {
     //			return;
     //		}
 
-    //		_border = laf.getBorder("ImageView.border");
+    //		_border = laf.getBorder("ImageView.b");
   }
 
   override protected function measure():void {

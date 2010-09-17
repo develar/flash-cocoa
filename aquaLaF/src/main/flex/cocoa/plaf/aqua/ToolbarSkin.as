@@ -18,7 +18,7 @@ public class ToolbarSkin extends BoxSkin
 
 		super.createChildren();
 
-		BorderedContainer(contentGroup).border = getBorder("border");
+		BorderedContainer(contentGroup).border = getBorder("b");
 		contentGroup.mouseEnabled = false;
 		contentGroup.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
 		component.uiPartAdded("contentGroup", contentGroup);
