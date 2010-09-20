@@ -3,6 +3,7 @@ package org.flyti.assetBuilder;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import javax.media.jai.JAI;
+import javax.media.jai.RenderedOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -88,7 +89,7 @@ public class ImageRetriever {
         System.arraycopy(files, index, imageFiles, 0, imageFilesLength);
 
         Arrays.sort(imageFiles, assetNameComparator);
-//        System.out.print(Arrays.toString(imageFiles) + "\n");
+        System.out.print(Arrays.toString(imageFiles) + "\n");
         for (int i = 0; i < imageFilesLength; i++) {
           images[i] = JAI.create("fileload", sourceDirectory.getPath() + File.separator + imageFiles[i]).getAsBufferedImage();
         }
@@ -221,13 +222,13 @@ public class ImageRetriever {
         case 'D': // Disabled
           return 3;
 
-        case 'O':
+        case 'O': // Off/On
           if (s.charAt(start + 1) == 'f') {
-            weight = 10;
+            weight = 1000;
             stateIndex = 4;
           }
           else {
-            weight = 20;
+            weight = 2000;
             stateIndex = 3;
           }
           break;
