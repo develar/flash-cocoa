@@ -3,9 +3,9 @@ package org.flyti.assetBuilder;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 
@@ -22,13 +22,12 @@ public class ImageRetriever {
   }
 
   private AppleAssetNameComparator appleAssetNameComparator;
-  private AssetNameComparator assetNameComparator;
+  private AssetNameComparatorImpl assetNameComparator;
 
   public BufferedImage[] getImages(String key) throws MojoExecutionException, IOException {
     if (assetNameComparator == null) {
-      assetNameComparator = new AssetNameComparator();
+      assetNameComparator = new AssetNameComparatorImpl();
     }
-    assetNameComparator.setPrefixLength(key.length());
     return getImages(key, assetNameComparator);
   }
 
@@ -55,11 +54,10 @@ public class ImageRetriever {
     if (appleAssetNameComparator == null) {
       appleAssetNameComparator = new AppleAssetNameComparator();
     }
-    appleAssetNameComparator.setPrefixLength(appleResource.length());
     return getImages(appleResource, appleAssetNameComparator);
   }
 
-  private BufferedImage[] getImages(final String name, Comparator<String> assetNameComparator) throws MojoExecutionException, IOException {
+  private BufferedImage[] getImages(final String name, AssetNameComparator assetNameComparator) throws MojoExecutionException, IOException {
     for (File sourceDirectory : sources) {
       String[] files = directoryContentCache.get(sourceDirectory);
       if (files == null) {
@@ -70,28 +68,48 @@ public class ImageRetriever {
 
       int index = binarySearch(files, name);
       if (index > -1) {
-        if (index > 0) {
-          do {
-            index--;
+        final int imageFilesLength;
+        final String[] imageFiles;
+        final StringBuilder rootDir = new StringBuilder(sourceDirectory.getPath() + File.separator);
+        // is directory
+        if (files[index].length() == name.length()) {
+          imageFiles = new File(sourceDirectory, name).list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+              return name.charAt(0) != '.' && name.lastIndexOf('.') != -1;
+            }
+          });
+          imageFilesLength = imageFiles.length;
+
+          assetNameComparator.setPrefixLength(0);
+          rootDir.append(name).append(File.separator);
+        }
+        else {
+          if (index > 0) {
+            do {
+              index--;
+            }
+            while (index > -1 && files[index].startsWith(name));
+            index++;
           }
-          while (index > -1 && files[index].startsWith(name));
-          index++;
-        }
 
-        int endIndex = index + 1;
-        while (endIndex < files.length && files[endIndex].startsWith(name)) {
-          endIndex++;
-        }
+          int endIndex = index + 1;
+          while (endIndex < files.length && files[endIndex].startsWith(name)) {
+            endIndex++;
+          }
 
-        final int imageFilesLength = endIndex - index;
-        BufferedImage[] images = new BufferedImage[imageFilesLength];
-        String[] imageFiles = new String[imageFilesLength];
-        System.arraycopy(files, index, imageFiles, 0, imageFilesLength);
+          imageFilesLength = endIndex - index;
+          imageFiles = new String[imageFilesLength];
+          System.arraycopy(files, index, imageFiles, 0, imageFilesLength);
+          assetNameComparator.setPrefixLength(name.length());
+        }
 
         Arrays.sort(imageFiles, assetNameComparator);
+        
+        BufferedImage[] images = new BufferedImage[imageFilesLength];
         System.out.print(Arrays.toString(imageFiles) + "\n");
         for (int i = 0; i < imageFilesLength; i++) {
-          images[i] = JAI.create("fileload", sourceDirectory.getPath() + File.separator + imageFiles[i]).getAsBufferedImage();
+          images[i] = JAI.create("fileload", rootDir + imageFiles[i]).getAsBufferedImage();
         }
 
         return images;
@@ -129,11 +147,12 @@ public class ImageRetriever {
     return -(low + 1);  // key not found.
   }
 
-  private static class AssetNameComparator implements Comparator<String> {
+  private static class AssetNameComparatorImpl implements AssetNameComparator {
     private int start;
 
+    @Override
     public void setPrefixLength(int prefixLength) {
-      start = prefixLength + 2/* . + o(ff|n|ver)*/;
+      start = prefixLength == 0 ? 1 /* o(ff|n|ver)*/ : (prefixLength + 2/* . + o(ff|n|ver)*/);
     }
 
     @Override
@@ -142,15 +161,36 @@ public class ImageRetriever {
     }
 
     private int getWeight(String s) {
+      final int weight;
+      final int stateIndex;
+
       switch (s.charAt(start)) {
         case 'f':
-          return 1;
+          stateIndex = 2;
+          weight = 100;
+          break;
 
         case 'n':
-          return 2;
+          stateIndex = 1;
+          weight = 200;
+          break;
 
         case 'v':
-          return 3;
+          return 300;
+
+        default:
+          throw new IllegalArgumentException("unknown " + s);
+      }
+
+      switch (s.charAt(start + stateIndex)) {
+        case '.':
+          return weight;
+
+        case 'H':
+          return weight + 10;
+
+        case 'O':
+          return weight + 20;
 
         default:
           throw new IllegalArgumentException("unknown " + s);
@@ -158,7 +198,7 @@ public class ImageRetriever {
     }
   }
 
-  private static class AppleAssetNameComparator implements Comparator<String> {
+  private static class AppleAssetNameComparator implements AssetNameComparator {
     private int prefixLength;
     private int start = -1;
 

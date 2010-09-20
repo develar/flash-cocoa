@@ -19,6 +19,11 @@
     <maven.version>2.2.1</maven.version>
   </properties>
 
+  <scm>
+    <connection>scm:git:ssh://github.com/develar/flash-cocoa.git</connection>
+    <url>http://github.com/develar/flash-cocoa</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.yaml</groupId>

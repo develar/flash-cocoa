@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class ImageRetrieverTest {
   @Test
@@ -23,6 +24,16 @@ public class ImageRetrieverTest {
     assertTrue(compareImage(images[1], JAI.create("fileload", sources.get(0).getPath() + File.separator + "HUD-Checkbox_Off-P.tiff").getAsBufferedImage()));
     assertTrue(compareImage(images[2], JAI.create("fileload", sources.get(0).getPath() + File.separator + "HUD-Checkbox_On-N.tiff").getAsBufferedImage()));
     assertTrue(compareImage(images[3], JAI.create("fileload", sources.get(0).getPath() + File.separator + "HUD-Checkbox_On-P.tiff").getAsBufferedImage()));
+  }
+
+  @Test
+  public void testGetImagesFromDir() throws Exception {
+    List<File> sources = new ArrayList<File>(1);
+    sources.add(new File("asset-builder-maven-plugin/src/test/resources").getCanonicalFile());
+
+    ImageRetriever imageRetriever = new ImageRetriever(sources);
+    BufferedImage[] images = imageRetriever.getImages("CheckBox");
+    assertTrue(images.length == 6);
   }
 
   private boolean compareImage(BufferedImage image1, BufferedImage image2) {
