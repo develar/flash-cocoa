@@ -444,10 +444,8 @@ import cocoa.text.EditableTextView;
 
 import flash.events.KeyboardEvent;
 import flash.events.TextEvent;
-import flash.system.Capabilities;
 
 import flashx.textLayout.edit.EditManager;
-import flashx.textLayout.elements.Configuration;
 import flashx.textLayout.tlf_internal;
 import flashx.undo.IUndoManager;
 

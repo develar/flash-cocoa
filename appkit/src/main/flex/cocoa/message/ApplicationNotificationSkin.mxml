@@ -3,6 +3,18 @@
 	<fx:Metadata>
 		[HostComponent("cocoa.message.ApplicationNotification")]
 	</fx:Metadata>
+
+  <fx:Script><![CDATA[
+    import cocoa.plaf.TextFormatID;
+    import cocoa.text.TextLayoutFormatImpl;
+
+    override protected function createChildren():void {
+      super.createChildren();
+
+      textDisplay.textFormat = new TextLayoutFormatImpl(laf.getTextFormat(TextFormatID.SYSTEM));
+    }
+    ]]></fx:Script>
+  
 	<s:Rect left="0" right="0" top="0" bottom="0" radiusX="4" radiusY="4">
 		<s:stroke>
 			<s:SolidColorStroke color="0x929292" weight="1"/>
