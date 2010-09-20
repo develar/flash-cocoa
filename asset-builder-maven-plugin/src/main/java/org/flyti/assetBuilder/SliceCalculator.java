@@ -11,9 +11,9 @@ public final class SliceCalculator {
    */
   /**
    * Количество _непрерывных_ равных пикселей (отсчет от 0)
-   * Учитывается только для top и right
+   * Учитывается только для top
    */
-  private static final int DEFAULT_EQUAL_LENGTH = 4;
+  private static final int DEFAULT_EQUAL_LENGTH = 3;
 
   private SliceCalculator() {
   }
@@ -27,14 +27,14 @@ public final class SliceCalculator {
   }
 
   public static Insets calculate(BufferedImage image, Rectangle frameRectangle, boolean strict, boolean allSide, int minTop) {
-    int equalLength = image.getWidth() > (DEFAULT_EQUAL_LENGTH * 3) ? DEFAULT_EQUAL_LENGTH : 1;
+    int equalLength = image.getWidth() > (DEFAULT_EQUAL_LENGTH * 3) ? DEFAULT_EQUAL_LENGTH : 0;
 
     Raster raster = frameRectangle == null ? image.getRaster() : image.getRaster().createChild(frameRectangle.x, frameRectangle.y, frameRectangle.width, frameRectangle.height, 0, 0, null);
     byte[] bands1 = new byte[raster.getNumBands()];
     byte[] bands2 = new byte[raster.getNumBands()];
 
-    Insets sliceSize = new Insets(getUnrepeatableFromLeft(raster, bands1, bands2, strict, 1, 0), allSide ? getUnrepeatableFromTop(raster, bands1, bands2, strict, equalLength, minTop) : 0,
-            getUnrepeatableFromRight(raster, bands1, bands2, strict, 1, 0), allSide ? getUnrepeatableFromBottom(raster, bands1, bands2, strict, 1, 0) : 0);
+    Insets sliceSize = new Insets(getUnrepeatableFromLeft(raster, bands1, bands2, strict, 0, 0), allSide ? getUnrepeatableFromTop(raster, bands1, bands2, strict, equalLength, minTop) : 0,
+            getUnrepeatableFromRight(raster, bands1, bands2, strict, 0, 0), allSide ? getUnrepeatableFromBottom(raster, bands1, bands2, strict, 0, 0) : 0);
     if (sliceSize.getWidth() == raster.getWidth() || (allSide && sliceSize.getHeight() == raster.getHeight())) {
       throw new Error("can't find center area");
     }
