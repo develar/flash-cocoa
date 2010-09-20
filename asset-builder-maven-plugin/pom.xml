@@ -20,7 +20,7 @@
   </properties>
 
   <scm>
-    <connection>scm:git:ssh://github.com/develar/flash-cocoa.git</connection>
+    <connection>scm:git:file://..</connection>
     <url>http://github.com/develar/flash-cocoa</url>
   </scm>
 
