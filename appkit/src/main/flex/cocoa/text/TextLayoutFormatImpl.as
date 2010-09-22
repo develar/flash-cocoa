@@ -36,6 +36,8 @@ public class TextLayoutFormatImpl implements ITextLayoutFormat {
     return _textFormat;
   }
 
+  public var charMetrics:CharMetrics;
+
   public function get color():* {
     return elementFormat.color;
   }

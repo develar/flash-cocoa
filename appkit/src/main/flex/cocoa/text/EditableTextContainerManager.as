@@ -466,9 +466,8 @@ class EditableTextEditManager extends EditManager {
   override public function textInputHandler(event:TextEvent):void {
     super.textInputHandler(event);
 
-    // Normally keystrokes are saved until the next enter frame event before
-    // they are inserted into the text flow.  If this flag is false, the
-    // character just typed will be inserted into the text flow immediately.
+    // Normally keystrokes are saved until the next enter frame event before they are inserted into the text flow.
+    // If this flag is false, the character just typed will be inserted into the text flow immediately.
     if (!textDisplay.batchTextInput) {
       flushPendingOperations();
     }

@@ -1368,19 +1368,11 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *  this event is dispatched.</p>
    *
    *  @see #percentHeight
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
    */
   override public function get height():Number {
     return _height;
   }
 
-  /**
-   *  @private
-   */
   override public function set height(value:Number):void {
     if (_layoutMetrics.height != value) {
       explicitHeight = value;
@@ -1420,11 +1412,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *  the <code>visible</code> property to <code>false</code> to hide the component.</p>
    *
    *  @default 1.0
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
    */
   override public function get scaleX():Number {
     return (_layoutFeatures == null) ? super.scaleX : _layoutFeatures.layoutScaleX;
@@ -1453,7 +1440,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     // since we are not going to detect a change in measured sizes during measure.
     invalidateParentSizeAndDisplayList();
 
-
     dispatchEvent(new Event("scaleXChanged"));
   }
 
@@ -1474,11 +1460,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *  the <code>visible</code> property to <code>false</code> to hide the component.</p>
    *
    *  @default 1.0
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
    */
   override public function get scaleY():Number {
     return (_layoutFeatures == null) ? super.scaleY : _layoutFeatures.layoutScaleY;
@@ -1535,9 +1516,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     return (_layoutFeatures == null) ? super.scaleZ : _layoutFeatures.layoutScaleZ;
   }
 
-  /**
-   * @private
-   */
   override public function set scaleZ(value:Number):void {
     if (scaleZ == value) {
       return;

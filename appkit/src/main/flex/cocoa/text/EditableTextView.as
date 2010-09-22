@@ -82,8 +82,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private static const AUTO_SIZE:uint = 1 << 2;
 
-  private var flags:uint;
-
   private static var plainTextImporter:ITextImporter;
 
   /**
@@ -91,6 +89,15 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  to strip newlines when pasting text when multiline is false.
    */
   private static const ALL_NEWLINES_REGEXP:RegExp = /\n/g;
+
+  private static const DISPATCH_CHANGE_AND_CHANGING_EVENTS:uint = 1 << 3;
+  /**
+   * True if we've seen a MOUSE_DOWN event and haven't seen the corresponding MOUSE_UP event.
+   */
+  private static const MOUSE_DOWN:uint = 1 << 4;
+  private static const ERROR_CAUGHT:uint = 1 << 5;
+
+  protected var flags:uint = DISPATCH_CHANGE_AND_CHANGING_EVENTS;
 
   /**
    *  Holds the last recorded value of the textFlow generation.  Used to
@@ -105,12 +112,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private var lastContentBoundsGeneration:int = 0;  // 0 means not set
 
-  /**
-   *  True if TextOperationEvent.CHANGING and TextOperationEvent.CHANGE
-   *  events should be dispatched.
-   */
-  private var dispatchChangeAndChangingEvents:Boolean = true;
-
   private static const passwordChar:String = "*";
 
   internal var undoManager:IUndoManager;
@@ -121,24 +122,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   protected var textContainerManager:EditableTextContainerManager;
 
   /**
-   *  @private
-   *  The TLF edit manager will batch all inserted text until the next
-   *  enter frame event.  This includes text inserted via the GUI as well
-   *  as api calls to EditManager.insertText().  Set this to false if you
-   *  want every keystroke to be inserted into the text immediately which will
-   *  result in a TextOperationEvent.CHANGE event for each character.  One
-   *  place this is needed is for the type-ahead feature of the editable combo
-   *  box.
+   * The TLF edit manager will batch all inserted text until the next enter frame event.
+   * This includes text inserted via the GUI as well as api calls to EditManager.insertText().
+   * Set this to false if you want every keystroke to be inserted into the text immediately which will
+   * result in a TextOperationEvent.CHANGE event for each character.
+   * One place this is needed is for the type-ahead feature of the editable combo box.
    */
-  mx_internal var batchTextInput:Boolean = true;
-
-  /**
-   *  True if we've seen a MOUSE_DOWN event and haven't seen the
-   *  corresponding MOUSE_UP event.
-   */
-  private var mouseDown:Boolean = false;
-
-  private var errorCaught:Boolean = false;
+  public var batchTextInput:Boolean = true;
 
   /**
    *  Cache the width constraint as set by the layout in setLayoutBoundsSize()
@@ -170,24 +160,25 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     return str.substring(0, start) + strToInsert + str.substring(end, str.length);
   }
 
+  private function get heightInLines():int {
+    return _uiModel is TextAreaUIModel ? TextAreaUIModel(_uiModel).heightInLines : 1;
+  }
+
+  private var _uiModel:TextUIModel;
+  public function set uiModel(value:TextUIModel):void {
+    _uiModel = value;
+  }
+
+  public final function get multiline():Boolean {
+    return _uiModel is TextAreaUIModel;
+  }
+
+  private function get displayAsPassword():Boolean {
+    return _uiModel is TextInputUIModel && TextInputUIModel(_uiModel).displayAsPassword;
+  }
+
   override protected function get scrollController():ScrollController {
     return textContainerManager;
-  }
-
-  private var _multiline:Boolean = true;
-  /**
-   *  Determines whether the user can enter multiline text.
-   *
-   *  <p>If <code>true</code>, the Enter key starts a new paragraph. If <code>false</code>, the Enter key doesn't affect the text
-   *  but causes the RichEditableText to dispatch an <code>"enter"</code> event. If you paste text into the RichEditableText with a multiline
-   *  value of <code>true</code>, newlines are stripped out of the text. </p>
-   */
-  public function get multiline():Boolean {
-    return _multiline;
-  }
-
-  public function set multiline(value:Boolean):void {
-    _multiline = value;
   }
 
   override public function set textFormat(value:ITextLayoutFormat):void {
@@ -206,29 +197,26 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     textContainerManager.hostFormat = _textFormat;
     textContainerManager.swfContext = ISWFContext(embeddedFontContext);
 
-    _ascent = NaN;
-    _descent = NaN;
+    _charMetrics = null;
   }
 
-  mx_internal var _selectionFormat:SelectionFormat;
+  internal var _selectionFormat:SelectionFormat;
   public function set selectionFormat(value:SelectionFormat):void {
     assert(_selectionFormat == null);
     _selectionFormat = value;
   }
 
   override public function get baselinePosition():Number {
-    return effectiveTextFormat.paddingTop + ascent;
+    return effectiveTextFormat.paddingTop + charMetrics.ascent;
   }
 
   private var enabledChanged:Boolean = false;
-
   override public function set enabled(value:Boolean):void {
     if (value == super.enabled) {
       return;
     }
 
     super.enabled = value;
-
     enabledChanged = true;
 
     invalidateProperties();
@@ -279,25 +267,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     return editable;
   }
 
-  private var _displayAsPassword:Boolean = false;
-  private var displayAsPasswordChanged:Boolean = false;
-
-  public function get displayAsPassword():Boolean {
-    return _displayAsPassword;
-  }
-
-  public function set displayAsPassword(value:Boolean):void {
-    if (value == _displayAsPassword)
-      return;
-
-    _displayAsPassword = value;
-    displayAsPasswordChanged = true;
-
-    invalidateProperties();
-    invalidateSize();
-    invalidateDisplayList();
-  }
-
   private var _editable:Boolean = true;
   private var editableChanged:Boolean = false;
 
@@ -315,19 +284,11 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @default true
    *
    *  @see #selectable
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function get editable():Boolean {
     return _editable;
   }
 
-  /**
-   *  @private
-   */
   public function set editable(value:Boolean):void {
     if (value == _editable)
       return;
@@ -340,7 +301,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   /**
-   *  The editingMode of this component's TextContainerManager.
+   * The editingMode of this component's TextContainerManager.
    */
   private function get editingMode():String {
     // Note: this could be called before all properties are committed.
@@ -374,99 +335,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     return editable;
   }
 
-  private var _heightInLines:int = -1;
-  private var heightInLinesChanged:Boolean = false;
-
-  /**
-   *  The default height of the control, measured in lines.
-   *
-   *  <p>The control's formatting styles, such as <code>fontSize</code>
-   *  and <code>lineHeight</code>, are used to calculate the line height
-   *  in pixels.</p>
-   *
-   *  <p>You would, for example, set this property to 5 if you want
-   *  the height of the RichEditableText to be sufficient
-   *  to display five lines of text.</p>
-   *
-   *  <p>If this property is <code>NaN</code> (the default),
-   *  then the component's default height will be determined
-   *  from the text to be displayed.</p>
-   *
-   *  <p>This property will be ignored if you specify an explicit height,
-   *  a percent height, or both <code>top</code> and <code>bottom</code>
-   *  constraints.</p>
-   *
-   *  <p>RichEditableText's <code>measure()</code> method uses
-   *  <code>widthInChars</code> and <code>heightInLines</code>
-   *  to determine the <code>measuredWidth</code>
-   *  and <code>measuredHeight</code>.
-   *  These are similar to the <code>cols</code> and <code>rows</code>
-   *  of an HTML TextArea.</p>
-   *
-   *  <p>Since both <code>widthInChars</code> and <code>heightInLines</code>
-   *  default to <code>NaN</code>, RichTextEditable "autosizes" by default:
-   *  it starts out very small if it has no text, grows in width as you
-   *  type, and grows in height when you press Enter to start a new line.</p>
-   *
-   *  @default NaN
-   *
-   *  @see #widthInChars
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get heightInLines():int {
-    return _heightInLines;
-  }
-
-  public function set heightInLines(value:int):void {
-    if (value == _heightInLines) {
-      return;
-    }
-
-    _heightInLines = value;
-    heightInLinesChanged = true;
-
-    heightConstraint = NaN;
-
-    invalidateProperties();
-    invalidateSize();
-    invalidateDisplayList();
-  }
-
-  private var _imeMode:String = null;
+  private var _imeMode:String;
   public function get imeMode():String {
     return _imeMode;
   }
 
   public function set imeMode(value:String):void {
     _imeMode = value;
-  }
-
-  private var _maxChars:int = 0;
-  /**
-   *  @copy flash.text.TextField#maxChars
-   */
-  public function get maxChars():int {
-    return _maxChars;
-  }
-
-  public function set maxChars(value:int):void {
-    _maxChars = value;
-  }
-
-  private var _restrict:String = null;
-  /**
-   *  @copy flash.text.TextField#restrict
-   */
-  public function get restrict():String {
-    return _restrict;
-  }
-
-  public function set restrict(value:String):void {
-    _restrict = value;
   }
 
   private var selectableChanged:Boolean = false;
@@ -505,11 +380,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @default -1
    *
    *  @see #selectionAnchorPosition
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function get selectionActivePosition():int {
     return _selectionActivePosition;
@@ -537,11 +407,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @default -1
    *
    *  @see #selectionActivePosition
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function get selectionAnchorPosition():int {
     return _selectionAnchorPosition;
@@ -578,11 +443,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @default TextSelectionHighlighting.WHEN_FOCUSED
    *
    *  @see spark.components.TextSelectionHighlighting
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function get selectionHighlighting():String {
     return _selectionHighlighting;
@@ -707,136 +567,44 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
   }
 
-  /**
-   *  @private
-   */
-  private var _widthInChars:int = -1;
-
-  /**
-   *  @private
-   */
-  private var widthInCharsChanged:Boolean = true;
-
-  /**
-   *  The default width of the control, measured in em units.
-   *
-   *  <p>An em is a unit of typographic measurement
-   *  equal to the point size.
-   *  It is not necessarily exactly the width of the "M" character,
-   *  but in many fonts the "M" is about one em wide.
-   *  The control's <code>fontSize</code> style is used,
-   *  to calculate the em unit in pixels.</p>
-   *
-   *  <p>You would, for example, set this property to 20 if you want
-   *  the width of the RichEditableText to be sufficient
-   *  to display about 20 characters of text.</p>
-   *
-   *  <p>If this property is <code>NaN</code> (the default),
-   *  then the component's default width will be determined
-   *  from the text to be displayed.</p>
-   *
-   *  <p>This property will be ignored if you specify an explicit width,
-   *  a percent width, or both <code>left</code> and <code>right</code>
-   *  constraints.</p>
-   *
-   *  <p>RichEditableText's <code>measure()</code> method uses
-   *  <code>widthInChars</code> and <code>heightInLines</code>
-   *  to determine the <code>measuredWidth</code>
-   *  and <code>measuredHeight</code>.
-   *  These are similar to the <code>cols</code> and <code>rows</code>
-   *  of an HTML TextArea.</p>
-   *
-   *  <p>Since both <code>widthInChars</code> and <code>heightInLines</code>
-   *  default to <code>NaN</code>, RichTextEditable "autosizes" by default:
-   *  it starts out very samll if it has no text, grows in width as you
-   *  type, and grows in height when you press Enter to start a new line.</p>
-   *
-   *  @default NaN
-   *
-   *  @see spark.primitives.heightInLines
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get widthInChars():int {
-    return _widthInChars;
-  }
-
-  /**
-   *  @private
-   */
-  public function set widthInChars(value:int):void {
-    if (value == _widthInChars)
-      return;
-
-    _widthInChars = value;
-    widthInCharsChanged = true;
-
-    widthConstraint = NaN;
-
-    invalidateProperties();
-    invalidateSize();
-    invalidateDisplayList();
-  }
-
-  private var _ascent:Number;
-  public function get ascent():Number
-  {
-    if (isNaN(_ascent)) {
+  private var _charMetrics:CharMetrics;
+  private function get charMetrics():CharMetrics {
+    if (_charMetrics == null) {
       calculateFontMetrics();
     }
-    return _ascent;
-  }
-
-  private var _descent:Number;
-  public function get descent():Number
-  {
-    if (isNaN(_descent)) {
-      calculateFontMetrics();
-    }
-    return _descent;
+    return _charMetrics;
   }
 
   override public function parentChanged(p:DisplayObjectContainer):void {
-    if (focusManager) {
+    if (focusManager != null) {
       focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, textContainerManager.activateHandler);
       focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, textContainerManager.deactivateHandler);
     }
 
     super.parentChanged(p);
 
-    if (focusManager) {
+    if (focusManager != null) {
       addActivateHandlers();
     }
     else {
-      // if no focusmanager yet, add capture phase to detect when it
-      // gets added
-      if (systemManager)
+      // if no focusmanager yet, add capture phase to detect when it gets added
+      if (systemManager != null) {
         systemManager.getSandboxRoot().addEventListener(FlexEvent.ADD_FOCUS_MANAGER, addFocusManagerHandler, true, 0, true);
+      }
       else
       // no systemManager yet?  Check again when added to stage
         addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
     }
-
   }
 
   override public function removeChild(child:DisplayObject):DisplayObject {
-    // not sure why this happens but it does if you just change
-    // the embeddedFont context
-    if (!child.parent)
-      return child;
-
-    if (child.parent == this)
+    if (child.parent == this) {
       return super.removeChild(child);
+    }
 
     return child.parent.removeChild(child);
   }
 
-  /**
-   *  @private
-   */
   override protected function commitProperties():void {
     super.commitProperties();
 
@@ -863,41 +631,33 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       lastGeneration = _textFlow != null ? _textFlow.generation : 0;
       lastContentBoundsGeneration = 0;
 
-      // Handle the case where the initial text, textFlow or content
-      // is displayed as a password.
-      if (displayAsPassword) {
-        displayAsPasswordChanged = true;
+      // Handle the case where the initial text, textFlow or content is displayed as a password.
+      if (_uiModel is TextInputUIModel) {
+        var inputUIModel:TextInputUIModel = TextInputUIModel(_uiModel);
+
+        var oldAnchorPosition:int = _selectionAnchorPosition;
+        var oldActivePosition:int = _selectionActivePosition;
+        // If there is any text, convert it to the passwordChar.
+        if (inputUIModel.displayAsPassword) {
+          // Make sure _text is set with the actual text before we change the displayed text.
+          _text = text;
+          // Paragraph terminators are lost during this substitution.
+          textContainerManager.setText(StringUtil.repeat(passwordChar, _text.length));
+        }
+        else {
+          // Text was displayed as password.  Now display as plain text.
+          textContainerManager.setText(_text);
+        }
+
+        if (editingMode != EditingMode.READ_ONLY) {
+          // Must preserve the selection, if there was one. The visible selection will be refreshed during the update.
+          textContainerManager.beginInteraction().selectRange(oldAnchorPosition, oldActivePosition);
+          textContainerManager.endInteraction();
+        }
       }
 
       textChanged = false;
       textFlowChanged = false;
-    }
-
-    // If displayAsPassword changed, it only applies to the display, not the underlying text.
-    if (displayAsPasswordChanged) {
-      var oldAnchorPosition:int = _selectionAnchorPosition;
-      var oldActivePosition:int = _selectionActivePosition;
-
-      // If there is any text, convert it to the passwordChar.
-      if (displayAsPassword) {
-        // Make sure _text is set with the actual text before we change the displayed text.
-        _text = text;
-        // Paragraph terminators are lost during this substitution.
-        textContainerManager.setText(StringUtil.repeat(passwordChar, _text.length));
-      }
-      else {
-        // Text was displayed as password.  Now display as plain text.
-        textContainerManager.setText(_text);
-      }
-
-      if (editingMode != EditingMode.READ_ONLY) {
-        // Must preserve the selection, if there was one.
-        // The visible selection will be refreshed during the update.
-        textContainerManager.beginInteraction().selectRange(oldAnchorPosition, oldActivePosition);
-        textContainerManager.endInteraction();
-      }
-
-      displayAsPasswordChanged = false;
     }
   }
 
@@ -910,16 +670,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // Don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
     flags |= IGNORE_DAMAGE_EVENT;
 
-    super.measure();
-
     // percentWidth and/or percentHeight will come back in as constraints on the remeasure if we're autoSizing.
     if (isMeasureFixed()) {
       flags ^= AUTO_SIZE;
 
-      // Go large. For performance reasons, want to avoid a scrollRect whenever possible in drawBackgroundAndSetScrollRect().
-      // This is particularly true for 1 line TextInput components.
-      measuredWidth = !isNaN(explicitWidth) ? explicitWidth : (_widthInChars == -1 ? 0 : Math.ceil(calculateWidthInChars()));
-      measuredHeight = !isNaN(explicitHeight) ? explicitHeight : (_heightInLines == -1 ? 0 : Math.ceil(calculateHeightInLines()));
+      measuredWidth = isNaN(explicitWidth) ? (_uiModel.widthInChars == -1 ? 0 : Math.ceil(calculateWidthInChars())) : explicitWidth;
+      measuredHeight = isNaN(explicitHeight) ? (heightInLines == -1 ? 0 : Math.ceil(calculateHeightInLines())) : explicitHeight;
     }
     else {
       var composeWidth:Number;
@@ -932,61 +688,61 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       // If in updateDisplayList(), autoSize is true, then the compositionHeight is NaN to allow the text to grow.
       flags |= AUTO_SIZE;
 
-      if (!isNaN(widthConstraint) || !isNaN(explicitWidth) || !isNaN(widthInChars)) {
-        // width specified but no height
-        // if no text, start at one line high and grow
-        if (!isNaN(widthConstraint)) {
-          composeWidth = widthConstraint;
-        }
-        else if (!isNaN(explicitWidth)) {
-          composeWidth = explicitWidth;
-        }
-        else {
-          composeWidth = Math.ceil(calculateWidthInChars());
-        }
+      if (!isNaN(widthConstraint)) {
+        composeWidth = widthConstraint;
+      }
+      else if (!isNaN(explicitWidth)) {
+        composeWidth = explicitWidth;
+      }
+      else if (_uiModel.widthInChars != -1) {
+        composeWidth = Math.ceil(calculateWidthInChars());
+      }
 
+      if (!isNaN(composeWidth)) {
+        // width specified but no height. If no text, start at one line high and grow
         // The composeWidth may be adjusted for minWidth/maxWidth except if we're using the explicitWidth.
         bounds = measureTextSize(composeWidth);
-
         measuredWidth = textContainerManager.compositionWidth;
         measuredHeight = Math.ceil(bounds.bottom);
       }
-      else if (!isNaN(heightConstraint) || !isNaN(explicitHeight) || _heightInLines != -1) {
-        // if no text, 1 char wide with specified height and grow
+      else {
         if (!isNaN(heightConstraint)) {
           composeHeight = heightConstraint;
         }
         else if (!isNaN(explicitHeight)) {
           composeHeight = explicitHeight;
         }
+        else if (heightInLines != -1) {
+          composeHeight = Math.ceil(calculateHeightInLines());
+        }
+
+        if (!isNaN(composeHeight)) {
+          // The composeWidth may be adjusted for minWidth/maxWidth.
+          bounds = measureTextSize(NaN, composeHeight);
+
+          measuredWidth = Math.ceil(bounds.right);
+          measuredHeight = composeHeight;
+
+          // Have we already hit the limit with the existing text?  If we are beyond the composeHeight we can assume we've maxed out on
+          // the compose width as well (or the composeHeight isn't large enough for even one line of text).
+          if (bounds.bottom > composeHeight) {
+            flags ^= AUTO_SIZE;
+          }
+        }
         else {
-          composeHeight = calculateHeightInLines();
+          // The composeWidth may be adjusted for minWidth/maxWidth.
+          bounds = measureTextSize(NaN);
+
+          measuredWidth = Math.ceil(bounds.right);
+          measuredHeight = Math.ceil(bounds.bottom);
         }
-
-        // The composeWidth may be adjusted for minWidth/maxWidth.
-        bounds = measureTextSize(NaN, composeHeight);
-
-        measuredWidth = Math.ceil(bounds.right);
-        measuredHeight = composeHeight;
-
-        // Have we already hit the limit with the existing text?  If we are beyond the composeHeight we can assume we've maxed out on
-        // the compose width as well (or the composeHeight isn't large enough for even one line of text).
-        if (bounds.bottom > composeHeight) {
-          flags ^= AUTO_SIZE;
-        }
-      }
-      else {
-        // The composeWidth may be adjusted for minWidth/maxWidth.
-        bounds = measureTextSize(NaN);
-
-        measuredWidth = Math.ceil(bounds.right);
-        measuredHeight = Math.ceil(bounds.bottom);
       }
 
       // Clamp the height, except if we're using the explicitHeight.
       if (isNaN(explicitHeight)) {
-        if (!isNaN(explicitMinHeight) && measuredHeight < explicitMinHeight)
+        if (!isNaN(explicitMinHeight) && measuredHeight < explicitMinHeight) {
           measuredHeight = explicitMinHeight;
+        }
 
         // Reached max height so can't grow anymore.
         if (!isNaN(explicitMaxHeight) && measuredHeight > explicitMaxHeight) {
@@ -1005,8 +761,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     flags ^= IGNORE_DAMAGE_EVENT;
-
-    //trace("measure", measuredWidth, measuredHeight, "autoSize", autoSize);
   }
 
   /**
@@ -1018,8 +772,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     if ((flags & AUTO_SIZE) != 0 && remeasureText(w, h)) {
       return;
     }
-
-    super.updateDisplayList(w, h);
 
     // If we're autoSizing we're telling the layout manager one set of values and TLF another set of values so there is room for the text to grow.
     // autoSize for blockProgression=="rl" is implemented
@@ -1039,23 +791,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   /**
-   *  @private
-   *  This is called by the layout manager the first time this
-   *  component is measured, or later if its size changes. This
-   *  is not always called before updateDisplayList().  For example,
-   *  for recycled item renderers this is not called if the measured
-   *  size doesn't change.
+   * This is called by the layout manager the first time this component is measured, or later if its size changes.
+   * This is not always called before updateDisplayList().
+   * For example, for recycled item renderers this is not called if the measured size doesn't change.
    *
    *  width and height are NaN unless there are constraints on them.
    */
   override public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void {
     //trace("setLayoutBoundsSize", width, height);
 
-    // Save these so when we are auto-sizing we know which dimensions
-    // are constrained.  Without this it is not possible to differentiate
-    // between a measured width/height that is the same as the
-    // constrained width/height to know whether that dimension can
-    // be sized or must be fixed at the constrained value.
+    // Save these so when we are auto-sizing we know which dimensions are constrained.
+    // Without this it is not possible to differentiate between a measured width/height that is the same as the
+    // constrained width/height to know whether that dimension can be sized or must be fixed at the constrained value.
     widthConstraint = width;
     heightConstraint = height;
 
@@ -1063,11 +810,9 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   override public function setFocus():void {
-    // We are about to set focus on this component.  If it is due to
-    // a programmatic focus change we have to programatically do what the
-    // mouseOverHandler and the mouseDownHandler do so that the user can
-    // type in this component without using the mouse first.  We need to
-    // put a textFlow with a composer in place.
+    // We are about to set focus on this component. If it is due to a programmatic focus change we have to programatically do what the
+    // mouseOverHandler and the mouseDownHandler do so that the user can type in this component without using the mouse first.
+    // We need to put a textFlow with a composer in place.
     if (editingMode != EditingMode.READ_ONLY && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
       textContainerManager.beginInteraction();
       textContainerManager.endInteraction();
@@ -1088,11 +833,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  that the insertion point is visible.</p>
    *
    *  @param text The text to be inserted.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function insertText(text:String):void {
     handleInsertText(text);
@@ -1119,11 +859,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   /**
    *  @copy flashx.textLayout.container.ContainerController#scrollToRange()
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function scrollToRange(anchorPosition:int, activePosition:int):void {
     // Make sure the properties are commited since the text could change.
@@ -1143,11 +878,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *
    *  @param activePosition The character position specifying the end
    *  of the selection that moves when the selection is extended.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function selectRange(anchorPosition:int, activePosition:int):void {
     // Make sure the properties are commited since the text could change.
@@ -1177,11 +907,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   /**
    *  Selects all of the text.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function selectAll():void {
     selectRange(0, int.MAX_VALUE);
@@ -1208,11 +933,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *
    *  @param activePosition A character position specifying
    *   the movable end of the selection.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function getFormatOfRange(requestedFormats:Vector.<String> = null, anchorPosition:int = -1, activePosition:int = -1):TextLayoutFormat {
     var format:TextLayoutFormat = new TextLayoutFormat();
@@ -1329,11 +1049,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @param activePosition A character position, relative to the beginning of the
    *  text String, specifying the end of the selection that moves when the
    *  selection is extended with the arrow keys.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function setFormatOfRange(format:TextLayoutFormat, anchorPosition:int = -1, activePosition:int = -1):void {
     // Make sure all properties are committed.  The damage handler for the
@@ -1357,30 +1072,25 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
       switch (description[p].category) {
         case Category.CONTAINER:
-        {
           if (containerFormat == null) {
             containerFormat = new TextLayoutFormat();
           }
           containerFormat[p] = format[p];
-        }
           break;
 
         case Category.PARAGRAPH:
-        {
           if (paragraphFormat == null) {
             paragraphFormat = new TextLayoutFormat();
           }
           paragraphFormat[p] = format[p];
-        }
           break;
 
         case Category.CHARACTER:
-        {
           if (characterFormat == null) {
             characterFormat = new TextLayoutFormat();
           }
           characterFormat[p] = format[p];
-        }
+          break;
       }
     }
 
@@ -1403,7 +1113,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Is there some sort of width and some sort of height?
-    return (!isNaN(explicitWidth) || _widthInChars != -1 || !isNaN(widthConstraint)) && (!isNaN(explicitHeight) || _heightInLines != -1 || !isNaN(heightConstraint));
+    return (!isNaN(explicitWidth) || !isNaN(widthConstraint) || _uiModel.widthInChars != -1) && (!isNaN(explicitHeight) || !isNaN(heightConstraint) || heightInLines != -1);
   }
 
   /**
@@ -1413,10 +1123,10 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function measureTextSize(composeWidth:Number, composeHeight:Number = NaN):Rectangle {
     // Adjust for explicit min/maxWidth so the measurement is accurate.
     if (isNaN(explicitWidth)) {
-      if (!isNaN(explicitMinWidth) && isNaN(composeWidth) || composeWidth < minWidth) {
+      if (!isNaN(explicitMinWidth) && isNaN(composeWidth) || composeWidth < explicitMinWidth) {
         composeWidth = minWidth;
       }
-      if (!isNaN(explicitMaxWidth) && isNaN(composeWidth) || composeWidth > maxWidth) {
+      if (!isNaN(explicitMaxWidth) && isNaN(composeWidth) || composeWidth > explicitMaxWidth) {
         composeWidth = maxWidth;
       }
     }
@@ -1426,11 +1136,9 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     textContainerManager.compositionWidth = composeWidth;
     textContainerManager.compositionHeight = composeHeight;
 
-    // If scrolling, always compose with the composer so we get consistent
-    // measurements.  The factory and the composer produce slightly
-    // different results which can confuse the scroller.  If there isn't a
-    // composer, this calls updateContainer so do it here now that the
-    // composition sizes are set so the results can be used.
+    // If scrolling, always compose with the composer so we get consistent measurements.
+    // The factory and the composer produce slightly different results which can confuse the scroller.
+    // If there isn't a composer, this calls updateContainer so do it here now that the composition sizes are set so the results can be used.
     if (clipAndEnableScrolling && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
       textContainerManager.convertToTextFlowWithComposer();
     }
@@ -1439,27 +1147,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     textContainerManager.compose();
 
     // Adjust width and height for text alignment.
-    var bounds:Rectangle = textContainerManager.getContentBounds();
-
-    // If it's an empty text flow, there is one line with one character so the height is good for the line but we
-    // need to give it some width other than optional padding.
-    if (textContainerManager.getText().length == 0) {
-      // Empty text flow.  One Em wide so there
-      // is a place to put the insertion cursor.
-      bounds.width = bounds.width + effectiveTextFormat.fontSize;
-    }
-
-    //trace("measureTextSize", composeWidth, "->", bounds.width, composeHeight, "->", bounds.height);
-
-    return bounds;
+    return textContainerManager.getContentBounds();
   }
 
   /**
-   *  If auto-sizing text, it may need to be remeasured if it is
-   *  constrained in one dimension by the layout manager.  If it is
-   *  constrained in both dimensions there is no need to remeasure.
-   *  Changing one dimension may change the size of the measured text
-   *  and the layout manager needs to know this.
+   * If auto-sizing text, it may need to be remeasured if it is constrained in one dimension by the layout manager.
+   * If it is constrained in both dimensions there is no need to remeasure.
+   * Changing one dimension may change the size of the measured text and the layout manager needs to know this.
    */
   private function remeasureText(width:Number, height:Number):Boolean {
     // Neither dimensions changed.  If auto-sizing we're still auto-sizing.
@@ -1479,7 +1173,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     if (!isNaN(widthConstraint)) {
       // Do we have a constrained width and an explicit height?
       // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitHeight) || !isNaN(_heightInLines) || !isNaN(heightConstraint)) {
+      if (!isNaN(explicitHeight) || heightInLines != -1 || !isNaN(heightConstraint)) {
         return false;
       }
 
@@ -1492,14 +1186,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     if (!isNaN(heightConstraint)) {
       // Do we have a constrained height and an explicit width?
       // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitWidth) || _widthInChars != -1) {
+      if (!isNaN(explicitWidth) || _uiModel.widthInChars != -1) {
         return false;
       }
     }
 
-    // Width or height is different than what was measured.  Since we're
-    // auto-sizing, need to remeasure, so the layout manager leaves the
-    // correct amount of space for the component.
+    // Width or height is different than what was measured.
+    // Since we're auto-sizing, need to remeasure, so the layout manager leaves the correct amount of space for the component.
     invalidateSize();
 
     return true;
@@ -1513,10 +1206,19 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     if (!(_textFormat is TextLayoutFormatImpl)) {
       textElement.elementFormat = new ElementFormat(new FontDescription(effectiveTextFormat.fontFamily, effectiveTextFormat.fontWeight, effectiveTextFormat.fontStyle), effectiveTextFormat.fontSize, effectiveTextFormat.textAlpha);
     }
-
-    var textLine:TextLine = measureText("M");
-    _ascent = textLine.ascent;
-    _descent = textLine.descent;
+    else {
+      var format:TextLayoutFormatImpl = TextLayoutFormatImpl(_textFormat);
+      if (format.charMetrics == null) {
+        var textLine:TextLine = measureText("m");
+        var charMetrics:CharMetrics = new CharMetrics();
+        charMetrics.ascent = textLine.ascent;
+        charMetrics.descent = textLine.descent;
+        charMetrics.width = textLine.textWidth;
+        charMetrics.height = textLine.textHeight;
+        format.charMetrics = charMetrics;
+      }
+      _charMetrics = format.charMetrics;
+    }
   }
 
   public function measureText(text:String):TextLine {
@@ -1533,38 +1235,24 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function calculateWidthInChars():Number {
-    var effectiveWidthInChars:int = _widthInChars == -1 ? (_heightInLines == -1 ? 10 : 1) : _widthInChars;
+    var effectiveWidthInChars:int = _uiModel.widthInChars == -1 ? (heightInLines == -1 ? 10 : 1) : _uiModel.widthInChars;
     // Without the explicit casts, if padding values are non-zero, the returned width is a very large number.
-    return effectiveTextFormat.paddingLeft + (effectiveWidthInChars * effectiveTextFormat.fontSize) + effectiveTextFormat.paddingRight;
+    return effectiveTextFormat.paddingLeft + (effectiveWidthInChars * charMetrics.width) + effectiveTextFormat.paddingRight;
   }
 
   /**
    *  Calculates the height needed for heightInLines lines using the default font.
    */
   private function calculateHeightInLines():Number {
-    var height:Number = effectiveTextFormat.paddingTop + effectiveTextFormat.paddingBottom;
-    if (_heightInLines == 0) {
-      return height;
-    }
-
-    const lineHeight:Number = TextLineUtil.calculateLineHeight(effectiveTextFormat.lineHeight, effectiveTextFormat.fontSize);
+    const lineHeight:Number = TextLineUtil.calculateLineHeight(effectiveTextFormat.lineHeight, charMetrics.height);
     const firstBaselineOffset:Object = effectiveTextFormat.firstBaselineOffset;
+    var height:Number = effectiveTextFormat.paddingTop + effectiveTextFormat.paddingBottom + ((heightInLines - 1) * lineHeight) + charMetrics.descent /* add in descent of last line */;
     if (firstBaselineOffset == BaselineOffset.LINE_HEIGHT) {
       height += lineHeight;
     }
     else {
-      height += firstBaselineOffset is Number ? Number(firstBaselineOffset) : ascent;
+      height += firstBaselineOffset is Number ? Number(firstBaselineOffset) : charMetrics.ascent;
     }
-
-    // If both height and width are NaN use 10 lines. Otherwise if only height is NaN, use 1.
-    const effectiveHeightInLines:int = _heightInLines == -1 ? (_widthInChars == -1 ? 10 : 1) : _heightInLines;
-    if (effectiveHeightInLines > 1) {
-      height += (effectiveHeightInLines - 1) * lineHeight;
-    }
-
-    // Add in descent of last line.
-    height += descent;
-
     return height;
   }
 
@@ -1607,7 +1295,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function handlePasteOperation(op:PasteOperation):void {
-    var hasConstraints:Boolean = restrict != null || maxChars > 0 || displayAsPassword;
+    var hasConstraints:Boolean = _uiModel.restrict != null || _uiModel.maxChars || displayAsPassword;
 
     // If there are no constraints and multiline text is allowed there is nothing that needs to be done.
     if (!hasConstraints && multiline) {
@@ -1637,7 +1325,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Generate a CHANGING event for the PasteOperation but not for the
     // DeleteTextOperation or the InsertTextOperation which are also part of the paste.
-    dispatchChangeAndChangingEvents = false;
+    flags ^= DISPATCH_CHANGE_AND_CHANGING_EVENTS;
 
     var selectionState:SelectionState = new SelectionState(op.textFlow, op.absoluteStart, op.absoluteStart + textLength);
     editManager.deleteText(selectionState);
@@ -1650,7 +1338,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // All done with the edit manager.
     textContainerManager.endInteraction();
 
-    dispatchChangeAndChangingEvents = true;
+    flags |= DISPATCH_CHANGE_AND_CHANGING_EVENTS;
   }
 
   /**
@@ -1700,7 +1388,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       // If the focusIn was because of a mouseDown event, let TLF
       // handle the selection.  Otherwise it was because we tabbed in
       // or we programatically set the focus.
-      if (!mouseDown) {
+      if ((flags & MOUSE_DOWN) == 0) {
         var selectionManager:ISelectionManager = textContainerManager.beginInteraction();
 
         if (multiline) {
@@ -1721,16 +1409,16 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         // When IME.conversionMode is unknown it cannot be
         // set to anything other than unknown(English)
         try {
-          if (!errorCaught && IME.conversionMode != IMEConversionMode.UNKNOWN) {
+          if ((flags & ERROR_CAUGHT) == 0 && IME.conversionMode != IMEConversionMode.UNKNOWN) {
             IME.conversionMode = _imeMode;
           }
-          errorCaught = false;
+          flags ^= ERROR_CAUGHT;
         }
         catch(e:Error) {
           // Once an error is thrown, focusIn is called
           // again after the Alert is closed, throw error
           // only the first time.
-          errorCaught = true;
+          flags |= ERROR_CAUGHT;
           throw new Error("unsupportedMode: " + _imeMode);
         }
       }
@@ -1780,7 +1468,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       }
 
       // Multiline.  Make sure there is room before acting on it.
-      if (_maxChars != 0 && text.length >= _maxChars) {
+      if (_uiModel.maxChars != 0 && text.length >= _uiModel.maxChars) {
         event.preventDefault();
         return;
       }
@@ -1797,7 +1485,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   mx_internal function mouseDownHandler(event:MouseEvent):void {
-    mouseDown = true;
+    flags |= MOUSE_DOWN;
 
     // Need to get called even if mouse events are dispatched outside of this component. For example, when the user does
     // a mouse down in RET, drags the mouse outside of the component, and then releases the mouse.
@@ -1805,13 +1493,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function systemManager_mouseUpHandler(event:MouseEvent):void {
-    mouseDown = false;
+    flags ^= MOUSE_DOWN;
 
     systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
   }
 
   /**
-   *  @private
    *  If the textFlow hasn't changed the generation remains the same.
    *  Changing the composition width and/or height does not change the
    *  generation.  The bounds can change as a result of different
@@ -2010,8 +1697,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       var insertTextOperation:InsertTextOperation = InsertTextOperation(op);
       var textToInsert:String = insertTextOperation.text;
       // Note: Must process restrict first, then maxChars, then displayAsPassword last.
-      if (_restrict != null) {
-        textToInsert = StringUtil.restrict(textToInsert, restrict);
+      if (_uiModel.restrict != null) {
+        textToInsert = StringUtil.restrict(textToInsert, _uiModel.restrict);
         if (textToInsert.length == 0) {
           event.preventDefault();
           return;
@@ -2023,15 +1710,15 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       var delSelOp:SelectionState = insertTextOperation.deleteSelectionState;
       var delLen:int = (delSelOp == null) ? 0 : delSelOp.absoluteEnd - delSelOp.absoluteStart;
 
-      if (maxChars != 0) {
+      if (_uiModel.maxChars != 0) {
         var length1:int = text.length - delLen;
         var length2:int = textToInsert.length;
-        if (length1 + length2 > maxChars) {
-          textToInsert = textToInsert.substr(0, maxChars - length1);
+        if (length1 + length2 > _uiModel.maxChars) {
+          textToInsert = textToInsert.substr(0, _uiModel.maxChars - length1);
         }
       }
 
-      if (_displayAsPassword) {
+      if (_uiModel is TextInputUIModel && TextInputUIModel(_uiModel).displayAsPassword) {
         // Remove deleted text.
         if (delLen > 0) {
           _text = splice(_text, delSelOp.absoluteStart, delSelOp.absoluteEnd, "");
@@ -2064,14 +1751,14 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         return;
       }
 
-      if (_displayAsPassword) {
+      if (displayAsPassword) {
         _text = splice(_text, flowTextOperation.absoluteStart, flowTextOperation.absoluteEnd, "");
       }
     }
 
     // Dispatch a 'changing' event from the RichEditableText as notification that an editing operation is about to occur.
     // The level will be 0 for single operations, and at the start of a composite operation.
-    if (dispatchChangeAndChangingEvents && event.level == 0) {
+    if ((flags & DISPATCH_CHANGE_AND_CHANGING_EVENTS) != 0 && event.level == 0) {
       var newEvent:TextOperationEvent = new TextOperationEvent(TextOperationEvent.CHANGING, false, true, op);
       dispatchEvent(newEvent);
 
@@ -2100,7 +1787,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // Dispatch a 'change' event from the this as notification that an editing operation has occurred.
     // The flow is now in a state that it can be manipulated.
     // The level will be 0 for single operations, and at the end of a composite operation.
-    if (dispatchChangeAndChangingEvents && event.level == 0) {
+    if ((flags & DISPATCH_CHANGE_AND_CHANGING_EVENTS) != 0 && event.level == 0) {
       dispatchEvent(new TextOperationEvent(TextOperationEvent.CHANGE, false, true, event.operation));
     }
   }

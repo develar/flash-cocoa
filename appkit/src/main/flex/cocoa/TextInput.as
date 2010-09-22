@@ -1,5 +1,8 @@
 package cocoa {
 import cocoa.text.EditableTextView;
+import cocoa.text.TextInputUIModel;
+
+import cocoa.text.TextUIModel;
 
 import flash.utils.Dictionary;
 
@@ -22,6 +25,14 @@ public class TextInput extends AbstractComponent {
     return textDisplay == null ? _text : textDisplay.text;
   }
 
+  private var _uiModel:TextUIModel;
+  public function set uiModel(value:TextUIModel):void {
+    _uiModel = value;
+    if (textDisplay != null) {
+      textDisplay.uiModel = _uiModel;
+    }
+  }
+
   public function set text(value:String):void {
     if (value != _text) {
       _text = value;
@@ -35,7 +46,13 @@ public class TextInput extends AbstractComponent {
     if (_text != null) {
       textDisplay.text = _text;
     }
+
+    textDisplay.uiModel = _uiModel == null ? createDefaultUIModel() : _uiModel;
     textDisplay.addEventListener(TextOperationEvent.CHANGE, inputChangeHandler);
+  }
+
+  protected function createDefaultUIModel():TextUIModel {
+    return TextInputUIModel.getDefault();
   }
 
   private function inputChangeHandler(event:TextOperationEvent):void {

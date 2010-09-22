@@ -2,7 +2,7 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.text.EditableTextView;
-
+import cocoa.text.TextUIModel;
 import cocoa.util.StringUtil;
 
 import flash.display.DisplayObject;
@@ -20,6 +20,8 @@ use namespace mx_internal;
 use namespace ui;
 
 public class NumericStepper extends Spinner implements UIPartController, Viewable {
+  private var textUIModel:TextUIModel;
+
   public function NumericStepper() {
     super();
 
@@ -107,12 +109,7 @@ public class NumericStepper extends Spinner implements UIPartController, Viewabl
   }
 
   private var _imeMode:String = null;
-
-  [Inspectable(defaultValue="")]
-
-  /**
-   *  @private
-   */ private var imeModeChanged:Boolean = false;
+  private var imeModeChanged:Boolean = false;
 
   /**
    *  Specifies the IME (Input Method Editor) mode.
@@ -169,12 +166,16 @@ public class NumericStepper extends Spinner implements UIPartController, Viewabl
     super.partAdded(partName, instance);
 
     if (instance == textDisplay) {
-      var richEditableText:EditableTextView = textDisplay.textDisplay;
-      richEditableText.addEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
-      richEditableText.addEventListener(FocusEvent.FOCUS_OUT, textDisplay_focusOutHandler);
+      var editableText:EditableTextView = textDisplay.textDisplay;
+      editableText.addEventListener(FlexEvent.ENTER, textDisplay_enterHandler);
+      editableText.addEventListener(FocusEvent.FOCUS_OUT, textDisplay_focusOutHandler);
 
+      if (textUIModel == null) {
+        textUIModel = new TextUIModel();
+        textUIModel.restrict = "0-9\\-\\.\\,";
+      }
       // Restrict to digits, minus sign, decimal point, and comma
-      richEditableText.restrict = "0-9\\-\\.\\,";
+      textDisplay.uiModel = textUIModel;
       textDisplay.text = value.toString();
     }
   }
@@ -298,7 +299,7 @@ public class NumericStepper extends Spinner implements UIPartController, Viewabl
 
   private function adjustTextWidthAndMaxChars():void {
     var widestText:String = calculateWidestText();
-    textDisplay.textDisplay.maxChars = widestText.length;
+    textUIModel.maxChars = widestText.length;
 
     if (isNaN(explicitWidth)) {
       textDisplay.textDisplay.width = Math.ceil(textDisplay.textDisplay.measureText(widestText).width);

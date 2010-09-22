@@ -35,22 +35,20 @@ public class TextInputSkin extends AbstractSkin {
   }
 
   protected function configureTextDisplay():void {
-    textDisplay.multiline = false;
-    textDisplay.height = border.layoutHeight - border.contentInsets.height;
+    height = isNaN(border.layoutHeight) ? 22 /* Regular size: 22 pixels high */ : border.layoutHeight;
+    textDisplay.height = height - border.contentInsets.height;
   }
 
   override protected function measure():void {
-    measuredWidth = textDisplay.getPreferredBoundsWidth() + border.contentInsets.width;
-    measuredHeight = isNaN(border.layoutHeight) ? 22 /* Regular size: 22 pixels high*/ : border.layoutHeight;
+    measuredWidth = Math.ceil(textDisplay.getPreferredBoundsWidth()) + border.contentInsets.width;
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
-
     border.draw(this, g, w, h);
 
-    textDisplay.setLayoutBoundsSize(w - border.contentInsets.width, NaN);
+    textDisplay.setLayoutBoundsSize(w - border.contentInsets.width, h - border.contentInsets.height);
   }
 
   override public function set enabled(value:Boolean):void {

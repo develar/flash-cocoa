@@ -1,4 +1,7 @@
 package cocoa {
+/**
+ * http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ActionMessages/Concepts/TargetsAndActions.html
+ */
 public interface Control {
   /**
    * Action Handler for User initiated action, called only as result of user interaction (programmatically initiated (like set selectedIndex for PopUpButton) is ignored)

@@ -33,16 +33,16 @@ public final class TextLineUtil {
     }
   }
 
-  public static function calculateLineHeight(lineHeightAsNumberOrPercent:Object, fontSize:Number):Number {
+  public static function calculateLineHeight(lineHeightAsNumberOrPercent:Object, charHeight:Number):Number {
     if (lineHeightAsNumberOrPercent == null) {
-      return fontSize * 1.2;
+      return charHeight * 1.2;
     }
     else if (lineHeightAsNumberOrPercent is Number) {
       return Number(lineHeightAsNumberOrPercent);
     } // If 'value' is a percentage String like "10.5%", return that percentage of 'n'.
     else {
       var s:String = String(lineHeightAsNumberOrPercent);
-      return (Number(s.substring(0, s.length - 1)) / 100) * fontSize;
+      return (Number(s.substring(0, s.length - 1)) / 100) * charHeight;
     }
   }
 }

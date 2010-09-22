@@ -1,21 +1,43 @@
 <?xml version="1.0"?>
-<Tab xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark">
-	<layout>
-		<s:VerticalLayout/>
-	</layout>
+<Tab xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:text="cocoa.text.*">
+  <layout>
+    <s:VerticalLayout/>
+  </layout>
 
-  <TextArea heightInLines="3" width="100%">
-    <text>the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog
-the quick brown fox jumps over the lazy dog</text>
+  <TextArea width="100%">
+    <uiModel>
+      <text:TextAreaUIModel heightInLines="3"/>
+    </uiModel>
+    <text>heightInLines=3, width=100%
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+    </text>
+  </TextArea>
+  <TextArea>
+    <uiModel>
+      <text:TextAreaUIModel widthInChars="50"/>
+    </uiModel>
+    <text>widthInChars=50
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+      the quick brown fox jumps over the lazy dog
+    </text>
   </TextArea>
 </Tab>
