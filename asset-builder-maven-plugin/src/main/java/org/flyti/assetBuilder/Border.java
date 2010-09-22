@@ -12,4 +12,6 @@ public class Border {
   public String appleResource;
 
   public int minTop = 0;
+
+  public Source source;
 }

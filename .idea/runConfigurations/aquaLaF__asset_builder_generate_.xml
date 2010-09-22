@@ -31,7 +31,7 @@
         <MavenRunnerParameters>
           <option name="goals">
             <list>
-              <option value="org.flyti:asset-builder-maven-plugin:1.1-SNAPSHOT:generate" />
+              <option value="org.flyti:asset-builder-maven-plugin:generate" />
             </list>
           </option>
           <option name="profiles">

@@ -1,53 +1,47 @@
 <?xml version="1.0"?>
 <Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark">
 	<fx:Script><![CDATA[
-		import cocoa.MenuItem;
-		import cocoa.pane.PaneItem;
-		import cocoa.plaf.DialogSkin;
-    import cocoa.plaf.aqua.demo.TestPane;
+    import cocoa.MenuItem;
+    import cocoa.pane.PaneItem;
+    import cocoa.plaf.DialogSkin;
     import cocoa.plaf.basic.BottomBarStyle;
-		import cocoa.plaf.basic.MenuItemRenderer;
-		import cocoa.resources.ResourceMetadata;
+    import cocoa.plaf.basic.MenuItemRenderer;
+    import cocoa.resources.ResourceMetadata;
 
-		import org.flyti.util.ArrayList;
+    import org.flyti.util.ArrayList;
 
-		private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", MenuItem.createSeparatorItem(), "Item 3"]);
-		private static const testData2:ArrayList = new ArrayList(new <Object>["Item 1", "Loooooooooooong Label", MenuItem.createSeparatorItem(), "Item 3"]);
-		private static const listData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8"]);
-		private static const shortListData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 3 Looooooooong"]);
+    private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", MenuItem.createSeparatorItem(), "Item 3"]);
+    private static const testData2:ArrayList = new ArrayList(new <Object>["Item 1", "Loooooooooooong Label", MenuItem.createSeparatorItem(), "Item 3"]);
+    private static const listData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8"]);
+    private static const shortListData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 3 Looooooooong"]);
 
-		private static const treeData:Array = ["Item 1", "Item 3 Looooooooong", {label: "dsfsdf", children: listData}];
+    private static const treeData:Array = ["Item 1", "Item 3 Looooooooong", {label: "dsfsdf", children: listData}];
 
-		[ResourceBundle("TestPane")]
-		private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
-			new PaneItem(new ResourceMetadata("a", "TestPane"), paneFactory("Pane A")),
-			new PaneItem(new ResourceMetadata("b", "TestPane"), paneFactory("Pane B")),
-			new PaneItem(new ResourceMetadata("c", "TestPane"), paneFactory("Pane C"))
-		]);
+    [ResourceBundle("TestPane")]
+    private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
+      new PaneItem(new ResourceMetadata("a", "TestPane"), paneFactory("Pane A")),
+      new PaneItem(new ResourceMetadata("b", "TestPane"), paneFactory("Pane B")),
+      new PaneItem(new ResourceMetadata("textArea", "TestPane"), new ClassFactory(TextArea))
+    ]);
 
-		private static function paneFactory(buttonTitle:String):IFactory
-		{
-			var factory:ClassFactory = new ClassFactory(TestPane);
-			factory.properties = {buttonTitle: buttonTitle};
-			return factory;
-		}
+    private static function paneFactory(buttonTitle:String):IFactory {
+      var factory:ClassFactory = new ClassFactory(TestPane);
+      factory.properties = {buttonTitle: buttonTitle};
+      return factory;
+    }
 
-		override protected function skinAttachedHandler():void
-		{
-			DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
-			super.skinAttachedHandler();
-		}
+    override protected function skinAttachedHandler():void {
+      DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
+      super.skinAttachedHandler();
+    }
 
-		private function changeListDataProvder():void
-		{
-			listView.dataProvider = (listView.dataProvider == listData) ? shortListData : listData;
-		}
+    private function changeListDataProvder():void {
+      listView.dataProvider = (listView.dataProvider == listData) ? shortListData : listData;
+    }
 
     private function updateTextValue():void {
       colorValue.title = String(colorPicker.color);
     }
-
-
     ]]></fx:Script>
 
 	<Container>
@@ -67,26 +61,12 @@
 			</Menu>
 		</PopUpButton>
 
-    <!--<Container>-->
-      <!--<layout>-->
-        <!--<CenterEqualizedLayout labelBelow="true" fieldGap="3" maxRowCount="2"/>-->
-      <!--</layout>-->
-
-      <!--<Label title="Width"/>-->
-      <!--<TextInput id="widthNumericStepper" width="100"/>-->
-
-      <!--<Label title="Height"/>-->
-      <!--<TextInput id="heightNumericStepper" width="100"/>-->
-
-      <!--<CheckBox id="constrainProportionsCheckBox" title="Constrain proportions"/>-->
-    <!--</Container>-->
-
     <ColorPicker id="colorPicker" width="44" action="updateTextValue"/>
     <Label id="colorValue"/>
 
 		<ImageView/>
 
-		<TabView items="{tabViewPanes}"/>
+		<TabView items="{tabViewPanes}" width="100%"/>
 
 		<PushButton title="Change List Data Provider" action="changeListDataProvder"/>
 		<ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">

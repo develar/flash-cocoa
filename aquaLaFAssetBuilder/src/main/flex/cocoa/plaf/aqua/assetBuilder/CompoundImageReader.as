@@ -9,13 +9,11 @@ import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9EdgeBitmapBorder;
-import cocoa.plaf.basic.BitmapIcon;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-
 import flash.utils.ByteArray;
 
 import mx.core.BitmapAsset;

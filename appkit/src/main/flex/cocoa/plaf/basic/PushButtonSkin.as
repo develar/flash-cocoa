@@ -43,7 +43,7 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
     super.createChildren();
 
     if (bordered) {
-      border = getBorder("b");
+      border = getBorder();
     }
   }
 

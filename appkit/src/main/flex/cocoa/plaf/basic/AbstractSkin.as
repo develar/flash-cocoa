@@ -25,7 +25,7 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
   protected var laf:LookAndFeel;
 
   private var _component:Component;
-  public function get component():Component {
+  public final function get component():Component {
     return _component;
   }
 
@@ -33,7 +33,7 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     return laf.getTextLayoutFormat(_component.lafKey + "." + key);
   }
 
-  protected final function getBorder(key:String):Border {
+  protected final function getBorder(key:String = "b"):Border {
     return laf.getBorder(_component.lafKey + "." + key);
   }
 

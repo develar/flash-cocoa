@@ -177,20 +177,16 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     if (measuredSizeIncludesScrollBars) {
       switch (_horizontalScrollPolicy) {
         case ScrollPolicy.ON:
-        {
           if (hsb) {
             showHSB = true;
           }
-        }
           break;
 
         case ScrollPolicy.AUTO:
-        {
           if (hsb) {
             showHSB = hsb.visible;
           }
           hAuto = true;
-        }
           break;
       }
     }
@@ -201,20 +197,16 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     if (measuredSizeIncludesScrollBars) {
       switch (_verticalScrollPolicy) {
         case ScrollPolicy.ON:
-        {
           if (vsb) {
             showVSB = true;
           }
-        }
           break;
 
         case ScrollPolicy.AUTO:
-        {
           if (vsb) {
             showVSB = vsb.visible;
           }
           vAuto = true;
-        }
           break;
       }
     }

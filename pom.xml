@@ -23,7 +23,7 @@
   <modules>
     <module>foundation</module>
     <module>asset-builder-maven-plugin</module>
-    <module>laf-compiler-ext</module>
+    <!--<module>laf-compiler-ext</module>-->
     <module>appkit</module>
     <module>acocoa</module>
     <module>aquaLaFAssetBuilder</module>

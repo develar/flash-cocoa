@@ -29,7 +29,7 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner {
   override protected function createChildren():void {
     super.createChildren();
 
-    _border = getBorder("b");
+    _border = getBorder();
 
     itemGroup = new SingleSelectionDataGroup();
     itemGroup.itemRenderer = getFactory("itemRenderer");

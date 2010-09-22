@@ -179,13 +179,30 @@ public class AssetBuilderMojo extends AbstractMojo {
 
     ImageRetriever imageRetriever = new ImageRetriever(sources);
 
+    CompoundImageReader compoundImageReader = null;
+
     for (Border border : borders) {
       final String key = border.subkey == null ? border.key : (border.subkey + "." + border.key);
       out.writeUTF(border.key.indexOf('.') == -1 ? (key + ".b") : key);
 
       if (border.type == BorderType.One || border.type == BorderType.Scale9Edge) {
         out.writeByte(border.type.ordinal());
-        final BufferedImage sourceImage = imageRetriever.getImage(key);
+        final BufferedImage sourceImage;
+        if (border.source == null) {
+          sourceImage = imageRetriever.getImage(key);
+        }
+        else {
+          if (compoundImageReader == null) {
+            File compoundImageFile = border.source.file;
+            if (!compoundImageFile.isAbsolute()) {
+              compoundImageFile = new File(descriptor.getParent(), compoundImageFile.getPath());
+            }
+            compoundImageReader = new CompoundImageReader(compoundImageFile);
+          }
+
+          sourceImage = compoundImageReader.getImage(border.source.rectangle);
+        }
+
         switch (border.type) {
           case One:
             out.write(sourceImage);

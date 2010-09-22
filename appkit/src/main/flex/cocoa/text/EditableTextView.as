@@ -10,6 +10,8 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.system.IME;
 import flash.system.IMEConversionMode;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
@@ -91,7 +93,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private static const ALL_NEWLINES_REGEXP:RegExp = /\n/g;
 
   /**
-   *  @private
    *  Holds the last recorded value of the textFlow generation.  Used to
    *  determine whether to return immediately from damage event if there
    *  have been no changes.
@@ -1509,8 +1510,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    * It calculates the 'ascent', 'descent', and instance variables, which are used in measure().
    */
   private function calculateFontMetrics():void {
-    if (_textFormat == null) {
-//      textElement.elementFormat = effectiveTextFormat;
+    if (!(_textFormat is TextLayoutFormatImpl)) {
+      textElement.elementFormat = new ElementFormat(new FontDescription(effectiveTextFormat.fontFamily, effectiveTextFormat.fontWeight, effectiveTextFormat.fontStyle), effectiveTextFormat.fontSize, effectiveTextFormat.textAlpha);
     }
 
     var textLine:TextLine = measureText("M");

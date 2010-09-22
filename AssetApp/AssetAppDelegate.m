@@ -171,6 +171,15 @@
 	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
 	[contentView addSubview:textInput];
 	
+	
+	controlFrame.size.width = 100;
+	controlFrame.size.height = 100;
+	controlFrame.origin.x += 160;
+	//NSBox *box = [[NSBox alloc] initWithFrame:controlFrame];
+	NSTabView *box = [[NSTabView alloc] initWithFrame:controlFrame];
+//	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
+	[contentView addSubview:box];
+	
 	return;
 	
 	// SegmentedControl
