@@ -26,8 +26,11 @@ import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
 public class Builder {
-  [Embed(source="/assets.png")]
-  private static var assetsClass:Class;
+  [Embed(source="../../../../../../../../aquaLaF/src/main/resources/assets.png")]
+  private static const assetsClass:Class;
+
+  [Embed(source="../../../../../../../../aquaLaF/target/assets", mimeType="application/octet-stream")]
+  private static const bordersClass:Class;
 
   [Embed(source="/popUpMenu.png")]
   private static var popUpMenuClass:Class;
@@ -117,7 +120,12 @@ public class Builder {
   }
 
   private function writeBorders(borders:Vector.<Border>, icons:ByteArray):void {
-    var data:ByteArray = new ByteArray();
+    var data:ByteArray = new bordersClass();
+    var oldBordersCount:int = data.readUnsignedByte();
+    data.position = 0;
+    data.writeByte(oldBordersCount + (borders.length - 1));
+    data.position = data.length;
+
     var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted", "SegmentItem",
       "ScrollBar.track.v", "ScrollBar.track.h", "ScrollBar.decrementButton.h", "ScrollBar.decrementButton.h.highlighted", "ScrollBar.incrementButton.h", "ScrollBar.incrementButton.h.highlighted",
       "ScrollBar.decrementButton.v", "ScrollBar.decrementButton.v.highlighted", "ScrollBar.incrementButton.v", "ScrollBar.incrementButton.v.highlighted",
@@ -125,7 +133,6 @@ public class Builder {
       "Window", "Window.b.toolbar", "Window.bottomBar.application", "Window.bottomBar.chooseDialog",
       "Tree", "Tree.disclosureIcon.open", "Tree.disclosureIcon.close", "TextInput"
     ];
-    data.writeByte(borders.length - 1);
 
     var fdata:ByteArray = new ByteArray();
     fdata.writeByte(1);

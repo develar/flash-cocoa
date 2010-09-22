@@ -178,7 +178,6 @@ public class AssetBuilderMojo extends AbstractMojo {
     out.writeByte(borders.size());
 
     ImageRetriever imageRetriever = new ImageRetriever(sources);
-
     CompoundImageReader compoundImageReader = null;
 
     for (Border border : borders) {
@@ -194,7 +193,10 @@ public class AssetBuilderMojo extends AbstractMojo {
         else {
           if (compoundImageReader == null) {
             File compoundImageFile = border.source.file;
-            if (!compoundImageFile.isAbsolute()) {
+            if (compoundImageFile == null) {
+              compoundImageFile = sources.get(0);
+            }
+            else if (!compoundImageFile.isAbsolute()) {
               compoundImageFile = new File(descriptor.getParent(), compoundImageFile.getPath());
             }
             compoundImageReader = new CompoundImageReader(compoundImageFile);

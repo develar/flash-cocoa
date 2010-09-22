@@ -44,11 +44,17 @@
 				<artifactId>asset-builder-maven-plugin</artifactId>
 				<version>1.1.2-SNAPSHOT</version>
 				<executions>
-					<execution>
+          <execution>
 						<goals>
 							<goal>generate</goal>
-						</goals>
-					</execution>
+            </goals>
+            <configuration>
+              <inputs>
+                <input>src/main/resources/assets.png</input>
+              </inputs>
+              <output>${project.build.directory}/assets</output>
+            </configuration>
+          </execution>
           <execution>
             <id>extra</id>
 						<goals>
@@ -62,12 +68,20 @@
               <descriptor>src/main/resources/extraAssets.yml</descriptor>
             </configuration>
           </execution>
+          <execution>
+            <id>hud</id>
+						<goals>
+							<goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputs>
+                <input>src/main/resources/hud</input>
+              </inputs>
+              <output>${project.build.directory}/hudAssets</output>
+              <descriptor>src/main/resources/hudAssets.yml</descriptor>
+            </configuration>
+          </execution>
         </executions>
-				<configuration>
-          <inputs>
-            <input>src/main/resources/hud</input>
-          </inputs>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
