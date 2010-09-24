@@ -1,84 +1,70 @@
-package cocoa
-{
+package cocoa {
 import cocoa.layout.AdvancedLayout;
 
 import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 
 [DefaultProperty("mxmlContent")]
-public class ViewStack extends LayoutlessContainer implements AdvancedLayout
-{
-	private var currentView:IUIComponent;
+public class ViewStack extends LayoutlessContainer implements AdvancedLayout {
+  private var currentView:IUIComponent;
 
-	private var _subviews:Array;
-	public function set mxmlContent(value:Array):void
-    {
-		_subviews = value;
-	}
+  private var _subviews:Array;
 
-	override protected function createChildren():void
-	{
-		super.createChildren();
+  public function set mxmlContent(value:Array):void {
+    _subviews = value;
+  }
 
-		if (_subviews != null)
-		{
-			show(_subviews[0]);
-		}
-	}
+  override protected function createChildren():void {
+    super.createChildren();
 
-	public function show(viewable:Viewable):void
-	{
-		if (currentView != null)
-		{
-			currentView.visible = false;
-		}
+    if (_subviews != null) {
+      show(_subviews[0]);
+    }
+  }
 
-		if (viewable is Component)
-		{
-			currentView = Component(viewable).skin;
-			if (currentView == null)
-			{
-				addSubview(viewable);
-				currentView = Component(viewable).skin;
-			}
-		}
-		else
-		{
-			currentView = IUIComponent(viewable);
-			if (currentView.parent == null)
-			{
-				addSubview(viewable);
-			}
-		}
+  public function show(viewable:Viewable):void {
+    if (currentView != null) {
+      currentView.visible = false;
+    }
 
-		currentView.visible = true;
+    if (viewable is Component) {
+      currentView = Component(viewable).skin;
+      if (currentView == null) {
+        addSubview(viewable);
+        currentView = Component(viewable).skin;
+      }
+    }
+    else {
+      currentView = IUIComponent(viewable);
+      if (currentView.parent == null) {
+        addSubview(viewable);
+      }
+    }
 
-		invalidateSize();
-		invalidateDisplayList();
-	}
+    currentView.visible = true;
 
-	public function hide():void
-	{
-		currentView.visible = false;
-		currentView = null;
-	}
+    invalidateSize();
+    invalidateDisplayList();
+  }
 
-	override protected function measure():void
-	{
-		measuredMinWidth = currentView.minWidth;
-		measuredMinHeight = currentView.minHeight;
-		measuredWidth = currentView.getExplicitOrMeasuredWidth();
-		measuredHeight = currentView.getExplicitOrMeasuredHeight();
-	}
+  public function hide():void {
+    currentView.visible = false;
+    currentView = null;
+  }
 
-	override protected function updateDisplayList(w:Number, h:Number):void
-	{
-		currentView.setActualSize(w, h);
-	}
+  override protected function measure():void {
+    measuredMinWidth = currentView.minWidth;
+    measuredMinHeight = currentView.minHeight;
+    measuredWidth = currentView.getExplicitOrMeasuredWidth();
+    measuredHeight = currentView.getExplicitOrMeasuredHeight();
+  }
 
-	public function childCanSkipMeasurement(element:ILayoutElement):Boolean
-	{
-		return (!isNaN(explicitWidth) || !isNaN(percentWidth)) && (!isNaN(explicitHeight) || !isNaN(percentHeight));
-	}
+  override protected function updateDisplayList(w:Number, h:Number):void {
+    currentView.setActualSize(w, h);
+  }
+
+  public function childCanSkipMeasurement(element:ILayoutElement):Boolean {
+    return (!isNaN(explicitWidth) || !isNaN(percentWidth)) && (!isNaN(explicitHeight) || !isNaN(percentHeight));
+  }
 }
 }

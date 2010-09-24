@@ -104,7 +104,7 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient {
   }
 
   override public function get percentWidth():Number {
-    return _layoutMetrics.flags & LayoutMetrics.PERCENT_WIDTH ? _layoutMetrics.width : NaN;
+    return _layoutMetrics.widthIsPercent ? _layoutMetrics.width : NaN;
   }
 
   override public function set percentWidth(value:Number):void {
@@ -112,7 +112,7 @@ public class MXMLSkin extends MXMLContainer implements Skin, IStateClient {
   }
 
   override public function get percentHeight():Number {
-    return _layoutMetrics.flags & LayoutMetrics.PERCENT_HEIGHT ? _layoutMetrics.height : NaN;
+    return _layoutMetrics.heightIsPercent ? _layoutMetrics.height : NaN;
   }
 
   override public function set percentHeight(value:Number):void {

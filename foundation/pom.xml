@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>1.0.13</version>
+    <version>1.0.14</version>
   </parent>
 
   <properties>
-		<fdk.version>4.5.0.17440</fdk.version>
-		<flex.sdk.version>4.5.0.17440</flex.sdk.version>
+		<!--<fdk.version>4.5.0.17440</fdk.version>-->
+		<!--<flex.sdk.version>4.5.0.17440</flex.sdk.version>-->
 		<flexMojos.version>3.8-de3.1</flexMojos.version>
 	</properties>
 

@@ -1,4 +1,5 @@
 package cocoa.text {
+import cocoa.MeasurementAdjustResult;
 import cocoa.util.TextLineUtil;
 
 import flash.display.DisplayObject;
@@ -104,7 +105,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  determine whether to return immediately from damage event if there
    *  have been no changes.
    */
-  private var lastGeneration:uint = 0;    // 0 means not set
+  private var lastGeneration:uint = 0; // 0 means not set
 
   /**
    *  The generation of the text flow that last reported its content
@@ -661,127 +662,92 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
   }
 
+  /**
+   *  Return true if there is a width and height to use for the measure.
+   */
+  private function isMeasureFixed():Boolean {
+    if (effectiveTextFormat.blockProgression != BlockProgression.TB) {
+      return true;
+    }
+
+    // Is there some sort of width and some sort of height?
+    return (!isNaN(explicitWidth) || _uiModel.widthInChars != -1) && (!isNaN(explicitHeight) || heightInLines != -1);
+  }
+
   override protected function canSkipMeasurement():Boolean {
     flags ^= AUTO_SIZE;
     return super.canSkipMeasurement();
   }
 
   override protected function measure():void {
-    // Don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
+    // don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
     flags |= IGNORE_DAMAGE_EVENT;
 
-    // percentWidth and/or percentHeight will come back in as constraints on the remeasure if we're autoSizing.
-    if (isMeasureFixed()) {
-      flags ^= AUTO_SIZE;
+    var composeWidth:Number = explicitWidth;
+    if (isNaN(composeWidth) && _uiModel.widthInChars != -1) {
+        if (measuredWidth == 0) {
+          measuredWidth = Math.ceil(calculateWidthInChars());
+          adjustMeasuredWidthToRange();
+        }
+        composeWidth = measuredWidth;
+    }
 
-      measuredWidth = isNaN(explicitWidth) ? (_uiModel.widthInChars == -1 ? 0 : Math.ceil(calculateWidthInChars())) : explicitWidth;
-      measuredHeight = isNaN(explicitHeight) ? (heightInLines == -1 ? 0 : Math.ceil(calculateHeightInLines())) : explicitHeight;
+    var composeHeight:Number = explicitHeight;
+    if (isNaN(composeHeight) && heightInLines != -1) {
+      if (measuredHeight == 0) {
+        measuredHeight = Math.ceil(calculateHeightInLines());
+        adjustMeasuredHeightToRange();
+      }
+      composeHeight = measuredHeight;
+    }
+
+    if (!isNaN(composeWidth) && !isNaN(composeHeight)) {
+
     }
     else {
-      var composeWidth:Number;
-      var composeHeight:Number;
-
       var bounds:Rectangle;
-
-      // If we're here, then at one or both of the width and height can grow to fit the text.
-      // It is important to figure out whether or not autoSize should be allowed to continue.
-      // If in updateDisplayList(), autoSize is true, then the compositionHeight is NaN to allow the text to grow.
       flags |= AUTO_SIZE;
-
-      if (!isNaN(widthConstraint)) {
-        composeWidth = widthConstraint;
-      }
-      else if (!isNaN(explicitWidth)) {
-        composeWidth = explicitWidth;
-      }
-      else if (_uiModel.widthInChars != -1) {
-        composeWidth = Math.ceil(calculateWidthInChars());
-      }
-
       if (!isNaN(composeWidth)) {
-        // width specified but no height. If no text, start at one line high and grow
-        // The composeWidth may be adjusted for minWidth/maxWidth except if we're using the explicitWidth.
-        bounds = measureTextSize(composeWidth);
-        measuredWidth = textContainerManager.compositionWidth;
+        bounds = measureTextSize(composeWidth, NaN);
         measuredHeight = Math.ceil(bounds.bottom);
-      }
-      else {
-        if (!isNaN(heightConstraint)) {
-          composeHeight = heightConstraint;
-        }
-        else if (!isNaN(explicitHeight)) {
-          composeHeight = explicitHeight;
-        }
-        else if (heightInLines != -1) {
-          composeHeight = Math.ceil(calculateHeightInLines());
-        }
-
-        if (!isNaN(composeHeight)) {
-          // The composeWidth may be adjusted for minWidth/maxWidth.
-          bounds = measureTextSize(NaN, composeHeight);
-
-          measuredWidth = Math.ceil(bounds.right);
-          measuredHeight = composeHeight;
-
-          // Have we already hit the limit with the existing text?  If we are beyond the composeHeight we can assume we've maxed out on
-          // the compose width as well (or the composeHeight isn't large enough for even one line of text).
-          if (bounds.bottom > composeHeight) {
-            flags ^= AUTO_SIZE;
-          }
-        }
-        else {
-          // The composeWidth may be adjusted for minWidth/maxWidth.
-          bounds = measureTextSize(NaN);
-
-          measuredWidth = Math.ceil(bounds.right);
-          measuredHeight = Math.ceil(bounds.bottom);
-        }
-      }
-
-      // Clamp the height, except if we're using the explicitHeight.
-      if (isNaN(explicitHeight)) {
-        if (!isNaN(explicitMinHeight) && measuredHeight < explicitMinHeight) {
-          measuredHeight = explicitMinHeight;
-        }
-
-        // Reached max height so can't grow anymore.
-        if (!isNaN(explicitMaxHeight) && measuredHeight > explicitMaxHeight) {
-          measuredHeight = explicitMaxHeight;
+        if (adjustMeasuredHeightToRange() == MeasurementAdjustResult.MAX) {
           flags ^= AUTO_SIZE;
         }
       }
-
-      // Make sure we weren't previously scrolled.
-      if ((flags & AUTO_SIZE) != 0) {
-        textContainerManager.horizontalScrollPosition = 0;
-        textContainerManager.verticalScrollPosition = 0;
+      else if (!isNaN(composeHeight)) {
+        bounds = measureTextSize(NaN, composeHeight);
+        measuredWidth = Math.ceil(bounds.right);
+        if (adjustMeasuredWidthToRange() == MeasurementAdjustResult.MAX) {
+          flags ^= AUTO_SIZE;
+        }
       }
-
-      invalidateDisplayList();
     }
+
+    // make sure we weren't previously scrolled.
+//    if ((flags & AUTO_SIZE) != 0) {
+//      textContainerManager.horizontalScrollPosition = 0;
+//      textContainerManager.verticalScrollPosition = 0;
+//    }
+
+    invalidateDisplayList();
 
     flags ^= IGNORE_DAMAGE_EVENT;
   }
 
-  /**
-   *  @private
-   */
   override protected function updateDisplayList(w:Number, h:Number):void {
-    // Check if the auto-size text is constrained in some way and needs to be remeasured.  If one of the dimension changes, the text may
-    // compose differently and have a different size which the layout manager needs to know.
+    // Check if the auto-size text is constrained in some way and needs to be remeasured. If one of the dimension changes,
+    // the text may compose differently and have a different size which the layout manager needs to know.
     if ((flags & AUTO_SIZE) != 0 && remeasureText(w, h)) {
       return;
     }
 
-    // If we're autoSizing we're telling the layout manager one set of values and TLF another set of values so there is room for the text to grow.
-    // autoSize for blockProgression=="rl" is implemented
     if ((flags & AUTO_SIZE) == 0) {
       textContainerManager.compositionWidth = w;
       textContainerManager.compositionHeight = h;
     }
 
     // If scrolling, always compose with the composer so we get consistent measurements. The factory and the composer produce slightly
-    // different results which can confuse the scroller.  If there isn't a composer, this calls updateContainer so do it here now that the
+    // different results which can confuse the scroller. If there isn't a composer, this calls updateContainer so do it here now that the
     // composition sizes are set so the results can be used.
     if (clipAndEnableScrolling && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
       textContainerManager.convertToTextFlowWithComposer();
@@ -794,19 +760,54 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    * This is called by the layout manager the first time this component is measured, or later if its size changes.
    * This is not always called before updateDisplayList().
    * For example, for recycled item renderers this is not called if the measured size doesn't change.
-   *
-   *  width and height are NaN unless there are constraints on them.
    */
   override public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void {
-    //trace("setLayoutBoundsSize", width, height);
-
-    // Save these so when we are auto-sizing we know which dimensions are constrained.
-    // Without this it is not possible to differentiate between a measured width/height that is the same as the
-    // constrained width/height to know whether that dimension can be sized or must be fixed at the constrained value.
     widthConstraint = width;
     heightConstraint = height;
 
     super.setLayoutBoundsSize(width, height, postLayoutTransform);
+  }
+
+  private function remeasureText(width:Number, height:Number):Boolean {
+    // Neither dimensions changed. If auto-sizing we're still auto-sizing.
+    if (width == measuredWidth && height == measuredHeight) {
+      return false;
+    }
+
+    // Either constraints are preventing auto-sizing or we need to remeasure which will reset autoSize.
+    flags ^= AUTO_SIZE;
+
+    // If no width or height, there is nothing to remeasure since there is no room for text.
+    if (width == 0 || height == 0) {
+      return false;
+    }
+
+    if (!isNaN(widthConstraint)) {
+      // Do we have a constrained width and an explicit height?
+      // If so, the sizes are set so no need to remeasure now.
+      if (!isNaN(explicitHeight) || heightInLines != -1 || !isNaN(heightConstraint)) {
+        return false;
+      }
+
+      // No reflow for explicit lineBreak
+      if (textContainerManager.hostFormat.lineBreak == "explicit") {
+        return false;
+      }
+    }
+
+    if (!isNaN(heightConstraint)) {
+      // Do we have a constrained height and an explicit width?
+      // If so, the sizes are set so no need to remeasure now.
+      if (!isNaN(explicitWidth) || _uiModel.widthInChars != -1) {
+        return false;
+      }
+    }
+
+    // Width or height is different than what was measured.
+    // Since we're auto-sizing, need to remeasure, so the layout manager leaves the correct amount of space for the component.
+    invalidateSize();
+
+    return true;
   }
 
   override public function setFocus():void {
@@ -847,11 +848,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  that the insertion point is visible.</p>
    *
    *  @param text The text to be appended.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function appendText(text:String):void {
     handleInsertText(text, true);
@@ -940,8 +936,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // Make sure all properties are committed.
     validateProperties();
 
-    // This internal TLF object maps the names of format properties
-    // to Property instances.
+    // This internal TLF object maps the names of format properties to Property instances.
     // Each Property instance has a category property which tells
     // whether it is container-, paragraph-, or character-level.
     var description:Object = TextLayoutFormat.description;
@@ -1105,31 +1100,19 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   /**
-   *  Return true if there is a width and height to use for the measure.
-   */
-  private function isMeasureFixed():Boolean {
-    if (effectiveTextFormat.blockProgression != BlockProgression.TB) {
-      return true;
-    }
-
-    // Is there some sort of width and some sort of height?
-    return (!isNaN(explicitWidth) || !isNaN(widthConstraint) || _uiModel.widthInChars != -1) && (!isNaN(explicitHeight) || !isNaN(heightConstraint) || heightInLines != -1);
-  }
-
-  /**
    * Returns the bounds of the measured text. The initial composeWidth may be adjusted for minWidth or maxWidth.
    * The value used for the compose is in _textContainerManager.compositionWidth.
    */
-  private function measureTextSize(composeWidth:Number, composeHeight:Number = NaN):Rectangle {
+  private function measureTextSize(composeWidth:Number, composeHeight:Number):Rectangle {
     // Adjust for explicit min/maxWidth so the measurement is accurate.
-    if (isNaN(explicitWidth)) {
-      if (!isNaN(explicitMinWidth) && isNaN(composeWidth) || composeWidth < explicitMinWidth) {
-        composeWidth = minWidth;
-      }
-      if (!isNaN(explicitMaxWidth) && isNaN(composeWidth) || composeWidth > explicitMaxWidth) {
-        composeWidth = maxWidth;
-      }
-    }
+//    if (isNaN(explicitWidth)) {
+//      if (!isNaN(explicitMinWidth) && (isNaN(composeWidth) || composeWidth < explicitMinWidth)) {
+//        composeWidth = minWidth;
+//      }
+//      if (!isNaN(explicitMaxWidth) && (isNaN(composeWidth) || composeWidth > explicitMaxWidth)) {
+//        composeWidth = maxWidth;
+//      }
+//    }
 
     // If the width is NaN it can grow up to TextLine.MAX_LINE_WIDTH wide.
     // If the height is NaN it can grow to allow all the text to fit.
@@ -1148,54 +1131,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Adjust width and height for text alignment.
     return textContainerManager.getContentBounds();
-  }
-
-  /**
-   * If auto-sizing text, it may need to be remeasured if it is constrained in one dimension by the layout manager.
-   * If it is constrained in both dimensions there is no need to remeasure.
-   * Changing one dimension may change the size of the measured text and the layout manager needs to know this.
-   */
-  private function remeasureText(width:Number, height:Number):Boolean {
-    // Neither dimensions changed.  If auto-sizing we're still auto-sizing.
-    if (width == measuredWidth && height == measuredHeight) {
-      return false;
-    }
-
-    // Either constraints are preventing auto-sizing or we need to remeasure which will reset autoSize.
-    flags ^= AUTO_SIZE;
-
-    // If no width or height, there is nothing to remeasure since
-    // there is no room for text.
-    if (width == 0 || height == 0) {
-      return false;
-    }
-
-    if (!isNaN(widthConstraint)) {
-      // Do we have a constrained width and an explicit height?
-      // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitHeight) || heightInLines != -1 || !isNaN(heightConstraint)) {
-        return false;
-      }
-
-      // No reflow for explicit lineBreak
-      if (textContainerManager.hostFormat.lineBreak == "explicit") {
-        return false;
-      }
-    }
-
-    if (!isNaN(heightConstraint)) {
-      // Do we have a constrained height and an explicit width?
-      // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitWidth) || _uiModel.widthInChars != -1) {
-        return false;
-      }
-    }
-
-    // Width or height is different than what was measured.
-    // Since we're auto-sizing, need to remeasure, so the layout manager leaves the correct amount of space for the component.
-    invalidateSize();
-
-    return true;
   }
 
   /**
@@ -1235,9 +1170,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function calculateWidthInChars():Number {
-    var effectiveWidthInChars:int = _uiModel.widthInChars == -1 ? (heightInLines == -1 ? 10 : 1) : _uiModel.widthInChars;
-    // Without the explicit casts, if padding values are non-zero, the returned width is a very large number.
-    return effectiveTextFormat.paddingLeft + (effectiveWidthInChars * charMetrics.width) + effectiveTextFormat.paddingRight;
+    return effectiveTextFormat.paddingLeft + (_uiModel.widthInChars * charMetrics.width) + effectiveTextFormat.paddingRight;
   }
 
   /**
@@ -1450,10 +1383,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
   }
 
-  /**
-   *  RichEditableTextContainerManager overrides keyDownHandler and calls
-   *  this before executing its own keyDownHandler.
-   */
   mx_internal function keyDownHandler(event:KeyboardEvent):void {
     if (editingMode != EditingMode.READ_WRITE)
       return;
@@ -1563,7 +1492,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     var newContentBounds:Rectangle = textContainerManager.getContentBounds();
 
     // Try to prevent the scroller from getting into a loop while adding/removing scroll bars.
-    if (_textFlow && clipAndEnableScrolling) {
+    if (_textFlow != null && clipAndEnableScrolling) {
       adjustContentBoundsForScroller(newContentBounds);
     }
 
@@ -1616,9 +1545,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       return;
     }
 
-    // In this case we always maintain _text with the underlying text and
-    // display the appropriate number of passwordChars.  If there are any
-    // interactive editing operations _text is updated during the operation.
+    // In this case we always maintain _text with the underlying text and display the appropriate number of passwordChars.
+    // If there are any interactive editing operations _text is updated during the operation.
     if (displayAsPassword) {
       return;
     }
@@ -1635,13 +1563,11 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // If the textFlow content is modified directly or if there is a style
     // change by changing the textFlow directly the size could change.
     invalidateSize();
-
     invalidateDisplayList();
   }
 
   /**
-   *  Called when the TextContainerManager dispatches a 'scroll' event
-   *  as it autoscrolls.
+   * Called when the TextContainerManager dispatches a 'scroll' event as it autoscrolls.
    */
   private function textContainerManager_scrollHandler(event:Event):void {
     var oldHorizontalScrollPosition:Number = _horizontalScrollPosition;

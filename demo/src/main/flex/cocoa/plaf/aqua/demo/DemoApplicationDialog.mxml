@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark">
-	<fx:Script><![CDATA[
+<Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:text="cocoa.text.*">
+  <fx:Script><![CDATA[
     import cocoa.MenuItem;
     import cocoa.pane.PaneItem;
     import cocoa.plaf.DialogSkin;
@@ -21,7 +21,7 @@
     private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
       new PaneItem(new ResourceMetadata("a", "TestPane"), paneFactory("Pane A")),
       new PaneItem(new ResourceMetadata("b", "TestPane"), paneFactory("Pane B")),
-      new PaneItem(new ResourceMetadata("textArea", "TestPane"), new ClassFactory(TextArea))
+      new PaneItem(new ResourceMetadata("textArea", "TestPane"), new ClassFactory(TextAreaExample))
     ]);
 
     private static function paneFactory(buttonTitle:String):IFactory {
@@ -44,37 +44,89 @@
     }
     ]]></fx:Script>
 
-	<Container>
-		<layout>
-			<s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
-		</layout>
-		<PushButton title="Item Help H"/>
-		<PopUpButton>
-			<Menu>
-				<items>{testData}</items>
-			</Menu>
-		</PopUpButton>
+  <Container>
+    <layout>
+      <s:VerticalLayout paddingTop="14" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
+    </layout>
+    <PushButton title="Item Help H"/>
+    <PopUpButton>
+      <Menu>
+        <items>{testData}</items>
+      </Menu>
+    </PopUpButton>
 
-		<PopUpButton width="100">
-			<Menu>
-				<items>{testData2}</items>
-			</Menu>
-		</PopUpButton>
+    <PopUpButton width="100">
+      <Menu>
+        <items>{testData2}</items>
+      </Menu>
+    </PopUpButton>
 
     <ColorPicker id="colorPicker" width="44" action="updateTextValue"/>
     <Label id="colorValue"/>
 
-		<ImageView/>
+    <ImageView/>
 
-		<TabView items="{tabViewPanes}" width="100%"/>
+    <!--<TabView items="{tabViewPanes}" width="100%"/>-->
 
-		<PushButton title="Change List Data Provider" action="changeListDataProvder"/>
-		<ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">
-			<layout>
-				<TileLayout rowHeight="25"/>
-			</layout>
-		</ListView>
+    <TextArea width="100%">
+      <uiModel>
+        <text:TextAreaUIModel heightInLines="3"/>
+      </uiModel>
+      <text>heightInLines=3, width=100%
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog</text>
+    </TextArea>
+    <TextArea>
+      <uiModel>
+        <text:TextAreaUIModel widthInChars="50"/>
+      </uiModel>
+      <text>widthInChars=50
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog</text>
+    </TextArea>
+    <TextArea>
+      <uiModel>
+        <text:TextAreaUIModel heightInLines="3"/>
+      </uiModel>
+      <text>heightInLines=3
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog
+        the quick brown fox jumps over the lazy dog</text>
+    </TextArea>
 
-		<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}" height="400"/>
-	</Container>
+    <PushButton title="Change List Data Provider" action="changeListDataProvder"/>
+    <ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">
+      <layout>
+        <TileLayout rowHeight="25"/>
+      </layout>
+    </ListView>
+
+    <!--<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}" height="400"/>-->
+  </Container>
 </Dialog>

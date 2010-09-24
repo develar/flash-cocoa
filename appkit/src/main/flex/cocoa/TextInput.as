@@ -1,7 +1,6 @@
 package cocoa {
 import cocoa.text.EditableTextView;
 import cocoa.text.TextInputUIModel;
-
 import cocoa.text.TextUIModel;
 
 import flash.utils.Dictionary;

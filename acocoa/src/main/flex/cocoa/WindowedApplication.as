@@ -104,7 +104,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   private var _maxHeight:Number = 2880;
 
   /**
-   *  @private
    *  Keeps track of whether maxHeight property changed so we can
    *  handle it in commitProperties.
    */
@@ -122,14 +121,9 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   }
 
   /**
-   *  @private
    *  Specifies the maximum height of the application's window.
    *
    *  @default dependent on the operating system and the AIR systemChrome setting.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   override public function set maxHeight(value:Number):void {
     _maxHeight = value;
@@ -137,14 +131,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     invalidateProperties();
   }
 
-  //----------------------------------
-  //  maxWidth
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the maxWidth property.
-   */
   private var _maxWidth:Number = 2880;
 
   /**
@@ -201,10 +187,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    *  Specifies the minimum height of the application's window.
    *
    *  @default dependent on the operating system and the AIR systemChrome setting.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   override public function get minHeight():Number {
     if (nativeWindow && !minHeightChanged) {

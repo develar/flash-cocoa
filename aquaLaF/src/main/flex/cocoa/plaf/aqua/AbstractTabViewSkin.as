@@ -10,6 +10,7 @@ import cocoa.plaf.basic.SegmentedControlController;
 import mx.core.ClassFactory;
 import mx.core.ILayoutElement;
 
+[Abstract]
 public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout {
   protected var segmentedControl:SingleSelectionDataGroup;
   protected var viewStack:ViewStack;
