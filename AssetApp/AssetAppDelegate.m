@@ -163,18 +163,43 @@
 	NSTextField *textField = [[NSTextField alloc] initWithFrame:controlFrame];
 	[contentView addSubview:textField];
 	
-	
-	controlFrame.size.width = 100;
 	controlFrame.size.height = 40;
-	controlFrame.origin.x += 160;
+	controlFrame.origin.x += 120;
 	NSTextField *textInput = [[NSTextField alloc] initWithFrame:controlFrame];
 	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
 	[contentView addSubview:textInput];
-	
+    
+    controlFrame.size.width = 100;
+	controlFrame.size.height = 100;
+	controlFrame.origin.x += 120;
+    
+    NSScrollView *scrollview = [[NSScrollView alloc] initWithFrame:controlFrame];
+    
+    [scrollview setBorderType:NSBezelBorder];
+    [scrollview setHasVerticalScroller: YES];
+    [scrollview setHasHorizontalScroller: NO];
+    [scrollview setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    
+    NSSize contentSize = [scrollview contentSize];
+    
+    NSTextView *theTextView = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)];
+    [theTextView setMinSize:NSMakeSize(0.0, contentSize.height)];
+    [theTextView setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+    [theTextView setVerticallyResizable:YES];
+    [theTextView setHorizontallyResizable:NO];
+    [theTextView setAutoresizingMask:NSViewWidthSizable];
+    
+    [[theTextView textContainer] setContainerSize:NSMakeSize(contentSize.width, FLT_MAX)];
+    [[theTextView textContainer] setWidthTracksTextView:YES];
+    
+    [scrollview setDocumentView:theTextView];
+	[contentView addSubview:scrollview];
+    
+    NSSize cs = [theTextView textContainerInset];
 	
 	controlFrame.size.width = 100;
 	controlFrame.size.height = 100;
-	controlFrame.origin.x += 160;
+	controlFrame.origin.x += 120;
 	//NSBox *box = [[NSBox alloc] initWithFrame:controlFrame];
 	NSTabView *box = [[NSTabView alloc] initWithFrame:controlFrame];
 //	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];

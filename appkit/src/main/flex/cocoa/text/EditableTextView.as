@@ -37,7 +37,6 @@ import flashx.textLayout.events.FlowOperationEvent;
 import flashx.textLayout.events.SelectionEvent;
 import flashx.textLayout.events.StatusChangeEvent;
 import flashx.textLayout.formats.BaselineOffset;
-import flashx.textLayout.formats.BlockProgression;
 import flashx.textLayout.formats.Category;
 import flashx.textLayout.formats.ITextLayoutFormat;
 import flashx.textLayout.formats.LineBreak;
@@ -79,15 +78,17 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private static const HAS_PROGRAMMATIC_SELECTION_RANGE:uint = 1 << 1;
 
    /**
-   *  True if this component sizes itself based on its actual contents.
+   *  if this component sizes itself based on its actual contents
    */
-  private static const AUTO_SIZE:uint = 1 << 2;
+  private static const AUTO_WIDTH:uint = 1 << 6;
+  private static const AUTO_HEIGHT:uint = 1 << 7;
+
+  private static const EDITABLE:uint = 1 << 2;
 
   private static var plainTextImporter:ITextImporter;
 
   /**
-   *  Regular expression which matches all newlines in the text.  Used
-   *  to strip newlines when pasting text when multiline is false.
+   * Regular expression which matches all newlines in the text. Used to strip newlines when pasting text when multiline is false.
    */
   private static const ALL_NEWLINES_REGEXP:RegExp = /\n/g;
 
@@ -98,10 +99,14 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private static const MOUSE_DOWN:uint = 1 << 4;
   private static const ERROR_CAUGHT:uint = 1 << 5;
 
-  protected var flags:uint = DISPATCH_CHANGE_AND_CHANGING_EVENTS;
+  private static const ENABLED_CHANGED:uint = 1 << 8;
+  private static const EDITABLE_CHANGED:uint = 1 << 9;
+  private static const SELECTABLE_CHANGED:uint = 1 << 10;
+
+  protected var flags:uint = DISPATCH_CHANGE_AND_CHANGING_EVENTS | EDITABLE;
 
   /**
-   *  Holds the last recorded value of the textFlow generation.  Used to
+   *  Holds the last recorded value of the textFlow generation. Used to
    *  determine whether to return immediately from damage event if there
    *  have been no changes.
    */
@@ -130,18 +135,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    * One place this is needed is for the type-ahead feature of the editable combo box.
    */
   public var batchTextInput:Boolean = true;
-
-  /**
-   *  Cache the width constraint as set by the layout in setLayoutBoundsSize()
-   *  so that text reflow can be calculated during a subsequent measure pass.
-   */
-  private var widthConstraint:Number;
-
-  /**
-   *  Cache the height constraint as set by the layout in setLayoutBoundsSize()
-   *  so that text reflow can be calculated during a subsequent measure pass.
-   */
-  private var heightConstraint:Number;
 
   public function EditableTextView() {
     super();
@@ -211,14 +204,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     return effectiveTextFormat.paddingTop + charMetrics.ascent;
   }
 
-  private var enabledChanged:Boolean = false;
   override public function set enabled(value:Boolean):void {
     if (value == super.enabled) {
       return;
     }
 
     super.enabled = value;
-    enabledChanged = true;
+    flags |= ENABLED_CHANGED;
 
     invalidateProperties();
     invalidateDisplayList();
@@ -226,8 +218,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   override public function set explicitHeight(value:Number):void {
     super.explicitHeight = value;
-
-    heightConstraint = NaN;
 
     // Because of autoSizing, the size and display might be impacted.
     invalidateSize();
@@ -237,30 +227,21 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   override public function set explicitWidth(value:Number):void {
     super.explicitWidth = value;
 
-    widthConstraint = NaN;
-
     // Because of autoSizing, the size and display might be impacted.
-    invalidateSize();
     invalidateDisplayList();
   }
 
   override public function set percentHeight(value:Number):void {
     super.percentHeight = value;
 
-    heightConstraint = NaN;
-
     // If we were autoSizing and now we are not we need to remeasure.
-    invalidateSize();
     invalidateDisplayList();
   }
 
   override public function set percentWidth(value:Number):void {
     super.percentWidth = value;
 
-    widthConstraint = NaN;
-
     // If we were autoSizing and now we are not we need to remeasure.
-    invalidateSize();
     invalidateDisplayList();
   }
 
@@ -268,37 +249,30 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     return editable;
   }
 
-  private var _editable:Boolean = true;
-  private var editableChanged:Boolean = false;
-
   /**
-   *  A flag indicating whether the user is allowed
-   *  to edit the text in this control.
+   *  A flag indicating whether the user is allowed to edit the text in this control.
    *
-   *  <p>If <code>true</code>, the mouse cursor will change to an i-beam
-   *  when over the bounds of this control.
+   *  <p>If <code>true</code>, the mouse cursor will change to an i-beam when over the bounds of this control.
    *  If <code>false</code>, the mouse cursor will remain an arrow.</p>
    *
-   *  <p>If this property is <code>true</code>,
-   *  the <code>selectable</code> property is ignored.</p>
+   *  <p>If this property is <code>true</code>, the <code>selectable</code> property is ignored.</p>
    *
    *  @default true
    *
    *  @see #selectable
    */
   public function get editable():Boolean {
-    return _editable;
+    return (flags & EDITABLE) != 0;
   }
 
   public function set editable(value:Boolean):void {
-    if (value == _editable)
-      return;
+    if (value == ((flags & EDITABLE) == 0)) {
+      value ? flags |= EDITABLE : flags ^= EDITABLE;
 
-    _editable = value;
-    editableChanged = true;
-
-    invalidateProperties();
-    invalidateDisplayList();
+      flags |= EDITABLE_CHANGED;
+      invalidateProperties();
+      invalidateDisplayList();
+    }
   }
 
   /**
@@ -306,15 +280,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private function get editingMode():String {
     // Note: this could be called before all properties are committed.
-    if (enabledChanged || editableChanged || selectableChanged) {
+    commitForEditingMode();
+    return textContainerManager.editingMode;
+  }
+
+  private function commitForEditingMode():void {
+    if ((flags & ENABLED_CHANGED) != 0 || (flags & EDITABLE_CHANGED) != 0 || (flags & SELECTABLE_CHANGED) != 0) {
       updateEditingMode();
 
-      enabledChanged = false;
-      editableChanged = false;
-      selectableChanged = false;
+      flags ^= ENABLED_CHANGED;
+      flags ^= EDITABLE_CHANGED;
+      flags ^= SELECTABLE_CHANGED;
     }
-
-    return textContainerManager.editingMode;
   }
 
   private function set editingMode(value:String):void {
@@ -345,15 +322,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     _imeMode = value;
   }
 
-  private var selectableChanged:Boolean = false;
-
   public function set selectable(value:Boolean):void {
     if (value == _selectable) {
       return;
     }
 
     _selectable = value;
-    selectableChanged = true;
+    flags |= SELECTABLE_CHANGED;
 
     invalidateProperties();
     invalidateDisplayList();
@@ -367,14 +342,10 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  <code>text</code> String, specifying the end of the selection
    *  that moves when the selection is extended with the arrow keys.
    *
-   *  <p>The active position may be either the start
-   *  or the end of the selection.</p>
+   *  <p>The active position may be either the start or the end of the selection.</p>
    *
-   *  <p>For example, if you drag-select from position 12 to position 8,
-   *  then <code>selectionAnchorPosition</code> will be 12
-   *  and <code>selectionActivePosition</code> will be 8,
-   *  and when you press Left-Arrow <code>selectionActivePosition</code>
-   *  will become 7.</p>
+   *  <p>For example, if you drag-select from position 12 to position 8, then <code>selectionAnchorPosition</code> will be 12
+   *  and <code>selectionActivePosition</code> will be 8, and when you press Left-Arrow <code>selectionActivePosition</code> will become 7.</p>
    *
    *  <p>A value of -1 indicates "not set".</p>
    *
@@ -390,18 +361,14 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   [Bindable("selectionChange")]
   /**
-   *  A character position, relative to the beginning of the
-   *  <code>text</code> String, specifying the end of the selection
+   *  A character position, relative to the beginning of the <code>text</code> String, specifying the end of the selection
    *  that stays fixed when the selection is extended with the arrow keys.
    *
-   *  <p>The anchor position may be either the start
-   *  or the end of the selection.</p>
+   *  <p>The anchor position may be either the start or the end of the selection.</p>
    *
-   *  <p>For example, if you drag-select from position 12 to position 8,
-   *  then <code>selectionAnchorPosition</code> will be 12
+   *  <p>For example, if you drag-select from position 12 to position 8, then <code>selectionAnchorPosition</code> will be 12
    *  and <code>selectionActivePosition</code> will be 8,
-   *  and when you press Left-Arrow <code>selectionActivePosition</code>
-   *  will become 7.</p>
+   *  and when you press Left-Arrow <code>selectionActivePosition</code> will become 7.</p>
    *
    *  <p>A value of -1 indicates "not set".</p>
    *
@@ -416,29 +383,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private var _selectionHighlighting:String = TextSelectionHighlighting.WHEN_FOCUSED;
 
   /**
-   *  To indicate either selection highlighting or selection styles have
-   *  changed.
-   */
-  private var selectionFormatsChanged:Boolean = false;
-
-  /**
    *  Determines when the text selection is highlighted.
    *
-   *  <p>The allowed values are specified by the
-   *  spark.components.TextSelectionHighlighting class.
-   *  Possible values are <code>TextSelectionHighlighting.WHEN_FOCUSED</code>,
-   *  <code>TextSelectionHighlighting.WHEN_ACTIVE</code>,
+   *  <p>The allowed values are specified by the spark.components.TextSelectionHighlighting class.
+   *  Possible values are <code>TextSelectionHighlighting.WHEN_FOCUSED</code>, <code>TextSelectionHighlighting.WHEN_ACTIVE</code>,
    *  and <code>TextSelectionHighlighting.ALWAYS</code>.</p>
    *
-   *  <p><code>WHEN_FOCUSED</code> shows the text selection
-   *  only when the component has keyboard focus.</p>
+   *  <p><code>WHEN_FOCUSED</code> shows the text selection only when the component has keyboard focus.</p>
    *
-   *  <p><code>WHEN_ACTIVE</code> shows the text selection whenever
-   *  the component's window is active, even if the component
+   *  <p><code>WHEN_ACTIVE</code> shows the text selection whenever the component's window is active, even if the component
    *  doesn't have the keyboard focus.</p>
    *
-   *  <p><code>ALWAYS</code> shows the text selection,
-   *  even if the component doesn't have the keyboard focus
+   *  <p><code>ALWAYS</code> shows the text selection, even if the component doesn't have the keyboard focus
    *  or if the component's window isn't the active window.</p>
    *
    *  @default TextSelectionHighlighting.WHEN_FOCUSED
@@ -455,7 +411,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     _selectionHighlighting = value;
-    selectionFormatsChanged = true;
 
     //  мы пока что никак не используем это свойство
     //		invalidateProperties();
@@ -465,52 +420,35 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   /**
    *  The TextFlow representing the rich text displayed by this component.
    *
-   *  <p>A TextFlow is the most important class
-   *  in the Text Layout Framework (TLF).
-   *  It is the root of a tree of FlowElements
-   *  representing rich text content.</p>
+   *  <p>A TextFlow is the most important class in the Text Layout Framework (TLF).
+   *  It is the root of a tree of FlowElements representing rich text content.</p>
    *
-   *  <p>You normally create a TextFlow from TLF markup
-   *  using the <code>TextFlowUtil.importFromString()</code>
+   *  <p>You normally create a TextFlow from TLF markup using the <code>TextFlowUtil.importFromString()</code>
    *  or <code>TextFlowUtil.importFromXML()</code> methods.
-   *  Alternately, you can use TLF's TextConverter class
-   *  (which can import a subset of HTML) or build a TextFlow
+   *  Alternately, you can use TLF's TextConverter class (which can import a subset of HTML) or build a TextFlow
    *  using methods like <code>addChild()</code> on TextFlow.</p>
    *
-   *  <p>Setting this property affects the <code>text</code> property
-   *  and vice versa.</p>
+   *  <p>Setting this property affects the <code>text</code> property and vice versa.</p>
    *
    *  <p>If you set the <code>textFlow</code> and get the <code>text</code>,
-   *  the text in each paragraph will be separated by a single
-   *  LF ("\n").</p>
+   *  the text in each paragraph will be separated by a single LF ("\n").</p>
    *
-   *  <p>If you set the <code>text</code> to a String such as
-   *  <code>"Hello World"</code> and get the <code>textFlow</code>,
-   *  it will be a TextFlow containing a single ParagraphElement
-   *  with a single SpanElement.</p>
+   *  <p>If you set the <code>text</code> to a String such as code>"Hello World"</code> and get the <code>textFlow</code>,
+   * it will be a TextFlow containing a single ParagraphElement with a single SpanElement.</p>
    *
-   *  <p>If the text contains explicit line breaks --
-   *  CR ("\r"), LF ("\n"), or CR+LF ("\r\n") --
-   *  then the content will be set to a TextFlow
-   *  which contains multiple paragraphs, each with one span.</p>
+   *  <p>If the text contains explicit line breaks -- CR ("\r"), LF ("\n"), or CR+LF ("\r\n") --
+   *  then the content will be set to a TextFlow which contains multiple paragraphs, each with one span.</p>
    *
-   *  <p>Setting this property also affects the properties
-   *  specifying the control's scroll position and the text selection.
-   *  It resets the <code>horizontalScrollPosition</code>
-   *  and <code>verticalScrollPosition</code> to 0,
-   *  and it sets the <code>selectionAnchorPosition</code>
-   *  and <code>selectionActivePosition</code>
+   *  <p>Setting this property also affects the properties specifying the control's scroll position and the text selection.
+   *  It resets the <code>horizontalScrollPosition</code> and <code>verticalScrollPosition</code> to 0,
+   *  and it sets the <code>selectionAnchorPosition</code> and <code>selectionActivePosition</code>
    *  to -1 to clear the selection.</p>
    *
-   *  <p>To turn a TextFlow object into TLF markup,
-   *  use the <code>TextFlowUtil.export()</code> markup.</p>
+   *  <p>To turn a TextFlow object into TLF markup, use the <code>TextFlowUtil.export()</code> markup.</p>
    *
-   *  <p>A single TextFlow cannot be shared by multiple instances
-   *  of RichEditableText.
-   *  To display the same text in a second instance, you must create
-   *  a second TextFlow, either by using <code>TextFlowUtil.export()</code>
-   *  and <code>TextFlowUtil.importFromXML()</code> or by using
-   *  the <code>deepCopy()</code> method on TextFlow.</p>
+   *  <p>A single TextFlow cannot be shared by multiple instances of RichEditableText.
+   *  To display the same text in a second instance, you must create a second TextFlow, either by using <code>TextFlowUtil.export()</code>
+   *  and <code>TextFlowUtil.importFromXML()</code> or by using the <code>deepCopy()</code> method on TextFlow.</p>
    *
    *  @see spark.utils.TextFlowUtil.importFromString()
    *  @see spark.utils.TextFlowUtil.importFromXML()
@@ -610,17 +548,9 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     super.commitProperties();
 
     // EditingMode needs to be current before attempting to set a selection below.
-    if (enabledChanged || selectableChanged || editableChanged) {
-      updateEditingMode();
+    commitForEditingMode();
 
-      enabledChanged = false;
-      editableChanged = false;
-      selectableChanged = false;
-    }
-
-    // Only one of textChanged, textFlowChanged, and contentChanged
-    // will be true; the other two will be false because each setter guarantees this.
-
+    // Only one of textChanged and textFlowChanged will be true; the other two will be false because each setter guarantees this.
     if (textChanged) {
       textContainerManager.setText(_text);
     }
@@ -662,26 +592,16 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
   }
 
-  /**
-   *  Return true if there is a width and height to use for the measure.
-   */
-  private function isMeasureFixed():Boolean {
-    if (effectiveTextFormat.blockProgression != BlockProgression.TB) {
-      return true;
-    }
-
-    // Is there some sort of width and some sort of height?
-    return (!isNaN(explicitWidth) || _uiModel.widthInChars != -1) && (!isNaN(explicitHeight) || heightInLines != -1);
-  }
-
   override protected function canSkipMeasurement():Boolean {
-    flags ^= AUTO_SIZE;
     return super.canSkipMeasurement();
   }
 
   override protected function measure():void {
     // don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
     flags |= IGNORE_DAMAGE_EVENT;
+
+    flags ^= AUTO_HEIGHT;
+    flags ^= AUTO_WIDTH;
 
     var composeWidth:Number = explicitWidth;
     if (isNaN(composeWidth) && _uiModel.widthInChars != -1) {
@@ -706,19 +626,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
     else {
       var bounds:Rectangle;
-      flags |= AUTO_SIZE;
       if (!isNaN(composeWidth)) {
         bounds = measureTextSize(composeWidth, NaN);
         measuredHeight = Math.ceil(bounds.bottom);
-        if (adjustMeasuredHeightToRange() == MeasurementAdjustResult.MAX) {
-          flags ^= AUTO_SIZE;
+        if (adjustMeasuredHeightToRange() != MeasurementAdjustResult.MAX) {
+          flags |= AUTO_HEIGHT;
         }
       }
       else if (!isNaN(composeHeight)) {
         bounds = measureTextSize(NaN, composeHeight);
         measuredWidth = Math.ceil(bounds.right);
-        if (adjustMeasuredWidthToRange() == MeasurementAdjustResult.MAX) {
-          flags ^= AUTO_SIZE;
+        if (adjustMeasuredWidthToRange() != MeasurementAdjustResult.MAX) {
+          flags |= AUTO_WIDTH;
         }
       }
     }
@@ -737,14 +656,18 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   override protected function updateDisplayList(w:Number, h:Number):void {
     // Check if the auto-size text is constrained in some way and needs to be remeasured. If one of the dimension changes,
     // the text may compose differently and have a different size which the layout manager needs to know.
-    if ((flags & AUTO_SIZE) != 0 && remeasureText(w, h)) {
-      return;
-    }
+//    const autoSize:Boolean = (flags & AUTO_WIDTH) != 0 || (flags & AUTO_HEIGHT) != 0;
+//    if (autoSize && remeasureText(w, h)) {
+//      return;
+//    }
 
-    if ((flags & AUTO_SIZE) == 0) {
-      textContainerManager.compositionWidth = w;
-      textContainerManager.compositionHeight = h;
-    }
+    textContainerManager.compositionWidth = (flags & AUTO_WIDTH) ? (w < measuredWidth ? w : NaN) : w;
+    textContainerManager.compositionHeight = (flags & AUTO_HEIGHT) ? (h < measuredHeight ? h : NaN) : h;
+
+//    if (!autoSize) {
+//      textContainerManager.compositionWidth = w;
+//      textContainerManager.compositionHeight = h;
+//    }
 
     // If scrolling, always compose with the composer so we get consistent measurements. The factory and the composer produce slightly
     // different results which can confuse the scroller. If there isn't a composer, this calls updateContainer so do it here now that the
@@ -756,49 +679,34 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     textContainerManager.updateContainer();
   }
 
-  /**
-   * This is called by the layout manager the first time this component is measured, or later if its size changes.
-   * This is not always called before updateDisplayList().
-   * For example, for recycled item renderers this is not called if the measured size doesn't change.
-   */
-  override public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void {
-    widthConstraint = width;
-    heightConstraint = height;
-
-    super.setLayoutBoundsSize(width, height, postLayoutTransform);
-  }
-
   private function remeasureText(width:Number, height:Number):Boolean {
     // Neither dimensions changed. If auto-sizing we're still auto-sizing.
     if (width == measuredWidth && height == measuredHeight) {
       return false;
     }
 
-    // Either constraints are preventing auto-sizing or we need to remeasure which will reset autoSize.
-    flags ^= AUTO_SIZE;
-
     // If no width or height, there is nothing to remeasure since there is no room for text.
     if (width == 0 || height == 0) {
       return false;
     }
 
-    if (!isNaN(widthConstraint)) {
+    if ((flags & AUTO_WIDTH) != 0) {
       // Do we have a constrained width and an explicit height?
       // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitHeight) || heightInLines != -1 || !isNaN(heightConstraint)) {
+      if ((flags & AUTO_HEIGHT) == 0) {
         return false;
       }
 
       // No reflow for explicit lineBreak
-      if (textContainerManager.hostFormat.lineBreak == "explicit") {
+      if (effectiveTextFormat.lineBreak == LineBreak.EXPLICIT) {
         return false;
       }
     }
 
-    if (!isNaN(heightConstraint)) {
+    if ((flags & AUTO_HEIGHT) != 0) {
       // Do we have a constrained height and an explicit width?
       // If so, the sizes are set so no need to remeasure now.
-      if (!isNaN(explicitWidth) || _uiModel.widthInChars != -1) {
+      if ((flags & AUTO_WIDTH) == 0) {
         return false;
       }
     }
@@ -1192,7 +1100,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function updateEditingMode():void {
     var newEditingMode:String = EditingMode.READ_ONLY;
     if (enabled) {
-      if (_editable) {
+      if ((flags & EDITABLE) != 0) {
         newEditingMode = EditingMode.READ_WRITE;
       }
       else if (_selectable) {
@@ -1339,8 +1247,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       }
 
       if (_imeMode != null) {
-        // When IME.conversionMode is unknown it cannot be
-        // set to anything other than unknown(English)
+        // When IME.conversionMode is unknown it cannot be set to anything other than unknown(English)
         try {
           if ((flags & ERROR_CAUGHT) == 0 && IME.conversionMode != IMEConversionMode.UNKNOWN) {
             IME.conversionMode = _imeMode;
@@ -1730,7 +1637,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
     else if (event.status == InlineGraphicElementStatus.READY) {
       // Now that the actual size of the graphic is available need to optionally remeasure and updateContainer.
-      if ((flags & AUTO_SIZE) != 0) {
+      if ((flags & AUTO_WIDTH) != 0 || (flags & AUTO_HEIGHT) != 0) {
         invalidateSize();
       }
 

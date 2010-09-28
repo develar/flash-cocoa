@@ -1,4 +1,6 @@
 package cocoa.text {
+import cocoa.Insets;
+
 import flash.text.engine.BreakOpportunity;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
@@ -23,10 +25,12 @@ import flashx.textLayout.formats.WhiteSpaceCollapse;
 public class TextLayoutFormatImpl implements ITextLayoutFormat {
   private var fontDescription:FontDescription;
 
-  public function TextLayoutFormatImpl(textFormat:TextFormat) {
+  public function TextLayoutFormatImpl(textFormat:TextFormat, insets:Insets = null) {
     _textFormat = textFormat;
     elementFormat = _textFormat.format;
     fontDescription = textFormat.format.fontDescription;
+
+    this.insets = insets == null ? Insets.EMPTY : insets;
   }
 
   private var elementFormat:ElementFormat;
@@ -211,25 +215,23 @@ public class TextLayoutFormatImpl implements ITextLayoutFormat {
     return 20;
   }
 
+//  private var insets:Insets = Insets.EMPTY;
+  private var insets:Insets;
+
   public function get paddingLeft():* {
-    return 0;
+    return insets.left;
   }
 
-  private var _paddingTop:Number = 0;
   public function get paddingTop():* {
-    return _paddingTop;
-  }
-
-  public function set $paddingTop(value:Number):void {
-    _paddingTop = value;
+    return insets.top;
   }
 
   public function get paddingRight():* {
-    return 0;
+    return insets.right;
   }
 
   public function get paddingBottom():* {
-    return 0;
+    return insets.bottom;
   }
 
   public function get columnCount():* {

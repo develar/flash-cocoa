@@ -17,13 +17,32 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
 
   protected var offBorder:Border;
 
-  protected function get orientation():String {
+  protected var minFullSize:Number;
+
+  protected function get isVertical():Boolean {
     throw new Error("abstract");
+  }
+
+  override protected function canSkipMeasurement():Boolean {
+    return !isNaN(minFullSize);
+  }
+
+  override protected function measure():void {
+    minFullSize = thumb.getExplicitOrMeasuredWidth() + decrementButton.getExplicitOrMeasuredWidth() + incrementButton.getExplicitOrMeasuredWidth();
+    if (isVertical) {
+      measuredWidth = track.getExplicitOrMeasuredWidth();
+      minFullSize += track.border.contentInsets.height;
+    }
+    else {
+      measuredHeight = track.getExplicitOrMeasuredHeight();
+      minFullSize += track.border.contentInsets.width;
+    }
   }
 
   override protected function createChildren():void {
     var laf:LookAndFeel = LookAndFeelUtil.find(parent);
 
+    const orientation:String = isVertical ? "v" : "h";
     offBorder = laf.getBorder("ScrollBar.track." + orientation + ".off");
 
     track = new TrackOrThumbButton();
@@ -50,7 +69,7 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    const isOff:Boolean = ScrollBarBase(parent).maximum <= ScrollBarBase(parent).minimum;
+    const isOff:Boolean = ScrollBarBase(parent).maximum <= ScrollBarBase(parent).minimum || (isVertical ? h : w) < minFullSize;
 
     if (isOff == track.visible) {
       graphics.clear();
@@ -73,7 +92,7 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
 
   [Abstract]
   protected function layoutTrackAndButtons(w:Number, h:Number):void {
-
+    
   }
 }
 }

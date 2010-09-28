@@ -1,7 +1,21 @@
 package cocoa.plaf.aqua {
+import cocoa.ScrollPolicy;
+import cocoa.ScrollView;
+import cocoa.View;
+
 public class TextAreaSkin extends TextInputSkin {
-  override protected function configureTextDisplay():void {
-    // skip
+  private var scroller:ScrollView;
+
+  override protected function get documentView():View {
+    return scroller;
+  }
+
+  override protected function configureAndAddTextDisplay():void {
+    scroller = new ScrollView();
+    scroller.horizontalScrollPolicy = ScrollPolicy.OFF;
+    scroller.verticalScrollPolicy = ScrollPolicy.ON;
+    scroller.documentView = textDisplay;
+    addChild(scroller);
   }
 
   override protected function measure():void {

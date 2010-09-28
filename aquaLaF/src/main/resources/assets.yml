@@ -1,6 +1,6 @@
 borders:
 - key: TabView
-  source: {rectangle: {x: 440, y: 332, width: 100, height: 100}}
+  source: {rectangle: {x: 480, y: 332, width: 100, height: 100}}
   type: Scale9Edge
   frameInsets: {top: 10}
   contentInsets: {left: 16, top: 26, right: 16, bottom: 16}

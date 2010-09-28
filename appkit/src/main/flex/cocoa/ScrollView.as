@@ -33,7 +33,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   /**
-   *  SDT - ScrollBar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
+   * SDT - ScrollBar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
    * For example, if the contentWidth >= viewport width + SDT, show the horizontal scrollbar.
    */
   private static const SDT:Number = 1.0;
@@ -130,147 +130,118 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   private function get hsbVisible():Boolean {
-    var hsb:HScrollBar = _horizontalScrollBar;
-    return hsb != null && hsb.visible;
+    return _horizontalScrollBar != null && _horizontalScrollBar.visible;
   }
 
-  private var hsbScaleX:Number = 1;
-  private var hsbScaleY:Number = 1;
-
-  private var vsbScaleX:Number = 1;
-  private var vsbScaleY:Number = 1;
-
   private function hsbRequiredHeight():Number {
-    return Math.max(minViewportInset, _horizontalScrollBar.getPreferredBoundsHeight(hsbVisible) * (hsbVisible ? 1 : hsbScaleY));
+    return Math.max(minViewportInset, _horizontalScrollBar.getPreferredBoundsHeight());
   }
 
   private function get vsbVisible():Boolean {
-    return _verticalScrollBar && _verticalScrollBar.visible;
+    return _verticalScrollBar != null && _verticalScrollBar.visible;
   }
 
   private function vsbRequiredWidth():Number {
-    return Math.max(minViewportInset, _verticalScrollBar.getPreferredBoundsWidth(vsbVisible) * (vsbVisible ? 1 : vsbScaleX));
+    return Math.max(minViewportInset, _verticalScrollBar.getPreferredBoundsWidth());
   }
 
   private var minViewportInset:Number = 0;
 
-  private function getLayoutContentSize(viewport:IViewport):Point {
-    // TODO(hmuller):prefer to do nothing if transform doesn't change size, see UIComponent/nonDeltaLayoutMatrix()
-    var cw:Number = viewport.contentWidth;
-    var ch:Number = viewport.contentHeight;
+  private static const sharedPoint:Point = new Point(0, 0);
+  private function getLayoutContentSize():Point {
+    var cw:Number = _documentView.contentWidth;
+    var ch:Number = _documentView.contentHeight;
     if ((cw == 0 && ch == 0) || (isNaN(cw) || isNaN(ch))) {
-      return new Point(0, 0);
+      return sharedPoint;
     }
     else {
-      return MatrixUtil.transformSize(cw, ch, viewport.getLayoutMatrix());
+      return MatrixUtil.transformSize(cw, ch, _documentView.getLayoutMatrix());
     }
   }
 
   override protected function measure():void {
-    var measuredW:Number = 0;
-    var measuredH:Number = 0;
-
-    const measuredSizeIncludesScrollBars:Boolean = true;
-    const hsb:ScrollBarBase = _horizontalScrollBar;
+    var hsb:ScrollBarBase = _horizontalScrollBar;
     var showHSB:Boolean = false;
     var hAuto:Boolean = false;
-    if (measuredSizeIncludesScrollBars) {
-      switch (_horizontalScrollPolicy) {
-        case ScrollPolicy.ON:
-          if (hsb) {
-            showHSB = true;
-          }
-          break;
+    switch (_horizontalScrollPolicy) {
+      case ScrollPolicy.ON:
+        if (hsb != null) {
+          showHSB = true;
+        }
+        break;
 
-        case ScrollPolicy.AUTO:
-          if (hsb) {
-            showHSB = hsb.visible;
-          }
-          hAuto = true;
-          break;
-      }
+      case ScrollPolicy.AUTO:
+        if (hsb != null) {
+          showHSB = hsb.visible;
+        }
+        hAuto = true;
+        break;
     }
 
-    const vsb:ScrollBarBase = _verticalScrollBar;
+    var vsb:ScrollBarBase = _verticalScrollBar;
     var showVSB:Boolean = false;
     var vAuto:Boolean = false;
-    if (measuredSizeIncludesScrollBars) {
-      switch (_verticalScrollPolicy) {
-        case ScrollPolicy.ON:
-          if (vsb) {
-            showVSB = true;
-          }
-          break;
+    switch (_verticalScrollPolicy) {
+      case ScrollPolicy.ON:
+        if (vsb != null) {
+          showVSB = true;
+        }
+        break;
 
-        case ScrollPolicy.AUTO:
-          if (vsb) {
-            showVSB = vsb.visible;
-          }
-          vAuto = true;
-          break;
-      }
+      case ScrollPolicy.AUTO:
+        if (vsb != null) {
+          showVSB = vsb.visible;
+        }
+        vAuto = true;
+        break;
     }
 
-    measuredH += showHSB ? hsbRequiredHeight() : minViewportInset;
-    measuredW += showVSB ? vsbRequiredWidth() : minViewportInset;
+    var measuredW:Number = showHSB ? hsbRequiredHeight() : minViewportInset;
+    var measuredH:Number = showVSB ? vsbRequiredWidth() : minViewportInset;
 
     // The measured size of the viewport is just its preferredBounds, except:
     // don't give up space if doing so would make an auto scrollbar visible.
     // In other words, if an auto scrollbar isn't already showing, and using
     // the preferred size would force it to show, and the current size would not,
-    // then use its current size as the measured size.  Note that a scrollbar
-    // is only shown if the content size is greater than the viewport size
-    // by at least SDT.
+    // then use its current size as the measured size. Note that a scrollbar
+    // is only shown if the content size is greater than the viewport size by at least SDT.
 
-    var viewport:IViewport = _documentView;
-    if (viewport != null) {
-      if (measuredSizeIncludesScrollBars) {
-        var contentSize:Point = getLayoutContentSize(viewport);
+    var contentSize:Point = getLayoutContentSize();
 
-        var viewportPreferredW:Number = viewport.getPreferredBoundsWidth();
-        var viewportContentW:Number = contentSize.x;
-        var viewportW:Number = viewport.getLayoutBoundsWidth();  // "current" size
-        var currentSizeNoHSB:Boolean = !isNaN(viewportW) && ((viewportW + SDT) > viewportContentW);
-        if (hAuto && !showHSB && ((viewportPreferredW + SDT) <= viewportContentW) && currentSizeNoHSB) {
-          measuredW += viewportW;
-        }
-        else {
-          measuredW += Math.max(viewportPreferredW, (showHSB) ? hsb.getMinBoundsWidth() : 0);
-        }
+    var viewportPreferredW:Number = _documentView.getPreferredBoundsWidth();
+    var viewportContentW:Number = contentSize.x;
+    var viewportW:Number = _documentView.getLayoutBoundsWidth();  // "current" size
+    var currentSizeNoHSB:Boolean = !isNaN(viewportW) && ((viewportW + SDT) > viewportContentW);
+    if (hAuto && !showHSB && ((viewportPreferredW + SDT) <= viewportContentW) && currentSizeNoHSB) {
+      measuredW += viewportW;
+    }
+    else {
+      measuredW += Math.max(viewportPreferredW, (showHSB) ? hsb.getMinBoundsWidth() : 0);
+    }
 
-        var viewportPreferredH:Number = viewport.getPreferredBoundsHeight();
-        var viewportContentH:Number = contentSize.y;
-        var viewportH:Number = viewport.getLayoutBoundsHeight();  // "current" size
-        var currentSizeNoVSB:Boolean = !isNaN(viewportH) && ((viewportH + SDT) > viewportContentH);
-        if (vAuto && !showVSB && ((viewportPreferredH + SDT) <= viewportContentH) && currentSizeNoVSB) {
-          measuredH += viewportH;
-        }
-        else {
-          measuredH += Math.max(viewportPreferredH, (showVSB) ? vsb.getMinBoundsHeight() : 0);
-        }
-      }
-      else {
-        measuredW += viewport.getPreferredBoundsWidth();
-        measuredH += viewport.getPreferredBoundsHeight();
-      }
+    var viewportPreferredH:Number = _documentView.getPreferredBoundsHeight();
+    var viewportContentH:Number = contentSize.y;
+    var viewportH:Number = _documentView.getLayoutBoundsHeight();  // "current" size
+    var currentSizeNoVSB:Boolean = !isNaN(viewportH) && ((viewportH + SDT) > viewportContentH);
+    if (vAuto && !showVSB && ((viewportPreferredH + SDT) <= viewportContentH) && currentSizeNoVSB) {
+      measuredH += viewportH;
+    }
+    else {
+      measuredH += Math.max(viewportPreferredH, (showVSB) ? vsb.getMinBoundsHeight() : 0);
     }
 
     var minW:Number = minViewportInset * 2;
     var minH:Number = minViewportInset * 2;
+    // If the viewport's explicit size is set, then include that in the scroller's minimum size
+    if (_documentView is IUIComponent) {
+      var viewportUIC:IUIComponent = IUIComponent(_documentView);
+      if (!isNaN(viewportUIC.explicitWidth)) {
+        minW += viewportUIC.explicitWidth;
+      }
 
-    // If the viewport's explicit size is set, then
-    // include that in the scroller's minimum size
-
-    var viewportUIC:IUIComponent = viewport as IUIComponent;
-    var explicitViewportW:Number = viewportUIC ? viewportUIC.explicitWidth : NaN;
-    var explicitViewportH:Number = viewportUIC ? viewportUIC.explicitHeight : NaN;
-
-    if (!isNaN(explicitViewportW)) {
-      minW += explicitViewportW;
-    }
-
-    if (!isNaN(explicitViewportH)) {
-      minH += explicitViewportH;
+      if (!isNaN(viewportUIC.explicitHeight)) {
+        minH += viewportUIC.explicitHeight;
+      }
     }
 
     measuredWidth = Math.ceil(measuredW);
@@ -279,95 +250,28 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     measuredMinHeight = Math.ceil(minH);
   }
 
-  /**
-   *  To make the scrollbars invisible to methods like getRect() and getBounds()
-   *  as well as to methods based on them like hitTestPoint(), we set their scale
-   *  to 0.  More info about this here: http://bugs.adobe.com/jira/browse/SDK-21540
-   */
   private function set hsbVisible(value:Boolean):void {
-    var hsb:ScrollBarBase = _horizontalScrollBar;
-    if (!hsb)
-      return;
-
-    hsb.includeInLayout = hsb.visible = value;
-    if (value) {
-      if (hsb.scaleX == 0)
-        hsb.scaleX = hsbScaleX;
-      if (hsb.scaleY == 0)
-        hsb.scaleY = hsbScaleY;
-    }
-    else {
-      if (hsb.scaleX != 0)
-        hsbScaleX = hsb.scaleX;
-      if (hsb.scaleY != 0)
-        hsbScaleY = hsb.scaleY;
-      hsb.scaleX = hsb.scaleY = 0;
+    if (_horizontalScrollBar != null) {
+      _horizontalScrollBar.visible = value;
     }
   }
 
-  /**
-   *  The logic here is the same as for the horizontal scrollbar, see above.
-   */
   private function set vsbVisible(value:Boolean):void {
-    var vsb:ScrollBarBase = _verticalScrollBar;
-    if (!vsb)
-      return;
-
-    vsb.includeInLayout = vsb.visible = value;
-    if (value) {
-      if (vsb.scaleX == 0)
-        vsb.scaleX = vsbScaleX;
-      if (vsb.scaleY == 0)
-        vsb.scaleY = vsbScaleY;
+    if (_verticalScrollBar != null) {
+      _verticalScrollBar.visible = value;
     }
-    else {
-      if (vsb.scaleX != 0)
-        vsbScaleX = vsb.scaleX;
-      if (vsb.scaleY != 0)
-        vsbScaleY = vsb.scaleY;
-      vsb.scaleX = vsb.scaleY = 0;
-    }
-  }
-
-  private function hsbFits(w:Number, h:Number, includeVSB:Boolean = true):Boolean {
-    if (vsbVisible && includeVSB) {
-      var vsb:ScrollBarBase = _verticalScrollBar;
-      w -= vsb.getPreferredBoundsWidth();
-      h -= vsb.getMinBoundsHeight();
-    }
-    var hsb:ScrollBarBase = _horizontalScrollBar;
-    return (w >= hsb.getMinBoundsWidth()) && (h >= hsb.getPreferredBoundsHeight());
-  }
-
-  private function vsbFits(w:Number, h:Number, includeHSB:Boolean = true):Boolean {
-    if (hsbVisible && includeHSB) {
-      var hsb:ScrollBarBase = _horizontalScrollBar;
-      w -= hsb.getMinBoundsWidth();
-      h -= hsb.getPreferredBoundsHeight();
-    }
-    var vsb:ScrollBarBase = _verticalScrollBar;
-    return (w >= vsb.getPreferredBoundsWidth()) && (h >= vsb.getMinBoundsHeight());
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    var viewport:IViewport = _documentView;
     var hsb:ScrollBarBase = _horizontalScrollBar;
     var vsb:ScrollBarBase = _verticalScrollBar;
-    var minViewportInset:Number = minViewportInset;
-
-    var contentW:Number = 0;
-    var contentH:Number = 0;
-    if (viewport) {
-      var contentSize:Point = getLayoutContentSize(viewport);
-      contentW = contentSize.x;
-      contentH = contentSize.y;
-    }
+    var contentSize:Point = getLayoutContentSize();
+    var contentW:Number = contentSize.x;
+    var contentH:Number = contentSize.y;
 
     // If the viewport's size has been explicitly set (not typical) then use it
-    // The initial values for viewportW,H are only used to decide if auto scrollbars
-    // should be shown.
-
-    var viewportUIC:IUIComponent = viewport as IUIComponent;
+    // The initial values for viewportW,H are only used to decide if auto scrollbars should be shown.
+    var viewportUIC:IUIComponent = _documentView as IUIComponent;
     var explicitViewportW:Number = viewportUIC ? viewportUIC.explicitWidth : NaN;
     var explicitViewportH:Number = viewportUIC ? viewportUIC.explicitHeight : NaN;
 
@@ -375,156 +279,70 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     var viewportH:Number = isNaN(explicitViewportH) ? (h - (minViewportInset * 2)) : explicitViewportH;
 
     // Decide which scrollbars will be visible based on the viewport's content size
-    // and the scroller's scroll policies.  A scrollbar is shown if the content size
+    // and the scroller's scroll policies. A scrollbar is shown if the content size
     // greater than the viewport's size by at least SDT.
+    const oldShowHSB:Boolean = hsbVisible;
+    const oldShowVSB:Boolean = vsbVisible;
 
-    var oldShowHSB:Boolean = hsbVisible;
-    var oldShowVSB:Boolean = vsbVisible;
-
-    var hAuto:Boolean = false;
-    switch (_horizontalScrollPolicy) {
-      case ScrollPolicy.ON:
-        hsbVisible = true;
-        break;
-
-      case ScrollPolicy.AUTO:
-        if (hsb && viewport) {
-          hAuto = true;
-          hsbVisible = (contentW >= (viewportW + SDT));
-        }
-        break;
-
-      default:
-        hsbVisible = false;
+    const hAuto:Boolean = _horizontalScrollPolicy == ScrollPolicy.AUTO;
+    if (hAuto) {
+      _horizontalScrollBar.visible = contentW >= (viewportW + SDT);
     }
 
-    var vAuto:Boolean = false;
-    switch (_verticalScrollPolicy) {
-      case ScrollPolicy.ON:
-        vsbVisible = true;
-        break;
-
-      case ScrollPolicy.AUTO:
-        if (vsb && viewport) {
-          vAuto = true;
-          vsbVisible = (contentH >= (viewportH + SDT));
-        }
-        break;
-
-      default:
-        vsbVisible = false;
+    const vAuto:Boolean = _verticalScrollPolicy == ScrollPolicy.AUTO;
+    if (vAuto) {
+      _verticalScrollBar.visible = contentH >= (viewportH + SDT);
     }
 
     // Reset the viewport's width,height to account for the visible scrollbars, unless
     // the viewport's size was explicitly set, then we just use that.
-
-    if (isNaN(explicitViewportW))
-      viewportW = w - ((vsbVisible) ? (minViewportInset + vsbRequiredWidth()) : (minViewportInset * 2));
-    else
-      viewportW = explicitViewportW;
-
-    if (isNaN(explicitViewportH))
-      viewportH = h - ((hsbVisible) ? (minViewportInset + hsbRequiredHeight()) : (minViewportInset * 2));
-    else
-      viewportH = explicitViewportH;
+    if (isNaN(explicitViewportW)) {
+      viewportW = w - (vsbVisible ? (minViewportInset + vsbRequiredWidth()) : (minViewportInset * 2));
+    }
+    if (isNaN(explicitViewportH)) {
+      viewportH = h - (hsbVisible ? (minViewportInset + hsbRequiredHeight()) : (minViewportInset * 2));
+    }
 
     // If the scrollBarPolicy is auto, and we're only showing one scrollbar,
     // the viewport may have shrunk enough to require showing the other one.
-
-    var hsbIsDependent:Boolean = false;
-    var vsbIsDependent:Boolean = false;
-
-    if (vsbVisible && !hsbVisible && hAuto && (contentW >= (viewportW + SDT)))
-      hsbVisible = hsbIsDependent = true;
-    else if (!vsbVisible && hsbVisible && vAuto && (contentH >= (viewportH + SDT)))
-      vsbVisible = vsbIsDependent = true;
-
-    // If the HSB doesn't fit, hide it and give the space back.   Likewise for VSB.
-    // If both scrollbars are supposed to be visible but they don't both fit,
-    // then prefer to show the "non-dependent" auto scrollbar if we added the second
-    // "dependent" auto scrollbar because of the space consumed by the first.
-
-    if (hsbVisible && vsbVisible) {
-      if (hsbFits(w, h) && vsbFits(w, h)) {
-        // Both scrollbars fit, we're done.
-      }
-      else if (!hsbFits(w, h, false) && !vsbFits(w, h, false)) {
-        // Neither scrollbar would fit, even if the other scrollbar wasn't visible.
-        hsbVisible = false;
-        vsbVisible = false;
-      }
-      else {
-        // Only one of the scrollbars will fit.  If we're showing a second "dependent"
-        // auto scrollbar because the first scrollbar consumed enough space to
-        // require it, if the first scrollbar doesn't fit, don't show either of them.
-
-        if (hsbIsDependent) {
-          if (vsbFits(w, h, false))  // VSB will fit if HSB isn't shown
-            hsbVisible = false;
-          else
-            vsbVisible = hsbVisible = false;
-
-        }
-        else if (vsbIsDependent) {
-          if (hsbFits(w, h, false)) // HSB will fit if VSB isn't shown
-            vsbVisible = false;
-          else
-            hsbVisible = vsbVisible = false;
-        }
-        else if (vsbFits(w, h, false)) // VSB will fit if HSB isn't shown
-          hsbVisible = false;
-        else // hsbFits(w, h, false)   // HSB will fit if VSB isn't shown
-          vsbVisible = false;
-      }
+    if (vsbVisible && !hsbVisible && hAuto && (contentW >= (viewportW + SDT))) {
+      hsbVisible = true;
     }
-    else if (hsbVisible && !hsbFits(w, h))  // just trying to show HSB, but it doesn't fit
-      hsbVisible = false;
-    else if (vsbVisible && !vsbFits(w, h))  // just trying to show VSB, but it doesn't fit
-      vsbVisible = false;
+    else if (!vsbVisible && hsbVisible && vAuto && (contentH >= (viewportH + SDT))) {
+      vsbVisible = true;
+    }
 
-    // Reset the viewport's width,height to account for the visible scrollbars, unless
-    // the viewport's size was explicitly set, then we just use that.
-
-    if (isNaN(explicitViewportW))
-      viewportW = w - ((vsbVisible) ? (minViewportInset + vsbRequiredWidth()) : (minViewportInset * 2));
-    else
-      viewportW = explicitViewportW;
-
-    if (isNaN(explicitViewportH))
-      viewportH = h - ((hsbVisible) ? (minViewportInset + hsbRequiredHeight()) : (minViewportInset * 2));
-    else
-      viewportH = explicitViewportH;
+    if (isNaN(explicitViewportW)) {
+      viewportW = w - (vsbVisible ? (minViewportInset + vsbRequiredWidth()) : (minViewportInset * 2));
+    }
+    if (isNaN(explicitViewportH)) {
+      viewportH = h - (hsbVisible ? (minViewportInset + hsbRequiredHeight()) : (minViewportInset * 2));
+    }
 
     // Layout the viewport and scrollbars.
-
-    if (viewport) {
-      viewport.setLayoutBoundsSize(viewportW, viewportH);
-      viewport.setLayoutBoundsPosition(minViewportInset, minViewportInset);
-    }
+    _documentView.setLayoutBoundsSize(viewportW, viewportH);
+    _documentView.setLayoutBoundsPosition(minViewportInset, minViewportInset);
 
     if (hsbVisible) {
-      var hsbW:Number = (vsbVisible) ? w - vsb.getPreferredBoundsWidth() : w;
-      var hsbH:Number = hsb.getPreferredBoundsHeight();
-      hsb.setLayoutBoundsSize(Math.max(hsb.getMinBoundsWidth(), hsbW), hsbH);
-      hsb.setLayoutBoundsPosition(0, h - hsbH);
+      var hsbH:Number = hsb.getExplicitOrMeasuredHeight();
+      hsb.setActualSize(vsbVisible ? w - vsb.getExplicitOrMeasuredWidth() : w, hsbH);
+      hsb.y = h - hsbH;
     }
 
     if (vsbVisible) {
-      var vsbW:Number = vsb.getPreferredBoundsWidth();
-      var vsbH:Number = (hsbVisible) ? h - hsb.getPreferredBoundsHeight() : h;
-      vsb.setLayoutBoundsSize(vsbW, Math.max(vsb.getMinBoundsHeight(), vsbH));
-      vsb.setLayoutBoundsPosition(w - vsbW, 0);
+      var vsbW:Number = vsb.getExplicitOrMeasuredWidth();
+      vsb.setActualSize(vsbW, hsbVisible ? h - hsb.getExplicitOrMeasuredHeight() : h);
+      vsb.x = w - vsbW;
     }
 
-    if (((vsbVisible != oldShowVSB && vAuto) || (hsbVisible != oldShowHSB && hAuto))) {
+    if ((vAuto && vsbVisible != oldShowVSB) || (hAuto && hsbVisible != oldShowHSB)) {
       invalidateSize();
-
-      // If the viewport's layout is virtual, it's possible that its
-      // measured size changed as a consequence of laying it out,
+      // If the viewport's layout is virtual, it's possible that its measured size changed as a consequence of laying it out,
       // so we invalidate its size as well.
-      var viewportGroup:GroupBase = viewport as GroupBase;
-      if (viewportGroup && viewportGroup.layout && viewportGroup.layout.useVirtualLayout)
+      var viewportGroup:GroupBase = _documentView as GroupBase;
+      if (viewportGroup != null && viewportGroup.layout.useVirtualLayout) {
         viewportGroup.invalidateSize();
+      }
     }
 
     // setContentSize(w, h);

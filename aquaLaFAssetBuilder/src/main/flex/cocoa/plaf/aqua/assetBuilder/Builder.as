@@ -191,7 +191,7 @@ public class Builder {
         data.writeBytes(bitmap.getPixels(bitmap.rect));
       }
 
-      if (border.contentInsets == AbstractBorder.EMPTY_CONTENT_INSETS) {
+      if (border.contentInsets == Insets.EMPTY) {
         data.writeByte(0);
       }
       else {

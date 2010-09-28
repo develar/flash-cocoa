@@ -36,7 +36,7 @@
     }
 
     private function changeListDataProvder():void {
-      listView.dataProvider = (listView.dataProvider == listData) ? shortListData : listData;
+//      listView.dataProvider = (listView.dataProvider == listData) ? shortListData : listData;
     }
 
     private function updateTextValue():void {
@@ -70,20 +70,10 @@
 
     <TextArea width="100%">
       <uiModel>
-        <text:TextAreaUIModel heightInLines="3"/>
+        <text:TextAreaUIModel heightInLines="4"/>
       </uiModel>
-      <text>heightInLines=3, width=100%
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog
-        the quick brown fox jumps over the lazy dog</text>
+      <text>heightInLines=4, width=100%
+        Исчисление предикатов, по определению, контролирует данный катарсис, изменяя привычную реальность. Веданта, следовательно, амбивалентно подчеркивает предмет деятельности, изменяя привычную реальность. Согласно предыдущему, веданта подчеркивает типичный язык образов, отрицая очевидное. Свобода, как следует из вышесказанного, создает знак, не учитывая мнения авторитетов. Интересно отметить, что современная ситуация естественно индуцирует гравитационный парадокс, хотя в официозе принято обратное. Можно предположить, что исчисление предикатов создает естественный бабувизм, не учитывая мнения авторитетов.</text>
     </TextArea>
     <TextArea>
       <uiModel>
@@ -121,11 +111,11 @@
     </TextArea>
 
     <PushButton title="Change List Data Provider" action="changeListDataProvder"/>
-    <ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">
-      <layout>
-        <TileLayout rowHeight="25"/>
-      </layout>
-    </ListView>
+    <!--<ListView id="listView" dataProvider="{listData}" itemRenderer="{new ClassFactory(MenuItemRenderer)}" height="100" width="100">-->
+      <!--<layout>-->
+        <!--<TileLayout rowHeight="25"/>-->
+      <!--</layout>-->
+    <!--</ListView>-->
 
     <!--<Tree itemRenderer="cocoa.tree.TreeItemRenderer" dataProvider="{treeData}" height="400"/>-->
   </Container>

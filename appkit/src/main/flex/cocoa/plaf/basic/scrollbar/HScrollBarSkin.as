@@ -1,12 +1,7 @@
 package cocoa.plaf.basic.scrollbar {
 public class HScrollBarSkin extends AbstractScrollBarSkin {
-  override protected function get orientation():String {
-    return "h";
-  }
-
-  override protected function measure():void {
-    measuredMinWidth = measuredWidth = thumb.getExplicitOrMeasuredWidth() + decrementButton.getExplicitOrMeasuredWidth() + incrementButton.getExplicitOrMeasuredWidth();
-    measuredMinHeight = measuredHeight = track.getExplicitOrMeasuredHeight();
+  override protected function get isVertical():Boolean {
+    return false;
   }
 
   override protected function layoutTrackAndButtons(w:Number, h:Number):void {

@@ -45,7 +45,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
   private static const CONTENT_FRAME_INSETS:Insets = new Insets(0, TITLE_BAR_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
   private static const CONTENT_FRAME_INSETS_TOOLBAR:Insets = new Insets(0, TITLE_BAR_HEIGHT + TOOLBAR_SMALL_HEIGHT + 1, 0, BOTTOM_BAR_HEIGHT);
 
-  private static const CONTENT_LAYOUT_INSETS:Insets = new Insets();
+  private static const CONTENT_LAYOUT_INSETS:Insets = Insets.EMPTY;
 
   private var resizeGripper:DisplayObject;
   private var closeButton:PushButton;

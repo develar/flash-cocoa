@@ -1,6 +1,7 @@
 package cocoa.plaf.aqua {
 import cocoa.ClassFactory;
 import cocoa.FrameInsets;
+import cocoa.Insets;
 import cocoa.SingletonClassFactory;
 import cocoa.border.LinearGradientBorder;
 import cocoa.plaf.LookAndFeelUtil;
@@ -60,14 +61,13 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["SourceListView"] = SourceListViewSkin;
     data["ListView"] = ListViewSkin;
-    data["SwatchGrid.b"] = data["ListView.b"] = new ListViewBorder();
+    data["SwatchGrid.b"] = data["ListView.b"] = data["TextArea.b"] = new BezelBorder();
 
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
     data["TabView.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
 
     data["PushButton"] = PushButtonSkin;
-
     data["IconButton"] = IconButtonSkin;
 
     data["PopUpButton"] = PushButtonSkin;
@@ -88,10 +88,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["ScrollBar.h"] = HScrollBarSkin;
     data["ScrollBar.v"] = VScrollBarSkin;
 
-//    data["ScrollBar.h"] = MiniScrollBarSkin;
-//    data["ScrollBar.v"] = MiniScrollBarSkin;
-//    data["ScrollBar.thumb"] = borders[BorderPosition.scrollbar + 10];
-
     data["VSeparator"] = SeparatorSkin;
     data["HSeparator"] = SeparatorSkin;
 
@@ -104,9 +100,10 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
     data["TextArea"] = TextAreaSkin;
-    data["TextArea.b"] = data["TextInput.b"];
-    data["TextArea.SystemTextFormat"] = createDefaultTextFormat();
-    TextLayoutFormatImpl(data["TextArea.SystemTextFormat"]).$lineBreak = LineBreak.TO_FIT;
+
+    var textFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT, new Insets(5, 2, 5));
+    textFormat.$lineBreak = LineBreak.TO_FIT;
+    data["TextArea.SystemTextFormat"] = textFormat;
 
     data["NumericStepper.TextInput"] = TextInputSkin;
 
@@ -134,14 +131,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
   }
 
   private function createDefaultTextFormat():TextLayoutFormatImpl {
-    var textInputTextFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT);
-    textInputTextFormat.$paddingTop = 2;
-    textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
-    return textInputTextFormat;
+    var textFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT, new Insets(0, 2));
+    textFormat.$lineBreak = LineBreak.EXPLICIT;
+    return textFormat;
   }
 }
 }
 
+import cocoa.Insets;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -221,8 +218,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
   }
 
   private function createDefaultTextFormat():TextLayoutFormatImpl {
-    var textInputTextFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT_HUD);
-    textInputTextFormat.$paddingTop = 2;
+    var textInputTextFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT_HUD, new Insets(0, 2));
     textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
     return textInputTextFormat;
   }

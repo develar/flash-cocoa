@@ -6,7 +6,6 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.InteractiveObject;
 import flash.display.Loader;
-import flash.display.Shader;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.events.Event;
@@ -69,10 +68,6 @@ import mx.styles.IStyleClient;
 import mx.utils.MatrixUtil;
 
 use namespace mx_internal;
-
-//--------------------------------------
-//  Lifecycle events
-//--------------------------------------
 
 /**
  *  Dispatched when the component is added to a container as a content child
@@ -707,7 +702,12 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    */
   private static const COMPLEX_LAYOUT_MATRIX:uint = 1 << 13;
 
-  private var flags:uint;
+  private static const HAS_FOCUSABLE_CHILDREN:uint = 1 << 15;
+  private static const FOCUS_ENABLED:uint = 1 << 16;
+  private static const MOUSE_FOCUS_ENABLED:uint = 1 << 17;
+  private static const TAB_FOCUS_ENABLED:uint = 1 << 18;
+
+  private var flags:uint = FOCUS_ENABLED | MOUSE_FOCUS_ENABLED;
 
   protected var _layoutMetrics:LayoutMetrics = EMPTY_LAYOUT_METRICS;
   public final function get layoutMetrics():LayoutMetrics {
@@ -749,14 +749,14 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
     // Override  variables in superclasses.
     focusRect = false; // We do our own focus drawing.
-    // We are tab enabled by default if IFocusManagerComponent
-    tabEnabled = (this is IFocusManagerComponent);
-    tabFocusEnabled = (this is IFocusManagerComponent);
+    if (this is IFocusManagerComponent) {
+      flags |= TAB_FOCUS_ENABLED;
+      tabEnabled = true;
+    }
 
-    // Make the component invisible until the initialization sequence
-    // is complete.
+    // Make the component invisible until the initialization sequence is complete.
     // It will be set visible when the 'initialized' flag is set.
-    $visible = false;
+    super.visible = false;
 
     addEventListener(Event.REMOVED, removedHandler);
 
@@ -1504,11 +1504,11 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   public function setVisible(value:Boolean, noEvent:Boolean = false):void {
     _visible = value;
 
-    if (!initialized || $visible == value) {
+    if (!initialized || super.visible == value) {
       return;
     }
 
-    $visible = value;
+    super.visible = value;
 
     if (!noEvent) {
       dispatchEvent(new FlexEvent(value ? FlexEvent.SHOW : FlexEvent.HIDE));
@@ -1654,25 +1654,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   /**
    *  This property allows access to the Player's native implementation
-   *  of the 'blendMode' property, which can be useful since components
-   *  can override 'alpha' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $blendMode():String {
-    return super.blendMode;
-  }
-
-  mx_internal final function set $blendMode(value:String):void {
-    super.blendMode = value;
-  }
-
-  mx_internal final function set $blendShader(value:Shader):void {
-    super.blendShader = value;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
    *  of the 'parent' property, which can be useful since components
    *  can override 'parent' and thereby hide the native implementation.
    *  Note that this "base property" is final and cannot be overridden,
@@ -1712,54 +1693,8 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     super.y = value;
   }
 
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'width' property, which can be useful since components
-   *  can override 'width' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $width():Number {
-    return super.width;
-  }
-
-  mx_internal final function set $width(value:Number):void {
-    super.width = value;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'height' property, which can be useful since components
-   *  can override 'height' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $height():Number {
-    return super.height;
-  }
-
-  mx_internal final function set $height(value:Number):void {
-    super.height = value;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'visible' property, which can be useful since components
-   *  can override 'visible' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $visible():Boolean {
-    return super.visible;
-  }
-
-  mx_internal final function set $visible(value:Boolean):void {
-    super.visible = value;
-  }
-
   private var _tweeningProperties:Array;
 
-  [Inspectable(environment="none")]
   public function get tweeningProperties():Array {
     return _tweeningProperties;
   }
@@ -1947,16 +1882,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   private var _id:String;
 
-  /**
-   *  ID of the component. This value becomes the instance name of the object
-   *  and should not contain any white space or special characters. Each component
-   *  throughout an application should have a unique id.
-   *
-   *  <p>If your application is going to be tested by third party tools, give each component
-   *  a meaningful id. Testing tools use ids to represent the control in their scripts and
-   *  having a meaningful name can make scripts more readable. For example, set the
-   *  value of a button to submit_button rather than b1 or button1.</p>
-   */
   public function get id():String {
     return _id;
   }
@@ -1988,119 +1913,43 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
   }
 
-  private var _focusEnabled:Boolean = true;
-  /**
-   *  Indicates whether the component can receive focus when tabbed to.
-   *  You can set <code>focusEnabled</code> to <code>false</code>
-   *  when a UIComponent is used as a subcomponent of another component
-   *  so that the outer component becomes the focusable entity.
-   *  If this property is <code>false</code>, focus is transferred to
-   *  the first parent that has <code>focusEnable</code>
-   *  set to <code>true</code>.
-   *
-   *  <p>The default value is <code>true</code>, except for the
-   *  spark.components.Scroller component.
-   *  For that component, the default value is <code>false</code>.</p>
-   *
-   *  @see spark.components.Scroller
-   */
   public function get focusEnabled():Boolean {
-    return _focusEnabled;
+    return (flags & FOCUS_ENABLED) != 0;
   }
 
   public function set focusEnabled(value:Boolean):void {
-    _focusEnabled = value;
-  }
-
-  private var _hasFocusableChildren:Boolean = false;
-  /**
-   *  A flag that indicates whether child objects can receive focus.
-   *
-   *  <p><b>Note: </b>This property is similar to the <code>tabChildren</code> property
-   *  used by Flash Player.
-   *  Use the <code>hasFocusableChildren</code> property with Flex applications.
-   *  Do not use the <code>tabChildren</code> property.</p>
-   *
-   *  <p>This property is usually <code>false</code> because most components
-   *  either receive focus themselves or delegate focus to a single
-   *  internal sub-component and appear as if the component has
-   *  received focus.
-   *  For example, a TextInput control contains a focusable
-   *  child RichEditableText control, but while the RichEditableText
-   *  sub-component actually receives focus, it appears as if the
-   *  TextInput has focus. TextInput sets <code>hasFocusableChildren</code>
-   *  to <code>false</code> because TextInput is considered the
-   *  component that has focus. Its internal structure is an
-   *  abstraction.</p>
-   *
-   *  <p>Usually only navigator components, such as TabNavigator and
-   *  Accordion, have this flag set to <code>true</code> because they
-   *  receive focus on Tab but focus goes to components in the child
-   *  containers on further Tabs.</p>
-   *
-   *  <p>The default value is <code>false</code>, except for the
-   *  spark.components.Scroller component.
-   *  For that component, the default value is <code>true</code>.</p>
-   *
-   *  @see spark.components.Scroller
-   */
-  public function get hasFocusableChildren():Boolean {
-    return _hasFocusableChildren;
-  }
-
-  public function set hasFocusableChildren(value:Boolean):void {
-    if (value != _hasFocusableChildren) {
-      _hasFocusableChildren = value;
-      dispatchEvent(new Event("hasFocusableChildrenChange"));
+    if (value == ((flags & FOCUS_ENABLED) == 0)) {
+      value ? flags |= FOCUS_ENABLED : flags ^= FOCUS_ENABLED;
     }
   }
 
-  private var _mouseFocusEnabled:Boolean = true;
+  public function get hasFocusableChildren():Boolean {
+    return (flags & HAS_FOCUSABLE_CHILDREN) != 0;
+  }
 
-  /**
-   *  Whether you can receive focus when clicked on.
-   *  If <code>false</code>, focus is transferred to
-   *  the first parent that is <code>mouseFocusEnable</code>
-   *  set to <code>true</code>.
-   *  For example, you can set this property to <code>false</code>
-   *  on a Button control so that you can use the Tab key to move focus
-   *  to the control, but not have the control get focus when you click on it.
-   *
-   *  @default true
-   */
+  public function set hasFocusableChildren(value:Boolean):void {
+    if (value == ((flags & HAS_FOCUSABLE_CHILDREN) == 0)) {
+      value ? flags |= HAS_FOCUSABLE_CHILDREN : flags ^= HAS_FOCUSABLE_CHILDREN;
+    }
+  }
+
   public function get mouseFocusEnabled():Boolean {
-    return _mouseFocusEnabled;
+    return (flags & MOUSE_FOCUS_ENABLED) != 0;
   }
 
-  public function set mouseFocusEnabled(value:Boolean):void {
-    _mouseFocusEnabled = value;
+  protected function setMouseFocusEnabled(value:Boolean):void {
+    if (value == ((flags & MOUSE_FOCUS_ENABLED) == 0)) {
+      value ? flags |= MOUSE_FOCUS_ENABLED : flags ^= MOUSE_FOCUS_ENABLED;
+    }
   }
 
-  private var _tabFocusEnabled:Boolean = true;
-
-  /**
-   *  A flag that indicates whether this object can receive focus
-   *  via the TAB key
-   *
-   *  <p>This is similar to the <code>tabEnabled</code> property
-   *  used by the Flash Player.</p>
-   *
-   *  <p>This is usually <code>true</code> for components that
-   *  handle keyboard input, but some components in controlbars
-   *  have them set to <code>false</code> because they should not steal
-   *  focus from another component like an editor.
-   *  </p>
-   *
-   *  @default true
-   */
   public function get tabFocusEnabled():Boolean {
-    return _tabFocusEnabled;
+    return (flags & TAB_FOCUS_ENABLED) != 0;
   }
 
-  public function set tabFocusEnabled(value:Boolean):void {
-    if (value != _tabFocusEnabled) {
-      _tabFocusEnabled = value;
-      dispatchEvent(new Event("tabFocusEnabledChange"));
+  protected function setTabFocusEnabled(value:Boolean):void {
+    if (value == ((flags & TAB_FOCUS_ENABLED) == 0)) {
+      value ? flags |= TAB_FOCUS_ENABLED : flags ^= TAB_FOCUS_ENABLED;
     }
   }
 
@@ -2891,7 +2740,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
       flags ^= BLEND_MODE_CHANGED;
 
       if ((flags & BLEND_SHADER_CHANGED) == 0) {
-        $blendMode = _blendMode;
+        super.blendMode = _blendMode;
       }
       else {
         // The graphic element's blendMode was set to a non-Flash
@@ -2900,39 +2749,39 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
         // property on the displayObject.
         flags ^= BLEND_SHADER_CHANGED;
 
-        $blendMode = BlendMode.NORMAL;
+        super.blendMode = BlendMode.NORMAL;
 
         switch (_blendMode) {
           case "color":
-            $blendShader = new ColorShader();
+            super.blendShader = new ColorShader();
             break;
 
           case "colordodge":
-            $blendShader = new ColorDodgeShader();
+            super.blendShader = new ColorDodgeShader();
             break;
 
           case "colorburn":
-            $blendShader = new ColorBurnShader();
+            super.blendShader = new ColorBurnShader();
             break;
 
           case "exclusion":
-            $blendShader = new ExclusionShader();
+            super.blendShader = new ExclusionShader();
             break;
 
           case "hue":
-            $blendShader = new HueShader();
+            super.blendShader = new HueShader();
             break;
 
           case "luminosity":
-            $blendShader = new LuminosityShader();
+            super.blendShader = new LuminosityShader();
             break;
 
           case "saturation":
-            $blendShader = new SaturationShader();
+            super.blendShader = new SaturationShader();
             break;
 
           case "softlight":
-            $blendShader = new SoftLightShader();
+            super.blendShader = new SoftLightShader();
             break;
         }
       }
@@ -2992,16 +2841,10 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *
    *  @return Returns <code>true</code> when the <code>measureSizes()</code> method can skip the call to
    *  the <code>measure()</code> method. For example this is usually <code>true</code> when both <code>explicitWidth</code> and
-   *  <code>explicitHeight</code> are set. For paths, this is <code>true</code> when the bounds of the path
-   *  have not changed.
+   *  <code>explicitHeight</code> are set.
    */
   protected function canSkipMeasurement():Boolean {
-    // We can skip the measure function if the object's width and height
-    // have been explicitly specified (e.g.: the object's MXML tag has attributes like width="50" and height="100").
-    //
-    // If an object's width and height have been explicitly specified,
-    // then the explicitWidth and explicitHeight properties contain Numbers (as opposed to NaN)
-    return !isNaN(_layoutMetrics.width) && !isNaN(_layoutMetrics.height);
+    return !isNaN(_layoutMetrics.width) && !isNaN(_layoutMetrics.height) && !_layoutMetrics.widthIsPercent && !_layoutMetrics.heightIsPercent;
   }
 
   private function measureSizes():Boolean {
