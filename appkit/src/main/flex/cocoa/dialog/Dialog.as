@@ -36,7 +36,7 @@ public class Dialog extends Window
 	{
 		super();
 
-		flags ^= CLOSABLE;
+		flags &= ~CLOSABLE;
 	}
 
 	ui var controlBar:ViewContainer;

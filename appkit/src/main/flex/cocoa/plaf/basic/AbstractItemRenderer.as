@@ -40,7 +40,7 @@ public class AbstractItemRenderer extends AbstractView implements HighlightableI
 
   public function set dragging(value:Boolean):void {
     if (value == ((state & DRAGGING) == 0)) {
-      value ? state |= DRAGGING : state ^= DRAGGING;
+      value ? state |= DRAGGING : state &= ~DRAGGING;
     }
   }
 
@@ -57,7 +57,7 @@ public class AbstractItemRenderer extends AbstractView implements HighlightableI
 
   public function set selected(value:Boolean):void {
     if (value == ((state & SELECTED) == 0)) {
-      value ? state |= SELECTED : state ^= SELECTED;
+      value ? state |= SELECTED : state &= ~SELECTED;
       invalidateDisplayList();
     }
   }
@@ -68,14 +68,14 @@ public class AbstractItemRenderer extends AbstractView implements HighlightableI
 
   public function set showsCaret(value:Boolean):void {
     if (value == ((state & SHOWS_CARET) == 0)) {
-      value ? state |= SHOWS_CARET : state ^= SHOWS_CARET;
+      value ? state |= SHOWS_CARET : state &= ~SHOWS_CARET;
       invalidateDisplayList();
     }
   }
 
   public function set highlighted(value:Boolean):void {
     if (value == ((state & HIGHLIGHTED) == 0)) {
-      value ? state |= HIGHLIGHTED : state ^= HIGHLIGHTED;
+      value ? state |= HIGHLIGHTED : state &= ~HIGHLIGHTED;
       invalidateDisplayList();
     }
   }

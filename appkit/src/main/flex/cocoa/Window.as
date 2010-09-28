@@ -36,7 +36,7 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
 
   public function set resizable(value:Boolean):void {
     if (value == ((flags & RESIZABLE) == 0)) {
-      value ? flags |= RESIZABLE : flags ^= RESIZABLE;
+      value ? flags |= RESIZABLE : flags &= ~RESIZABLE;
     }
   }
 
@@ -46,7 +46,7 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
 
   public function set closable(value:Boolean):void {
     if (value == ((flags & CLOSABLE) == 0)) {
-      value ? flags |= CLOSABLE : flags ^= CLOSABLE;
+      value ? flags |= CLOSABLE : flags &= ~CLOSABLE;
     }
   }
 

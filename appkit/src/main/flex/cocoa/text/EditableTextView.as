@@ -267,7 +267,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   public function set editable(value:Boolean):void {
     if (value == ((flags & EDITABLE) == 0)) {
-      value ? flags |= EDITABLE : flags ^= EDITABLE;
+      value ? flags |= EDITABLE : flags &= ~EDITABLE;
 
       flags |= EDITABLE_CHANGED;
       invalidateProperties();
@@ -288,9 +288,9 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     if ((flags & ENABLED_CHANGED) != 0 || (flags & EDITABLE_CHANGED) != 0 || (flags & SELECTABLE_CHANGED) != 0) {
       updateEditingMode();
 
-      flags ^= ENABLED_CHANGED;
-      flags ^= EDITABLE_CHANGED;
-      flags ^= SELECTABLE_CHANGED;
+      flags &= ~ENABLED_CHANGED;
+      flags &= ~EDITABLE_CHANGED;
+      flags &= ~SELECTABLE_CHANGED;
     }
   }
 
@@ -600,8 +600,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
     flags |= IGNORE_DAMAGE_EVENT;
 
-    flags ^= AUTO_HEIGHT;
-    flags ^= AUTO_WIDTH;
+    flags &= ~AUTO_HEIGHT;
+    flags &= ~AUTO_WIDTH;
 
     var composeWidth:Number = explicitWidth;
     if (isNaN(composeWidth) && _uiModel.widthInChars != -1) {
@@ -650,7 +650,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     invalidateDisplayList();
 
-    flags ^= IGNORE_DAMAGE_EVENT;
+    flags &= ~IGNORE_DAMAGE_EVENT;
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
@@ -680,15 +680,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   /**
-   *  Inserts the specified text into the RichEditableText
-   *  as if you had typed it.
+   * Inserts the specified text as if you had typed it.
    *
    *  <p>If a range was selected, the new text replaces the selected text.
    *  If there was an insertion point, the new text is inserted there.</p>
    *
    *  <p>An insertion point is then set after the new text.
-   *  If necessary, the text will scroll to ensure
-   *  that the insertion point is visible.</p>
+   *  If necessary, the text will scroll to ensure that the insertion point is visible.</p>
    *
    *  @param text The text to be inserted.
    */
@@ -697,12 +695,10 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   /**
-   *  Appends the specified text to the end of the RichEditableText,
-   *  as if you had clicked at the end and typed.
+   *  Appends the specified text to the end, as if you had clicked at the end and typed.
    *
    *  <p>An insertion point is then set after the new text.
-   *  If necessary, the text will scroll to ensure
-   *  that the insertion point is visible.</p>
+   *  If necessary, the text will scroll to ensure that the insertion point is visible.</p>
    *
    *  @param text The text to be appended.
    */
@@ -755,7 +751,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Remember if the current selection is a range which was set programatically.
-    (anchorPosition != activePosition) ? flags |= HAS_PROGRAMMATIC_SELECTION_RANGE : flags ^= HAS_PROGRAMMATIC_SELECTION_RANGE;
+    (anchorPosition != activePosition) ? flags |= HAS_PROGRAMMATIC_SELECTION_RANGE : flags &= ~HAS_PROGRAMMATIC_SELECTION_RANGE;
   }
 
   /**
@@ -1115,7 +1111,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Generate a CHANGING event for the PasteOperation but not for the
     // DeleteTextOperation or the InsertTextOperation which are also part of the paste.
-    flags ^= DISPATCH_CHANGE_AND_CHANGING_EVENTS;
+    flags &= ~DISPATCH_CHANGE_AND_CHANGING_EVENTS;
 
     var selectionState:SelectionState = new SelectionState(op.textFlow, op.absoluteStart, op.absoluteStart + textLength);
     editManager.deleteText(selectionState);
@@ -1201,7 +1197,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
           if ((flags & ERROR_CAUGHT) == 0 && IME.conversionMode != IMEConversionMode.UNKNOWN) {
             IME.conversionMode = _imeMode;
           }
-          flags ^= ERROR_CAUGHT;
+          flags &= ~ERROR_CAUGHT;
         }
         catch(e:Error) {
           // Once an error is thrown, focusIn is called
@@ -1278,7 +1274,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function systemManager_mouseUpHandler(event:MouseEvent):void {
-    flags ^= MOUSE_DOWN;
+    flags &= ~MOUSE_DOWN;
 
     systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
   }

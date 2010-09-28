@@ -74,14 +74,14 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
     super.commitProperties();
 
     if (flags & mouseSelectionModeChanged) {
-      flags ^= mouseSelectionModeChanged;
+      flags &= ~mouseSelectionModeChanged;
       if (_mouseSelectionMode != ItemMouseSelectionMode.NONE) {
         addEventListener(_mouseSelectionMode == ItemMouseSelectionMode.CLICK ? MouseEvent.CLICK : MouseEvent.MOUSE_DOWN, itemMouseSelectHandler);
       }
     }
 
     if (flags & selectionChanged) {
-      flags ^= selectionChanged;
+      flags &= ~selectionChanged;
 
       commitSelection();
     }

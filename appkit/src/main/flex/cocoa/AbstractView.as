@@ -791,7 +791,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
       }
     }
     else {
-      flags ^= PROCESSED_DESCRIPTORS;
+      flags &= ~ PROCESSED_DESCRIPTORS;
     }
   }
 
@@ -800,7 +800,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   }
 
   public function set updateCompletePendingFlag(value:Boolean):void {
-    value ? flags |= UPDATE_COMPLETE_PENDING : flags ^= UPDATE_COMPLETE_PENDING;
+    value ? flags |= UPDATE_COMPLETE_PENDING : flags &= ~UPDATE_COMPLETE_PENDING;
   }
 
   /**
@@ -1581,7 +1581,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set enabled(value:Boolean):void {
     if (value != ((flags & DISABLED) == 0)) {
-      value ? flags ^= DISABLED : flags |= DISABLED;
+      value ? flags &= ~DISABLED : flags |= DISABLED;
       invalidateDisplayList();
     }
 
@@ -1790,7 +1790,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
           o = o.parent;
         }
       }
-      flags ^= SYSTEM_MANAGER_DIRTY;
+      flags &= ~SYSTEM_MANAGER_DIRTY;
     }
 
     return _systemManager;
@@ -1798,7 +1798,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set systemManager(value:ISystemManager):void {
     _systemManager = value;
-    flags ^= SYSTEM_MANAGER_DIRTY;
+    flags &= ~SYSTEM_MANAGER_DIRTY;
   }
 
   /**
@@ -1920,7 +1920,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set focusEnabled(value:Boolean):void {
     if (value == ((flags & FOCUS_ENABLED) == 0)) {
-      value ? flags |= FOCUS_ENABLED : flags ^= FOCUS_ENABLED;
+      value ? flags |= FOCUS_ENABLED : flags &= ~FOCUS_ENABLED;
     }
   }
 
@@ -1930,7 +1930,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set hasFocusableChildren(value:Boolean):void {
     if (value == ((flags & HAS_FOCUSABLE_CHILDREN) == 0)) {
-      value ? flags |= HAS_FOCUSABLE_CHILDREN : flags ^= HAS_FOCUSABLE_CHILDREN;
+      value ? flags |= HAS_FOCUSABLE_CHILDREN : flags &= ~HAS_FOCUSABLE_CHILDREN;
     }
   }
 
@@ -1940,7 +1940,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   protected function setMouseFocusEnabled(value:Boolean):void {
     if (value == ((flags & MOUSE_FOCUS_ENABLED) == 0)) {
-      value ? flags |= MOUSE_FOCUS_ENABLED : flags ^= MOUSE_FOCUS_ENABLED;
+      value ? flags |= MOUSE_FOCUS_ENABLED : flags &= ~MOUSE_FOCUS_ENABLED;
     }
   }
 
@@ -1950,7 +1950,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   protected function setTabFocusEnabled(value:Boolean):void {
     if (value == ((flags & TAB_FOCUS_ENABLED) == 0)) {
-      value ? flags |= TAB_FOCUS_ENABLED : flags ^= TAB_FOCUS_ENABLED;
+      value ? flags |= TAB_FOCUS_ENABLED : flags &= ~TAB_FOCUS_ENABLED;
     }
   }
 
@@ -2089,7 +2089,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set explicitWidth(value:Number):void {
     if (_layoutMetrics.widthIsPercent) {
-      _layoutMetrics.flags ^= LayoutMetrics.PERCENT_WIDTH;
+      _layoutMetrics.flags &= ~LayoutMetrics.PERCENT_WIDTH;
     }
     else if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
       _layoutMetrics = new LayoutMetrics();
@@ -2111,7 +2111,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set explicitHeight(value:Number):void {
     if (_layoutMetrics.heightIsPercent) {
-      _layoutMetrics.flags ^= LayoutMetrics.PERCENT_HEIGHT;
+      _layoutMetrics.flags &= ~LayoutMetrics.PERCENT_HEIGHT;
     }
     else if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
       _layoutMetrics = new LayoutMetrics();
@@ -2221,7 +2221,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
   public function set includeInLayout(value:Boolean):void {
     if (value != ((flags & EXCLUDE_FROM_LAYOUT) == 0)) {
-      value ? flags ^= EXCLUDE_FROM_LAYOUT : flags |= EXCLUDE_FROM_LAYOUT;
+      value ? flags &= ~EXCLUDE_FROM_LAYOUT : flags |= EXCLUDE_FROM_LAYOUT;
 
       var p:IInvalidating = parent as IInvalidating;
       if (p) {
@@ -2703,7 +2703,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   public function validateProperties():void {
     if (flags & INVALID_PROPERTIES) {
       commitProperties();
-      flags ^= INVALID_PROPERTIES;
+      flags &= ~INVALID_PROPERTIES;
     }
   }
 
@@ -2738,7 +2738,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
 
     if (flags & BLEND_MODE_CHANGED) {
-      flags ^= BLEND_MODE_CHANGED;
+      flags &= ~BLEND_MODE_CHANGED;
 
       if ((flags & BLEND_SHADER_CHANGED) == 0) {
         super.blendMode = _blendMode;
@@ -2748,7 +2748,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
         // blendMode. We mimic the look by instantiating the
         // appropriate shader class and setting the blendShader
         // property on the displayObject.
-        flags ^= BLEND_SHADER_CHANGED;
+        flags &= ~BLEND_SHADER_CHANGED;
 
         super.blendMode = BlendMode.NORMAL;
 
@@ -2788,7 +2788,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
       }
     }
 
-    flags ^= PARENT_CHANGED;
+    flags &= ~PARENT_CHANGED;
   }
 
   public function validateSize(recursive:Boolean = false):void {
@@ -2849,7 +2849,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   }
 
   private function measureSizes():Boolean {
-    flags ^= INVALID_SIZE;
+    flags &= ~INVALID_SIZE;
     if (canSkipMeasurement()) {
 
       // develar — закомментировано — если мы установили ширину явно, то почему мы должны сбрасывать _measuredMinWidth/_measuredMinHeight — см. WindowResizer
@@ -2995,7 +2995,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
       validateMatrix();
       updateDisplayList(width, height);
 
-      flags ^= INVALID_DISPLAY_LIST;
+      flags &= ~INVALID_DISPLAY_LIST;
 
       // LAYOUT_DEBUG
       // LayoutManager.debugHelper.addElement(ILayoutElement(this));
@@ -3500,7 +3500,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
       // trace("  removed");
       sm.removeEventListener(FlexEvent.RENDER, callLaterDispatcher);
       sm.removeEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-      flags ^= LISTENING_FOR_RENDER;
+      flags &= ~LISTENING_FOR_RENDER;
     }
 
     // Move the method queue off to the side, so that subsequent calls to callLater get added to a new queue that'll get handled next time.
@@ -3825,7 +3825,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    * If no projection matrix is defined on the component, one is added automatically.
    */
   public function set maintainProjectionCenter(value:Boolean):void {
-    value ? flags |= MAINTAIN_PROJECTION_CENTER : flags ^= MAINTAIN_PROJECTION_CENTER;
+    value ? flags |= MAINTAIN_PROJECTION_CENTER : flags &= ~MAINTAIN_PROJECTION_CENTER;
     if (value && super.transform.perspectiveProjection == null) {
       super.transform.perspectiveProjection = new PerspectiveProjection();
     }
@@ -3983,7 +3983,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
 
     if (!invalidateLayout && oldIncludeInLayout) {
-      flags ^= EXCLUDE_FROM_LAYOUT;
+      flags &= ~EXCLUDE_FROM_LAYOUT;
     }
   }
 

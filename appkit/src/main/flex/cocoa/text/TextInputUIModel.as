@@ -14,7 +14,7 @@ public class TextInputUIModel extends TextUIModel {
       return;
     }
 
-    value ? flags ^= DISPLAY_AS_PASSWORD : flags |= DISPLAY_AS_PASSWORD;
+    value ? flags &= ~DISPLAY_AS_PASSWORD : flags |= DISPLAY_AS_PASSWORD;
   }
 
   private static var defaultModel:TextInputUIModel;
