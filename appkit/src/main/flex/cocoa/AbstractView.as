@@ -1301,6 +1301,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *
    *  @see #percentHeight
    */
+  [PercentProxy("percentHeight")]
   override public function get height():Number {
     return _height;
   }

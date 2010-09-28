@@ -622,7 +622,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     if (!isNaN(composeWidth) && !isNaN(composeHeight)) {
-
+      //  skip
     }
     else {
       var bounds:Rectangle;
@@ -654,20 +654,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    // Check if the auto-size text is constrained in some way and needs to be remeasured. If one of the dimension changes,
-    // the text may compose differently and have a different size which the layout manager needs to know.
-//    const autoSize:Boolean = (flags & AUTO_WIDTH) != 0 || (flags & AUTO_HEIGHT) != 0;
-//    if (autoSize && remeasureText(w, h)) {
-//      return;
-//    }
-
     textContainerManager.compositionWidth = (flags & AUTO_WIDTH) ? (w < measuredWidth ? w : NaN) : w;
     textContainerManager.compositionHeight = (flags & AUTO_HEIGHT) ? (h < measuredHeight ? h : NaN) : h;
-
-//    if (!autoSize) {
-//      textContainerManager.compositionWidth = w;
-//      textContainerManager.compositionHeight = h;
-//    }
 
     // If scrolling, always compose with the composer so we get consistent measurements. The factory and the composer produce slightly
     // different results which can confuse the scroller. If there isn't a composer, this calls updateContainer so do it here now that the
@@ -677,45 +665,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     textContainerManager.updateContainer();
-  }
-
-  private function remeasureText(width:Number, height:Number):Boolean {
-    // Neither dimensions changed. If auto-sizing we're still auto-sizing.
-    if (width == measuredWidth && height == measuredHeight) {
-      return false;
-    }
-
-    // If no width or height, there is nothing to remeasure since there is no room for text.
-    if (width == 0 || height == 0) {
-      return false;
-    }
-
-    if ((flags & AUTO_WIDTH) != 0) {
-      // Do we have a constrained width and an explicit height?
-      // If so, the sizes are set so no need to remeasure now.
-      if ((flags & AUTO_HEIGHT) == 0) {
-        return false;
-      }
-
-      // No reflow for explicit lineBreak
-      if (effectiveTextFormat.lineBreak == LineBreak.EXPLICIT) {
-        return false;
-      }
-    }
-
-    if ((flags & AUTO_HEIGHT) != 0) {
-      // Do we have a constrained height and an explicit width?
-      // If so, the sizes are set so no need to remeasure now.
-      if ((flags & AUTO_WIDTH) == 0) {
-        return false;
-      }
-    }
-
-    // Width or height is different than what was measured.
-    // Since we're auto-sizing, need to remeasure, so the layout manager leaves the correct amount of space for the component.
-    invalidateSize();
-
-    return true;
   }
 
   override public function setFocus():void {

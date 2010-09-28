@@ -9,8 +9,7 @@ import spark.events.TextOperationEvent;
 
 use namespace ui;
 
-[Event(name="change", type="spark.events.TextOperationEvent")]
-public class TextInput extends AbstractComponent {
+public class TextInput extends AbstractComponent implements Control {
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.textDisplay = 0;
   override protected function get skinParts():Dictionary {
@@ -18,6 +17,19 @@ public class TextInput extends AbstractComponent {
   }
 
   ui var textDisplay:EditableTextView;
+
+  protected var _action:Function;
+  public function set action(value:Function):void {
+    _action = value;
+  }
+
+  public function get objectValue():Object {
+    return _text;
+  }
+
+  public function set objectValue(value:Object):void {
+    text = String(value);
+  }
 
   private var _text:String;
   public function get text():String {
@@ -55,7 +67,9 @@ public class TextInput extends AbstractComponent {
   }
 
   private function inputChangeHandler(event:TextOperationEvent):void {
-    dispatchEvent(event);
+    if (_action != null) {
+      _action();
+    }
     //_text property must be actual because set text checks (value != _text)
     _text = textDisplay.text;
   }

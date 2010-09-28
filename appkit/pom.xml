@@ -112,6 +112,7 @@
                 <class>cocoa.*ImageView</class>
 
                 <class>**.*ScrollView</class>
+                <class>**.*UIModel</class>
 
                 <class>cocoa.modules.ModuleId</class>
               </includes>
