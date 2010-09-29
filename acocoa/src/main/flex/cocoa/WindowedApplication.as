@@ -1,6 +1,5 @@
 package cocoa {
 import flash.desktop.NativeApplication;
-import flash.desktop.SystemTrayIcon;
 import flash.display.NativeWindow;
 import flash.display.NativeWindowDisplayState;
 import flash.display.NativeWindowSystemChrome;
@@ -11,7 +10,6 @@ import flash.events.NativeWindowDisplayStateEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-import mx.controls.FlexNativeMenu;
 import mx.core.IWindow;
 import mx.core.mx_internal;
 import mx.events.AIREvent;
@@ -360,7 +358,8 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  public function set alwaysInFront(value:Boolean):void {
+  public function set
+          alwaysInFront(value:Boolean):void {
     _alwaysInFront = value;
     if (_nativeWindow && !_nativeWindow.closed) {
       nativeWindow.alwaysInFront = value;
@@ -450,45 +449,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   }
 
   //----------------------------------
-  //  menu
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the menu property.
-   */
-  private var _menu:FlexNativeMenu;
-  private var menuChanged:Boolean = false;
-
-  /**
-   *  The application menu for operating systems that support an application menu,
-   *  or the window menu of the application's initial window for operating
-   *  systems that support window menus.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get menu():FlexNativeMenu {
-    return _menu;
-  }
-
-  public function set menu(value:FlexNativeMenu):void {
-    if (_menu) {
-      _menu.automationParent = null;
-      _menu.automationOwner = null;
-    }
-
-    _menu = value;
-    menuChanged = true;
-
-    if (_menu) {
-      menu.automationParent = this;
-      menu.automationOwner = this;
-    }
-  }
-
-  //----------------------------------
   //  nativeWindow
   //----------------------------------
 
@@ -572,34 +532,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    */
   public function get systemChrome():String {
     return _systemChrome;
-  }
-
-  //----------------------------------
-  //  systemTrayIconMenu
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the systemTrayIconMenu property.
-   */
-  private var _systemTrayIconMenu:FlexNativeMenu;
-
-  /**
-   *  The system tray icon menu. Some operating systems do not support system tray icon menus.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get systemTrayIconMenu():FlexNativeMenu {
-    return _systemTrayIconMenu;
-  }
-
-  public function set systemTrayIconMenu(value:FlexNativeMenu):void {
-    _systemTrayIconMenu = value;
-    if (NativeApplication.supportsSystemTrayIcon && NativeApplication.nativeApplication.icon is SystemTrayIcon) {
-      SystemTrayIcon(NativeApplication.nativeApplication.icon).menu = value.nativeMenu;
-    }
   }
 
   private var _title:String = "";
@@ -848,35 +780,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
       // don't know whether height or width changed
       dispatchEvent(new Event("widthChanged"));
       dispatchEvent(new Event("heightChanged"));
-    }
-
-    if (menuChanged && !nativeWindow.closed) {
-      menuChanged = false;
-
-      if (menu == null) {
-        if (NativeApplication.supportsMenu) {
-          NativeApplication.nativeApplication.menu = null;
-        }
-        else {
-          if (NativeWindow.supportsMenu) {
-            nativeWindow.menu = null;
-          }
-        }
-      }
-      else {
-        if (menu.nativeMenu) {
-          if (NativeApplication.supportsMenu) {
-            NativeApplication.nativeApplication.menu = menu.nativeMenu;
-          }
-          else {
-            if (NativeWindow.supportsMenu) {
-              nativeWindow.menu = menu.nativeMenu;
-            }
-          }
-        }
-      }
-
-      dispatchEvent(new Event("menuChanged"));
     }
 
     if (toMax) {
