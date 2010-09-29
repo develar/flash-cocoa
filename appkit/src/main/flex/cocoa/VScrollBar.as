@@ -33,7 +33,8 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
   }
 
   override protected function track_mouseDownHandler(event:MouseEvent):void {
-    if (event.localY >= FlexButton(track).border.contentInsets.top) {
+    var border:Border = FlexButton(track).border;
+    if (border == null || event.localY >= border.contentInsets.top) {
       super.track_mouseDownHandler(event);
     }
   }

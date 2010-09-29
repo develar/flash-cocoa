@@ -14,18 +14,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>flashx</groupId>
-      <artifactId>textLayout</artifactId>
-      <version>2.0.154</version>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>mx</artifactId>
+      <version>${fdk.version}</version>
       <type>swc</type>
     </dependency>
-
-    <dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>mx</artifactId>
-			<version>${fdk.version}</version>
-			<type>swc</type>
-		</dependency>
 
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>

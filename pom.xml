@@ -39,6 +39,12 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>flashx</groupId>
+        <artifactId>textLayout</artifactId>
+        <version>2.0.168</version>
+        <type>swc</type>
+      </dependency>
+      <dependency>
         <groupId>com.adobe.flex.framework</groupId>
         <artifactId>air-framework</artifactId>
         <version>${fdk.version}</version>

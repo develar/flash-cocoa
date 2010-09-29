@@ -34,7 +34,8 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
   }
 
   override protected function track_mouseDownHandler(event:MouseEvent):void {
-    if (event.localX >= FlexButton(track).border.contentInsets.left) {
+    var border:Border = FlexButton(track).border;
+    if (border == null || event.localX >= border.contentInsets.left) {
       super.track_mouseDownHandler(event);
     }
   }

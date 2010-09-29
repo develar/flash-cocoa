@@ -43,7 +43,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.adobe.flash:playerglobal:swc:10.1" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.17836" level="project" />
-    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.154" level="project" />
+    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.168" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.0.17836" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.5.0.17836" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.5.0.17836" level="project" />

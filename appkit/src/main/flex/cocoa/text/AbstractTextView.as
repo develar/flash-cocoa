@@ -159,7 +159,6 @@ internal class AbstractTextView extends AbstractView implements IViewport {
 
   protected var _textFormat:ITextLayoutFormat;
   public function set textFormat(value:ITextLayoutFormat):void {
-    assert(_textFormat == null);
     _textFormat = value;
   }
 

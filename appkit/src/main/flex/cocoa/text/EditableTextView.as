@@ -68,7 +68,7 @@ use namespace tlf_internal;
 public class EditableTextView extends AbstractTextView implements IFocusManagerComponent, IIMESupport, ISystemCursorClient {
   private static const textElement:TextElement = new TextElement();
   private static const textBlock:TextBlock = new TextBlock(textElement);
-  private static var textLine:TextLine;
+  protected static var textLine:TextLine;
 
   private static const IGNORE_DAMAGE_EVENT:uint = 1 << 0;
   /**
@@ -178,7 +178,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   override public function set textFormat(value:ITextLayoutFormat):void {
     super.textFormat = value;
 
-    var cocoaTextFormat:TextLayoutFormatImpl = _textFormat as TextLayoutFormatImpl;
+    var cocoaTextFormat:SimpleTextLayoutFormat = _textFormat as SimpleTextLayoutFormat;
     if (cocoaTextFormat != null) {
       embeddedFontContext = cocoaTextFormat.textFormat.swfContext;
       textElement.elementFormat = cocoaTextFormat.textFormat.format;
@@ -507,7 +507,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private var _charMetrics:CharMetrics;
-  private function get charMetrics():CharMetrics {
+  protected function get charMetrics():CharMetrics {
     if (_charMetrics == null) {
       calculateFontMetrics();
     }
@@ -733,20 +733,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     validateProperties();
 
     if (editingMode == EditingMode.READ_ONLY) {
-      var selectionState:SelectionState = new SelectionState(textFlow, anchorPosition, activePosition);
-
-      var selectionEvent:SelectionEvent = new SelectionEvent(SelectionEvent.SELECTION_CHANGE, false, false, selectionState);
-
-      textContainerManager_selectionChangeHandler(selectionEvent);
+      textContainerManager_selectionChangeHandler(new SelectionEvent(SelectionEvent.SELECTION_CHANGE, false, false, new SelectionState(textFlow, anchorPosition, activePosition)));
     }
     else {
       var im:ISelectionManager = textContainerManager.beginInteraction();
-
       im.selectRange(anchorPosition, activePosition);
-
-      // Refresh the selection.  This does not cause a damage event.
       im.refreshSelection();
-
       textContainerManager.endInteraction();
     }
 
@@ -957,18 +949,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    * The value used for the compose is in _textContainerManager.compositionWidth.
    */
   private function measureTextSize(composeWidth:Number, composeHeight:Number):Rectangle {
-    // Adjust for explicit min/maxWidth so the measurement is accurate.
-//    if (isNaN(explicitWidth)) {
-//      if (!isNaN(explicitMinWidth) && (isNaN(composeWidth) || composeWidth < explicitMinWidth)) {
-//        composeWidth = minWidth;
-//      }
-//      if (!isNaN(explicitMaxWidth) && (isNaN(composeWidth) || composeWidth > explicitMaxWidth)) {
-//        composeWidth = maxWidth;
-//      }
-//    }
-
-    // If the width is NaN it can grow up to TextLine.MAX_LINE_WIDTH wide.
-    // If the height is NaN it can grow to allow all the text to fit.
     textContainerManager.compositionWidth = composeWidth;
     textContainerManager.compositionHeight = composeHeight;
 
@@ -985,28 +965,14 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // Adjust width and height for text alignment.
     return textContainerManager.getContentBounds();
   }
-
-  /**
-   * This method is called when anything affecting the default font, size, weight, etc. changes.
-   * It calculates the 'ascent', 'descent', and instance variables, which are used in measure().
-   */
+  
   private function calculateFontMetrics():void {
-    if (!(_textFormat is TextLayoutFormatImpl)) {
-      textElement.elementFormat = new ElementFormat(new FontDescription(effectiveTextFormat.fontFamily, effectiveTextFormat.fontWeight, effectiveTextFormat.fontStyle), effectiveTextFormat.fontSize, effectiveTextFormat.textAlpha);
+    var format:TextFormat = SimpleTextLayoutFormat(_textFormat).textFormat;
+    if (format.charMetrics == null) {
+      measureText("m");
+      format.charMetrics = new CharMetrics(textLine);
     }
-    else {
-      var format:TextLayoutFormatImpl = TextLayoutFormatImpl(_textFormat);
-      if (format.charMetrics == null) {
-        var textLine:TextLine = measureText("m");
-        var charMetrics:CharMetrics = new CharMetrics();
-        charMetrics.ascent = textLine.ascent;
-        charMetrics.descent = textLine.descent;
-        charMetrics.width = textLine.textWidth;
-        charMetrics.height = textLine.textHeight;
-        format.charMetrics = charMetrics;
-      }
-      _charMetrics = format.charMetrics;
-    }
+    _charMetrics = format.charMetrics;
   }
 
   public function measureText(text:String):TextLine {
@@ -1030,6 +996,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  Calculates the height needed for heightInLines lines using the default font.
    */
   private function calculateHeightInLines():Number {
+    var charMetrics:CharMetrics = this.charMetrics;
     const lineHeight:Number = TextLineUtil.calculateLineHeight(effectiveTextFormat.lineHeight, charMetrics.height);
     const firstBaselineOffset:Object = effectiveTextFormat.firstBaselineOffset;
     var height:Number = effectiveTextFormat.paddingTop + effectiveTextFormat.paddingBottom + ((heightInLines - 1) * lineHeight) + charMetrics.descent /* add in descent of last line */;
@@ -1081,8 +1048,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function handlePasteOperation(op:PasteOperation):void {
-    var hasConstraints:Boolean = _uiModel.restrict != null || _uiModel.maxChars || displayAsPassword;
-
+    var hasConstraints:Boolean = _uiModel.restrict != null || _uiModel.maxChars > 0 || displayAsPassword;
     // If there are no constraints and multiline text is allowed there is nothing that needs to be done.
     if (!hasConstraints && multiline) {
       return;
@@ -1352,14 +1318,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     var newContentHeight:Number = newContentBounds.height;
     if (newContentWidth != oldContentWidth) {
       _contentWidth = newContentWidth;
-
       // If there is a scroller, this triggers the scroller layout.
       dispatchPropertyChangeEvent("contentWidth", oldContentWidth, newContentWidth);
     }
 
     if (newContentHeight != oldContentHeight) {
       _contentHeight = newContentHeight;
-
       // If there is a scroller, this triggers the scroller layout.
       dispatchPropertyChangeEvent("contentHeight", oldContentHeight, newContentHeight);
     }

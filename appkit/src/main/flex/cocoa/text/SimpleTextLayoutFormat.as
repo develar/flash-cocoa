@@ -8,7 +8,7 @@ import flash.text.engine.FontDescription;
 import flashx.textLayout.formats.BackgroundColor;
 import flashx.textLayout.formats.BaselineOffset;
 import flashx.textLayout.formats.BlockProgression;
-import flashx.textLayout.formats.Clear;
+import flashx.textLayout.formats.ClearFloats;
 import flashx.textLayout.formats.Direction;
 import flashx.textLayout.formats.FormatValue;
 import flashx.textLayout.formats.ITextLayoutFormat;
@@ -22,10 +22,11 @@ import flashx.textLayout.formats.TextJustify;
 import flashx.textLayout.formats.VerticalAlign;
 import flashx.textLayout.formats.WhiteSpaceCollapse;
 
-public class TextLayoutFormatImpl implements ITextLayoutFormat {
+public class SimpleTextLayoutFormat implements ITextLayoutFormat {
   private var fontDescription:FontDescription;
+  private var elementFormat:ElementFormat;
 
-  public function TextLayoutFormatImpl(textFormat:TextFormat, insets:Insets = null) {
+  public function SimpleTextLayoutFormat(textFormat:TextFormat, insets:Insets = null) {
     _textFormat = textFormat;
     elementFormat = _textFormat.format;
     fontDescription = textFormat.format.fontDescription;
@@ -33,14 +34,10 @@ public class TextLayoutFormatImpl implements ITextLayoutFormat {
     this.insets = insets == null ? Insets.EMPTY : insets;
   }
 
-  private var elementFormat:ElementFormat;
-
   private var _textFormat:TextFormat;
   public function get textFormat():TextFormat {
     return _textFormat;
   }
-
-  public var charMetrics:CharMetrics;
 
   public function get color():* {
     return elementFormat.color;
@@ -268,22 +265,6 @@ public class TextLayoutFormatImpl implements ITextLayoutFormat {
     _lineBreak = value;
   }
 
-  public function get marginLeft():* {
-    return 0;
-  }
-
-  public function get marginTop():* {
-    return 0;
-  }
-
-  public function get marginRight():* {
-    return 0;
-  }
-
-  public function get marginBottom():* {
-    return 0;
-  }
-
   public function get listStyleType():* {
     return ListStyleType.DISC;
   }
@@ -292,8 +273,12 @@ public class TextLayoutFormatImpl implements ITextLayoutFormat {
     return ListStylePosition.OUTSIDE;
   }
 
-  public function get clear():* {
-    return Clear.NONE;
+  public function get listAutoPadding():* {
+    return 40;
+  }
+
+  public function get clearFloats():* {
+    return ClearFloats.NONE;
   }
 }
 }

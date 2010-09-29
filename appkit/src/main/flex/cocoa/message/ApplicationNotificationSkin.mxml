@@ -6,12 +6,12 @@
 
   <fx:Script><![CDATA[
     import cocoa.plaf.TextFormatID;
-    import cocoa.text.TextLayoutFormatImpl;
+    import cocoa.text.SimpleTextLayoutFormat;
 
     override protected function createChildren():void {
       super.createChildren();
 
-      textDisplay.textFormat = new TextLayoutFormatImpl(laf.getTextFormat(TextFormatID.SYSTEM));
+      textDisplay.textFormat = new SimpleTextLayoutFormat(laf.getTextFormat(TextFormatID.SYSTEM));
     }
     ]]></fx:Script>
   

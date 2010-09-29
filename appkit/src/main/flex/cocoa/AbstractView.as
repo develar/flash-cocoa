@@ -2802,7 +2802,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
 
     if ((flags & INVALID_SIZE) != 0 && includeInLayout && measureSizes()) {
-      // TODO (egeorgie): we don't need this invalidateDisplayList() here because we'll call it if the parent sets new actual size?
       invalidateDisplayList();
       invalidateParentSizeAndDisplayList();
     }
@@ -3273,11 +3272,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    *  @param oldValue Old value of the property.
    *
    *  @param value New value of the property.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
    */
   protected final function dispatchPropertyChangeEvent(prop:String, oldValue:*, value:*):void {
     if (hasEventListener("propertyChange")) {

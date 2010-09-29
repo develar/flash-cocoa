@@ -17,7 +17,7 @@ import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
 import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
 import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
-import cocoa.text.TextLayoutFormatImpl;
+import cocoa.text.SimpleTextLayoutFormat;
 
 import flash.display.BlendMode;
 
@@ -101,7 +101,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["TextArea"] = TextAreaSkin;
 
-    var textFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT, new Insets(5, 2, 5));
+    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT, new Insets(5, 2, 5));
     textFormat.$lineBreak = LineBreak.TO_FIT;
     data["TextArea.SystemTextFormat"] = textFormat;
 
@@ -130,8 +130,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     return hudLookAndFeel;
   }
 
-  private function createDefaultTextFormat():TextLayoutFormatImpl {
-    var textFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT, new Insets(0, 2));
+  private function createDefaultTextFormat():SimpleTextLayoutFormat {
+    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT, new Insets(0, 2));
     textFormat.$lineBreak = LineBreak.EXPLICIT;
     return textFormat;
   }
@@ -150,7 +150,7 @@ import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.text.TextFormat;
-import cocoa.text.TextLayoutFormatImpl;
+import cocoa.text.SimpleTextLayoutFormat;
 
 import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
@@ -210,15 +210,15 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     data["NumericStepper.TextInput"] = TextInputSkin;
     data["NumericStepper.TextInput.b"] = new NumericStepperTextInputBorder();
 
-    var numericStepperTextFormat:TextLayoutFormatImpl = createDefaultTextFormat();
+    var numericStepperTextFormat:SimpleTextLayoutFormat = createDefaultTextFormat();
     numericStepperTextFormat.$textAlign = TextAlign.END;
     data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
 
     data["TitleBar.PushButton"] = _parent.getClass("PushButton");
   }
 
-  private function createDefaultTextFormat():TextLayoutFormatImpl {
-    var textInputTextFormat:TextLayoutFormatImpl = new TextLayoutFormatImpl(AquaFonts.SYSTEM_FONT_HUD, new Insets(0, 2));
+  private function createDefaultTextFormat():SimpleTextLayoutFormat {
+    var textInputTextFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT_HUD, new Insets(0, 2));
     textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
     return textInputTextFormat;
   }
