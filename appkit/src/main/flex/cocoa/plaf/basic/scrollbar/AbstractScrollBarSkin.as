@@ -70,9 +70,8 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     const isOff:Boolean = ScrollBarBase(parent).maximum <= ScrollBarBase(parent).minimum || (isVertical ? h : w) < minFullSize;
-
+    graphics.clear();
     if (isOff == track.visible) {
-      graphics.clear();
       track.visible = !isOff;
       thumb.visible = !isOff;
       decrementButton.visible = !isOff;

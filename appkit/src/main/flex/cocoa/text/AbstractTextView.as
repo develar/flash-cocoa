@@ -6,9 +6,6 @@ import flash.geom.Rectangle;
 
 import flashx.textLayout.container.ScrollPolicy;
 import flashx.textLayout.container.TextContainerManager;
-import flashx.textLayout.conversion.ConversionType;
-import flashx.textLayout.conversion.ITextExporter;
-import flashx.textLayout.conversion.TextConverter;
 import flashx.textLayout.elements.Configuration;
 import flashx.textLayout.elements.TextFlow;
 import flashx.textLayout.formats.ITextLayoutFormat;
@@ -26,8 +23,6 @@ internal class AbstractTextView extends AbstractView implements IViewport {
   private static var classInitialized:Boolean = false;
 
   protected static var configuration:Configuration;
-
-  private static var plainTextExporter:ITextExporter;
 
   public function AbstractTextView() {
     super();
@@ -48,8 +43,6 @@ internal class AbstractTextView extends AbstractView implements IViewport {
     configuration = Configuration(TextContainerManager.defaultConfiguration).clone();
     configuration.manageEnterKey = false;
 
-    plainTextExporter = TextConverter.getExporter(TextConverter.PLAIN_TEXT_FORMAT);
-
     classInitialized = true;
   }
 
@@ -61,7 +54,7 @@ internal class AbstractTextView extends AbstractView implements IViewport {
   protected var _text:String = "";
   protected var textChanged:Boolean = false;
 
-  private var sourceIsText:Boolean;
+  protected var sourceIsText:Boolean = true;
 
   [Bindable("change")]
   /**
@@ -80,10 +73,6 @@ internal class AbstractTextView extends AbstractView implements IViewport {
    *  then the content will be set to a TextFlow
    *  which contains multiple paragraphs, each with one span.</p>
    *
-   *  <p>If you set the <code>textFlow</code> and get the <code>text</code>,
-   *  the text in each paragraph will be separated by a single
-   *  LF ("\n").</p>
-   *
    *  <p>Setting this property also affects the properties
    *  specifying the control's scroll position and the text selection.
    *  It resets the <code>horizontalScrollPosition</code>
@@ -97,27 +86,18 @@ internal class AbstractTextView extends AbstractView implements IViewport {
    *  @see #textFlow
    *  @see #horizontalScrollPosition
    *  @see #verticalScrollPosition
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function get text():String {
     if (_text == null) {
-      // Once we have a TextFlow, we can export its plain text.
-      //noinspection ReservedWordAsName
-      _text = String(plainTextExporter.export(_textFlow, ConversionType.STRING_TYPE));
+      _text = _textFlow.getText();
     }
-
     return _text;
   }
 
   /**
-   *  This will create a TextFlow with a single paragraph with a single span
-   *  with exactly the text specified.  If there is whitespace and line
-   *  breaks in the text, they will remain, regardless of the settings of
-   *  the lineBreak and whiteSpaceCollapse styles.
+   * This will create a TextFlow with a single paragraph with a single span with exactly the text specified.
+   * If there is whitespace and line breaks in the text, they will remain, regardless of the settings of
+   * the lineBreak and whiteSpaceCollapse styles.
    */
   public function set text(value:String):void {
     // Treat setting the 'text' to null as if it were set to the empty String (which is the default state).
@@ -147,7 +127,9 @@ internal class AbstractTextView extends AbstractView implements IViewport {
     invalidateSize();
     invalidateDisplayList();
 
-    dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+    if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
+      dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+    }
   }
 
   protected var _textFlow:TextFlow;

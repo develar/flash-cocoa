@@ -123,7 +123,7 @@ public class TextView extends AbstractTextView {
   override protected function updateDisplayList(w:Number, h:Number):void {
     if (_textFlow != null) {
       containerController.setCompositionSize(w, h);
-      textFlow.flowComposer.updateToController();
+      _textFlow.flowComposer.updateToController();
     }
 
   }

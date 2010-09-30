@@ -68,6 +68,8 @@
 
     <!--<TabView items="{tabViewPanes}" width="100%"/>-->
 
+    <TextInput width="100%"/>
+
     <TextArea width="100%">
       <uiModel>
         <text:TextAreaUIModel heightInLines="4"/>
