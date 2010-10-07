@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.flyti.cocoa</groupId>
 		<artifactId>cocoaAggregator</artifactId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2</version>
 	</parent>
 
 	<name>Aqua LaF</name>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.flyti.cocoa</groupId>
 			<artifactId>cocoa</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 			<type>swc</type>
 		</dependency>
 	</dependencies>
@@ -42,7 +42,7 @@
 			<plugin>
 				<groupId>org.flyti</groupId>
 				<artifactId>asset-builder-maven-plugin</artifactId>
-				<version>1.1.2-SNAPSHOT</version>
+				<version>1.1.2</version>
 				<executions>
           <execution>
 						<goals>
