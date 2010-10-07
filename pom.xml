@@ -32,7 +32,7 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:develar/flash-cocoa.git</connection>
+    <connection>scm:git:git://github.com/develar/flash-cocoa.git</connection>
     <url>http://github.com/develar/flash-cocoa</url>
   </scm>
 
