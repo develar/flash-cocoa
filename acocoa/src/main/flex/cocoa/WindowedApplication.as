@@ -4,6 +4,7 @@ import flash.display.NativeWindow;
 import flash.display.NativeWindowDisplayState;
 import flash.display.NativeWindowSystemChrome;
 import flash.display.NativeWindowType;
+import flash.display.Stage;
 import flash.events.Event;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.NativeWindowDisplayStateEvent;
@@ -91,14 +92,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     // dispatch here yet
   }
 
-  //----------------------------------
-  //  maxHeight
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the maxHeight property.
-   */
   private var _maxHeight:Number = 2880;
 
   /**
@@ -165,9 +158,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     invalidateProperties();
   }
 
-  //---------------------------------
-  //  minHeight
-  //---------------------------------
   private var _minHeight:Number = 0;
 
   /**
@@ -201,14 +191,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     invalidateProperties();
   }
 
-  //---------------------------------
-  //  minWidth
-  //---------------------------------
-
-  /**
-   *  @private
-   *  Storage for the minWidth property.
-   */
   private var _minWidth:Number = 0;
 
   /**
@@ -246,16 +228,12 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     invalidateProperties();
   }
 
-  //----------------------------------
-  //  visible
-  //----------------------------------
-
   [Bindable("hide")]
   [Bindable("show")]
   [Bindable("windowComplete")]
 
   /**
-   *  @private
+   *
    *  Also sets the NativeWindow's visibility.
    */
   override public function get visible():Boolean {
@@ -279,10 +257,9 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    *  We override setVisible because there's the flash display object concept
    *  of visibility and also the nativeWindow concept of visibility.
    */
-  override public function setVisible(value:Boolean,
-                                      noEvent:Boolean = false):void {
+  override public function setVisible(value:Boolean, noEvent:Boolean = false):void {
     // first handle the native window stuff
-    if (!_nativeWindow) {
+    if (_nativeWindow == null) {
       _nativeWindowVisible = value;
       invalidateProperties();
     }
@@ -313,7 +290,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   }
 
   /**
-   *  @private
    *  Also sets the stage's width.
    */
   override public function set width(value:Number):void {
@@ -392,10 +368,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   private var _bounds:Rectangle = new Rectangle(0, 0, 0, 0);
   private var boundsChanged:Boolean = false;
 
-  /**
-   *  @private
-   *  Storage for the height and width
-   */
   protected function get bounds():Rectangle {
     return nativeWindow.bounds;
   }
@@ -407,10 +379,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     invalidateProperties();
     invalidateSize();
   }
-
-  //----------------------------------
-  //  maximizable
-  //----------------------------------
 
   /**
    *  Specifies whether the window can be maximized.
@@ -428,10 +396,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  //----------------------------------
-  //  minimizable
-  //----------------------------------
-
   /**
    *  Specifies whether the window can be minimized.
    *
@@ -448,29 +412,16 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  //----------------------------------
-  //  nativeWindow
-  //----------------------------------
-
   /**
-   *  The NativeWindow used by this WindowedApplication component (the initial
-   *  native window of the application).
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
+   * The NativeWindow used by this WindowedApplication component (the initial native window of the application).
    */
   public function get nativeWindow():NativeWindow {
-    if ((systemManager != null) && (systemManager.stage != null)) {
+    if (systemManager != null && systemManager.stage != null) {
       return systemManager.stage.nativeWindow;
     }
 
     return null;
   }
-
-  //---------------------------------
-  //  resizable
-  //---------------------------------
 
   /**
    *  Specifies whether the window can be resized.
@@ -486,9 +437,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     return nativeWindow.resizable;
   }
 
-  /**
-   *  Storage for the status property.
-   */
   private var _status:String = "";
   private var statusChanged:Boolean = false;
 
@@ -1011,7 +959,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-
   /**
    *  Returns the width of the chrome for the window
    */
@@ -1027,13 +974,11 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   }
 
   /**
-   *  Starts a system resize.
+   * Starts a system resize.
    */
   protected function startResize(start:String):void {
-    if (!nativeWindow.closed) {
-      if (nativeWindow.resizable) {
-        stage.nativeWindow.startResize(start);
-      }
+    if (!nativeWindow.closed && nativeWindow.resizable) {
+      stage.nativeWindow.startResize(start);
     }
   }
 
@@ -1126,23 +1071,23 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
 
     super.createChildren();
 
-    systemManager.stage.nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING, window_displayStateChangingHandler);
-    systemManager.stage.nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE, window_displayStateChangeHandler);
-    systemManager.stage.nativeWindow.addEventListener(Event.CLOSING, window_closingHandler);
-    systemManager.stage.nativeWindow.addEventListener(Event.CLOSE, window_closeHandler, false, 0, true);
+    _nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING, window_displayStateChangingHandler);
+    _nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE, window_displayStateChangeHandler);
+    _nativeWindow.addEventListener(Event.CLOSING, window_closingHandler);
+    _nativeWindow.addEventListener(Event.CLOSE, window_closeHandler, false, 0, true);
 
     // For the edge case, e.g. visible is set to true in AIR xml file, we fabricate an activate event, since Flex comes in late to the show.
-    if (systemManager.stage.nativeWindow.active) {
+    if (_nativeWindow.active) {
       dispatchEvent(new AIREvent(AIREvent.WINDOW_ACTIVATE));
     }
 
-    systemManager.stage.nativeWindow.addEventListener(Event.ACTIVATE, nativeWindow_activateHandler, false, 0, true);
-    systemManager.stage.nativeWindow.addEventListener(Event.DEACTIVATE, nativeWindow_deactivateHandler, false, 0, true);
+    _nativeWindow.addEventListener(Event.ACTIVATE, nativeWindow_activateHandler, false, 0, true);
+    _nativeWindow.addEventListener(Event.DEACTIVATE, nativeWindow_deactivateHandler, false, 0, true);
 
-    systemManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVING, window_boundsHandler);
-    systemManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVE, window_moveHandler);
-    systemManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZING, window_boundsHandler);
-    systemManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, window_resizeHandler);
+    _nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVING, window_boundsHandler);
+    _nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVE, window_moveHandler);
+    _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZING, window_boundsHandler);
+    _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, window_resizeHandler);
   }
 
   private function window_boundsHandler(event:NativeWindowBoundsEvent):void {
@@ -1242,10 +1187,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
       validateNow();
     }
 
-    var e:FlexNativeWindowBoundsEvent =
-            new FlexNativeWindowBoundsEvent(FlexNativeWindowBoundsEvent.WINDOW_RESIZE, event.bubbles, event.cancelable,
-                    event.beforeBounds, event.afterBounds);
-    dispatchEvent(e);
+    dispatchEvent(new FlexNativeWindowBoundsEvent(FlexNativeWindowBoundsEvent.WINDOW_RESIZE, event.bubbles, event.cancelable, event.beforeBounds, event.afterBounds));
   }
 
   private function nativeApplication_activateHandler(event:Event):void {

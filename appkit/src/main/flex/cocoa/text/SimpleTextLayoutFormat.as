@@ -280,5 +280,9 @@ public class SimpleTextLayoutFormat implements ITextLayoutFormat {
   public function get clearFloats():* {
     return ClearFloats.NONE;
   }
+
+  public function get wordSpacing():* {
+    return undefined;
+  }
 }
 }

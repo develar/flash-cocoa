@@ -5,23 +5,23 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>1.0.14</version>
+    <version>15</version>
   </parent>
 
-  <properties>
+  <!--<properties>-->
 		<!--<fdk.version>4.5.0.17440</fdk.version>-->
 		<!--<flex.sdk.version>4.5.0.17440</flex.sdk.version>-->
-		<flexMojos.version>3.8-de3.1</flexMojos.version>
-	</properties>
+		<!--<flexMojos.version>3.8-de3.1</flexMojos.version>-->
+	<!--</properties>-->
 
   <name>Cocoa Aggregator</name>
   <groupId>org.flyti.cocoa</groupId>
   <artifactId>cocoaAggregator</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>foundation</module>
+    <!--<module>foundation</module>-->
     <module>asset-builder-maven-plugin</module>
     <!--<module>laf-compiler-ext</module>-->
     <module>appkit</module>
@@ -39,21 +39,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>flashx</groupId>
-        <artifactId>textLayout</artifactId>
-        <version>2.0.168</version>
-        <type>swc</type>
-      </dependency>
-      <dependency>
         <groupId>com.adobe.flex.framework</groupId>
         <artifactId>air-framework</artifactId>
         <version>${fdk.version}</version>
         <type>pom</type>
         <exclusions>
-          <exclusion>
-            <groupId>flash.flashx</groupId>
-            <artifactId>textLayout</artifactId>
-          </exclusion>
           <exclusion>
             <groupId>com.adobe.flex.framework</groupId>
             <artifactId>osmf</artifactId>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<application xmlns="http://ns.adobe.com/air/application/2.0">
+<application xmlns="http://ns.adobe.com/air/application/2.5">
   <id>org.flyti.aqua.testToolApp</id>
   <filename>testToolApp</filename>
   <name>Aqua Test Tool</name>
@@ -7,7 +7,7 @@
   <initialWindow>
     <systemChrome>none</systemChrome>
     <transparent>true</transparent>
-    <content>aquaLaFAssetBuilder-1.2-SNAPSHOT.swf</content>
+    <content>aquaLaFAssetBuilder-1.3-SNAPSHOT.swf</content>
     <x>150</x>
     <y>150</y>
   </initialWindow>

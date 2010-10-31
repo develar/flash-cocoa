@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/appkit/cocoa.iml" filepath="$PROJECT_DIR$/appkit/cocoa.iml" />
       <module fileurl="file://$PROJECT_DIR$/cocoaAggregator.iml" filepath="$PROJECT_DIR$/cocoaAggregator.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/foundation/foundation.iml" filepath="$PROJECT_DIR$/foundation/foundation.iml" />
     </modules>
   </component>
 </project>

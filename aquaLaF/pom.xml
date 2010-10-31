@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.flyti.cocoa</groupId>
 		<artifactId>cocoaAggregator</artifactId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.3-SNAPSHOT</version>
 	</parent>
 
 	<name>Aqua LaF</name>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.flyti.cocoa</groupId>
 			<artifactId>cocoa</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.3-SNAPSHOT</version>
 			<type>swc</type>
 		</dependency>
 	</dependencies>
@@ -35,14 +35,14 @@
 					<includeFiles>
             <!-- только чтобы flexmojos вcе resources не включил -->
 						<!--<file>assets.yml</file>-->
-            <file>${project.build.directory}/ea</file>
+            <include>${project.build.directory}/ea</include>
 					</includeFiles>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.flyti</groupId>
 				<artifactId>asset-builder-maven-plugin</artifactId>
-				<version>1.1.2-SNAPSHOT</version>
+				<version>1.3-SNAPSHOT</version>
 				<executions>
           <execution>
 						<goals>
