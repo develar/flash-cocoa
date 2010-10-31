@@ -1,27 +1,28 @@
-package org.flyti.util
-{
+package org.flyti.util {
 [DefaultProperty("entrySet")]
-public interface Map
-{
-	function get empty():Boolean;
+public interface Map {
+  function get empty():Boolean;
 
-	function get size():int;
+  function get size():int;
 
-	function containsKey(key:Object):Boolean;
-	function get(key:Object):Object;
+  function containsKey(key:Object):Boolean;
 
-	function put(key:Object, value:Object):void;
-	function remove(key:Object):Object;
+  function get(key:Object):Object;
 
-	function putAll(map:Map):void;
-	function removeAll(map:Map):void;
+  function put(key:Object, value:Object):void;
 
-	function get keySet():Vector.<Object>;
+  function remove(key:Object):Object;
 
-	function clear():void;
+  function putAll(map:Map):void;
 
-	function set entrySet(value:Vector.<MapEntry>):void;
+  function removeAll(map:Map):void;
 
-	function get iterator():Object;
+  function get keySet():Vector.<Object>;
+
+  function clear():void;
+
+  function set entrySet(value:Vector.<MapEntry>):void;
+
+  function get iterator():Object;
 }
 }
