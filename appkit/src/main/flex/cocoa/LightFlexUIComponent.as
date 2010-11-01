@@ -14,11 +14,11 @@ public class LightFlexUIComponent extends UIComponent implements View {
   override public function set currentState(value:String):void {
   }
 
-  public function addDisplayObject(displayObject:DisplayObject, index:int = -1):void {
+  public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void {
     $addChildAt(displayObject, index == -1 ? numChildren : index);
   }
 
-  public function removeDisplayObject(displayObject:DisplayObject):void {
+  public final function removeDisplayObject(displayObject:DisplayObject):void {
     $removeChild(displayObject);
   }
 }

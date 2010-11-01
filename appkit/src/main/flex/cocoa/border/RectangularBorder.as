@@ -9,8 +9,9 @@ public class RectangularBorder extends AbstractBorder {
 
   private var fillColor:Number;
   private var strokeColor:Number;
+  private var cornerRadius:Number;
 
-  public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:Number, strokeColor:Number = NaN) {
+  public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:Number, strokeColor:Number = NaN, cornerRadius:Number = NaN) {
     super();
 
     _layoutHeight = layoutHeight;
@@ -18,6 +19,7 @@ public class RectangularBorder extends AbstractBorder {
 
     this.fillColor = fillColor;
     this.strokeColor = strokeColor;
+    this.cornerRadius = cornerRadius;
   }
 
   override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
@@ -30,7 +32,12 @@ public class RectangularBorder extends AbstractBorder {
       g.beginFill(fillColor, alpha);
     }
 
-    g.drawRect(0.5, 0.5, w - 1, h - 1);
+    if (isNaN(cornerRadius)) {
+      g.drawRect(0.5, 0.5, w - 1, h - 1);
+    }
+    else {
+      g.drawRoundRect(0.5, 0.5, w - 1, h - 1, cornerRadius);
+    }
 
     if (!isNaN(fillColor)) {
       g.endFill();

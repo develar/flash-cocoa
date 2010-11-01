@@ -1,34 +1,27 @@
-package cocoa
-{
+package cocoa {
 import cocoa.pane.TitledPane;
 import cocoa.plaf.TitledComponentSkin;
 
 [Abstract]
-public class TitledComponent extends AbstractComponent implements TitledPane
-{
-	private var _title:String;
-	public function get title():String
-	{
-		return _title;
-	}
-	public function set title(value:String):void
-	{
-		if (value != _title)
-		{
-			_title = value;
-			if (skin != null)
-			{
-				TitledComponentSkin(skin).title = _title;
-			}
-		}
-	}
+public class TitledComponent extends AbstractComponent implements TitledPane {
+  private var _title:String;
+  public function get title():String {
+    return _title;
+  }
 
-	override protected function skinAttachedHandler():void
-    {
-		if (_title != null)
-		{
-			TitledComponentSkin(skin).title = _title;
-		}
-	}
+  public function set title(value:String):void {
+    if (value != _title) {
+      _title = value;
+      if (skin != null) {
+        TitledComponentSkin(skin).title = _title;
+      }
+    }
+  }
+
+  override protected function skinAttachedHandler():void {
+    if (_title != null) {
+      TitledComponentSkin(skin).title = _title;
+    }
+  }
 }
 }

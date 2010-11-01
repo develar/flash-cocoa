@@ -49,9 +49,9 @@
 				<configuration>
 					<debug>true</debug>
 					<sourceFile>cocoa/plaf/aqua/demo/Main.mxml</sourceFile>
-          <compiledLocales>
+          <localesCompiled>
             <locale>en_US</locale>
-          </compiledLocales>
+          </localesCompiled>
 				</configuration>
 			</plugin>
 		</plugins>

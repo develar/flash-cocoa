@@ -13,12 +13,19 @@ public class LinearGradientBorder extends AbstractBorder {
 
   private const graphicsData:Vector.<IGraphicsData> = new Vector.<IGraphicsData>(1, true);
 
-  public function LinearGradientBorder(colors:Array, frameInsets:FrameInsets = null) {
+  private var _layoutHeight:Number;
+  override public function get layoutHeight():Number {
+    return _layoutHeight;
+  }
+
+  public function LinearGradientBorder(colors:Array, frameInsets:FrameInsets = null, layoutHeight:Number = NaN) {
     graphicsData[0] = new GraphicsGradientFill(GradientType.LINEAR, colors, [1, 1], [0, 255], sharedMatrix);
 
     if (frameInsets != null) {
       _frameInsets = frameInsets;
     }
+
+    _layoutHeight = layoutHeight;
   }
 
   override public function draw(view:View, g:Graphics, w:Number, h:Number):void {

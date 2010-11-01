@@ -98,16 +98,14 @@ public class LabelHelper {
   }
 
   public function move(x:Number, y:Number):void {
-    if (_rotation != null) {
-      switch (_rotation) {
-        case TextRotation.ROTATE_270:
-        {
-          y += _textLine.textWidth;
-          x += _textLine.textHeight;
-        }
-          break;
-      }
-    }
+//    if (_rotation != null) {
+//      switch (_rotation) {
+//        case TextRotation.ROTATE_270:
+//          y += _textLine.textWidth;
+//          x += _textLine.textHeight;
+//          break;
+//      }
+//    }
 
     _textLine.x = x;
     _textLine.y = y;

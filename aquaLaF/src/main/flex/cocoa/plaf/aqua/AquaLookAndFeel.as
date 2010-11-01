@@ -110,6 +110,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["HSeparator.b"] = new SeparatorBorder();
 
     data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
+
+    data["Sidebar.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
   }
 
   private var windowFrameLookAndFeel:WindowFrameLookAndFeel;

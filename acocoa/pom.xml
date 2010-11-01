@@ -38,7 +38,14 @@
               <uri>acocoa</uri>
               <includes>
                 <class>**.WindowedApplication</class>
+                <class>**.DocumentWindow</class>
               </includes>
+              <names>
+                <class>
+                  <name>DocumentWindow</name>
+                  <id>Window</id>
+                </class>
+              </names>
             </manifest>
           </manifests>
         </configuration>

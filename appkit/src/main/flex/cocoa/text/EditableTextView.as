@@ -572,11 +572,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       composeHeight = measuredHeight;
     }
 
+
     if (!isNaN(composeWidth) && !isNaN(composeHeight)) {
-      //  skip
+      // skip
     }
     else {
-      var bounds:Rectangle;
+     var bounds:Rectangle;
       if (!isNaN(composeWidth)) {
         bounds = measureTextSize(composeWidth, NaN);
         measuredHeight = Math.ceil(bounds.bottom);
@@ -590,6 +591,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         if (adjustMeasuredWidthToRange() != MeasurementAdjustResult.MAX) {
           flags |= AUTO_WIDTH;
         }
+      }
+      else {
+        flags |= AUTO_HEIGHT;
+        flags |= AUTO_WIDTH;
+        bounds = measureTextSize(NaN, NaN);
+        measuredWidth = Math.ceil(bounds.right);
+        measuredHeight = Math.ceil(bounds.bottom);
       }
     }
 

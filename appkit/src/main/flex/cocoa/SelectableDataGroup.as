@@ -1,8 +1,4 @@
 package cocoa {
-import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.basic.AbstractItemRenderer;
-
 import flash.events.MouseEvent;
 
 import mx.core.IVisualElement;
@@ -14,7 +10,7 @@ import spark.components.IItemRenderer;
 use namespace mx_internal;
 
 [Abstract]
-public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelProvider {
+public class SelectableDataGroup extends FlexDataGroup {
   protected static const selectionChanged:uint = 1 << 0;
   private static const mouseSelectionModeChanged:uint = 1 << 1;
 
@@ -25,15 +21,6 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
 
     mouseEnabled = false;
     mouseEnabledWhereTransparent = false;
-  }
-
-  private var _laf:LookAndFeel;
-  public function get laf():LookAndFeel {
-    return _laf;
-  }
-
-  public function set laf(value:LookAndFeel):void {
-    _laf = value;
   }
 
   private var _lafSubkey:String;
@@ -113,9 +100,6 @@ public class SelectableDataGroup extends FlexDataGroup implements LookAndFeelPro
   override public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {
     super.updateRenderer(renderer, itemIndex, data);
 
-    if (renderer is AbstractItemRenderer && _laf != null) {
-      AbstractItemRenderer(renderer).laf = _laf;
-    }
     if (renderer is IconedItemRenderer) {
       IconedItemRenderer(renderer).icon = itemToIcon(data);
     }

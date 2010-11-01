@@ -46,9 +46,9 @@
         <artifactId>flexmojos-maven-plugin</artifactId>
         <configuration>
           <useResourceBundleMetadata>false</useResourceBundleMetadata>
-          <runtimeLocales>
+          <localesRuntime>
             <locale>en_US</locale>
-          </runtimeLocales>
+          </localesRuntime>
           <manifests>
             <manifest>
               <uri>cocoa</uri>
@@ -108,11 +108,16 @@
                 <class>**.*UIModel</class>
 
                 <class>cocoa.modules.ModuleId</class>
+                <class>cocoa.FlexDataGroup</class>
               </includes>
               <excludes>
                 <class>cocoa.plaf.basic.scrollbar.*</class>
               </excludes>
               <names>
+                <class>
+                  <name>FlexDataGroup</name>
+                  <id>DataGroup</id>
+                </class>
                 <class>
                   <name>MXMLSkin</name>
                   <id>Skin</id>

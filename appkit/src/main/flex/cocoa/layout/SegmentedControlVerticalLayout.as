@@ -1,5 +1,4 @@
-package cocoa.layout
-{
+package cocoa.layout {
 import mx.core.ILayoutElement;
 
 import spark.components.supportClasses.GroupBase;
@@ -12,25 +11,21 @@ import spark.components.supportClasses.GroupBase;
  *
  *  All children are set to the width of the parent.
  */
-public class SegmentedControlVerticalLayout extends SegmentedControlLayout
-{
-	override public function updateDisplayList(width:Number, height:Number):void
-	{
-		var layoutTarget:GroupBase = target;
-		var y:Number = 0;
-		for (var i:int = 0, n:int = layoutTarget.numElements; i < n; i++)
-		{
-			var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
-			if (!layoutElement.includeInLayout)
-			{
-				continue;
-			}
+public class SegmentedControlVerticalLayout extends SegmentedControlLayout {
+  override public function updateDisplayList(width:Number, height:Number):void {
+    var layoutTarget:GroupBase = target;
+    var y:Number = 0;
+    for (var i:int = 0, n:int = layoutTarget.numElements; i < n; i++) {
+      var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
+      if (!layoutElement.includeInLayout) {
+        continue;
+      }
 
-			layoutElement.setLayoutBoundsPosition(0, y);
-			layoutElement.setLayoutBoundsSize(width, NaN);
+      layoutElement.setLayoutBoundsPosition(0, y);
+      layoutElement.setLayoutBoundsSize(width, NaN);
 
-			y += layoutElement.getLayoutBoundsHeight() + gap;
-		}
-	}
+      y += layoutElement.getLayoutBoundsHeight() + gap;
+    }
+  }
 }
 }
