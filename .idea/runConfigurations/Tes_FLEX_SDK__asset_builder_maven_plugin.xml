@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test asset-builder-maven-plugin" type="JUnit" factoryName="JUnit">
+  <configuration default="false" name="Tes$FLEX_SDK$ asset-builder-maven-plugin" type="JUni$FLEX_SDK$" factoryName="JUni$FLEX_SDK$">
     <extension name="snapshooter" />
     <module name="asset-builder-maven-plugin" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -7,7 +7,7 @@
     <option name="PACKAGE_NAME" value="" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />
-    <option name="TEST_OBJECT" value="package" />
+    <option name="TEST_OBJEC$FLEX_SDK$" value="class" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />

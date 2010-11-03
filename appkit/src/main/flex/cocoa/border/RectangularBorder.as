@@ -1,21 +1,26 @@
 package cocoa.border {
+import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.View;
 
 import flash.display.Graphics;
 
 public class RectangularBorder extends AbstractBorder {
+  private static const DEFAULT_FRAME_INSETS:FrameInsets = new FrameInsets(0.5, 0.5, 0.5, 0.5);
+
   private var _layoutHeight:Number;
 
   private var fillColor:Number;
   private var strokeColor:Number;
   private var cornerRadius:Number;
 
-  public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:Number, strokeColor:Number = NaN, cornerRadius:Number = NaN) {
+  public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:Number, strokeColor:Number = NaN, cornerRadius:Number = NaN, frameInsets:FrameInsets = null) {
     super();
 
     _layoutHeight = layoutHeight;
     _contentInsets = contentInsets;
+
+    _frameInsets = frameInsets == null ? DEFAULT_FRAME_INSETS : frameInsets;
 
     this.fillColor = fillColor;
     this.strokeColor = strokeColor;
@@ -33,10 +38,10 @@ public class RectangularBorder extends AbstractBorder {
     }
 
     if (isNaN(cornerRadius)) {
-      g.drawRect(0.5, 0.5, w - 1, h - 1);
+      g.drawRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.bottom - _frameInsets.top);
     }
     else {
-      g.drawRoundRect(0.5, 0.5, w - 1, h - 1, cornerRadius);
+      g.drawRoundRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.bottom - _frameInsets.top, cornerRadius);
     }
 
     if (!isNaN(fillColor)) {

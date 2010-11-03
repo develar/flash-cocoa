@@ -704,15 +704,6 @@ public class TileLayout extends LayoutBase implements VirtualLayout
 		}
 	}
 
-	//--------------------------------------------------------------------------
-	//
-	//  Variables
-	//
-	//--------------------------------------------------------------------------
-
-	/**
-	 * @private
-	 */
 	override public function clearVirtualLayoutCache():void
 	{
 		_tileWidthCached = _tileHeightCached = NaN;

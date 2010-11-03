@@ -142,16 +142,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  /**
-   *  @private
-   *  Specifies the maximum width of the application's window.
-   *
-   *  @default dependent on the operating system and the AIR systemChrome setting.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   override public function set maxWidth(value:Number):void {
     _maxWidth = value;
     maxWidthChanged = true;
@@ -760,13 +750,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  /**
-   *  Closes the application's NativeWindow (the initial native window opened by the application). This action is cancelable.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   public function close():void {
     if (!nativeWindow.closed) {
       var e:Event = new Event("closing", true, true);

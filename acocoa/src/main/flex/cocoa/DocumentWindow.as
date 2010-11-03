@@ -28,6 +28,8 @@ import mx.managers.ISystemManager;
 import mx.managers.SystemManagerGlobals;
 import mx.managers.WindowedSystemManager;
 
+import org.flyti.plexus.LocalEventMap;
+
 use namespace mx_internal;
 
 /**
@@ -183,15 +185,6 @@ use namespace mx_internal;
  */
 [Event(name="windowMove", type="mx.events.FlexNativeWindowBoundsEvent")]
 
-/**
- *  Dispatched after the underlying NativeWindow is resized.
- *
- *  @eventType mx.events.FlexNativeWindowBoundsEvent.WINDOW_RESIZE
- *
- *  @langversion 3.0
- *  @playerversion AIR 1.5
- *  @productversion Flex 4
- */
 [Event(name="windowResize", type="mx.events.FlexNativeWindowBoundsEvent")]
 
 [Frame(factoryClass="mx.managers.WindowedSystemManager")]
@@ -213,10 +206,11 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     super();
 
     addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
-    addEventListener(FlexEvent.PREINITIALIZE, preinitializeHandler);
 
     invalidateProperties();
   }
+
+  protected var maps:Vector.<LocalEventMap>;
 
   private var _nativeWindow:NativeWindow;
 
@@ -244,16 +238,10 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
   [Inspectable(category="General")]
   [PercentProxy("percentHeight")]
 
-  /**
-   *  @private
-   */ override public function get height():Number {
+  override public function get height():Number {
     return _bounds.height;
   }
 
-  /**
-   *  @private
-   *  Also sets the stage's height.
-   */
   override public function set height(value:Number):void {
     if (value < minHeight) {
       value = minHeight;
@@ -274,14 +262,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     // also dispatched in the resizeHandler
   }
 
-  //----------------------------------
-  //  maxHeight
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the maxHeight property.
-   */
   private var _maxHeight:Number = 2880;
 
   /**
@@ -305,30 +285,12 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     }
   }
 
-  /**
-   *  @private
-   *  Specifies the maximum height of the application's window.
-   *
-   *  @default dependent on the operating system and the AIR systemChrome setting.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   override public function set maxHeight(value:Number):void {
     _maxHeight = value;
     maxHeightChanged = true;
     invalidateProperties();
   }
 
-  //----------------------------------
-  //  maxWidth
-  //----------------------------------
-
-  /**
-   *  @private
-   *  Storage for the maxWidth property.
-   */
   private var _maxWidth:Number = 2880;
 
   /**
@@ -352,29 +314,12 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     }
   }
 
-  /**
-   *  @private
-   *  Specifies the maximum width of the application's window.
-   *
-   *  @default dependent on the operating system and the AIR systemChrome setting.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   override public function set maxWidth(value:Number):void {
     _maxWidth = value;
     maxWidthChanged = true;
     invalidateProperties();
   }
 
-  //---------------------------------
-  //  minHeight
-  //---------------------------------
-
-  /**
-   *  @private
-   */
   private var _minHeight:Number = 0;
 
   /**
@@ -461,10 +406,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     invalidateProperties();
   }
 
-  //----------------------------------
-  //  visible
-  //----------------------------------
-
   [Bindable("hide")]
   [Bindable("show")]
   [Bindable("windowComplete")]
@@ -486,7 +427,8 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
    *  @langversion 3.0
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
-   */ override public function get visible():Boolean {
+   */
+  override public function get visible():Boolean {
     if (nativeWindow && nativeWindow.closed) {
       return false;
     }
@@ -498,9 +440,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     }
   }
 
-  /**
-   *  @private
-   */
   override public function set visible(value:Boolean):void {
     setVisible(value);
   }
@@ -536,10 +475,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     // now call super.setVisible
     super.setVisible(value, noEvent);
   }
-
-  //----------------------------------
-  //  width
-  //----------------------------------
 
   [Bindable("widthChanged")]
   [Inspectable(category="General")]
@@ -1023,12 +958,21 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     systemManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZING, window_boundsHandler);
 
     systemManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, window_resizeHandler);
-
   }
 
-  private function preinitializeHandler(event:FlexEvent):void {
+  override public function initialize():void {
+    super.initialize();
+
     systemManager.stage.nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING, window_displayStateChangingHandler);
     systemManager.stage.nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE, window_displayStateChangeHandler);
+
+    if (maps != null) {
+      for each (var map:LocalEventMap in maps) {
+        if (map.dispatcher == null) {
+          map.dispatcher = this;
+        }
+      }
+    }
   }
 
   private function window_boundsHandler(event:NativeWindowBoundsEvent):void {
@@ -1089,9 +1033,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     oldY = newBounds.y;
   }
 
-  /**
-   *  @private
-   */
   private function window_closeEffectEndHandler(event:Event):void {
     removeEventListener(EffectEvent.EFFECT_END, window_closeEffectEndHandler);
     if (!nativeWindow.closed) {
@@ -1099,9 +1040,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     }
   }
 
-  /**
-   *  @private
-   */
   private function window_closingHandler(event:Event):void {
     var e:Event = new Event("closing", true, true);
     dispatchEvent(e);
@@ -1117,9 +1055,6 @@ public class DocumentWindow extends Container implements IWindow, IFocusManagerC
     }
   }
 
-  /**
-   *  @private
-   */
   private function window_closeHandler(event:Event):void {
     dispatchEvent(new Event("close"));
 
