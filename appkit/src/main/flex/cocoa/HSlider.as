@@ -3,6 +3,7 @@ package cocoa
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
+import mx.core.InteractionMode;
 import mx.core.UIComponent;
 import mx.core.mx_internal;
 
@@ -20,7 +21,7 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 			skin.enabled = value;
 		}
 	}
-	
+
 	override protected function nearestValidValue(value:Number, interval:Number):Number
 	{
 		if (interval == 0)
@@ -112,6 +113,9 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		{
 			return 0;
 		}
+    else if (styleProp == "interactionMode") {
+      return InteractionMode.MOUSE;
+    }
 		else
 		{
 			throw new Error("unknown " + styleProp);

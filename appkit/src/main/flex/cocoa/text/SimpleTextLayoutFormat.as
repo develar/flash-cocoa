@@ -12,6 +12,7 @@ import flashx.textLayout.formats.ClearFloats;
 import flashx.textLayout.formats.Direction;
 import flashx.textLayout.formats.FormatValue;
 import flashx.textLayout.formats.ITextLayoutFormat;
+import flashx.textLayout.formats.JustificationRule;
 import flashx.textLayout.formats.LeadingModel;
 import flashx.textLayout.formats.LineBreak;
 import flashx.textLayout.formats.ListStylePosition;
@@ -80,7 +81,7 @@ public class SimpleTextLayoutFormat implements ITextLayoutFormat {
   }
 
   public function get breakOpportunity():* {
-    return BreakOpportunity.AUTO;
+    return elementFormat.breakOpportunity;
   }
 
   public function get digitCase():* {
@@ -119,8 +120,12 @@ public class SimpleTextLayoutFormat implements ITextLayoutFormat {
     return fontDescription.fontName;
   }
 
+  private var _textDecoration:String = TextDecoration.NONE;
   public function get textDecoration():* {
-    return TextDecoration.NONE;
+    return _textDecoration;
+  }
+  public function set $textDecoration(value:String):void {
+    _textDecoration = value;
   }
 
   public function get fontWeight():* {
@@ -189,7 +194,7 @@ public class SimpleTextLayoutFormat implements ITextLayoutFormat {
   }
 
   public function get justificationRule():* {
-    return FormatValue.AUTO;
+    return JustificationRule.SPACE;
   }
 
   public function get justificationStyle():* {
@@ -205,7 +210,7 @@ public class SimpleTextLayoutFormat implements ITextLayoutFormat {
   }
 
   public function get leadingModel():* {
-    return LeadingModel.AUTO;
+    return LeadingModel.ROMAN_UP;
   }
 
   public function get columnGap():* {
@@ -282,7 +287,31 @@ public class SimpleTextLayoutFormat implements ITextLayoutFormat {
   }
 
   public function get wordSpacing():* {
-    return undefined;
+    return null;
+  }
+
+  public function getStyle(styleName:String):* {
+    return null;
+  }
+
+  public function get styleName():* {
+    return null;
+  }
+
+  public function get linkNormalFormat():* {
+    return null;
+  }
+
+  public function get linkActiveFormat():* {
+    return null;
+  }
+
+  public function get linkHoverFormat():* {
+    return null;
+  }
+
+  public function get listMarkerFormat():* {
+    return null;
   }
 }
 }

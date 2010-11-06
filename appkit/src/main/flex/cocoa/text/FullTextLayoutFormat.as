@@ -1,6 +1,8 @@
 package cocoa.text {
 import cocoa.Insets;
 
+import flash.text.engine.BreakOpportunity;
+
 import flashx.textLayout.formats.BackgroundColor;
 import flashx.textLayout.formats.TextDecoration;
 
@@ -29,15 +31,6 @@ public class FullTextLayoutFormat extends SimpleTextLayoutFormat {
 
   override public function get backgroundAlpha():* {
     return backgroundARGB == 0 ? 1 : (((backgroundARGB >>> 24) & 0xff) / 0xff);
-  }
-
-  private var _textDecoration:String = TextDecoration.NONE;
-  override public function get textDecoration():* {
-    return _textDecoration;
-  }
-
-  public function set $textDecoration(value:String):void {
-    _textDecoration = value
   }
 }
 }

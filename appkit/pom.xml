@@ -62,6 +62,7 @@
                 <class>**.colorPicker.ColorPicker</class>
 
                 <class>**.sidebar.*</class>
+                <class>**.Window</class>
                 <class>**.Panel</class>
                 <class>**.*MXMLSkin</class>
                 <class>**.AbstractSkin</class>

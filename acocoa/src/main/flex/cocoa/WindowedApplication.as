@@ -4,7 +4,6 @@ import flash.display.NativeWindow;
 import flash.display.NativeWindowDisplayState;
 import flash.display.NativeWindowSystemChrome;
 import flash.display.NativeWindowType;
-import flash.display.Stage;
 import flash.events.Event;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.NativeWindowDisplayStateEvent;
@@ -16,7 +15,6 @@ import mx.core.mx_internal;
 import mx.events.AIREvent;
 import mx.events.EffectEvent;
 import mx.events.FlexEvent;
-import mx.events.FlexNativeWindowBoundsEvent;
 import mx.managers.DragManager;
 import mx.managers.SystemManagerGlobals;
 
@@ -1001,11 +999,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     removeEventListener(EffectEvent.EFFECT_END, windowUnminimizeHandler);
   }
 
-  private function window_moveHandler(event:NativeWindowBoundsEvent):void {
-    dispatchEvent(new FlexNativeWindowBoundsEvent(FlexNativeWindowBoundsEvent.WINDOW_MOVE, event.bubbles, event.cancelable,
-            event.beforeBounds, event.afterBounds));
-  }
-
   private function window_displayStateChangeHandler(
           event:NativeWindowDisplayStateEvent):void {
     // Redispatch event.
@@ -1068,7 +1061,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     _nativeWindow.addEventListener(Event.DEACTIVATE, nativeWindow_deactivateHandler, false, 0, true);
 
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVING, window_boundsHandler);
-    _nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVE, window_moveHandler);
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZING, window_boundsHandler);
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, window_resizeHandler);
   }
@@ -1169,8 +1161,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
       invalidateDisplayList();
       validateNow();
     }
-
-    dispatchEvent(new FlexNativeWindowBoundsEvent(FlexNativeWindowBoundsEvent.WINDOW_RESIZE, event.bubbles, event.cancelable, event.beforeBounds, event.afterBounds));
   }
 
   private function nativeApplication_activateHandler(event:Event):void {

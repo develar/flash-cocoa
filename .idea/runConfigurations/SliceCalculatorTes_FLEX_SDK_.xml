@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SliceCalculatorTes$FLEX_SDK$" type="JUni$FLEX_SDK$" factoryName="JUni$FLEX_SDK$">
+    <extension name="coverage" enabled="false" merge="false" />
     <extension name="snapshooter" />
     <module name="asset-builder-maven-plugin" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />

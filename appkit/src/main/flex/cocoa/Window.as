@@ -8,7 +8,10 @@ import cocoa.plaf.WindowSkin;
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
+import flash.system.Capabilities;
+
 import org.flyti.plexus.Injectable;
+import org.flyti.plexus.LocalEventMap;
 
 [DefaultProperty("mxmlContent")]
 public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher {
@@ -17,6 +20,8 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
 
   protected static const RESIZABLE:uint = 1 << 0;
   protected static const CLOSABLE:uint = 1 << 1;
+
+  protected var maps:Vector.<LocalEventMap>;
 
   public function Window() {
     super();
