@@ -42,8 +42,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.189-de1" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.1" level="project" />
+    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.1" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.5.0.18365" level="project" />

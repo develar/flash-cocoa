@@ -24,6 +24,12 @@
       <artifactId>cocoa</artifactId>
       <version>1.3-SNAPSHOT</version>
       <type>swc</type>
+      <exclusions>
+        <exclusion>
+          <groupId>com.adobe.flex.framework</groupId>
+          <artifactId>playerglobal</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
