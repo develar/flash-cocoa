@@ -1,7 +1,5 @@
-package cocoa.pane
-{
-public interface TitledPane
-{
-	function set title(value:String):void
+package cocoa.pane {
+public interface TitledPane {
+  function set title(value:String):void
 }
 }

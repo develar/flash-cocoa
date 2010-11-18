@@ -536,28 +536,10 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     dispatchEvent(new Event("titleIconChanged"));
   }
 
-  /**
-   *  Specifies whether the window is transparent.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   public function get transparent():Boolean {
     return nativeWindow.closed ? false : nativeWindow.transparent;
   }
 
-  /**
-   *  Specifies the type of NativeWindow that this component
-   *  represents. The set of possible values is defined by the constants
-   *  in the NativeWindowType class.
-   *
-   *  @see flash.display.NativeWindowType
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   public function get type():String {
     // The initial window is always of type "normal".
     return NativeWindowType.NORMAL;
@@ -589,13 +571,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    *  Instead, it controls the entire drag-and-drop process.
    *  It supports customizing the cursors and provides a drop animation.
    *  However, it does not allow dragging between AIR windows and between the operating system or AIR window.</p>
-   *
-   *  @default true
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
 
   /*  This property is not directly read by the systemManager. It is here so that it gets
@@ -769,13 +744,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     NativeApplication.nativeApplication.exit();
   }
 
-  /**
-   *  Maximizes the window, or does nothing if it's already maximized.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   public function maximize():void {
 
     if (!nativeWindow || !nativeWindow.maximizable || nativeWindow.closed) {
@@ -794,13 +762,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  /**
-   *  Minimizes the window.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   public function minimize():void {
     if (!minimizable) {
       return;
@@ -818,14 +779,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  /**
-   *  Restores the window (unmaximizes it if it's maximized, or
-   *  unminimizes it if it's minimized).
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   public function restore():void {
     if (!nativeWindow.closed) {
       var e:NativeWindowDisplayStateEvent;

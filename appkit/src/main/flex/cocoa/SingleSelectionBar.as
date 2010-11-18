@@ -27,9 +27,6 @@ public class SingleSelectionBar extends Bar {
 
   override ui function segmentedControlAdded():void {
     typedSegmentedControl = SingleSelectionDataGroup(segmentedControl);
-    typedSegmentedControl.selectedIndex = pendingSelectedIndex;
-    pendingSelectedIndex = ListSelection.NO_SELECTION;
-
     segmentedControl.addEventListener(IndexChangeEvent.CHANGE, itemGroupSelectionChangeHandler);
   }
 
@@ -39,6 +36,13 @@ public class SingleSelectionBar extends Bar {
 
   protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void {
     throw new Error("abstract");
+  }
+
+  override protected function validateItems():void {
+    super.validateItems();
+
+    typedSegmentedControl.selectedIndex = pendingSelectedIndex;
+    pendingSelectedIndex = ListSelection.NO_SELECTION;
   }
 }
 }

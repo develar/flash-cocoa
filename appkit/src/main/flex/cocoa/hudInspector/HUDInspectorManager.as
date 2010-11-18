@@ -62,7 +62,7 @@ public class HUDInspectorManager {
       if (currentInspector == null) {
         currentInspector = new HUDWindow();
         currentInspector.resizable = false;
-        currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.label);
+        currentInspector.title = ResourceManager.instance.getStringByRM(inspectorItem.title);
         inspectorItem.view = currentInspector.contentView = inspectorItem.viewFactory.newInstance();
         cache[inspectorItem] = currentInspector;
 

@@ -63,7 +63,7 @@ public class TabView extends SingleSelectionBar {
     paneItem.view = pane;
 
     if (pane is TitledPane) {
-      TitledPane(pane).title = paneItem.localizedLabel;
+      TitledPane(pane).title = paneItem.localizedTitle;
     }
   }
 

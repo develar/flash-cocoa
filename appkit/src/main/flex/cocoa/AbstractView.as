@@ -2198,24 +2198,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   }
 
   [Bindable("includeInLayoutChanged")]
-  [Inspectable(category="General", defaultValue="true")]
-
-  /**
-   *  Specifies whether this component is included in the layout of the
-   *  parent container.
-   *  If <code>true</code>, the object is included in its parent container's
-   *  layout and is sized and positioned by its parent container as per its layout rules.
-   *  If <code>false</code>, the object size and position are not affected by its parent container's
-   *  layout.
-   *
-   *  @default true
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public final function get includeInLayout():Boolean {
+  public function get includeInLayout():Boolean {
     return (flags & EXCLUDE_FROM_LAYOUT) == 0;
   }
 
@@ -2229,7 +2212,9 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
         p.invalidateDisplayList();
       }
 
-      dispatchEvent(new Event("includeInLayoutChanged"));
+      if (hasEventListener("includeInLayoutChanged")) {
+        dispatchEvent(new Event("includeInLayoutChanged"));
+      }
     }
   }
 

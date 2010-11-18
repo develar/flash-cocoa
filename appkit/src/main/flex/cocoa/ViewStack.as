@@ -60,11 +60,17 @@ public class ViewStack extends LayoutlessContainer implements AdvancedLayout {
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    currentView.setActualSize(w, h);
+    if (currentView != null) {
+      currentView.setActualSize(w, h);
+    }
   }
 
   public function childCanSkipMeasurement(element:ILayoutElement):Boolean {
     return (!isNaN(explicitWidth) || !isNaN(percentWidth)) && (!isNaN(explicitHeight) || !isNaN(percentHeight));
+  }
+
+  override public function get includeInLayout():Boolean {
+    return currentView != null && super.includeInLayout;
   }
 }
 }

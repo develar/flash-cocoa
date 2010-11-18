@@ -1,22 +1,18 @@
-package cocoa.pane
-{
+package cocoa.pane {
 import cocoa.resources.ResourceMetadata;
 
 [Abstract]
-public class LabeledItem
-{
-	public var label:ResourceMetadata;
-	[Transient]
-	public var localizedLabel:String;
+public class LabeledItem {
+  public var title:ResourceMetadata;
+  [Transient]
+  public var localizedTitle:String;
 
-	public function LabeledItem(label:ResourceMetadata)
-	{
-		this.label = label;
-	}
+  public function LabeledItem(title:ResourceMetadata) {
+    this.title = title;
+  }
 
-	public function toString():String
-	{
-		return localizedLabel;
-	}
+  public function toString():String {
+    return localizedTitle;
+  }
 }
 }

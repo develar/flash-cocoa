@@ -62,7 +62,9 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout 
     segmentedControl.setLayoutBoundsSize(NaN, NaN);
     segmentedControl.x = Math.round((w - segmentedControl.getExplicitOrMeasuredWidth()) / 2);
 
-    viewStack.setActualSize(w - contentInsets.width, h - contentInsets.height);
+    if (viewStack.includeInLayout) {
+      viewStack.setActualSize(w - contentInsets.width, h - contentInsets.height);
+    }
   }
 }
 }

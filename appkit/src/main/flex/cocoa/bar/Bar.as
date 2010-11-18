@@ -64,7 +64,9 @@ public class Bar extends AbstractComponent implements Injectable {
     itemsChanged = false;
 
     for each (var item:LabeledItem in items.iterator) {
-      item.localizedLabel = itemToLabel(item);
+      if (item.title != null) {
+        item.localizedTitle = itemToLabel(item);
+      }
     }
 
     segmentedControl.dataProvider = items;
@@ -79,8 +81,12 @@ public class Bar extends AbstractComponent implements Injectable {
     var n:int = items.size;
     for (i = 0; i < n; i++) {
       var item:LabeledItem = LabeledItem(items.getItemAt(i));
+      if (item.title == null) {
+        continue;
+      }
+      
       var localizedLabel:String = itemToLabel(item);
-      item.localizedLabel = localizedLabel;
+      item.localizedTitle = localizedLabel;
       if (item is PaneItem) {
         var paneItem:PaneItem = PaneItem(item);
         if (paneItem.view != null && paneItem.view is TitledPane) {
@@ -96,7 +102,7 @@ public class Bar extends AbstractComponent implements Injectable {
   }
 
   protected function itemToLabel(paneMetadata:LabeledItem):String {
-    return resourceManager.getString(paneMetadata.label.bundleName, paneMetadata.label.resourceName);
+    return resourceManager.getString(paneMetadata.title.bundleName, paneMetadata.title.resourceName);
   }
 }
 }

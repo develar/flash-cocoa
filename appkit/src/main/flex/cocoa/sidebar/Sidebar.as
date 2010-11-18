@@ -87,7 +87,7 @@ public class Sidebar extends Bar {
     var pane:Panel = paneMetadata.viewFactory.newInstance();
     paneMetadata.view = pane;
 
-    pane.title = paneMetadata.localizedLabel;
+    pane.title = paneMetadata.localizedTitle;
 
     pane.addEventListener(SidebarEvent.HIDE_PANE, hidePaneHandler);
     pane.addEventListener(SidebarEvent.HIDE_SIDE, hideSideHandler);
