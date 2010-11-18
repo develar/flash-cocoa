@@ -6,51 +6,67 @@ import cocoa.View;
 import flash.display.Graphics;
 
 public class RectangularBorder extends AbstractBorder {
-  private static const DEFAULT_FRAME_INSETS:FrameInsets = new FrameInsets(0.5, 0.5, 0.5, 0.5);
-
-  private var _layoutHeight:Number;
-
   private var fillColor:Number;
-  private var strokeColor:Number;
-  private var cornerRadius:Number;
+  protected var strokeColor:Number;
+  protected var cornerRadius:Number;
 
-  public function RectangularBorder(layoutHeight:Number, contentInsets:Insets, fillColor:Number, strokeColor:Number = NaN, cornerRadius:Number = NaN, frameInsets:FrameInsets = null) {
+  public function RectangularBorder(fillColor:Number, strokeColor:Number, cornerRadius:Number, contentInsets:Insets, frameInsets:FrameInsets = null) {
     super();
-
-    _layoutHeight = layoutHeight;
-    _contentInsets = contentInsets;
-
-    _frameInsets = frameInsets == null ? DEFAULT_FRAME_INSETS : frameInsets;
 
     this.fillColor = fillColor;
     this.strokeColor = strokeColor;
+
+    _contentInsets = contentInsets;
+    if (frameInsets != null) {
+      _frameInsets = frameInsets;
+    }
+
     this.cornerRadius = cornerRadius;
+  }
+
+  public static function create(fillColor:Number, strokeColor:Number, contentInsets:Insets = null, frameInsets:FrameInsets = null):RectangularBorder {
+    return new RectangularBorder(fillColor, strokeColor, NaN, contentInsets, frameInsets);
+  }
+
+  public static function createRounded(fillColor:Number, strokeColor:Number, cornerRadius:Number, contentInsets:Insets = null, frameInsets:FrameInsets = null):RectangularBorder {
+    return new RectangularBorder(fillColor, strokeColor, cornerRadius, contentInsets, frameInsets);
+  }
+
+  protected var _layoutHeight:Number;
+  override public function get layoutHeight():Number {
+    return _layoutHeight;
   }
 
   override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
     const alpha:Number = view == null || view.enabled ? 1 : 0.5;
-    if (!isNaN(strokeColor)) {
-      g.lineStyle(1, strokeColor, alpha);
+
+    if (_frameInsets != EMPTY_FRAME_INSETS) {
+      w -= _frameInsets.left + _frameInsets.right;
+      h -= _frameInsets.bottom + _frameInsets.top;
     }
 
-    if (!isNaN(fillColor)) {
+    var offset:Number = 0;
+    if (strokeColor == strokeColor) {
+      g.lineStyle(1, strokeColor, alpha);
+      w -= 1;
+      h -= 1;
+      offset = 0.5;
+    }
+
+    if (fillColor == fillColor) {
       g.beginFill(fillColor, alpha);
     }
 
-    if (isNaN(cornerRadius)) {
-      g.drawRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.bottom - _frameInsets.top);
+    if (cornerRadius != cornerRadius) {
+      g.drawRect(_frameInsets.left + offset, _frameInsets.top + offset, w, h);
     }
     else {
-      g.drawRoundRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.bottom - _frameInsets.top, cornerRadius);
+      g.drawRoundRect(_frameInsets.left + offset, _frameInsets.top + offset, w, h, cornerRadius);
     }
 
-    if (!isNaN(fillColor)) {
+    if (fillColor == fillColor) {
       g.endFill();
     }
-  }
-
-  override public function get layoutHeight():Number {
-    return _layoutHeight;
   }
 }
 }

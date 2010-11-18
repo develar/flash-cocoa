@@ -54,7 +54,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["Box"] = BoxSkin;
 
     data["Toolbar"] = ToolbarSkin;
-    data["Toolbar.b"] = new LinearGradientBorder([0xd0d0d0, 0xa7a7a7], new FrameInsets(0, -17));
+    data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));
 
     data["Dialog"] = WindowSkin;
     data["HUDWindow"] = HUDWindowSkin;
