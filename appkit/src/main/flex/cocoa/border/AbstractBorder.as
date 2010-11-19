@@ -6,6 +6,7 @@ import cocoa.View;
 
 import flash.display.Graphics;
 
+[Abstract]
 public class AbstractBorder implements Border {
   public static const EMPTY_FRAME_INSETS:FrameInsets = new FrameInsets();
 

@@ -35,13 +35,7 @@ public class LabelHelper {
     _textFormat = textFormat;
   }
 
-  /**
-   * @see TextBlock#lineRotation
-   */
-  private var _rotation:String;
-  public function set rotation(value:String):void {
-    _rotation = value;
-  }
+  public var textLineInsets:TextLineInsets;
 
   private var _useTruncationIndicator:Boolean = true;
   public function set useTruncationIndicator(value:Boolean):void {
@@ -98,15 +92,6 @@ public class LabelHelper {
   }
 
   public function move(x:Number, y:Number):void {
-//    if (_rotation != null) {
-//      switch (_rotation) {
-//        case TextRotation.ROTATE_270:
-//          y += _textLine.textWidth;
-//          x += _textLine.textHeight;
-//          break;
-//      }
-//    }
-
     _textLine.x = x;
     _textLine.y = y;
   }
@@ -156,8 +141,8 @@ public class LabelHelper {
 
     textElement.elementFormat = _textFormat.format;
     textElement.text = _text;
-    if (_rotation != null) {
-      textBlock.lineRotation = _rotation;
+    if (textLineInsets != null && textLineInsets.rotation != null) {
+      textBlock.lineRotation = textLineInsets.rotation;
     }
 
     if (_textLine == null) {
@@ -179,9 +164,45 @@ public class LabelHelper {
       }
     }
 
-    if (_rotation != null) {
-      textBlock.lineRotation = TextRotation.ROTATE_0;
+    if (textLineInsets != null) {
+      if (textLineInsets.rotation != null) {
+        textBlock.lineRotation = TextRotation.ROTATE_0;
+      }
+
+      switch (textLineInsets.rotation) {
+        case TextRotation.ROTATE_90:
+          _textLine.x = textLineInsets.baseline;
+          _textLine.y = textLineInsets.lineStartPadding;
+          break;
+
+        case null:
+          _textLine.x = textLineInsets.lineStartPadding;
+          _textLine.y = textLineInsets.baseline;
+          break;
+
+        default: throw new ArgumentError("unsupported rotation: " + textLineInsets.rotation);
+      }
     }
+  }
+
+  public function measureHeight():Number {
+    validate();
+    var h:Number = Math.round(_textLine.height);
+    if (textLineInsets.rotation == TextRotation.ROTATE_90) {
+      h += textLineInsets.lineEndPadding + textLineInsets.lineEndPadding;
+    }
+
+    return h;
+  }
+
+  public function measureWidth():Number {
+    validate();
+    var w:Number = Math.round(_textLine.width);
+    if (textLineInsets.rotation == null) {
+      w += textLineInsets.lineEndPadding + textLineInsets.lineEndPadding;
+    }
+
+    return w;
   }
 
   private function getTruncationIndicatorWidth(format:ElementFormat):Number {

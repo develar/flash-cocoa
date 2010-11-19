@@ -1,6 +1,7 @@
 package cocoa.plaf.aqua {
 import cocoa.Insets;
 import cocoa.layout.SegmentedControlHorizontalLayout;
+import cocoa.plaf.basic.AbstractTabViewSkin;
 
 public class BorderlessTabViewSkin extends AbstractTabViewSkin {
   private static const CONTENT_INSETS:Insets = new Insets(0, 29, 0, 0);

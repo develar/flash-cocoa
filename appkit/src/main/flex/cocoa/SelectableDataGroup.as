@@ -24,6 +24,9 @@ public class SelectableDataGroup extends FlexDataGroup {
   }
 
   private var _lafSubkey:String;
+  public function get lafSubkey():String {
+    return _lafSubkey;
+  }
   public final function set lafSubkey(value:String):void {
     _lafSubkey = value;
   }
@@ -55,7 +58,7 @@ public class SelectableDataGroup extends FlexDataGroup {
 
   override protected function commitProperties():void {
     if (_lafSubkey != null && itemRenderer == null) {
-      itemRenderer = _laf.getFactory(_lafSubkey + ".itemRenderer");
+      itemRenderer = _laf.getFactory(_lafSubkey + ".iR");
     }
 
     super.commitProperties();

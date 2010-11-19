@@ -5,6 +5,7 @@ import cocoa.Insets;
 import cocoa.SingletonClassFactory;
 import cocoa.border.LinearGradientBorder;
 import cocoa.plaf.LookAndFeelUtil;
+import cocoa.plaf.Placement;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BoxSkin;
@@ -12,6 +13,7 @@ import cocoa.plaf.basic.ColorPickerMenuController;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.MenuSkin;
+import cocoa.plaf.basic.PaneLabelRenderer;
 import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
@@ -65,7 +67,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
+    data["TabView.segmentedControl.iR"] = new ClassFactory(SegmentItemRenderer);
     data["TabView.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
+    data["TabView.segmentedControl.placement"] = Placement.PAGE_START_LINE_CENTER;
 
     data["PushButton"] = PushButtonSkin;
     data["IconButton"] = IconButtonSkin;
@@ -78,7 +82,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
 
     data["Menu"] = MenuSkin;
-    data["Menu.itemRenderer"] = new ClassFactory(MenuItemRenderer);
+    data["Menu.iR"] = new ClassFactory(MenuItemRenderer);
 
     data["MenuItem.b"] = new MenuItemBorder(data["MenuItem.b.highlighted"]);
     data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
@@ -111,6 +115,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
 
+    data["Sidebar.iR"] = new ClassFactory(PaneLabelRenderer);
     data["Sidebar.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
   }
 
@@ -151,8 +156,8 @@ import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.plaf.basic.AbstractLookAndFeel;
-import cocoa.text.TextFormat;
 import cocoa.text.SimpleTextLayoutFormat;
+import cocoa.text.TextFormat;
 
 import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
