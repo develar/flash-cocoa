@@ -15,7 +15,7 @@ public interface LookAndFeel {
 
   function set parent(value:LookAndFeel):void;
 
-  function getBorder(key:String):Border;
+  function getBorder(key:String, nullable:Boolean = false):Border;
 
   function getIcon(key:String):Icon;
 

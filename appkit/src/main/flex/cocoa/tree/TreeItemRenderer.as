@@ -127,7 +127,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 		// @todo optimize
 		if (isNaN(maxDisclosureIconWidth))
 		{
-			maxDisclosureIconWidth = Math.max(laf.getBorder("Tree.disclosureIcon.close").layoutWidth, laf.getBorder("Tree.disclosureIcon.open").layoutWidth);
+			maxDisclosureIconWidth = Math.max(laf.getBorder("Tree.disclosureIcon.close", false).layoutWidth, laf.getBorder("Tree.disclosureIcon.open", false).layoutWidth);
 		}
 
 		labelHelper.textFormat = laf.getTextFormat(selected ? TextFormatID.SMALL_SYSTEM_HIGHLIGHTED : TextFormatID.SMALL_SYSTEM);
@@ -138,7 +138,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	protected function drawDisclosureIcon(laf:LookAndFeel, selected:Boolean):void
 	{
 		var g:Graphics = graphics;
-		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "close" : "open")));
+		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "close" : "open"), false));
 		if (selected && disclosureBorder.hasState(BitmapBorderStateIndex.ON))
 		{
 			disclosureBorder.stateIndex = BitmapBorderStateIndex.ON;
@@ -173,7 +173,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	private function isDisclosureIconClicked(event:MouseEvent):Boolean
 	{
 		var laf:LookAndFeel = LookAndFeelProvider(owner.parent).laf;
-		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close")));
+		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close"), false));
 		// 3 чтобы при щелчке не надо было быть снайпером
 		var localX:Number = event.localX  - _listData.indent;
 		return event.localY >= (disclosureBorder.frameInsets.top - 3) && event.localY <= (disclosureBorder.layoutHeight + 3) &&

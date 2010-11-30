@@ -37,7 +37,7 @@ public class NumericStepperSkin extends LightFlexUIComponent implements UIPartPr
 
   protected function createSpinnerButton(id:String, laf:LookAndFeel):FlexButton {
     var button:FlexButton = new FlexButton();
-    button.border = laf.getBorder("NumericStepper." + id);
+    button.border = laf.getBorder("NumericStepper." + id, false);
     addChild(button);
     UIPartController(parent).uiPartAdded(id, button);
     return button;

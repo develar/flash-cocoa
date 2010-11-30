@@ -19,6 +19,7 @@ import org.flyti.plexus.events.InjectorEvent;
 /**
  * Default base skin implementation for view
  */
+[Abstract]
 public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
   private static var sharedPoint:Point;
 
@@ -34,7 +35,11 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
   }
 
   protected final function getBorder(key:String = "b"):Border {
-    return laf.getBorder(_component.lafKey + "." + key);
+    return laf.getBorder(_component.lafKey + "." + key, false);
+  }
+
+  protected final function getNullableBorder(key:String = "b"):Border {
+    return laf.getBorder(_component.lafKey + "." + key, true);
   }
 
   protected final function getIcon(key:String):Icon {

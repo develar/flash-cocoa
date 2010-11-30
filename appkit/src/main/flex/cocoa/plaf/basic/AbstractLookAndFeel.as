@@ -26,16 +26,21 @@ public class AbstractLookAndFeel implements LookAndFeel {
     _parent = value;
   }
 
-  public function getBorder(key:String):Border {
+  public function getBorder(key:String, nullable:Boolean = false):Border {
     var value:Object = data[key];
     if (value != null) {
       return Border(value is Border ? value : DeferredInstanceFromClass(value).getInstance());
     }
     else if (_parent == null) {
-      throw new ArgumentError("Unknown " + key);
+      if (nullable) {
+        return null;
+      }
+      else {
+        throw new ArgumentError("Unknown " + key);
+      }
     }
     else {
-      return _parent.getBorder(key);
+      return _parent.getBorder(key, nullable);
     }
   }
 

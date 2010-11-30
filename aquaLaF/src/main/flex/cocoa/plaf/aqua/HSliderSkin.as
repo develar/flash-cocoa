@@ -33,7 +33,7 @@ public class HSliderSkin extends LightFlexUIComponent implements UIPartProvider
 		var laf:LookAndFeel = LookAndFeelProvider(parent.parent).laf;
 
 		track = new FlexButton();
-		track.border = laf.getBorder("Slider.track.h");
+		track.border = laf.getBorder("Slider.track.h", false);
 		track.y = 5;
 		track.width = 100;
 		addChild(track);
@@ -41,7 +41,7 @@ public class HSliderSkin extends LightFlexUIComponent implements UIPartProvider
 
 		thumb = new FlexButton();
 		thumb.stickyHighlighting = true;
-		thumb.border = laf.getBorder("Slider.thumb");
+		thumb.border = laf.getBorder("Slider.thumb", false);
 		thumb.y = 1;
 
 		addChild(thumb);

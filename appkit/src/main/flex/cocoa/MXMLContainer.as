@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
@@ -26,259 +25,212 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class MXMLContainer extends Group implements ViewContainer, LookAndFeelProvider
-{
-	protected var _laf:LookAndFeel;
-	public function get laf():LookAndFeel
-	{
-		return _laf;
-	}
-	public function set laf(value:LookAndFeel):void
-	{
-		_laf = value;
-	}
-	
-	private var createChildrenCalled:Boolean;
-	private var elementsChanged:Boolean;
+public class MXMLContainer extends Group implements ViewContainer, LookAndFeelProvider {
+  protected var _laf:LookAndFeel;
+  public function get laf():LookAndFeel {
+    return _laf;
+  }
 
-	public function MXMLContainer()
-	{
-		super();
-		
-		mouseEnabledWhereTransparent = false;
-	}
+  public function set laf(value:LookAndFeel):void {
+    _laf = value;
+  }
 
-	private var _subviews:Array;
-	public function set elements(value:Array):void
-	{
-		if (value == _subviews)
-		{
-			return;
-		}
+  private var createChildrenCalled:Boolean;
+  private var elementsChanged:Boolean;
 
-		_subviews = value;
+  public function MXMLContainer() {
+    super();
 
-		if (createChildrenCalled)
-        {
-            createElements();
-        }
-        else
-        {
-            elementsChanged = true;
-        }
-	}
+    mouseEnabledWhereTransparent = false;
+  }
 
-	override public function set mxmlContent(value:Array):void
-    {
-		elements = value;
-	}
+  private var _subviews:Array;
 
-	override protected function createChildren():void
-	{
-		if (layout == null)
-		{
-			layout = new BasicLayout();
-		}
+  public function set elements(value:Array):void {
+    if (value == _subviews) {
+      return;
+    }
 
-		createChildrenCalled = true;
+    _subviews = value;
 
-		if (elementsChanged)
-		{
-			elementsChanged = false;
-            createElements();
-        }
-	}
+    if (createChildrenCalled) {
+      createElements();
+    }
+    else {
+      elementsChanged = true;
+    }
+  }
 
-	private function createElements():void
-	{
-		for (var i:int = 0, n:int = _subviews.length; i < n; i++)
-		{
-			subviewAdded(_subviews[i], i);
-		}
-	}
+  override public function set mxmlContent(value:Array):void {
+    elements = value;
+  }
 
-	override mx_internal function getMXMLContent():Array
-    {
-		throw new IllegalOperationError();
-	}
+  override protected function createChildren():void {
+    if (layout == null) {
+      layout = new BasicLayout();
+    }
 
-	private function subviewAdded(view:Object, index:int):void
-    {
-		if (view is Component)
-		{
-			var component:Component = Component(view);
-			view = component.skin == null ? component.createView(_laf) : component.skin;
-		}
-		else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null))
-		{
-			dispatchEvent(new InjectorEvent(view));
-		}
+    createChildrenCalled = true;
 
-		elementAdded(IVisualElement(view), index, false);
-	}
+    if (elementsChanged) {
+      elementsChanged = false;
+      createElements();
+    }
+  }
 
-	private function subviewRemoved(element:Object, index:int):void
-	{
-		elementRemoved(IVisualElement(element is Component ? Component(element).skin : element), index, false);
-	}
+  private function createElements():void {
+    for (var i:int = 0, n:int = _subviews.length; i < n; i++) {
+      subviewAdded(_subviews[i], i);
+    }
+  }
 
-	override public function get numElements():int
-    {
-		return _subviews == null ? 0 : _subviews.length;
-	}
+  override mx_internal function getMXMLContent():Array {
+    throw new IllegalOperationError();
+  }
 
-	override public function getElementAt(index:int):IVisualElement
-    {
-		var element:Object = _subviews[index];
-		return IVisualElement(element is Component ? Component(element).skin : element);
-	}
+  private function subviewAdded(view:Object, index:int):void {
+    if (view is Component) {
+      var component:Component = Component(view);
+      view = component.skin == null ? component.createView(_laf) : component.skin;
+    }
+    else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null)) {
+      dispatchEvent(new InjectorEvent(view));
+    }
 
-	override public function removeElementAt(index:int):IVisualElement
-	{
-		var element:Viewable = _subviews[index];
-		if (!elementsChanged)
-		{
-			subviewRemoved(element, index);
-		}
+    elementAdded(IVisualElement(view), index, false);
+  }
 
-		_subviews.splice(index, 1);
+  private function subviewRemoved(element:Object, index:int):void {
+    elementRemoved(IVisualElement(element is Component ? Component(element).skin : element), index, false);
+  }
 
-		return element as IVisualElement;
-	}
+  override public function get numElements():int {
+    return _subviews == null ? 0 : _subviews.length;
+  }
 
-	override protected function canSkipMeasurement():Boolean
-	{
-		var advancedLayout:AdvancedLayout;
-		if (parent is GroupBase)
-		{
-			var parentLayout:LayoutBase = GroupBase(parent).layout;
-			if (parentLayout is AdvancedLayout)
-			{
-				advancedLayout = AdvancedLayout(parentLayout);
-			}
-		}
-		else if (parent is AdvancedLayout)
-		{
-			advancedLayout = AdvancedLayout(parent);
-		}
+  override public function getElementAt(index:int):IVisualElement {
+    var element:Object = _subviews[index];
+    return IVisualElement(element is Component ? Component(element).skin : element);
+  }
 
-		if (advancedLayout != null && advancedLayout.childCanSkipMeasurement(this))
-		{
-			return true;
-		}
+  override public function removeElementAt(index:int):IVisualElement {
+    var element:Viewable = _subviews[index];
+    if (!elementsChanged) {
+      subviewRemoved(element, index);
+    }
 
-		return super.canSkipMeasurement();
-	}
+    _subviews.splice(index, 1);
 
-	override public function addElementAt(view:IVisualElement, index:int):IVisualElement
-    {
-		addFlexOrCocoaView(view, index);
-		return view;
-	}
+    return element as IVisualElement;
+  }
 
-	public function addSubview(view:Viewable, index:int = -1):void
-	{
-		addFlexOrCocoaView(view, index);
-	}
+  override protected function canSkipMeasurement():Boolean {
+    var advancedLayout:AdvancedLayout;
+    if (parent is GroupBase) {
+      var parentLayout:LayoutBase = GroupBase(parent).layout;
+      if (parentLayout is AdvancedLayout) {
+        advancedLayout = AdvancedLayout(parentLayout);
+      }
+    }
+    else if (parent is AdvancedLayout) {
+      advancedLayout = AdvancedLayout(parent);
+    }
 
-	private function addFlexOrCocoaView(view:Object, index:int = -1):void
-	{
-		if (index == -1)
-		{
-			index = numElements;
-		}
+    if (advancedLayout != null && advancedLayout.childCanSkipMeasurement(this)) {
+      return true;
+    }
 
-		var host:DisplayObject;
-		if (view is Component)
-		{
-			var component:Component = Component(view);
-			if (component.skin != null)
-			{
-				host = IVisualElement(component.skin).parent;
-			}
-		}
-		else
-		{
-			host = IVisualElement(view).parent;
-		}
+    return super.canSkipMeasurement();
+  }
 
-		if (host is IVisualElementContainer)
-        {
-			assert(host != this);
+  override public function addElementAt(view:IVisualElement, index:int):IVisualElement {
+    addFlexOrCocoaView(view, index);
+    return view;
+  }
 
-            IVisualElementContainer(host).removeElement(IVisualElement(view));
-        }
-		else if (host is ViewContainer)
-		{
-			ViewContainer(host).removeSubview(Viewable(view));
-		}
+  public function addSubview(view:Viewable, index:int = -1):void {
+    addFlexOrCocoaView(view, index);
+  }
 
-		if (_subviews == null)
-		{
-			_subviews = [view];
-		}
-		else
-		{
-			_subviews.splice(index, 0, view);
-		}
+  private function addFlexOrCocoaView(view:Object, index:int = -1):void {
+    if (index == -1) {
+      index = numElements;
+    }
 
-		if (!elementsChanged)
-		{
-			subviewAdded(view, index);
-		}
+    var host:DisplayObject;
+    if (view is Component) {
+      var component:Component = Component(view);
+      if (component.skin != null) {
+        host = IVisualElement(component.skin).parent;
+      }
+    }
+    else {
+      host = IVisualElement(view).parent;
+    }
 
-		subviewAdded(view, index);
-	}
+    if (host is IVisualElementContainer) {
+      assert(host != this);
 
-	public function removeSubview(view:Viewable):void
-	{
-		removeElementAt(_subviews.indexOf(view));
-	}
+      IVisualElementContainer(host).removeElement(IVisualElement(view));
+    }
+    else if (host is ViewContainer) {
+      ViewContainer(host).removeSubview(Viewable(view));
+    }
 
-	public function getSubviewIndex(view:Viewable):int
-	{
-		return _subviews.indexOf(view);
-	}
+    if (_subviews == null) {
+      _subviews = [view];
+    }
+    else {
+      _subviews.splice(index, 0, view);
+    }
 
-	override public function getElementIndex(element:IVisualElement):int
-    {
-		var index:int = _subviews.indexOf(element is Skin ? Skin(element).component : element);
-		assert(index != -1);
-		return index;
-	}
+    if (!elementsChanged) {
+      subviewAdded(view, index);
+    }
 
-	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
-	{
-		$addChildAt(displayObject, index == -1 ? numChildren : index);
-	}
+    subviewAdded(view, index);
+  }
 
-	public final function removeDisplayObject(displayObject:DisplayObject):void
-	{
-		$removeChild(displayObject);
-	}
+  public function removeSubview(view:Viewable):void {
+    removeElementAt(_subviews.indexOf(view));
+  }
 
-	public function getSubviewAt(index:int):View
-	{
-		return View(getElementAt(index));
-	}
+  public function getSubviewIndex(view:Viewable):int {
+    return _subviews.indexOf(view);
+  }
 
-	public function get numSubviews():int
-	{
-		return numElements;
-	}
+  override public function getElementIndex(element:IVisualElement):int {
+    var index:int = _subviews.indexOf(element is Skin ? Skin(element).component : element);
+    assert(index != -1);
+    return index;
+  }
 
-	// disable unwanted legacy
-	include "../../unwantedLegacy.as";
-	include "../../legacyConstraints.as";
+  public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void {
+    $addChildAt(displayObject, index == -1 ? numChildren : index);
+  }
 
-	override public function parentChanged(p:DisplayObjectContainer):void
-	{
-		super.parentChanged(p);
+  public final function removeDisplayObject(displayObject:DisplayObject):void {
+    $removeChild(displayObject);
+  }
 
-		if (p != null)
-		{
-			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
-		}
-	}
+  public function getSubviewAt(index:int):View {
+    return View(getElementAt(index));
+  }
+
+  public function get numSubviews():int {
+    return numElements;
+  }
+
+  // disable unwanted legacy
+  include "../../unwantedLegacy.as";
+  include "../../legacyConstraints.as";
+
+  override public function parentChanged(p:DisplayObjectContainer):void {
+    super.parentChanged(p);
+
+    if (p != null) {
+      _parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+    }
+  }
 }
 }

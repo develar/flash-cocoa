@@ -1,14 +1,10 @@
-package cocoa
-{
-public class Toolbar extends Box
-{
-	public function Toolbar()
-	{
-	}
+package cocoa {
+public class Toolbar extends Box {
+  public function Toolbar() {
+  }
 
-	override protected function get primaryLaFKey():String
-	{
-		return "Toolbar";
-	}
+  override protected function get primaryLaFKey():String {
+    return "Toolbar";
+  }
 }
 }

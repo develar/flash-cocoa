@@ -52,7 +52,7 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
     }
 
     if (_bordered) {
-      border = _laf.getBorder("ListView.b");
+      border = _laf.getBorder("ListView.b", false);
       contentView.move(border.contentInsets.left, border.contentInsets.top);
     }
 

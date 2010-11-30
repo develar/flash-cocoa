@@ -43,10 +43,10 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
     var laf:LookAndFeel = LookAndFeelUtil.find(parent);
 
     const orientation:String = isVertical ? "v" : "h";
-    offBorder = laf.getBorder("ScrollBar.track." + orientation + ".off");
+    offBorder = laf.getBorder("ScrollBar.track." + orientation + ".off", false);
 
     track = new TrackOrThumbButton();
-    track.border = laf.getBorder("ScrollBar.track." + orientation);
+    track.border = laf.getBorder("ScrollBar.track." + orientation, false);
     addChild(track);
 
     decrementButton = new ArrowButton();
@@ -58,7 +58,7 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
     addChild(incrementButton);
 
     thumb = new TrackOrThumbButton();
-    thumb.border = laf.getBorder("ScrollBar.thumb." + orientation);
+    thumb.border = laf.getBorder("ScrollBar.thumb." + orientation, false);
     addChild(thumb);
 
     var uiPartController:UIPartController = UIPartController(parent);

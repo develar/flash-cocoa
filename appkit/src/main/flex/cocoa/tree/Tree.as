@@ -219,7 +219,7 @@ public class Tree extends mx.controls.Tree implements View
 	{
 		var laf:LookAndFeel = LookAndFeelProvider(parent).laf;
 		lafDefaults = laf.getObject("Tree.defaults");
-		_border = laf.getBorder("Tree.b");
+		_border = laf.getBorder("Tree.b", false);
 		rowHeight = _border.layoutHeight;
 
 		listContent = new StylessListBaseContentHolder(this);

@@ -12,7 +12,7 @@ public class BorderedMXMLSkin extends MXMLSkin
 	{
 		super.createChildren();
 
-		border = _laf.getBorder(component.lafKey + ".b");
+		border = _laf.getBorder(component.lafKey + ".b", false);
 	}
 
 	override protected function updateDisplayList(w:Number, h:Number):void

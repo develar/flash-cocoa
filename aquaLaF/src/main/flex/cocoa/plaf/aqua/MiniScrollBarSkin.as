@@ -32,7 +32,7 @@ public class MiniScrollBarSkin extends LightFlexUIComponent implements UIPartPro
     addChild(track);
 
     thumb = new TrackOrThumbButton();
-    thumb.border = laf.getBorder("ScrollBar.thumb");
+    thumb.border = laf.getBorder("ScrollBar.thumb", false);
 //    thumb.minHeight = 28;
     addChild(thumb);
 

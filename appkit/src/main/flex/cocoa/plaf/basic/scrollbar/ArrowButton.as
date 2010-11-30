@@ -14,7 +14,7 @@ internal final class ArrowButton extends FlexButton {
     this.laf = laf;
     this.styleKey = styleKey;
 
-    _border = laf.getBorder(styleKey);
+    _border = laf.getBorder(styleKey, false);
   }
 
   override protected function mouseEventHandler(event:Event):void {
@@ -36,7 +36,7 @@ internal final class ArrowButton extends FlexButton {
 
   override public function invalidateSkinState():void {
     if (laf != null) {
-      _border = laf.getBorder((mouseCaptured && hovered) ? (styleKey + ".highlighted") : styleKey);
+      _border = laf.getBorder((mouseCaptured && hovered) ? (styleKey + ".highlighted") : styleKey, false);
       invalidateDisplayList();
     }
   }

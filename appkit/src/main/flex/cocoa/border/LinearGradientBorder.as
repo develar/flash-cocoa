@@ -10,9 +10,9 @@ import flash.display.IGraphicsData;
 import flash.geom.Matrix;
 
 public class LinearGradientBorder extends RectangularBorder {
-  private static const sharedMatrix:Matrix = new Matrix();
+  protected static const sharedMatrix:Matrix = new Matrix();
 
-  private const graphicsData:Vector.<IGraphicsData> = new Vector.<IGraphicsData>(1, true);
+  protected const graphicsData:Vector.<IGraphicsData> = new Vector.<IGraphicsData>(1, true);
   private var vertical:Boolean = true;
 
   public function LinearGradientBorder(colors:Array, strokeColor:Number, cornerRadius:Number, contentInsets:Insets = null, frameInsets:FrameInsets = null) {

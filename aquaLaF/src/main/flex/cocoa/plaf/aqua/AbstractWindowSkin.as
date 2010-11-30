@@ -123,10 +123,10 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
     labelHelper.textFormat = laf.getTextFormat(TextFormatID.SYSTEM);
 
     if (_toolbar == null) {
-      border = laf.getBorder("Window.b");
+      border = laf.getBorder("Window.b", false);
     }
     else {
-      border = laf.getBorder("Window.b.toolbar");
+      border = laf.getBorder("Window.b.toolbar", false);
       var toolbarSkin:DisplayObject = DisplayObject(_toolbar.createView(laf));
       toolbarSkin.y = titleBarHeight;
       toolbarSkin.height = TOOLBAR_SMALL_HEIGHT;

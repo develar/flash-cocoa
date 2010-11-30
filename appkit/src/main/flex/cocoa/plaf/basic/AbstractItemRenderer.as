@@ -88,7 +88,7 @@ public class AbstractItemRenderer extends AbstractView implements HighlightableI
   }
 
   protected function getBorder(key:String):Border {
-    return _laf.getBorder(lafPrefix + "." + key);
+    return _laf.getBorder(lafPrefix + "." + key, false);
   }
 
   protected function getIcon(key:String):Icon {
