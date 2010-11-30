@@ -17,13 +17,17 @@ public final class FileUtil {
     fileStream.close();
   }
 
-  public static function readBytes(filename:String):ByteArray {
+  public static function readBytesByFile(file:File):ByteArray {
     var fileStream:FileStream = new FileStream();
-    fileStream.open(new File(filename), FileMode.READ);
+    fileStream.open(file, FileMode.READ);
     var bytes:ByteArray = new ByteArray();
     fileStream.readBytes(bytes);
     fileStream.close();
     return bytes;
+  }
+
+  public static function readBytes(filename:String):ByteArray {
+    return readBytesByFile(new File(filename));
   }
 
   public static function writeString(filename:String, string:String):void {

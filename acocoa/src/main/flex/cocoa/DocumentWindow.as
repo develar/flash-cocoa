@@ -24,7 +24,10 @@ public class DocumentWindow {
     _nativeWindow = new NativeWindow(initOptions);
   }
 
-  protected var maps:Vector.<LocalEventMap>;
+  private var _maps:Vector.<LocalEventMap>;
+  public function set maps(value:Vector.<LocalEventMap>):void {
+    _maps = value;
+  }
 
   private var _nativeWindow:NativeWindow;
 
@@ -46,6 +49,11 @@ public class DocumentWindow {
     _contentView = component.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
     var sm:WindowedSystemManager = new WindowedSystemManager(_contentView);
     _nativeWindow.stage.addChild(sm);
+
+    if (_maps != null) {
+      // todo one plexus container for all maps
+      _maps[0].dispatcher = _contentView;
+    }
 
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, windowResizeHandler);
     _nativeWindow.maximize();
