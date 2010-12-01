@@ -3,7 +3,7 @@
   <id>org.flyti.aqua.testToolApp</id>
   <filename>testToolApp</filename>
   <name>Aqua Test Tool</name>
-  <version>1.1-SNAPSHOT</version>
+  <versionNumber>1.1</versionNumber>
   <initialWindow>
     <systemChrome>none</systemChrome>
     <transparent>true</transparent>

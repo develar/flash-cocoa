@@ -135,7 +135,7 @@ public class Builder {
     ];
 
     var fdata:ByteArray = new ByteArray();
-    fdata.writeByte(1);
+    fdata.writeByte(2);
 
     var odata:ByteArray = data;
 
@@ -143,7 +143,7 @@ public class Builder {
       var border:AbstractBitmapBorder = AbstractBitmapBorder(borders[index]);
       assert(borders.indexOf(border) == borders.lastIndexOf(border));
 
-      if (index == BorderPosition.pushButtonTexturedRounded) {
+      if (index == BorderPosition.pushButtonTexturedRounded || index == BorderPosition.popUpButtonTexturedRounded) {
         data = fdata;
       }
       else {
@@ -179,6 +179,9 @@ public class Builder {
       }
       else if (border is CappedSmartBorder) {
         data.writeByte(7);
+      }
+      else {
+        throw new ArgumentError();
       }
 
       if (border is AbstractMultipleBitmapBorder) {

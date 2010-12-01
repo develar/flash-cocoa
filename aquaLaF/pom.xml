@@ -33,8 +33,6 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
 					<includeFiles>
-            <!-- только чтобы flexmojos вcе resources не включил -->
-						<!--<file>assets.yml</file>-->
             <include>${project.build.directory}/ea</include>
 					</includeFiles>
 				</configuration>

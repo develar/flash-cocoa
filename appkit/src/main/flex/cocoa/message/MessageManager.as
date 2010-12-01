@@ -1,21 +1,15 @@
 package cocoa.message {
+
 import flash.utils.Dictionary;
 
-import org.flyti.core.ISingleton;
-import org.flyti.core.Singleton;
-
-public class MessageManager implements ISingleton {
+public class MessageManager {
   private var messages:Dictionary = new Dictionary(true);
-
-  public function MessageManager():void {
-    Singleton.checkInstantiation(_instance);
-  }
 
   private static var _instance:MessageManager;
 
   public static function get instance():MessageManager {
     if (_instance == null) {
-      _instance = MessageManager(Singleton.getInstance('org.flyti.flyf.managers::MessageManager', MessageManager));
+      _instance = new MessageManager();
     }
 
     return _instance;

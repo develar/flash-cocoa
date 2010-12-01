@@ -140,7 +140,7 @@ public class AssetBuilderMojo extends AbstractMojo {
     //noinspection unchecked
     for (Artifact artifact : (Set<Artifact>) project.getArtifacts()) {
       if ("swc".equals(artifact.getType())) {
-        final String referenceProjectId = MavenProject.getProjectReferenceId(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
+        final String referenceProjectId = getProjectReferenceId(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
         final File referenceResourceDirectory;
         if (projectResourceDirectoryMap.containsKey(referenceProjectId)) {
           referenceResourceDirectory = new File(projectResourceDirectoryMap.get(referenceProjectId));
@@ -172,6 +172,12 @@ public class AssetBuilderMojo extends AbstractMojo {
       projectResourceDirectoryCache.getParentFile().mkdirs();
       new ObjectOutputStream(new FileOutputStream(projectResourceDirectoryCache)).writeObject(projectResourceDirectoryMap);
     }
+  }
+
+  private static String getProjectReferenceId(String groupId, String artifactId, String version) {
+    StringBuilder buffer = new StringBuilder(128);
+    buffer.append(groupId).append(':').append(artifactId).append(':').append(version);
+    return buffer.toString();
   }
 
   private void buildBorders(List<Border> borders) throws IOException, MojoExecutionException {
