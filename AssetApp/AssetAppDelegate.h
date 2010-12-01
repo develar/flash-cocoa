@@ -27,6 +27,7 @@ enum
 - (id)createPushButton;
 - (id)createButton;
 - (id)createPopUpButton;
+- (id)createRoundTexturedPopUpButton;
 
 - (id)createScrollView;
 - (id)createSegmentedControl;

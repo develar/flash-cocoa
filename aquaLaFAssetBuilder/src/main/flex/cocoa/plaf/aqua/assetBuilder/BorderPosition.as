@@ -2,14 +2,15 @@ package cocoa.plaf.aqua.assetBuilder {
 public final class BorderPosition {
   public static const pushButtonRounded:int = 0;
   public static const pushButtonTexturedRounded:int = 1;
-  public static const popUpButtonTexturedRounded:int = 2;
+  public static const popUpButton:int = 2;
+  public static const popUpButtonTexturedRounded:int = 3;
 
-  public static const imageView:int = 3;
+  public static const imageView:int = popUpButtonTexturedRounded + 1;
 
-  public static const menu:int = 4;
-  public static const menuItem:int = 5;
+  public static const menu:int = imageView + 1;
+  public static const menuItem:int = menu + 1;
 
-  public static const segmentItem:int = 6;
+  public static const segmentItem:int = menuItem + 1;
   public static const scrollbar:int = segmentItem + 1;
 
   public static const window:int = scrollbar + 14;

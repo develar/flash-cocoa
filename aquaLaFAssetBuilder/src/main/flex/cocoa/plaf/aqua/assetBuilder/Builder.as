@@ -69,13 +69,16 @@ public class Builder {
   [Embed(source="/Tree.sideBar.icons.png")]
   private static var treeSideBarIcons:Class;
 
-  private static var buttonRowsInfo:Vector.<RowInfo> = new Vector.<RowInfo>(3, true);
-  // rounded push button
-  buttonRowsInfo[0] = new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new Insets(9, NaN, 9, 5)));
-  // textured rounded push button
-  buttonRowsInfo[1] = new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, 0, 0, -1), new Insets(8, NaN, 8, 6)));
-  // rounded pop up button
-  buttonRowsInfo[2] = new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5)));
+  private static var buttonRowsInfo:Vector.<RowInfo> = new <RowInfo>[
+    // rounded push button
+    new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new Insets(9, NaN, 9, 5))),
+    // textured rounded push button
+    new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, 0, 0, -1), new Insets(8, NaN, 8, 6))),
+    // rounded pop up button
+    new RowInfo(BorderPosition.popUpButton, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5))),
+    // textured rounded pop up button
+    new RowInfo(BorderPosition.popUpButton, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5)))
+  ];
 
   private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void {
     for each (var rowInfo:RowInfo in rowsInfo) {
@@ -123,7 +126,7 @@ public class Builder {
     var data:ByteArray = new bordersClass();
     var oldBordersCount:int = data.readUnsignedByte();
     data.position = 0;
-    data.writeByte(oldBordersCount + (borders.length - 1));
+    data.writeByte(oldBordersCount + (borders.length - 2));
     data.position = data.length;
 
     var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted", "SegmentItem",
@@ -143,7 +146,7 @@ public class Builder {
       var border:AbstractBitmapBorder = AbstractBitmapBorder(borders[index]);
       assert(borders.indexOf(border) == borders.lastIndexOf(border));
 
-      if (index == BorderPosition.pushButtonTexturedRounded || index == BorderPosition.popUpButtonTexturedRounded) {
+      if (index == BorderPosition.pushButtonTexturedRounded || index == BorderPosition.popUpButton) {
         data = fdata;
       }
       else {

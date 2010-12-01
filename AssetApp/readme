@@ -1,17 +1,17 @@
 
-screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/assets.png
+screencapture -wi /Users/develar/workspace/cocoa/aquaLaF/src/main/resources/assets.png
 
-screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/popUpMenu.png
+screencapture -i ~/workspace/cocoa/testToolApp/src/main/resources/popUpMenu.png
 
-screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl.png
-screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl2.png
-screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl3.png
-screencapture -i ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl4.png
+screencapture -i ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl.png
+screencapture -i ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl2.png
+screencapture -i ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl3.png
+screencapture -i ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl4.png
 
-screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl.texturedRounded.png
-screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl2.texturedRounded.png
-screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl3.png
-screencapture -iw ~/workspace/XpressPages/common/cocoa/testToolApp/src/main/resources/segmentedControl4.png
+screencapture -iw ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl.texturedRounded.png
+screencapture -iw ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl2.texturedRounded.png
+screencapture -iw ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl3.png
+screencapture -iw ~/workspace/cocoa/testToolApp/src/main/resources/segmentedControl4.png
 
 or
 

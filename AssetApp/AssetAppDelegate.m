@@ -39,6 +39,14 @@
 	[self createPopUpButton];
 	[[self createPopUpButton] highlight:YES];
 	[[self createPopUpButton] setEnabled:NO];
+    
+    // PopUpButton round textured
+	controlFrame.origin.x = 0;
+	controlFrame.origin.y -= CONTROL_FRAME_HEIGHT;
+	controlFrame.size.width = BUTTON_WIDTH;
+	[self createRoundTexturedPopUpButton];
+	[[self createRoundTexturedPopUpButton] highlight:YES];
+	[[self createRoundTexturedPopUpButton] setEnabled:NO];
 	
 	// related to PopUpButton — pop up menu
 	controlFrame.origin.x = 0;
@@ -194,8 +202,6 @@
     
     [scrollview setDocumentView:theTextView];
 	[contentView addSubview:scrollview];
-    
-    NSSize cs = [theTextView textContainerInset];
 	
 	controlFrame.size.width = 100;
 	controlFrame.size.height = 100;
@@ -303,6 +309,17 @@
 
 - (id)createPopUpButton {
 	NSPopUpButton *button = [[NSPopUpButton alloc] initWithFrame:controlFrame ];
+	[contentView addSubview:button];
+	
+	controlFrame.origin.x += BUTTON_WIDTH;
+	return button;
+}
+
+- (id)createRoundTexturedPopUpButton {
+	NSPopUpButton *button = [[NSPopUpButton alloc] initWithFrame:controlFrame ];
+    [[button cell] setPreferredEdge:1];
+    [[button cell] setArrowPosition:2];
+    [button setBezelStyle:NSTexturedRoundedBezelStyle];
 	[contentView addSubview:button];
 	
 	controlFrame.origin.x += BUTTON_WIDTH;
