@@ -34,9 +34,11 @@ public class BarLayout extends LayoutBase {
     var layoutElement:ILayoutElement;
     var n:int = layoutTarget.numElements;
 
+    var r:Object;
     for (var i:int = 0; i < n; i++) {
       layoutElement = layoutTarget.getElementAt(i);
-      if (isNaN(Number(layoutElement.right))) {
+      r = layoutElement.right;
+      if (r === null || r != r) {
         layoutElement.setLayoutBoundsSize(NaN, NaN);
 
         var leftConstraint:Number = Number(layoutElement.left);
@@ -53,7 +55,8 @@ public class BarLayout extends LayoutBase {
 
     for (i = n - 1; i >= 0; i--) {
       layoutElement = layoutTarget.getElementAt(i);
-      if (!isNaN(Number(layoutElement.right))) {
+      r = layoutElement.right;
+      if (r !== null && r == r) {
         layoutElement.setLayoutBoundsSize(NaN, NaN);
         x = right - layoutElement.getPreferredBoundsWidth();
         right = x - _gap;

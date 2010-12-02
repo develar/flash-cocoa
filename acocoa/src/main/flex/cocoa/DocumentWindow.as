@@ -48,12 +48,13 @@ public class DocumentWindow {
   public function set contentView(component:Component):void {
     _contentView = component.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
     var sm:WindowedSystemManager = new WindowedSystemManager(_contentView);
-    _nativeWindow.stage.addChild(sm);
-
+    
     if (_maps != null) {
       // todo one plexus container for all maps
       _maps[0].dispatcher = _contentView;
     }
+
+    _nativeWindow.stage.addChild(sm);
 
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, windowResizeHandler);
     _nativeWindow.maximize();
