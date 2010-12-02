@@ -148,7 +148,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
         closeButtonSkin.x = 4;
         closeButtonSkin.y = 3;
       }
-      addChild(closeButtonSkin);
+//      addChild(closeButtonSkin);
     }
 
     addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);

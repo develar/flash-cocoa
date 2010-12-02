@@ -333,6 +333,7 @@ public class AssetBuilderMojo extends AbstractMojo {
     images[2] = sourceImage.getSubimage(frameRectangle.x, y, sliceSize.left + 1, sliceSize.bottom);
     images[3] = sourceImage.getSubimage(rightX, y, sliceSize.right, sliceSize.bottom);
 
+    dump(images);
     return images;
   }
 

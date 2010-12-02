@@ -18,7 +18,7 @@
 
       PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
 //      return;
-//      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
+      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
 
       var hudWindow:HUDWindow = new HUDWindow();
       hudWindow.resizable = false;

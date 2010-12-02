@@ -46,7 +46,7 @@ public final class Scale9EdgeBitmapBorder extends AbstractMultipleBitmapBorder {
     const leftAreaWidth:Number = rightSliceX - _frameInsets.left;
     const rightAreaWidth:Number = bitmaps[_bitmapIndex + 1].width;
 
-    g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
+    g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false, true);
     g.drawRect(_frameInsets.left, sharedMatrix.ty, leftAreaWidth, topAreaHeight);
     g.endFill();
 

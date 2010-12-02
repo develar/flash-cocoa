@@ -29,7 +29,7 @@ public class Builder {
   [Embed(source="../../../../../../../../aquaLaF/src/main/resources/assets.png")]
   private static const assetsClass:Class;
 
-    [Embed(source="../../../../../../../../aquaLaF/target/assets", mimeType="application/octet-stream")]
+  [Embed(source="../../../../../../../../aquaLaF/target/assets", mimeType="application/octet-stream")]
   private static const bordersClass:Class;
 
   [Embed(source="/popUpMenu.png")]
@@ -77,7 +77,7 @@ public class Builder {
     // rounded pop up button
     new RowInfo(BorderPosition.popUpButton, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5))),
     // textured rounded pop up button
-    new RowInfo(BorderPosition.popUpButton, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5)))
+    new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1), new Insets(4, NaN, 16, 7)))
   ];
 
   private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void {
@@ -129,7 +129,7 @@ public class Builder {
     data.writeByte(oldBordersCount + (borders.length - 2));
     data.position = data.length;
 
-    var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted", "SegmentItem",
+    var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted", "SegmentItem",
       "ScrollBar.track.v", "ScrollBar.track.h", "ScrollBar.decrementButton.h", "ScrollBar.decrementButton.h.highlighted", "ScrollBar.incrementButton.h", "ScrollBar.incrementButton.h.highlighted",
       "ScrollBar.decrementButton.v", "ScrollBar.decrementButton.v.highlighted", "ScrollBar.incrementButton.v", "ScrollBar.incrementButton.v.highlighted",
       "ScrollBar.thumb.v", "ScrollBar.thumb.h", "ScrollBar.track.v.off", "ScrollBar.track.h.off",
@@ -146,7 +146,7 @@ public class Builder {
       var border:AbstractBitmapBorder = AbstractBitmapBorder(borders[index]);
       assert(borders.indexOf(border) == borders.lastIndexOf(border));
 
-      if (index == BorderPosition.pushButtonTexturedRounded || index == BorderPosition.popUpButton) {
+      if (index == BorderPosition.pushButtonTexturedRounded || index == BorderPosition.popUpButtonTexturedRounded) {
         data = fdata;
       }
       else {

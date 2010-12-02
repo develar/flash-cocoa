@@ -5,6 +5,10 @@
 		import cocoa.plaf.DialogSkin;
 		import cocoa.plaf.basic.BottomBarStyle;
 
+    import org.flyti.util.ArrayList;
+
+    private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
+
 		override protected function skinAttachedHandler():void
 		{
 			DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
@@ -17,6 +21,11 @@
 		<Toolbar>
 			<PushButton title="Button 1" left="0"/>
 			<PushButton title="Button 2" left="0"/>
+      <PopUpButton right="0">
+      <Menu>
+        <items>{testData}</items>
+      </Menu>
+    </PopUpButton>
 		</Toolbar>
 	</toolbar>
 

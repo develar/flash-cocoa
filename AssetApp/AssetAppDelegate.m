@@ -50,7 +50,7 @@
 	
 	// related to PopUpButton — pop up menu
 	controlFrame.origin.x = 0;
-	controlFrame.origin.y -= CONTROL_FRAME_HEIGHT + 50;
+	controlFrame.origin.y -= 50;
 	popUpMenuButton = [self createPopUpButton];
 	
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];		
@@ -165,47 +165,25 @@
 	[colorWell2 setEnabled:NO];
 	[contentView addSubview:colorWell2];
 	
+    // textfield 
 	controlFrame.size.width = 100;
 	controlFrame.size.height = 100;
 	controlFrame.origin.x += 60;
 	NSTextField *textField = [[NSTextField alloc] initWithFrame:controlFrame];
 	[contentView addSubview:textField];
 	
+
+	controlFrame.size.width = 100;
 	controlFrame.size.height = 40;
-	controlFrame.origin.x += 120;
+	controlFrame.origin.x += 160;
 	NSTextField *textInput = [[NSTextField alloc] initWithFrame:controlFrame];
 	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
 	[contentView addSubview:textInput];
     
-    controlFrame.size.width = 100;
-	controlFrame.size.height = 100;
-	controlFrame.origin.x += 120;
-    
-    NSScrollView *scrollview = [[NSScrollView alloc] initWithFrame:controlFrame];
-    
-    [scrollview setBorderType:NSBezelBorder];
-    [scrollview setHasVerticalScroller: YES];
-    [scrollview setHasHorizontalScroller: NO];
-    [scrollview setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    
-    NSSize contentSize = [scrollview contentSize];
-    
-    NSTextView *theTextView = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)];
-    [theTextView setMinSize:NSMakeSize(0.0, contentSize.height)];
-    [theTextView setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-    [theTextView setVerticallyResizable:YES];
-    [theTextView setHorizontallyResizable:NO];
-    [theTextView setAutoresizingMask:NSViewWidthSizable];
-    
-    [[theTextView textContainer] setContainerSize:NSMakeSize(contentSize.width, FLT_MAX)];
-    [[theTextView textContainer] setWidthTracksTextView:YES];
-    
-    [scrollview setDocumentView:theTextView];
-	[contentView addSubview:scrollview];
-	
+
 	controlFrame.size.width = 100;
 	controlFrame.size.height = 100;
-	controlFrame.origin.x += 120;
+	controlFrame.origin.x += 160;
 	//NSBox *box = [[NSBox alloc] initWithFrame:controlFrame];
 	NSTabView *box = [[NSTabView alloc] initWithFrame:controlFrame];
 //	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
@@ -317,7 +295,7 @@
 
 - (id)createRoundTexturedPopUpButton {
 	NSPopUpButton *button = [[NSPopUpButton alloc] initWithFrame:controlFrame ];
-    [[button cell] setPreferredEdge:1];
+    [button setPreferredEdge:NSMinYEdge];
     [[button cell] setArrowPosition:2];
     [button setBezelStyle:NSTexturedRoundedBezelStyle];
 	[contentView addSubview:button];

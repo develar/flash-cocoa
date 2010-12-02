@@ -10,7 +10,7 @@ public class SliceCalculator {
 
   private var pixels:Vector.<uint>;
 
-  private var equalLength:int = 1;
+  private var equalLength:int = 3;
 
   public function calculateFromTop(bitmapData:BitmapData, sourceRectangle:Rectangle):Number {
     init(bitmapData, sourceRectangle);
@@ -79,6 +79,8 @@ public class SliceCalculator {
   }
 
   private function getUnrepeatableFromRight(strict:Boolean):int {
+    var equalCount:int;
+
     columnLoop : for (var column:int = width - 1; column > 1; column--) {
       for (var i:int = column, n:int = (width * height) - width + 1; i < n; i += width) {
         if (!equalColor(pixels[i], pixels[i - 1], strict)) {
@@ -86,7 +88,10 @@ public class SliceCalculator {
         }
       }
 
-      return width - (column + 1);
+      equalCount++;
+      if (equalCount == equalLength) {
+        return width - (column + 1);
+      }
     }
 
     throw new Error("can't find center area");
