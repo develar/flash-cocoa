@@ -24,7 +24,7 @@ public class RectangularBorder extends AbstractBorder {
     this.cornerRadius = cornerRadius;
   }
 
-  public static function create(fillColor:Number, strokeColor:Number, contentInsets:Insets = null, frameInsets:FrameInsets = null):RectangularBorder {
+  public static function create(fillColor:Number, strokeColor:Number = NaN, contentInsets:Insets = null, frameInsets:FrameInsets = null):RectangularBorder {
     return new RectangularBorder(fillColor, strokeColor, NaN, contentInsets, frameInsets);
   }
 

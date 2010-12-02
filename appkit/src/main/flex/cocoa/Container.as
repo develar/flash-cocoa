@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
@@ -27,323 +26,264 @@ use namespace mx_internal;
 // и свойство обязано быть названо mxmlContent — AddItems
 
 [DefaultProperty("mxmlContent")]
-public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider, IVisualElementContainer
-{
-	private var createChildrenCalled:Boolean;
-	private var subviewsChanged:Boolean;
+public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider, IVisualElementContainer {
+  private var createChildrenCalled:Boolean;
+  private var subviewsChanged:Boolean;
 
-	public function Container()
-	{
-		super();
+  public function Container() {
+    super();
 
-		mouseEnabledWhereTransparent = false;
-		mouseEnabled = false;
-	}
+    mouseEnabledWhereTransparent = false;
+    mouseEnabled = false;
+  }
 
-	protected var _resourceBundle:String;
-	public function set resourceBundle(value:String):void
-	{
-		_resourceBundle = value;
-	}
+  protected var _resourceBundle:String;
+  public function set resourceBundle(value:String):void {
+    _resourceBundle = value;
+  }
 
-	protected function l(key:String):String
-	{
-		return resourceManager.getString(_resourceBundle, key);
-	}
+  protected function l(key:String):String {
+    return resourceManager.getString(_resourceBundle, key);
+  }
 
-	private var _subviews:Array;
-	public function set subviews(value:Array):void
-	{
-		if (value == _subviews)
-		{
-			return;
-		}
+  private var _subviews:Array;
+  public function set subviews(value:Array):void {
+    if (value == _subviews) {
+      return;
+    }
 
-		_subviews = value;
+    _subviews = value;
 
-		if (createChildrenCalled)
-        {
-            createSubviews();
-        }
-        else
-        {
-            subviewsChanged = true;
-        }
-	}
+    if (createChildrenCalled) {
+      createSubviews();
+    }
+    else {
+      subviewsChanged = true;
+    }
+  }
 
-	public function set mxmlContent(value:Array):void
-    {
-		subviews = value;
-	}
+  public function set mxmlContent(value:Array):void {
+    subviews = value;
+  }
 
-	protected var _laf:LookAndFeel;
-	public function get laf():LookAndFeel
-	{
-		return _laf;
-	}
-	public function set laf(value:LookAndFeel):void
-	{
-		_laf = value;
-	}
+  protected var _laf:LookAndFeel;
+  public function get laf():LookAndFeel {
+    return _laf;
+  }
 
-	override protected function createChildren():void
-	{
-		if (_laf == null)
-		{
-			_laf = LookAndFeelUtil.find(parent);
-		}
+  public function set laf(value:LookAndFeel):void {
+    _laf = value;
+  }
 
-		if (layout == null)
-		{
-			layout = new BasicLayout();
-		}
+  override protected function createChildren():void {
+    if (_laf == null) {
+      _laf = LookAndFeelUtil.find(parent);
+    }
 
-		createChildrenCalled = true;
+    if (layout == null) {
+      layout = new BasicLayout();
+    }
 
-		if (subviewsChanged)
-		{
-			subviewsChanged = false;
-            createSubviews();
-        }
-	}
+    createChildrenCalled = true;
 
-	private function createSubviews():void
-	{
-		for (var i:int = 0, n:int = _subviews.length; i < n; i++)
-		{
-			subviewAdded(_subviews[i], i);
-		}
-	}
-	
-	private function subviewAdded(view:Object, index:int):void
-    {
-		if (view is Component)
-		{
-			var component:Component = Component(view);
-			view = component.skin == null ? component.createView(_laf) : component.skin;
-		}
-		else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null))
-		{
-			dispatchEvent(new InjectorEvent(view));
-		}
+    if (subviewsChanged) {
+      subviewsChanged = false;
+      createSubviews();
+    }
+  }
 
-		if (layout != null)
-		{
-			layout.elementAdded(index);
-		}
+  private function createSubviews():void {
+    for (var i:int = 0, n:int = _subviews.length; i < n; i++) {
+      subviewAdded(_subviews[i], i);
+    }
+  }
 
-		super.addChildAt(DisplayObject(view), index != -1 ? index : super.numChildren);
+  private function subviewAdded(view:Object, index:int):void {
+    if (view is Component) {
+      var component:Component = Component(view);
+      view = component.skin == null ? component.createView(_laf) : component.skin;
+    }
+    else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null)) {
+      dispatchEvent(new InjectorEvent(view));
+    }
 
-		invalidateSize();
-        invalidateDisplayList();
-	}
+    if (layout != null) {
+      layout.elementAdded(index);
+    }
 
-	override public function get numElements():int
-    {
-		return _subviews == null ? 0 : _subviews.length;
-	}
+    super.addChildAt(DisplayObject(view), index != -1 ? index : super.numChildren);
 
-	override public function getElementAt(index:int):IVisualElement
-    {
+    invalidateSize();
+    invalidateDisplayList();
+  }
+
+  override public function get numElements():int {
+    return _subviews == null ? 0 : _subviews.length;
+  }
+
+  override public function getElementAt(index:int):IVisualElement {
 //		var element:Viewable = _subviews[index];
-		var element:Object = _subviews[index];
-		return IVisualElement(element is Component ? Component(element).skin : element);
-	}
+    var element:Object = _subviews[index];
+    return IVisualElement(element is Component ? Component(element).skin : element);
+  }
 
-	override public function getElementIndex(element:IVisualElement):int
-    {
-		var index:int = _subviews.indexOf(element is Skin ? Skin(element).component : element);
-		assert(index != -1);
-		return index;
-	}
+  override public function getElementIndex(element:IVisualElement):int {
+    var index:int = _subviews.indexOf(element is Skin ? Skin(element).component : element);
+    assert(index != -1);
+    return index;
+  }
 
-	public function getSubviewIndex(view:Viewable):int
-	{
-		return _subviews.indexOf(view);
-	}
+  public function getSubviewIndex(view:Viewable):int {
+    return _subviews.indexOf(view);
+  }
 
-	public function removeElementAt(index:int):IVisualElement
-	{
-		var element:Viewable = _subviews[index];
-		if (element is Component)
-		{
-			element = Component(element).skin;
-		}
-		if (!subviewsChanged)
-		{
-			super.removeChild(DisplayObject(element));
+  public function removeElementAt(index:int):IVisualElement {
+    var element:Viewable = _subviews[index];
+    if (element is Component) {
+      element = Component(element).skin;
+    }
+    if (!subviewsChanged) {
+      super.removeChild(DisplayObject(element));
 
-			invalidateSize();
-			invalidateDisplayList();
+      invalidateSize();
+      invalidateDisplayList();
 
-			if (layout)
-			{
-				layout.elementRemoved(index);
-			}
-		}
+      if (layout) {
+        layout.elementRemoved(index);
+      }
+    }
 
-		_subviews.splice(index, 1);
+    _subviews.splice(index, 1);
 
-		return IVisualElement(element);
-	}
+    return IVisualElement(element);
+  }
 
-	public function addSubview(view:Viewable, index:int = -1):void
-	{
-		if (index == -1)
-		{
-			index = numElements;
-		}
+  public function addSubview(view:Viewable, index:int = -1):void {
+    if (index == -1) {
+      index = numElements;
+    }
 
-		var host:DisplayObject;
-		if (view is Component)
-		{
-			var component:Component = Component(view);
-			if (component.skin != null)
-			{
-				host = IFlexDisplayObject(component.skin).parent;
-			}
-		}
-		else
-		{
-			host = IFlexDisplayObject(view).parent;
-		}
+    var host:DisplayObject;
+    if (view is Component) {
+      var component:Component = Component(view);
+      if (component.skin != null) {
+        host = IFlexDisplayObject(component.skin).parent;
+      }
+    }
+    else {
+      host = IFlexDisplayObject(view).parent;
+    }
 
-		if (host is IVisualElementContainer)
-        {
-			assert(host != this);
+    if (host is IVisualElementContainer) {
+      assert(host != this);
 
-            IVisualElementContainer(host).removeElement(IVisualElement(view));
-        }
-		else if (host is ViewContainer)
-		{
-			ViewContainer(host).removeSubview(view);
-		}
+      IVisualElementContainer(host).removeElement(IVisualElement(view));
+    }
+    else if (host is ViewContainer) {
+      ViewContainer(host).removeSubview(view);
+    }
 
-		if (_subviews == null)
-		{
-			_subviews = [view];
-			if (!createChildrenCalled)
-			{
-				subviewsChanged = true;
-			}
-		}
-		else
-		{
-			_subviews.splice(index, 0, view);
-		}
+    if (_subviews == null) {
+      _subviews = [view];
+      if (!createChildrenCalled) {
+        subviewsChanged = true;
+      }
+    }
+    else {
+      _subviews.splice(index, 0, view);
+    }
 
-		if (!subviewsChanged)
-		{
-			subviewAdded(view, index);
-		}
-	}
+    if (!subviewsChanged) {
+      subviewAdded(view, index);
+    }
+  }
 
-	public function removeSubview(view:Viewable):void
-	{
-		removeElementAt(_subviews.indexOf(view));
-	}
+  public function removeSubview(view:Viewable):void {
+    removeElementAt(_subviews.indexOf(view));
+  }
 
-	override protected function canSkipMeasurement():Boolean
-	{
-		var advancedLayout:AdvancedLayout;
-		if (parent is GroupBase)
-		{
-			var parentLayout:LayoutBase = GroupBase(parent).layout;
-			if (parentLayout is AdvancedLayout)
-			{
-				advancedLayout = AdvancedLayout(parentLayout);
-			}
-		}
-		else if (parent is AdvancedLayout)
-		{
-			advancedLayout = AdvancedLayout(parent);
-		}
+  override protected function canSkipMeasurement():Boolean {
+    var advancedLayout:AdvancedLayout;
+    if (parent is GroupBase) {
+      var parentLayout:LayoutBase = GroupBase(parent).layout;
+      if (parentLayout is AdvancedLayout) {
+        advancedLayout = AdvancedLayout(parentLayout);
+      }
+    }
+    else if (parent is AdvancedLayout) {
+      advancedLayout = AdvancedLayout(parent);
+    }
 
-		if (advancedLayout != null && advancedLayout.childCanSkipMeasurement(this))
-		{
-			return true;
-		}
+    if (advancedLayout != null && advancedLayout.childCanSkipMeasurement(this)) {
+      return true;
+    }
 
-		return super.canSkipMeasurement();
-	}
+    return super.canSkipMeasurement();
+  }
 
-	public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void
-	{
-		$addChildAt(displayObject, index == -1 ? numChildren : index);
-	}
+  public final function addDisplayObject(displayObject:DisplayObject, index:int = -1):void {
+    $addChildAt(displayObject, index == -1 ? numChildren : index);
+  }
 
-	public final function removeDisplayObject(child:DisplayObject):void
-	{
-		$removeChild(child);
-	}
+  public final function removeDisplayObject(child:DisplayObject):void {
+    $removeChild(child);
+  }
 
-	public function getSubviewAt(index:int):View
-	{
-		return View(getElementAt(index));
-	}
+  public function getSubviewAt(index:int):View {
+    return View(getElementAt(index));
+  }
 
-	public function get numSubviews():int
-	{
-		return numElements;
-	}
+  public function get numSubviews():int {
+    return numElements;
+  }
 
-	// disable unwanted legacy
-	include "../../unwantedLegacy.as";
+  // disable unwanted legacy
+  include "../../unwantedLegacy.as";
 
-	include "../../legacyConstraints.as";
+  include "../../legacyConstraints.as";
 
-	override public function parentChanged(p:DisplayObjectContainer):void
-	{
-		super.parentChanged(p);
+  override public function parentChanged(p:DisplayObjectContainer):void {
+    super.parentChanged(p);
 
-		if (p != null)
-		{
-			_parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
-		}
-	}
+    if (p != null) {
+      _parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
+    }
+  }
 
-	// we need implement IVisualElementContainer for states (AddItems)
-	public function addElement(element:IVisualElement):IVisualElement
-	{
-		addSubview(Viewable(element));
-		return element;
-	}
+  // we need implement IVisualElementContainer for states (AddItems)
+  public function addElement(element:IVisualElement):IVisualElement {
+    addSubview(Viewable(element));
+    return element;
+  }
 
-	public function addElementAt(element:IVisualElement, index:int):IVisualElement
-	{
-		addSubview(Viewable(element), index);
-		return element;
-	}
+  public function addElementAt(element:IVisualElement, index:int):IVisualElement {
+    addSubview(Viewable(element), index);
+    return element;
+  }
 
-	public function removeElement(element:IVisualElement):IVisualElement
-	{
-		removeSubview(Viewable(element));
-		return element;
-	}
+  public function removeElement(element:IVisualElement):IVisualElement {
+    removeSubview(Viewable(element));
+    return element;
+  }
 
-	public function removeAllElements():void
-	{
-		throw new IllegalOperationError();
-	}
+  public function removeAllElements():void {
+    throw new IllegalOperationError();
+  }
 
-	public function setElementIndex(element:IVisualElement, index:int):void
-	{
-		throw new IllegalOperationError();
-	}
+  public function setElementIndex(element:IVisualElement, index:int):void {
+    throw new IllegalOperationError();
+  }
 
-	public function swapElements(element1:IVisualElement, element2:IVisualElement):void
-	{
-		throw new IllegalOperationError();
-	}
+  public function swapElements(element1:IVisualElement, element2:IVisualElement):void {
+    throw new IllegalOperationError();
+  }
 
-	public function swapElementsAt(index1:int, index2:int):void
-	{
-		throw new IllegalOperationError();
-	}
+  public function swapElementsAt(index1:int, index2:int):void {
+    throw new IllegalOperationError();
+  }
 
-	override public function getStyle(styleProp:String):*
-	{
-		return styleProp == "disabledAlpha" ? 0.5 : undefined;
-	}
+  override public function getStyle(styleProp:String):* {
+    return styleProp == "disabledAlpha" ? 0.5 : undefined;
+  }
 }
 }

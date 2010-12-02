@@ -1,5 +1,6 @@
 package cocoa.plaf.aqua {
 import cocoa.BorderedContainer;
+import cocoa.layout.BarLayout;
 import cocoa.plaf.basic.BoxSkin;
 
 public class ToolbarSkin extends BoxSkin {
@@ -20,7 +21,7 @@ public class ToolbarSkin extends BoxSkin {
     component.uiPartAdded("contentGroup", contentGroup);
 
     if (contentGroup.layout == null) {
-      var layout:BottomBarLayout = new BottomBarLayout();
+      var layout:BarLayout = new BarLayout();
       layout.padding = 10;
       layout.gap = 10;
       contentGroup.layout = layout;

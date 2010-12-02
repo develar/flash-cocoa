@@ -9,7 +9,7 @@ import flash.display.Graphics;
 public class TabViewSkin extends AbstractTabViewSkin {
   private var border:Border;
 
-  override protected function get contentInsets():Insets {
+  override public function get contentInsets():Insets {
     return border.contentInsets;
   }
 

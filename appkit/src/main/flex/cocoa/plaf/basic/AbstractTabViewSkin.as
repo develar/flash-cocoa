@@ -5,11 +5,12 @@ import cocoa.ViewStack;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.Placement;
+import cocoa.plaf.TabViewSkin;
 
 import mx.core.ILayoutElement;
 
 [Abstract]
-public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout {
+public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout, TabViewSkin {
   protected var segmentedControl:SingleSelectionDataGroup;
   protected var viewStack:ViewStack;
 
@@ -20,7 +21,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout 
     return canSkipMeasurement();
   }
 
-  protected function get contentInsets():Insets {
+  public function get contentInsets():Insets {
     throw new Error("abstract");
   }
 

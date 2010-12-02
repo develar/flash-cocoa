@@ -67,8 +67,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
-    data["TabView.segmentedControl.iR"] = new ClassFactory(SegmentItemRenderer);
-    data["TabView.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
+    data["TabView.segmentedControl.iR"] = data["SegmentedControl.iR"] = new ClassFactory(SegmentItemRenderer);
+    data["Sidebar.segmentedControlController"] = data["TabView.segmentedControlController"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
     data["TabView.segmentedControl.placement"] = Placement.PAGE_START_LINE_CENTER;
 
     data["PushButton"] = PushButtonSkin;
@@ -79,6 +79,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["ColorPicker"] = PushButtonSkin;
     data["ColorPicker.b"] = data["PopUpButton.b"];
+
     data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
 
     data["Menu"] = MenuSkin;
@@ -116,7 +117,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
 
     data["Sidebar.iR"] = new ClassFactory(PaneLabelRenderer);
-    data["Sidebar.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
   }
 
   private var windowFrameLookAndFeel:WindowFrameLookAndFeel;
