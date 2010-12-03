@@ -37,11 +37,11 @@ public class SingleSelectionDataGroup extends SelectableDataGroup {
     if (itemIndex != _selectedIndex) {
       oldSelectedIndex = _selectedIndex;
       _selectedIndex = itemIndex;
-      adjustSelection();
+      adjustSelection(true);
     }
   }
 
-  private function adjustSelection():void {
+  private function adjustSelection(userInitiatedAction:Boolean):void {
     if (oldSelectedIndex != ListSelection.NO_SELECTION) {
       itemSelected(oldSelectedIndex, false);
     }
@@ -49,13 +49,17 @@ public class SingleSelectionDataGroup extends SelectableDataGroup {
       itemSelected(_selectedIndex, true);
     }
 
-    dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, oldSelectedIndex, _selectedIndex));
+    dispatchIndexChangeEvent(userInitiatedAction);
 
     oldSelectedIndex = ListSelection.NO_SELECTION;
   }
 
+  protected function dispatchIndexChangeEvent(userInitiatedAction:Boolean):void {
+    dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, oldSelectedIndex, _selectedIndex));
+  }
+
   override protected function commitSelection():void {
-    adjustSelection();
+    adjustSelection(false);
   }
 
   override mx_internal function itemRemoved(item:Object, index:int):void {

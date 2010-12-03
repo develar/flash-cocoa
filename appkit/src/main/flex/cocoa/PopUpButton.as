@@ -15,7 +15,7 @@ use namespace ui;
  * @see http://developer.apple.com/Mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF132
  */
 [DefaultProperty("menu")]
-public class PopUpButton extends AbstractControl implements Cell, LookAndFeelProvider {
+public class PopUpButton extends AbstractControl implements LookAndFeelProvider {
   private var _laf:LookAndFeel;
   public function get laf():LookAndFeel {
     return _laf;

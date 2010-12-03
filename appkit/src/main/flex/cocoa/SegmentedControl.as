@@ -3,7 +3,35 @@ import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.basic.SegmentedControlController;
 
-public class SegmentedControl extends SingleSelectionDataGroup {
+import org.flyti.util.List;
+
+public class SegmentedControl extends SingleSelectionDataGroup implements DataControl {
+   public function get items():List {
+    return List(dataProvider);
+  }
+  public function set items(value:List):void {
+    dataProvider = value;
+  }
+
+  public function get hidden():Boolean {
+    return !visible && !includeInLayout;
+  }
+  public function set hidden(value:Boolean):void {
+    visible = !value;
+    includeInLayout = !value;
+  }
+
+  private var _action:Function;
+  public function set action(value:Function):void {
+    _action = value;
+  }
+
+  public function get objectValue():Object {
+    return null;
+  }
+  public function set objectValue(value:Object):void {
+  }
+
   override protected function createChildren():void {
     if (layout == null) {
       layout = new SegmentedControlHorizontalLayout();
@@ -16,6 +44,12 @@ public class SegmentedControl extends SingleSelectionDataGroup {
     }
 
     super.createChildren();
+  }
+
+  override protected function dispatchIndexChangeEvent(userInitiatedAction:Boolean):void {
+    if (userInitiatedAction && _action != null) {
+      _action.length == 0 ? _action() : _action(selectedItem);
+    }
   }
 }
 }

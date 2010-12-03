@@ -16,6 +16,14 @@ import spark.components.List;
 use namespace mx_internal;
 
 public class ListView extends List implements Viewable, Control, UIPartController {
+  public function get hidden():Boolean {
+    return !visible && !includeInLayout;
+  }
+  public function set hidden(value:Boolean):void {
+    visible = !value;
+    includeInLayout = !value;
+  }
+
   private var _skinClass:Class;
   public function set skinClass(value:Class):void {
     _skinClass = value;
