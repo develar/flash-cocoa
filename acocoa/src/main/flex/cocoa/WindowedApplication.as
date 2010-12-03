@@ -3,7 +3,6 @@ import flash.desktop.NativeApplication;
 import flash.display.NativeWindow;
 import flash.display.NativeWindowDisplayState;
 import flash.display.NativeWindowSystemChrome;
-import flash.display.NativeWindowType;
 import flash.events.Event;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.NativeWindowDisplayStateEvent;
@@ -15,13 +14,12 @@ import mx.core.mx_internal;
 import mx.events.AIREvent;
 import mx.events.EffectEvent;
 import mx.events.FlexEvent;
-import mx.managers.DragManager;
 import mx.managers.SystemManagerGlobals;
 
 use namespace mx_internal;
 
 [Frame(factoryClass="cocoa.SystemManager")]
-public class WindowedApplication extends ApplicationImpl implements IWindow {
+public class WindowedApplication extends MainWindowedApplication implements IWindow {
   public function WindowedApplication() {
     super();
 
@@ -31,10 +29,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     nativeApplication.addEventListener(Event.ACTIVATE, nativeApplication_activateHandler);
     nativeApplication.addEventListener(Event.DEACTIVATE, nativeApplication_deactivateHandler);
     nativeApplication.addEventListener(Event.NETWORK_CHANGE, dispatchEvent);
-
-    // Force DragManager to instantiate so that it can handle drags from outside the app.
-    //noinspection BadExpressionStatementJS
-    DragManager.isDragging;
   }
 
   private var _nativeWindow:NativeWindow;
@@ -47,7 +41,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   private var prevActiveFrameRate:Number = -1;
 
   /**
-   *  @private
    *  Determines whether the WindowedApplication opens in an active state.
    *  If you are opening up other windows at startup that should be active,
    *  this will ensure that the WindowedApplication does not steal focus.
@@ -64,10 +57,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     return _bounds.height;
   }
 
-  /**
-   *  @private
-   *  Also sets the stage's height.
-   */
   override public function set height(value:Number):void {
     if (value < minHeight) {
       value = minHeight;
@@ -122,11 +111,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
 
   private var _maxWidth:Number = 2880;
 
-  /**
-   *  @private
-   *  Keeps track of whether maxWidth property changed so we can
-   *  handle it in commitProperties.
-   */
   private var maxWidthChanged:Boolean = false;
 
   [Bindable("maxWidthChanged")]
@@ -148,11 +132,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
 
   private var _minHeight:Number = 0;
 
-  /**
-   *  @private
-   *  Keeps track of whether minHeight property changed so we can
-   *  handle it in commitProperties.
-   */
   private var minHeightChanged:Boolean = false;
 
   [Bindable("minHeightChanged")]
@@ -181,26 +160,11 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
 
   private var _minWidth:Number = 0;
 
-  /**
-   *  @private
-   *  Keeps track of whether minWidth property changed so we can
-   *  handle it in commitProperties.
-   */
   private var minWidthChanged:Boolean = false;
 
   [Bindable("minWidthChanged")]
   [Bindable("windowComplete")]
 
-  /**
-   *  @private
-   *  Specifies the minimum width of the application's window.
-   *
-   *  @default dependent on the operating system and the AIR systemChrome setting.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
   override public function get minWidth():Number {
     if (nativeWindow && !minWidthChanged) {
       return nativeWindow.minSize.x - chromeWidth();
@@ -219,11 +183,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   [Bindable("hide")]
   [Bindable("show")]
   [Bindable("windowComplete")]
-
-  /**
-   *
-   *  Also sets the NativeWindow's visibility.
-   */
   override public function get visible():Boolean {
     if (nativeWindow && nativeWindow.closed) {
       return false;
@@ -241,7 +200,6 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   }
 
   /**
-   *  @private
    *  We override setVisible because there's the flash display object concept
    *  of visibility and also the nativeWindow concept of visibility.
    */
@@ -305,13 +263,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   private var _alwaysInFront:Boolean = false;
 
   /**
-   *  Determines whether the underlying NativeWindow is always in front of other windows.
-   *
-   *  @default false
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
+   * Determines whether the underlying NativeWindow is always in front of other windows.
    */
   public function get alwaysInFront():Boolean {
     if (_nativeWindow && !_nativeWindow.closed) {
@@ -322,28 +274,18 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  public function set
-          alwaysInFront(value:Boolean):void {
+  public function set alwaysInFront(value:Boolean):void {
     _alwaysInFront = value;
     if (_nativeWindow && !_nativeWindow.closed) {
       nativeWindow.alwaysInFront = value;
     }
   }
 
-  /**
-   *  Storage for the backgroundFrameRate property.
-   */
   private var _backgroundFrameRate:Number = -1;
 
   /**
    *  Specifies the frame rate to use when the application is inactive.
    *  When set to -1, no background frame rate throttling occurs.
-   *
-   *  @default -1
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   public function get backgroundFrameRate():Number {
     return _backgroundFrameRate;
@@ -368,14 +310,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     invalidateSize();
   }
 
-  /**
-   *  Specifies whether the window can be maximized.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get maximizable():Boolean {
+  override public function get maximizable():Boolean {
     if (!nativeWindow.closed) {
       return nativeWindow.maximizable;
     }
@@ -384,14 +319,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  /**
-   *  Specifies whether the window can be minimized.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get minimizable():Boolean {
+  override public function get minimizable():Boolean {
     if (!nativeWindow.closed) {
       return nativeWindow.minimizable;
     }
@@ -400,25 +328,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  /**
-   * The NativeWindow used by this WindowedApplication component (the initial native window of the application).
-   */
-  public function get nativeWindow():NativeWindow {
-    if (systemManager != null && systemManager.stage != null) {
-      return systemManager.stage.nativeWindow;
-    }
-
-    return null;
-  }
-
-  /**
-   *  Specifies whether the window can be resized.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get resizable():Boolean {
+  override public function get resizable():Boolean {
     if (nativeWindow.closed) {
       return false;
     }
@@ -439,11 +349,11 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  public function get status():String {
+  override public function get status():String {
     return _status;
   }
 
-  public function set status(value:String):void {
+  override public function set status(value:String):void {
     _status = value;
     statusChanged = true;
 
@@ -466,7 +376,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  public function get systemChrome():String {
+  override public function get systemChrome():String {
     return _systemChrome;
   }
 
@@ -489,11 +399,11 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  public function get title():String {
+  override public function get title():String {
     return _title;
   }
 
-  public function set title(value:String):void {
+  override public function set title(value:String):void {
     _title = value;
     titleChanged = true;
 
@@ -512,20 +422,11 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
 
   [Bindable("titleIconChanged")]
 
-  /**
-   *  The Class (usually an image) used to draw the title bar icon.
-   *
-   *  @default null
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  public function get titleIcon():Class {
+  override public function get titleIcon():Class {
     return _titleIcon;
   }
 
-  public function set titleIcon(value:Class):void {
+  override public function set titleIcon(value:Class):void {
     _titleIcon = value;
     titleIconChanged = true;
 
@@ -536,47 +437,9 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     dispatchEvent(new Event("titleIconChanged"));
   }
 
-  public function get transparent():Boolean {
+  override public function get transparent():Boolean {
     return nativeWindow.closed ? false : nativeWindow.transparent;
   }
-
-  public function get type():String {
-    // The initial window is always of type "normal".
-    return NativeWindowType.NORMAL;
-  }
-
-  [Inspectable(defaultValue="true")]
-
-  /**
-   *  If <code>true</code>, the DragManager should use the NativeDragManagerImpl implementation class.
-   *  If <code>false</code>, then the DragManagerImpl class will be used.
-   *
-   *  <p>Note: This property cannot be set by ActionScript code; it must be set in MXML code.
-   *  That means you cannot change its value at run time.</p>
-   *
-   *  <p>By default, the DragManager  for AIR applications built in Flex uses the
-   *  NativeDragManagerImpl class as the implementation class.
-   *  Flash Player applications build in Flex use the DragManagerImpl class. </p>
-   *
-   *  <p>The NativeDragManagerImpl class is a bridge between the AIR NativeDragManager API
-   *  and the Flex DragManager API.
-   *  The AIR NativeDragManager class uses the operating system's drag and drop APIs.
-   *  It supports dragging between AIR windows and between the operating system and AIR.
-   *  Because the operating system controls the drag-and-drop operation,
-   *  it is not possible to customize the cursors during a drag.
-   *  Also, you have no control over the drop animation.
-   *  The behavior is dependent upon the operating system and has some inconsistencies across different platforms.</p>
-   *
-   *  <p>The DragManagerImpl class does not use the operating system for drag-and-drop.
-   *  Instead, it controls the entire drag-and-drop process.
-   *  It supports customizing the cursors and provides a drop animation.
-   *  However, it does not allow dragging between AIR windows and between the operating system or AIR window.</p>
-   */
-
-  /*  This property is not directly read by the systemManager. It is here so that it gets
-   *  picked up by the compiler and included in the info() structure
-   *  for the generated system manager.  */
-  public var useNativeDragManager:Boolean = true;
 
   override public function set initialized(value:Boolean):void {
     super.initialized = value;
@@ -723,7 +586,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  public function close():void {
+  override public function close():void {
     if (!nativeWindow.closed) {
       var e:Event = new Event("closing", true, true);
       stage.nativeWindow.dispatchEvent(e);
@@ -734,18 +597,13 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
   }
 
   /**
-   *  Closes the window and exits the application.
-   *
-   *  @langversion 3.0
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
+   * Closes the window and exits the application.
    */
   public function exit():void {
     NativeApplication.nativeApplication.exit();
   }
 
-  public function maximize():void {
-
+  override public function maximize():void {
     if (!nativeWindow || !nativeWindow.maximizable || nativeWindow.closed) {
       return;
     }
@@ -762,7 +620,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  public function minimize():void {
+  override public function minimize():void {
     if (!minimizable) {
       return;
     }
@@ -779,7 +637,7 @@ public class WindowedApplication extends ApplicationImpl implements IWindow {
     }
   }
 
-  public function restore():void {
+  override public function restore():void {
     if (!nativeWindow.closed) {
       var e:NativeWindowDisplayStateEvent;
       if (stage.nativeWindow.displayState == NativeWindowDisplayState.MAXIMIZED) {
