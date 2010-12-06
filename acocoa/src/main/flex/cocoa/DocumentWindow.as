@@ -6,8 +6,8 @@ import flash.display.NativeWindow;
 import flash.display.NativeWindowInitOptions;
 import flash.events.NativeWindowBoundsEvent;
 
-import mx.core.FlexGlobals;
 import mx.core.mx_internal;
+import mx.managers.SystemManagerGlobals;
 import mx.managers.WindowedSystemManager;
 
 import org.flyti.plexus.LocalEventMap;
@@ -46,7 +46,7 @@ public class DocumentWindow {
 
 //  public function get contentView():spark.components.supportClasses.Skin
   public function set contentView(component:Component):void {
-    _contentView = component.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf);
+    _contentView = component.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
     var sm:WindowedSystemManager = new WindowedSystemManager(_contentView);
     
     if (_maps != null) {

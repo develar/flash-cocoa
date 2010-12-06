@@ -97,5 +97,9 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 
   override public function invalidateSkinState():void {
   }
+
+  override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void {
+
+  }
 }
 }

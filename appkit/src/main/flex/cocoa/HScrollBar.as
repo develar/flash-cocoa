@@ -99,5 +99,9 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
 
   override public function invalidateSkinState():void {
   }
+
+  override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void {
+
+  }
 }
 }

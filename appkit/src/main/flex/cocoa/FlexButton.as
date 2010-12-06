@@ -74,5 +74,9 @@ public class FlexButton extends Button {
 
   override public function setCurrentState(stateName:String, playTransition:Boolean = true):void {
   }
+
+  override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void {
+
+  }
 }
 }

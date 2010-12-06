@@ -43,7 +43,7 @@
             <manifest>
               <uri>acocoa</uri>
               <includes>
-                <class>**.WindowedApplication</class>
+                <class>**.*WindowedApplication</class>
                 <class>**.DocumentWindow</class>
               </includes>
               <names>

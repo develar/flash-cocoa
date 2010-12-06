@@ -3,6 +3,7 @@ import flash.desktop.NativeApplication;
 import flash.display.NativeWindow;
 import flash.display.NativeWindowDisplayState;
 import flash.display.NativeWindowSystemChrome;
+import flash.display.NativeWindowType;
 import flash.events.Event;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.NativeWindowDisplayStateEvent;
@@ -19,16 +20,13 @@ import mx.managers.SystemManagerGlobals;
 use namespace mx_internal;
 
 [Frame(factoryClass="cocoa.SystemManager")]
-public class WindowedApplication extends MainWindowedApplication implements IWindow {
+public class WindowedApplication extends ApplicationImpl implements IWindow {
   public function WindowedApplication() {
-    super();
-
     addEventListener(FlexEvent.UPDATE_COMPLETE, updateComplete_handler);
 
     var nativeApplication:NativeApplication = NativeApplication.nativeApplication;
     nativeApplication.addEventListener(Event.ACTIVATE, nativeApplication_activateHandler);
     nativeApplication.addEventListener(Event.DEACTIVATE, nativeApplication_deactivateHandler);
-    nativeApplication.addEventListener(Event.NETWORK_CHANGE, dispatchEvent);
   }
 
   private var _nativeWindow:NativeWindow;
@@ -310,7 +308,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     invalidateSize();
   }
 
-  override public function get maximizable():Boolean {
+  public function get maximizable():Boolean {
     if (!nativeWindow.closed) {
       return nativeWindow.maximizable;
     }
@@ -319,7 +317,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     }
   }
 
-  override public function get minimizable():Boolean {
+  public function get minimizable():Boolean {
     if (!nativeWindow.closed) {
       return nativeWindow.minimizable;
     }
@@ -328,7 +326,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     }
   }
 
-  override public function get resizable():Boolean {
+  public function get resizable():Boolean {
     if (nativeWindow.closed) {
       return false;
     }
@@ -349,11 +347,11 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  override public function get status():String {
+  public function get status():String {
     return _status;
   }
 
-  override public function set status(value:String):void {
+  public function set status(value:String):void {
     _status = value;
     statusChanged = true;
 
@@ -376,7 +374,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  override public function get systemChrome():String {
+  public function get systemChrome():String {
     return _systemChrome;
   }
 
@@ -399,11 +397,11 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
    *  @playerversion AIR 1.5
    *  @productversion Flex 4
    */
-  override public function get title():String {
+  public function get title():String {
     return _title;
   }
 
-  override public function set title(value:String):void {
+  public function set title(value:String):void {
     _title = value;
     titleChanged = true;
 
@@ -422,11 +420,11 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
 
   [Bindable("titleIconChanged")]
 
-  override public function get titleIcon():Class {
+  public function get titleIcon():Class {
     return _titleIcon;
   }
 
-  override public function set titleIcon(value:Class):void {
+  public function set titleIcon(value:Class):void {
     _titleIcon = value;
     titleIconChanged = true;
 
@@ -437,7 +435,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     dispatchEvent(new Event("titleIconChanged"));
   }
 
-  override public function get transparent():Boolean {
+  public function get transparent():Boolean {
     return nativeWindow.closed ? false : nativeWindow.transparent;
   }
 
@@ -586,7 +584,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     }
   }
 
-  override public function close():void {
+  public function close():void {
     if (!nativeWindow.closed) {
       var e:Event = new Event("closing", true, true);
       stage.nativeWindow.dispatchEvent(e);
@@ -603,7 +601,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     NativeApplication.nativeApplication.exit();
   }
 
-  override public function maximize():void {
+  public function maximize():void {
     if (!nativeWindow || !nativeWindow.maximizable || nativeWindow.closed) {
       return;
     }
@@ -620,7 +618,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     }
   }
 
-  override public function minimize():void {
+  public function minimize():void {
     if (!minimizable) {
       return;
     }
@@ -637,7 +635,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     }
   }
 
-  override public function restore():void {
+  public function restore():void {
     if (!nativeWindow.closed) {
       var e:NativeWindowDisplayStateEvent;
       if (stage.nativeWindow.displayState == NativeWindowDisplayState.MAXIMIZED) {
@@ -810,8 +808,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     removeEventListener(EffectEvent.EFFECT_END, windowUnminimizeHandler);
   }
 
-  private function window_displayStateChangeHandler(
-          event:NativeWindowDisplayStateEvent):void {
+  private function window_displayStateChangeHandler(event:NativeWindowDisplayStateEvent):void {
     // Redispatch event.
     dispatchEvent(event);
     height = systemManager.stage.stageHeight;
@@ -833,8 +830,7 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
 
   }
 
-  private function window_displayStateChangingHandler(
-          event:NativeWindowDisplayStateEvent):void {
+  private function window_displayStateChangingHandler(event:NativeWindowDisplayStateEvent):void {
     //redispatch event for cancellation purposes
     dispatchEvent(event);
     if (event.isDefaultPrevented()) {
@@ -1027,6 +1023,19 @@ public class WindowedApplication extends MainWindowedApplication implements IWin
     else {
       ucCount++;
     }
+  }
+
+  public function get nativeWindow():NativeWindow {
+    if (systemManager != null && systemManager.stage != null) {
+      return systemManager.stage.nativeWindow;
+    }
+
+    return null;
+  }
+
+  public function get type():String {
+    // The initial window is always of type "normal".
+    return NativeWindowType.NORMAL;
   }
 }
 }
