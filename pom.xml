@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>19</version>
+    <version>21</version>
   </parent>
 
   <!--<properties>-->
