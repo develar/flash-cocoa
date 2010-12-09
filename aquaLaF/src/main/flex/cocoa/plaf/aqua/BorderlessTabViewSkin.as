@@ -15,7 +15,9 @@ public class BorderlessTabViewSkin extends AbstractTabViewSkin {
     var segmentCount:int = segmentedControl.dataProvider.length;
     SegmentedControlHorizontalLayout(segmentedControl.layout).itemWidth = Math.round((w - (segmentCount + 1 /* gap */)) / segmentCount);
 
-    viewStack.setActualSize(w - contentInsets.width, h - contentInsets.height);
+    if (contentView != null) {
+      contentView.setActualSize(w - contentInsets.width, h - contentInsets.height);
+    }
   }
 }
 }

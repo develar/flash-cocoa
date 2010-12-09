@@ -3170,7 +3170,7 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
 
     if (_width != w) {
       _width = w;
-      if (_layoutFeatures) {
+      if (_layoutFeatures != null) {
         _layoutFeatures.layoutWidth = w;  // for the mirror transform
         invalidateTransform();
       }

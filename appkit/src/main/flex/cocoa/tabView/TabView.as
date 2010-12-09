@@ -1,16 +1,13 @@
 package cocoa.tabView {
 import cocoa.ListSelection;
 import cocoa.SingleSelectionBar;
-import cocoa.ViewStack;
 import cocoa.Viewable;
-import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
+import cocoa.plaf.TabViewSkin;
 import cocoa.ui;
-
-import flash.utils.Dictionary;
 
 import spark.events.IndexChangeEvent;
 
@@ -19,15 +16,6 @@ use namespace ui;
 public class TabView extends SingleSelectionBar {
   public static const DEFAULT:int = 0;
   public static const BORDERLESS:int = 1;
-
-  protected static const _skinParts:Dictionary = new Dictionary();
-  _cl(_skinParts, Bar._skinParts);
-  _skinParts.viewStack = HANDLER_NOT_EXISTS;
-  override protected function get skinParts():Dictionary {
-    return _skinParts;
-  }
-
-  ui var viewStack:ViewStack;
 
   override protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void {
     var oldItem:PaneItem;
@@ -52,8 +40,8 @@ public class TabView extends SingleSelectionBar {
     if (paneItem.view == null) {
       createPaneView(paneItem);
     }
-    var pane:Viewable = paneItem.view;
-    viewStack.show(pane);
+
+    TabViewSkin(skin).show(paneItem.view);
   }
 
   protected function createPaneView(paneItem:PaneItem):void {

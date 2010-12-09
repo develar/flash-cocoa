@@ -1,18 +1,22 @@
 package cocoa.plaf.basic {
+import cocoa.Component;
 import cocoa.Insets;
 import cocoa.SingleSelectionDataGroup;
-import cocoa.ViewStack;
+import cocoa.Viewable;
 import cocoa.layout.AdvancedLayout;
 import cocoa.layout.SegmentedControlHorizontalLayout;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
 
+import flash.display.DisplayObject;
+
 import mx.core.ILayoutElement;
+import mx.core.IUIComponent;
 
 [Abstract]
 public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout, TabViewSkin {
   protected var segmentedControl:SingleSelectionDataGroup;
-  protected var viewStack:ViewStack;
+  protected var contentView:IUIComponent;
 
   protected var segmentedControlPlacement:int;
 
@@ -27,14 +31,6 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
 
   override protected function createChildren():void {
     super.createChildren();
-
-    if (viewStack == null) {
-      viewStack = new ViewStack();
-      viewStack.laf = laf;
-      viewStack.move(contentInsets.left, contentInsets.top);
-      addChild(viewStack);
-      component.uiPartAdded("viewStack", viewStack);
-    }
 
     if (segmentedControl == null) {
       segmentedControl = new SingleSelectionDataGroup();
@@ -52,12 +48,34 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
     }
   }
 
-  override protected function measure():void {
-    measuredMinWidth = viewStack.minWidth + contentInsets.width;
-    measuredMinHeight = viewStack.minHeight + contentInsets.height;
+  public function show(viewable:Viewable):void {
+    if (contentView != null) {
+      removeChild(DisplayObject(contentView));
+    }
 
-    measuredWidth = viewStack.getExplicitOrMeasuredWidth() + contentInsets.width;
-    measuredHeight = viewStack.getExplicitOrMeasuredHeight() + contentInsets.height;
+    if (viewable is Component) {
+      var component:Component = Component(viewable);
+      contentView = component.skin == null ? component.createView(laf) : component.skin;
+    }
+    else {
+      contentView = IUIComponent(viewable);
+    }
+
+    contentView.move(contentInsets.left, contentInsets.top);
+    addChild(DisplayObject(contentView));
+  }
+
+  override protected function measure():void {
+    if (contentView == null) {
+      super.measure();
+      return;
+    }
+
+    measuredMinWidth = contentView.minWidth + contentInsets.width;
+    measuredMinHeight = contentView.minHeight + contentInsets.height;
+
+    measuredWidth = contentView.getExplicitOrMeasuredWidth() + contentInsets.width;
+    measuredHeight = contentView.getExplicitOrMeasuredHeight() + contentInsets.height;
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
@@ -66,8 +84,8 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
       segmentedControl.x = Math.round((w - segmentedControl.getExplicitOrMeasuredWidth()) / 2);
     }
 
-    if (viewStack.includeInLayout) {
-      viewStack.setActualSize(w - contentInsets.width, h - contentInsets.height);
+    if (contentView != null) {
+      contentView.setActualSize(w - contentInsets.width, h - contentInsets.height);
     }
   }
 }
