@@ -41,8 +41,10 @@ public class SingleSelectionBar extends Bar {
   override protected function validateItems():void {
     super.validateItems();
 
-    typedSegmentedControl.selectedIndex = pendingSelectedIndex;
-    pendingSelectedIndex = ListSelection.NO_SELECTION;
+    if (pendingSelectedIndex == 0 && !items.empty) {
+      typedSegmentedControl.selectedIndex = pendingSelectedIndex;
+      pendingSelectedIndex = ListSelection.NO_SELECTION;
+    }
   }
 }
 }

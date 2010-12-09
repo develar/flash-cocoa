@@ -7,12 +7,12 @@
         <option name="OUTPUT_TYPE" value="Application" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
         <option name="USE_CUSTOM_CONFIG_FILE" value="true" />
-        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/aquaLaFAssetBuilder-1.3-SNAPSHOT-configs.xml" />
+        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/aquaLaFAssetBuilder-1.3.1-configs.xml" />
         <option name="USE_CUSTOM_CONFIG_FILE_FOR_TESTS" value="false" />
         <option name="CUSTOM_CONFIG_FILE_FOR_TESTS" value="" />
         <option name="APPLICATION_ENTRY_POINT" value="" />
         <option name="MAIN_CLASS" value="cocoa.plaf.aqua.assetBuilder.Main" />
-        <option name="OUTPUT_FILE_NAME" value="aquaLaFAssetBuilder-1.3-SNAPSHOT.swf" />
+        <option name="OUTPUT_FILE_NAME" value="aquaLaFAssetBuilder-1.3.1.swf" />
         <option name="USE_FACET_COMPILE_OUTPUT_PATH" value="true" />
         <option name="FACET_COMPILE_OUTPUT_PATH" value="$MODULE_DIR$/target" />
         <option name="FACET_COMPILE_OUTPUT_PATH_FOR_TESTS" value="$MODULE_DIR$/target/test-classes" />
@@ -45,7 +45,6 @@
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.1" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.0.18365" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.5.0.18365" level="project" />

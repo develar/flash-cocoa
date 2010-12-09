@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.flyti.cocoa</groupId>
     <artifactId>cocoaAggregator</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3.1</version>
   </parent>
 
   <name>Cocoa AIR</name>
@@ -17,12 +17,18 @@
       <groupId>com.adobe.flex.framework</groupId>
       <artifactId>air-framework</artifactId>
       <type>pom</type>
+      <exclusions>
+        <exclusion>
+          <groupId>com.adobe.flex.framework</groupId>
+          <artifactId>playerglobal</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.flyti.cocoa</groupId>
       <artifactId>cocoa</artifactId>
-      <version>1.3-SNAPSHOT</version>
+      <version>1.3.1</version>
       <type>swc</type>
       <exclusions>
         <exclusion>

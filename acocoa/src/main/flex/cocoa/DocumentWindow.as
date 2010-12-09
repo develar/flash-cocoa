@@ -2,13 +2,16 @@ package cocoa {
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
+import flash.display.DisplayObject;
 import flash.display.NativeWindow;
 import flash.display.NativeWindowInitOptions;
+import flash.display.Screen;
+import flash.display.StageAlign;
+import flash.display.StageScaleMode;
 import flash.events.NativeWindowBoundsEvent;
 
 import mx.core.mx_internal;
 import mx.managers.SystemManagerGlobals;
-import mx.managers.WindowedSystemManager;
 
 import org.flyti.plexus.LocalEventMap;
 
@@ -47,23 +50,31 @@ public class DocumentWindow {
 //  public function get contentView():spark.components.supportClasses.Skin
   public function set contentView(component:Component):void {
     _contentView = component.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
-    var sm:WindowedSystemManager = new WindowedSystemManager(_contentView);
-    
+
     if (_maps != null) {
       // todo one plexus container for all maps
       _maps[0].dispatcher = _contentView;
     }
 
-    _nativeWindow.stage.addChild(sm);
+    _nativeWindow.stage.scaleMode = StageScaleMode.NO_SCALE;
+    _nativeWindow.stage.align = StageAlign.TOP_LEFT;
 
+    var screen:Screen = Screen.mainScreen;
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, windowResizeHandler);
-    _nativeWindow.maximize();
+    _nativeWindow.bounds = screen.visibleBounds;
     _nativeWindow.activate();
   }
 
   private function windowResizeHandler(event:NativeWindowBoundsEvent):void {
-    _contentView.invalidateDisplayList();
-    _contentView.setActualSize(_nativeWindow.stage.stageWidth, _nativeWindow.stage.stageHeight);
+    if (DisplayObject(_contentView).parent == null) {
+      var sm:WindowedSystemManager = new WindowedSystemManager(_contentView);
+       _nativeWindow.stage.addChild(sm);
+      sm.init();
+    }
+    else {
+      _contentView.setActualSize(_nativeWindow.stage.stageWidth, _nativeWindow.stage.stageHeight);
+    }
+
     _contentView.validateNow();
   }
 }
