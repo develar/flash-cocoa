@@ -432,7 +432,7 @@ public class Tree extends mx.controls.Tree implements View
 		return true;
 	}
 
-	include "../../../legacyConstraints.as";
+	include "../../../../../../appkit/src/main/legacyConstraints.as";
 
 	override public function getStyle(styleProp:String):*
 	{

@@ -15,13 +15,6 @@
   <dependencies>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>mx</artifactId>
-      <version>${fdk.version}</version>
-      <type>swc</type>
-    </dependency>
-
-    <dependency>
-      <groupId>com.adobe.flex.framework</groupId>
       <artifactId>flex-framework</artifactId>
       <type>pom</type>
     </dependency>
@@ -97,9 +90,6 @@
                 <class>cocoa.keyboard.Keymap</class>
                 <class>cocoa.keyboard.Shortcut</class>
                 <class>cocoa.keyboard.EventMetadata</class>
-
-                <class>cocoa.tree.TreeWith*</class>
-                <class>cocoa.tree.Tree</class>
 
                 <class>cocoa.graphics.*</class>
 

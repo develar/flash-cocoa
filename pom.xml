@@ -25,6 +25,7 @@
     <module>asset-builder-maven-plugin</module>
     <!--<module>laf-compiler-ext</module>-->
     <module>appkit</module>
+    <module>cocoa-mx</module>
     <module>acocoa</module>
     <module>aquaLaFAssetBuilder</module>
     <module>aquaLaF</module>

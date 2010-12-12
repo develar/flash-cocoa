@@ -21,6 +21,7 @@
           <module name="aquaLaFAssetBuilder" />
           <module name="lang" />
           <module name="foundation" />
+          <module name="cocoa-mx" />
         </modules>
       </facet-type>
     </autodetection-disabled>
