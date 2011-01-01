@@ -59,8 +59,10 @@ public class ArrayList extends OnDemandEventDispatcher implements List {
   }
 
   public function removeAll():void {
-    source.length = 0;
-    dispatchChangeEvent(CollectionEventKind.RESET);
+    if (source.length > 0) {
+      source.length = 0;
+      dispatchChangeEvent(CollectionEventKind.RESET);
+    }
   }
 
   public function itemUpdated(item:Object, property:Object = null, oldValue:Object = null, newValue:Object = null):void {
