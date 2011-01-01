@@ -9,15 +9,11 @@ import flash.utils.setInterval;
 
 import mx.core.ContainerCreationPolicy;
 import mx.core.FlexGlobals;
-import mx.core.IFlexDisplayObject;
 import mx.core.IInvalidating;
 import mx.core.Singleton;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
-import mx.managers.FocusManager;
-import mx.managers.IActiveWindowManager;
-import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
 import mx.utils.LoaderUtil;
@@ -31,7 +27,7 @@ use namespace mx_internal;
 [Frame(factoryClass="cocoa.SystemManager")]
 
 [DefaultProperty("mxmlContent")]
-public class ApplicationImpl extends LayoutlessContainer implements Application, IFocusManagerContainer {
+public class ApplicationImpl extends LayoutlessContainer implements Application {
   public var frameRate:Number;
   public var pageTitle:String;
   public var preloader:Object;
@@ -331,22 +327,11 @@ public class ApplicationImpl extends LayoutlessContainer implements Application,
     invalidateDisplayList();
   }
 
-  public function get defaultButton():IFlexDisplayObject {
-    return null;
-  }
-
-  public function set defaultButton(value:IFlexDisplayObject):void {
-  }
-
   override protected function createChildren():void {
     var sm:ISystemManager = systemManager;
 
     _url = LoaderUtil.normalizeURL(sm.loaderInfo);
     _parameters = sm.loaderInfo.parameters;
-
-    var focusManager:FocusManager = new FocusManager(this);
-    var awm:IActiveWindowManager = IActiveWindowManager(systemManager.getImplementation("mx.managers::IActiveWindowManager"));
-    awm == null ? focusManager.activate() : awm.activate(this);
 
     initContextMenu();
 
