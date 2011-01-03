@@ -22,6 +22,7 @@
           <module name="lang" />
           <module name="foundation" />
           <module name="cocoa-mx" />
+          <module name="collections" />
         </modules>
       </facet-type>
     </autodetection-disabled>

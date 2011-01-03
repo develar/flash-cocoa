@@ -7,12 +7,12 @@
         <option name="OUTPUT_TYPE" value="Library" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
         <option name="USE_CUSTOM_CONFIG_FILE" value="true" />
-        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/aquaLaF-1.3.3-configs.xml" />
+        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/aquaLaF-1.4-SNAPSHOT-configs.xml" />
         <option name="USE_CUSTOM_CONFIG_FILE_FOR_TESTS" value="false" />
         <option name="CUSTOM_CONFIG_FILE_FOR_TESTS" value="" />
         <option name="APPLICATION_ENTRY_POINT" value="" />
         <option name="MAIN_CLASS" value="" />
-        <option name="OUTPUT_FILE_NAME" value="aquaLaF-1.3.3.swc" />
+        <option name="OUTPUT_FILE_NAME" value="aquaLaF-1.4-SNAPSHOT.swc" />
         <option name="USE_FACET_COMPILE_OUTPUT_PATH" value="true" />
         <option name="FACET_COMPILE_OUTPUT_PATH" value="$MODULE_DIR$/target" />
         <option name="FACET_COMPILE_OUTPUT_PATH_FOR_TESTS" value="$MODULE_DIR$/target/test-classes" />
@@ -50,7 +50,7 @@
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.0.18365" level="project" />
     <orderEntry type="module" module-name="cocoa" />
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.2.8" level="project" />
-    <orderEntry type="library" name="Maven: org.flyti:collections:swc:1.3.3" level="project" />
+    <orderEntry type="module" module-name="collections" />
     <orderEntry type="module" module-name="foundation" />
   </component>
 </module>

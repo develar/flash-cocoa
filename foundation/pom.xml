@@ -9,14 +9,15 @@
   </parent>
 
   <artifactId>foundation</artifactId>
-  <version>1.2</version>
+  <version>1.2.1</version>
   <packaging>swc</packaging>
 
   <dependencies>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>flex-framework</artifactId>
-      <type>pom</type>
+      <artifactId>playerglobal</artifactId>
+      <type>swc</type>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

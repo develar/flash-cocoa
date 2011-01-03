@@ -1,8 +1,0 @@
-.DS_Store
-.iml
-.ipr
-.iws
-target
-.idea/libraries
-.idea/workspace.xml
-release.properties
