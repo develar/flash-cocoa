@@ -4,6 +4,9 @@ import cocoa.LabelHelper;
 import cocoa.plaf.TextFormatID;
 import cocoa.plaf.LookAndFeel;
 
+import spark.components.DataGroup;
+
+[Abstract]
 public class LabeledItemRenderer extends AbstractItemRenderer {
   protected var labelHelper:LabelHelper;
   protected var border:Border;
@@ -11,6 +14,10 @@ public class LabeledItemRenderer extends AbstractItemRenderer {
   public function LabeledItemRenderer() {
     labelHelper = new LabelHelper(this);
     mouseChildren = false;
+  }
+  
+  protected function get isLast():Boolean {
+    return itemIndex == (DataGroup(parent).dataProvider.length - 1);
   }
 
   override public function get baselinePosition():Number {

@@ -102,8 +102,7 @@ public class LabelHelper {
   }
 
   public function moveToCenterByInsets(w:Number, h:Number, contentInsets:Insets):void {
-    _textLine.x = (w - _textLine.textWidth) * 0.5;
-    _textLine.y = h - contentInsets.bottom;
+    moveToCenter(w, h - contentInsets.bottom);
   }
 
   public function moveByInsets(h:Number, contentInsets:Insets):void {

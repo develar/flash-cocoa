@@ -1,5 +1,5 @@
 package cocoa {
-public class TextLineInsets {
+public final class TextLineInsets {
   public var rotation:String;
 
   public var baseline:Number;

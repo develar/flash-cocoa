@@ -70,6 +70,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TabView.segmentedControl.iR"] = data["SegmentedControl.iR"] = new ClassFactory(SegmentItemRenderer);
     data["Sidebar.segmentedControlController"] = data["TabView.segmentedControlController"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
     data["Sidebar.iR"] = new ClassFactory(PaneLabelRenderer);
+    data["TabView.segmentedControl.gap"] = 1;
     data["TabView.segmentedControl.placement"] = Placement.PAGE_START_LINE_CENTER;
 
     data["PushButton"] = PushButtonSkin;

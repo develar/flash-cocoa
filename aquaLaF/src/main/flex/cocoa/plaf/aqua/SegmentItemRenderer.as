@@ -1,14 +1,12 @@
 package cocoa.plaf.aqua {
 import cocoa.FrameInsets;
 import cocoa.border.BitmapBorderStateIndex;
-import cocoa.plaf.basic.LabeledItemRenderer;
-import cocoa.plaf.LookAndFeel;
 import cocoa.border.Scale1BitmapBorder;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.basic.LabeledItemRenderer;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
-
-import spark.components.DataGroup;
 
 public class SegmentItemRenderer extends LabeledItemRenderer {
   private static const leftIndex:int = 0;
@@ -53,7 +51,7 @@ public class SegmentItemRenderer extends LabeledItemRenderer {
     }
     else {
       frameInsets.left = 0;
-      isLast = itemIndex == (DataGroup(parent).dataProvider.length - 1);
+      isLast = this.isLast;
       frameInsets.right = isLast ? -2 : 0;
     }
 

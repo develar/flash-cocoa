@@ -29,7 +29,6 @@ public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implement
     super.readExternal(input);
   }
 
-  // for debug purposes only
   public final function getBitmaps():Vector.<BitmapData> {
     return bitmaps;
   }

@@ -35,13 +35,13 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
     if (segmentedControl == null) {
       segmentedControl = new SingleSelectionDataGroup();
       var layout:SegmentedControlHorizontalLayout = new SegmentedControlHorizontalLayout();
-      layout.gap = 1;
       layout.useGapForEdge = true;
       segmentedControl.layout = layout;
       segmentedControl.laf = laf;
       segmentedControl.lafSubkey = component.lafKey + ".segmentedControl";
       SegmentedControlController(laf.getFactory(component.lafKey + ".segmentedControlController").newInstance()).register(segmentedControl);
 
+      layout.gap = int(laf.getObject(segmentedControl.lafSubkey + ".gap"));
       segmentedControlPlacement = int(laf.getObject(segmentedControl.lafSubkey + ".placement"));
       addChild(segmentedControl);
       component.uiPartAdded("segmentedControl", segmentedControl);

@@ -6,8 +6,9 @@ import cocoa.Icon;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
+[Abstract]
 public class AbstractItemRenderer extends AbstractView implements HighlightableItemRenderer, LookAndFeelProvider {
-  protected var state:uint = 0;
+  protected var state:int = 0;
 
   protected static const SELECTED:uint = 1 << 0;
   protected static const SHOWS_CARET:uint = 1 << 1;
