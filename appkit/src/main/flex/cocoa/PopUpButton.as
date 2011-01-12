@@ -48,7 +48,7 @@ public class PopUpButton extends AbstractControl implements LookAndFeelProvider 
   override public final function createView(laf:LookAndFeel):Skin {
     super.createView(laf);
     _laf = laf;
-    PopUpMenuController(laf.getFactory(lafKey + ".menuController").newInstance()).register(this);
+    PopUpMenuController(laf.getFactory(lafKey + ".menuController", false).newInstance()).register(this);
     return skin;
   }
 

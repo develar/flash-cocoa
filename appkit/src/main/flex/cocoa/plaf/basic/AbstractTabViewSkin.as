@@ -1,6 +1,7 @@
 package cocoa.plaf.basic {
 import cocoa.Component;
 import cocoa.Insets;
+import cocoa.ItemMouseSelectionMode;
 import cocoa.SingleSelectionDataGroup;
 import cocoa.Viewable;
 import cocoa.layout.AdvancedLayout;
@@ -10,6 +11,7 @@ import cocoa.plaf.TabViewSkin;
 
 import flash.display.DisplayObject;
 
+import mx.core.IFactory;
 import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 
@@ -39,7 +41,13 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
       segmentedControl.layout = layout;
       segmentedControl.laf = laf;
       segmentedControl.lafSubkey = component.lafKey + ".segmentedControl";
-      SegmentedControlController(laf.getFactory(component.lafKey + ".segmentedControlController").newInstance()).register(segmentedControl);
+      var controllerFactory:IFactory = laf.getFactory(component.lafKey + ".segmentedControlController", true);
+      if (controllerFactory == null) {
+        segmentedControl.mouseSelectionMode = ItemMouseSelectionMode.DOWN;
+      }
+      else {
+        SegmentedControlController(controllerFactory.newInstance()).register(segmentedControl);
+      }
 
       layout.gap = int(laf.getObject(segmentedControl.lafSubkey + ".gap"));
       segmentedControlPlacement = int(laf.getObject(segmentedControl.lafSubkey + ".placement"));

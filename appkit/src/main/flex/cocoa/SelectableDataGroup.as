@@ -58,7 +58,7 @@ public class SelectableDataGroup extends FlexDataGroup {
 
   override protected function commitProperties():void {
     if (_lafSubkey != null && itemRenderer == null) {
-      itemRenderer = _laf.getFactory(_lafSubkey + ".iR");
+      itemRenderer = _laf.getFactory(_lafSubkey + ".iR", false);
     }
 
     super.commitProperties();

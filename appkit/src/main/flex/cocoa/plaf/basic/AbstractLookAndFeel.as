@@ -122,16 +122,21 @@ public class AbstractLookAndFeel implements LookAndFeel {
     }
   }
 
-  public function getFactory(key:String):IFactory {
+  public function getFactory(key:String, nullable:Boolean = false):IFactory {
     var value:IFactory = data[key];
     if (value != null) {
       return value;
     }
     else if (_parent == null) {
-      throw new ArgumentError("Unknown " + key);
+      if (nullable) {
+        return null;
+      }
+      else {
+        throw new ArgumentError("Unknown " + key);
+      }
     }
     else {
-      return _parent.getFactory(key);
+      return _parent.getFactory(key, false);
     }
   }
 

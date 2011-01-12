@@ -47,7 +47,7 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
   }
 
   protected final function getFactory(key:String):IFactory {
-    return laf.getFactory(_component.lafKey + "." + key);
+    return laf.getFactory(_component.lafKey + "." + key, false);
   }
 
   public function attach(component:Component, laf:LookAndFeel):void {

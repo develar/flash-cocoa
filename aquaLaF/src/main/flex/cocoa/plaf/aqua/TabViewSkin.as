@@ -1,7 +1,6 @@
 package cocoa.plaf.aqua {
 import cocoa.Border;
 import cocoa.Insets;
-
 import cocoa.plaf.basic.AbstractTabViewSkin;
 
 import flash.display.Graphics;

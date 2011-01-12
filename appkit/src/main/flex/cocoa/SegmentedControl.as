@@ -38,9 +38,9 @@ public class SegmentedControl extends SingleSelectionDataGroup implements DataCo
     }
 
     laf = LookAndFeelUtil.find(parent);
-    SegmentedControlController(laf.getFactory((lafSubkey == null ? "SegmentedControl" : lafSubkey) + ".segmentedControlController").newInstance()).register(this);
+    SegmentedControlController(laf.getFactory((lafSubkey == null ? "SegmentedControl" : lafSubkey) + ".segmentedControlController", false).newInstance()).register(this);
     if (lafSubkey == null && itemRenderer == null) {
-      itemRenderer = laf.getFactory("SegmentedControl.iR");
+      itemRenderer = laf.getFactory("SegmentedControl.iR", false);
     }
 
     super.createChildren();

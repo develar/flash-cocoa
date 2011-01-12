@@ -27,7 +27,7 @@ public interface LookAndFeel {
 
   function getClass(key:String):Class;
 
-  function getFactory(key:String):IFactory;
+  function getFactory(key:String, nullable:Boolean = false):IFactory;
 
   function getCursor(cursorType:int):CursorData;
 
