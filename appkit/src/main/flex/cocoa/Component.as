@@ -26,5 +26,9 @@ public interface Component extends Viewable, IEventDispatcher, UIPartController 
   function createView(laf:LookAndFeel):Skin;
 
   function commitProperties():void;
+
+  function get id():String;
+
+  function set id(value:String):void;
 }
 }
