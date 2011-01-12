@@ -28,14 +28,25 @@ public class LabelHelper {
   private var truncated:Boolean;
 
   private var _textLine:TextLine;
-  private var container:View;
-
+  
   public function LabelHelper(container:View, textFormat:TextFormat = null) {
-    this.container = container;
+    this._container = container;
     _textFormat = textFormat;
   }
 
   public var textLineInsets:TextLineInsets;
+  
+  private var _container:View;
+  public function set container(value:View):void {
+    if (value != _container) {
+      if (_textLine != null) {
+        _container.removeDisplayObject(_textLine);
+        value.addDisplayObject(_textLine);
+      }
+      
+     _container = value; 
+    }
+  }
 
   private var _useTruncationIndicator:Boolean = true;
   public function set useTruncationIndicator(value:Boolean):void {
@@ -100,6 +111,11 @@ public class LabelHelper {
     _textLine.x = (w - _textLine.textWidth) * 0.5;
     _textLine.y = y;
   }
+  
+  public function moveToCenterWithXOffset(xOffset:Number, w:Number, y:Number):void {
+    _textLine.x = xOffset + ((w - _textLine.textWidth) * 0.5);
+    _textLine.y = y;
+  }
 
   public function moveToCenterByInsets(w:Number, h:Number, contentInsets:Insets):void {
     moveToCenter(w, h - contentInsets.bottom);
@@ -146,14 +162,14 @@ public class LabelHelper {
 
     if (_textLine == null) {
       _textLine = TextLineUtil.create(textBlock, _textFormat.swfContext, null, availableWidth);
-      container.addDisplayObject(_textLine);
+      _container.addDisplayObject(_textLine);
     }
     else {
       TextLineUtil.create(textBlock, _textFormat.swfContext, _textLine, availableWidth);
     }
 
     if (_textLine == null) {
-      trace(container + " " + this + " " + textBlock.textLineCreationResult);
+      trace(_container + " " + this + " " + textBlock.textLineCreationResult);
     }
     else {
       truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
