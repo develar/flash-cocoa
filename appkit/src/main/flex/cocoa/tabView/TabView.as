@@ -9,6 +9,8 @@ import cocoa.plaf.Skin;
 import cocoa.plaf.TabViewSkin;
 import cocoa.ui;
 
+import flash.events.Event;
+
 import spark.events.IndexChangeEvent;
 
 use namespace ui;
@@ -33,6 +35,10 @@ public class TabView extends SingleSelectionBar {
 
     if (oldItem != null && hasEventListener(CurrentPaneChangeEvent.CHANGED)) {
       dispatchEvent(new CurrentPaneChangeEvent(CurrentPaneChangeEvent.CHANGED, oldItem, newItem));
+    }
+    
+    if (hasEventListener("selectedItemChanged")) {
+      dispatchEvent(new Event("selectedItemChanged"));
     }
   }
 

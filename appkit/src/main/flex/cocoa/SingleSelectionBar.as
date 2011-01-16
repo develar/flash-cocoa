@@ -22,7 +22,7 @@ public class SingleSelectionBar extends Bar {
   }
 
   public function get selectedItem():PaneItem {
-    return PaneItem(items.getItemAt(typedSegmentedControl == null ? pendingSelectedIndex : typedSegmentedControl.selectedIndex));
+    return items.empty ? null : PaneItem(items.getItemAt(typedSegmentedControl == null ? pendingSelectedIndex : typedSegmentedControl.selectedIndex));
   }
 
   override ui function segmentedControlAdded():void {
