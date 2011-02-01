@@ -1882,7 +1882,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   }
 
   private var _id:String;
-
   public function get id():String {
     return _id;
   }

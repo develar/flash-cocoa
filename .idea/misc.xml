@@ -13,16 +13,16 @@
     <autodetection-disabled>
       <facet-type id="flex">
         <modules>
-          <module name="cocoa" />
           <module name="acocoa" />
           <module name="aquaLaF" />
-          <module name="assetBuilder" />
-          <module name="demo" />
           <module name="aquaLaFAssetBuilder" />
-          <module name="lang" />
-          <module name="foundation" />
+          <module name="assetBuilder" />
+          <module name="cocoa" />
           <module name="cocoa-mx" />
           <module name="collections" />
+          <module name="demo" />
+          <module name="foundation" />
+          <module name="lang" />
         </modules>
       </facet-type>
     </autodetection-disabled>

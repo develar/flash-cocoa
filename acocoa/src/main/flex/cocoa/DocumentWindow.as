@@ -64,6 +64,12 @@ public class DocumentWindow {
     _nativeWindow.bounds = screen.visibleBounds;
     _nativeWindow.activate();
   }
+  
+  public function close():void {
+    _nativeWindow.removeEventListener(NativeWindowBoundsEvent.RESIZE, windowResizeHandler);
+    _nativeWindow.close();
+    _nativeWindow = null;
+  }
 
   private function windowResizeHandler(event:NativeWindowBoundsEvent):void {
     if (DisplayObject(_contentView).parent == null) {
