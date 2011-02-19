@@ -11,10 +11,12 @@
 
     import org.flyti.plexus.EventMap;
     import org.flyti.plexus.PlexusManager;
+    import org.flyti.plexus.GlobalDispatcher;
 
     private function creationCompleteHandler():void {
       laf = new AquaLookAndFeel();
       createDeferredContent();
+      GlobalDispatcher;
 
       PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
 //      return;

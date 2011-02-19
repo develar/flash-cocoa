@@ -3,11 +3,11 @@
   <id>org.flyti.aqua.demo</id>
   <filename>testToolApp</filename>
   <name>Aqua LaF Demo</name>
-  <versionNumber>1.3.0</versionNumber>
+  <versionNumber>1.1.4</versionNumber>
   <initialWindow>
     <systemChrome>none</systemChrome>
     <transparent>true</transparent>
-    <content>demo-1.3.swf</content>
+    <content>demo-1.4-SNAPSHOT.swf</content>
     <x>150</x>
     <y>150</y>
   </initialWindow>
