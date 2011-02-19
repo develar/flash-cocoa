@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<EventMap xmlns="http://mate.asfusion.com" xmlns:fx="http://ns.adobe.com/mxml/2009">
+<EventMap xmlns="plexus" xmlns:fx="http://ns.adobe.com/mxml/2009">
 	<fx:Declarations>
 		<EventHandlers type="{RegisterPaneCollectionEvent.REGISTER_PANE_COLLECTION}">
 			<MethodInvoker role="{PaneManager}" method="registerPaneCollection" arguments="{[event.id, event.list]}"/>
