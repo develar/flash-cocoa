@@ -1,10 +1,9 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
+import cocoa.FlexDataGroup;
 import cocoa.LabelHelper;
-import cocoa.plaf.TextFormatID;
 import cocoa.plaf.LookAndFeel;
-
-import spark.components.DataGroup;
+import cocoa.plaf.TextFormatID;
 
 [Abstract]
 public class LabeledItemRenderer extends AbstractItemRenderer {
@@ -17,7 +16,7 @@ public class LabeledItemRenderer extends AbstractItemRenderer {
   }
   
   protected function get isLast():Boolean {
-    return itemIndex == (DataGroup(parent).dataProvider.length - 1);
+    return itemIndex == (FlexDataGroup(parent).dataProvider.length - 1);
   }
 
   override public function get baselinePosition():Number {

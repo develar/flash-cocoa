@@ -1,18 +1,19 @@
 package cocoa.layout {
+import cocoa.FlexDataGroup;
+
+import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 
 import mx.core.ILayoutElement;
 
-import spark.components.DataGroup;
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 import spark.layouts.supportClasses.LinearLayoutVector;
 
 public class VirtualVerticalDataGroupLayout extends LayoutBase implements VirtualLayout {
-  private var llv:LinearLayoutVector = new LinearLayoutVector();
+  private const llv:LinearLayoutVector = new LinearLayoutVector();
 
   private var _firstIndexInView:int = -1;
-
   public function get firstIndexInView():int {
     return _firstIndexInView;
   }
@@ -59,11 +60,6 @@ public class VirtualVerticalDataGroupLayout extends LayoutBase implements Virtua
    *  Returns 0.0 if the specified index is invalid or if it corresponds to
    *  null element, or a ILayoutElement for which
    *  the <code>includeInLayout</code> property is <code>false</code>.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
    */
   private function fractionOfElementInView(index:int):Number {
     var g:GroupBase = GroupBase(target);
@@ -346,7 +342,7 @@ public class VirtualVerticalDataGroupLayout extends LayoutBase implements Virtua
     var measuredHeight:Number = llv.end(eltCount - 1);
 
     // For the live ItemRenderers use the preferred size instead of the cached actual size:
-    var dataGroupTarget:DataGroup = layoutTarget as DataGroup;
+    var dataGroupTarget:FlexDataGroup = layoutTarget as FlexDataGroup;
     if (dataGroupTarget) {
       var indices:Vector.<int> = dataGroupTarget.getItemIndicesInView();
       for each (var i:int in indices) {
@@ -510,6 +506,14 @@ public class VirtualVerticalDataGroupLayout extends LayoutBase implements Virtua
     }
 
     updateDisplayListVirtual();
+  }
+
+  override public function get useVirtualLayout():Boolean {
+    return true;
+  }
+
+  override public function set useVirtualLayout(value:Boolean):void {
+    throw new IllegalOperationError();
   }
 }
 }

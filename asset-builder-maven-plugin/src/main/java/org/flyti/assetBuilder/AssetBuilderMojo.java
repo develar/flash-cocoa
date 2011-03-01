@@ -135,10 +135,8 @@ public class AssetBuilderMojo extends AbstractMojo {
       projectResourceDirectoryMap = new HashMap<String, String>();
     }
 
-    @SuppressWarnings({"unchecked"})
-    Map<String, MavenProject> projectReferences = (Map<String, MavenProject>) project.getProjectReferences();
-    //noinspection unchecked
-    for (Artifact artifact : (Set<Artifact>) project.getArtifacts()) {
+    Map<String, MavenProject> projectReferences = project.getProjectReferences();
+    for (Artifact artifact : project.getArtifacts()) {
       if ("swc".equals(artifact.getType())) {
         final String referenceProjectId = getProjectReferenceId(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
         final File referenceResourceDirectory;

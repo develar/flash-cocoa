@@ -16,7 +16,7 @@
   <version>1.4-SNAPSHOT</version>
 
   <properties>
-    <maven.version>3.0.1</maven.version>
+    <maven.version>3.0.2</maven.version>
   </properties>
 
   <dependencies>

@@ -23,12 +23,6 @@
       <artifactId>plexus</artifactId>
       <type>swc</type>
       <version>1.3-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.adobe.flex.framework</groupId>
-          <artifactId>rpc</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 
@@ -38,6 +32,10 @@
         <groupId>org.sonatype.flexmojos</groupId>
         <artifactId>flexmojos-maven-plugin</artifactId>
         <configuration>
+          <compilerWarnings>
+            <show-binding-warnings>false</show-binding-warnings>
+          </compilerWarnings>
+          
           <useResourceBundleMetadata>false</useResourceBundleMetadata>
           <localesRuntime>
             <locale>en_US</locale>

@@ -1,16 +1,15 @@
 package cocoa.plaf.basic {
+import cocoa.FlexDataGroup;
 import cocoa.HighlightableItemRenderer;
 
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 
-import spark.components.DataGroup;
-
 public class AbstractListController {
   protected static const HIGHLIGHTABLE:uint = 1 << 0;
 
-  protected var itemGroup:DataGroup;
+  protected var itemGroup:FlexDataGroup;
 
   protected var flags:uint;
 

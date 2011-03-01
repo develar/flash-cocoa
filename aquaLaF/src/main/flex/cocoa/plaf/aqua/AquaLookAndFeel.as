@@ -22,6 +22,7 @@ import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.SimpleTextLayoutFormat;
 
 import flash.display.BlendMode;
+import flash.text.engine.FontDescription;
 
 import flashx.textLayout.edit.SelectionFormat;
 import flashx.textLayout.formats.LineBreak;
@@ -32,6 +33,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
   public function AquaLookAndFeel() {
     initialize();
+  }
+  
+  protected static function get fontDescription():FontDescription {
+    return AquaFonts.FONT_DESCRIPTION;
+  }
+  
+  protected static function get fontBoldDescription():FontDescription {
+    return AquaFonts.FONT_BOLD_DESCRIPTION;
   }
 
   protected function initialize():void {
@@ -235,8 +244,8 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
  * http://developer.apple.com/mac/library/documentation/userexperience/conceptual/applehiguidelines/XHIGText/XHIGText.html
  */
 final class AquaFonts {
-  private static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
-  private static const FONT_BOLD_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD);
+  public static const FONT_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans");
+  public static const FONT_BOLD_DESCRIPTION:FontDescription = new FontDescription("Lucida Grande, Segoe UI, Sans", FontWeight.BOLD);
 
   public static const SYSTEM_FONT:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 13));
   public static const SYSTEM_FONT_HUD:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 11, 0xffffff));
@@ -250,5 +259,4 @@ final class AquaFonts {
   public static const VIEW_FONT:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 12));
   public static const VIEW_FONT_HUD:TextFormat = SYSTEM_FONT_HUD;
   public static const VIEW_FONT_HIGHLIGHTED:TextFormat = new TextFormat(new ElementFormat(FONT_DESCRIPTION, 12, 0xffffff));
-
 }
