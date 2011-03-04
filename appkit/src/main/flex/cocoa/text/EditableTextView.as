@@ -12,12 +12,9 @@ import flash.geom.Rectangle;
 import flash.system.IME;
 import flash.system.IMEConversionMode;
 import flash.text.engine.ElementFormat;
-import flash.text.engine.TextBlock;
-import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.ui.Keyboard;
 
-import flashx.textLayout.compose.ISWFContext;
 import flashx.textLayout.container.TextContainerManager;
 import flashx.textLayout.edit.EditManager;
 import flashx.textLayout.edit.EditingMode;
@@ -61,10 +58,6 @@ use namespace mx_internal;
 use namespace tlf_internal;
 
 public class EditableTextView extends AbstractTextView implements IFocusManagerComponent, IIMESupport, ISystemCursorClient {
-  private static const textElement:TextElement = new TextElement();
-  private static const textBlock:TextBlock = new TextBlock(textElement);
-  protected static var textLine:TextLine;
-
   private static const IGNORE_DAMAGE_EVENT:uint = 1 << 0;
   /**
    * If the selection was via the selectRange() or selectAll() api,
@@ -116,7 +109,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   internal var undoManager:IUndoManager;
   private var clearUndoOnFocusOut:Boolean = true;
 
-  private var embeddedFontContext:ISWFContext;
+  private var embeddedFontContext:SwfContext;
 
   protected var textContainerManager:EditableTextContainerManager;
 
@@ -182,7 +175,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     embeddedFontContext = cocoaTextFormat != null ? cocoaTextFormat.textFormat.swfContext : null;
 
     textContainerManager.hostFormat = _textFormat;
-    textContainerManager.swfContext = ISWFContext(embeddedFontContext);
+//    textContainerManager.swfContext = embeddedFontContext;
 
     _charMetrics = null;
   }
@@ -722,25 +715,13 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function calculateFontMetrics():void {
     var textFormat:TextFormat = SimpleTextLayoutFormat(_textFormat).textFormat;
     if (textFormat.charMetrics == null) {
-      measureText("m", textFormat.format);
-      textFormat.charMetrics = new CharMetrics(textLine);
+      textFormat.charMetrics = new CharMetrics(measureText("m", textFormat.format));
     }
     _charMetrics = textFormat.charMetrics;
   }
 
   public function measureText(text:String, elementFormat:ElementFormat = null):TextLine {
-    textElement.elementFormat = elementFormat == null ? SimpleTextLayoutFormat(_textFormat).textFormat.format : elementFormat;
-    textElement.text = text;
-
-    if (textLine == null) {
-      textLine = TextLineUtil.create(textBlock, embeddedFontContext, null);
-    }
-    else {
-      TextLineUtil.create(textBlock, embeddedFontContext, textLine);
-    }
-
-    textElement.elementFormat = null;
-    return textLine;
+    return TextLineUtil.measureText(text, elementFormat == null ? SimpleTextLayoutFormat(_textFormat).textFormat.format : elementFormat, embeddedFontContext);
   }
 
   private function calculateWidthInChars():Number {

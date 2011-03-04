@@ -7,12 +7,12 @@
         <option name="OUTPUT_TYPE" value="Library" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
         <option name="USE_CUSTOM_CONFIG_FILE" value="true" />
-        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/collections-1.3.4-configs.xml" />
+        <option name="CUSTOM_CONFIG_FILE" value="$MODULE_DIR$/target/collections-1.3.5-configs.xml" />
         <option name="USE_CUSTOM_CONFIG_FILE_FOR_TESTS" value="false" />
         <option name="CUSTOM_CONFIG_FILE_FOR_TESTS" value="" />
         <option name="APPLICATION_ENTRY_POINT" value="" />
         <option name="MAIN_CLASS" value="" />
-        <option name="OUTPUT_FILE_NAME" value="collections-1.3.4.swc" />
+        <option name="OUTPUT_FILE_NAME" value="collections-1.3.5.swc" />
         <option name="USE_FACET_COMPILE_OUTPUT_PATH" value="true" />
         <option name="FACET_COMPILE_OUTPUT_PATH" value="$MODULE_DIR$/target" />
         <option name="FACET_COMPILE_OUTPUT_PATH_FOR_TESTS" value="$MODULE_DIR$/target/test-classes" />

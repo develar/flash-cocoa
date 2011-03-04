@@ -126,5 +126,13 @@ public class ArrayList extends OnDemandEventDispatcher implements List {
       }
     }
   }
+  
+  public function refresh():Boolean {
+    if (hasEventListener(CollectionEvent.COLLECTION_CHANGE)) {
+      return dispatchEvent(new CollectionEvent(CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.REFRESH));
+    }
+    
+    return false;
+  }
 }
 }

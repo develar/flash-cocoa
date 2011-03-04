@@ -20,7 +20,6 @@ public interface Component extends Viewable, IEventDispatcher, UIPartController 
   function set enabled(value:Boolean):void;
 
   function get hidden():Boolean;
-
   function set hidden(value:Boolean):void;
 
   function createView(laf:LookAndFeel):Skin;
