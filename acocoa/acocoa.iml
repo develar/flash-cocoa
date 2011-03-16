@@ -55,7 +55,7 @@
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:rb.swc:4.5.0.18365" level="project" />
     <orderEntry type="module" module-name="cocoa" />
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.3-SNAPSHOT" level="project" />
-    <orderEntry type="module" module-name="collections" />
+    <orderEntry type="library" name="Maven: org.flyti:collections:swc:1.3.4" level="project" />
     <orderEntry type="module" module-name="foundation" />
   </component>
 </module>

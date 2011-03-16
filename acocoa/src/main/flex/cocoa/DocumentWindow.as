@@ -10,29 +10,29 @@ import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.NativeWindowBoundsEvent;
 
-import mx.core.mx_internal;
 import mx.managers.SystemManagerGlobals;
 
 import org.flyti.plexus.LocalEventMap;
 
-use namespace mx_internal;
-
 public class DocumentWindow {
   private static const DEFAULT_INIT_OPTIONS:NativeWindowInitOptions = new NativeWindowInitOptions();
 
-  public function DocumentWindow(initOptions:NativeWindowInitOptions = null) {
+  public function DocumentWindow(component:Component, map:LocalEventMap, initOptions:NativeWindowInitOptions = null) {
     if (initOptions == null) {
       initOptions = DEFAULT_INIT_OPTIONS;
     }
     _nativeWindow = new NativeWindow(initOptions);
+    
+    init(component, map);
   }
 
-  private var _maps:Vector.<LocalEventMap>;
-  public function set maps(value:Vector.<LocalEventMap>):void {
-    _maps = value;
-  }
+  // keep link
+  private var map:LocalEventMap;
 
   private var _nativeWindow:NativeWindow;
+  public function get nativeWindow():NativeWindow {
+    return _nativeWindow;
+  }
 
   public function get title():String {
     return _nativeWindow.title;
@@ -47,13 +47,13 @@ public class DocumentWindow {
     return _contentView.component;
   }
 
-//  public function get contentView():spark.components.supportClasses.Skin
-  public function set contentView(component:Component):void {
+  private function init(component:Component, map:LocalEventMap):void {
     _contentView = component.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
 
-    if (_maps != null) {
-      // todo one plexus container for all maps
-      _maps[0].dispatcher = _contentView;
+    if (map != null) {
+      // todo one plexus container for all maps (or for document window must be only one map?)
+      map.dispatcher = _contentView;
+      this.map = map;
     }
 
     _nativeWindow.stage.scaleMode = StageScaleMode.NO_SCALE;
