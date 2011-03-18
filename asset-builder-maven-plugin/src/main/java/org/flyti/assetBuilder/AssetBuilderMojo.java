@@ -81,6 +81,10 @@ public class AssetBuilderMojo extends AbstractMojo {
       throw new MojoExecutionException("Can't set up images source directories", e);
     }
 
+    doExecute();
+  }
+
+  private void doExecute() throws MojoExecutionException {
     final Constructor constructor = new Constructor(AssetSet.class);
     final TypeDescription borderDescription = new TypeDescription(AssetSet.class);
     borderDescription.putListPropertyType("borders", Border.class);
@@ -362,6 +366,31 @@ public class AssetBuilderMojo extends AbstractMojo {
       out.writeByte(insets.top);
       out.writeByte(insets.right);
       out.writeByte(insets.bottom);
+    }
+  }
+
+  public static void main(String[] args) {
+    if (args.length != 3) {
+      throw new IllegalArgumentException("Usage: AssetBuilderMojo <descriptorFile> <outputFile> <source1,source2,source3>");
+    }
+    String descriptorFile = args[0];
+    String outputFile = args[1];
+    String sourceFiles = args[2];
+
+    List<File> sources = new ArrayList<File>();
+    StringTokenizer t = new StringTokenizer(sourceFiles, ",");
+    while (t.hasMoreTokens()) {
+      sources.add(new File(t.nextToken()));
+    }
+
+    AssetBuilderMojo mojo = new AssetBuilderMojo();
+    mojo.descriptor = new File(descriptorFile);
+    mojo.output = new File(outputFile);
+    mojo.sources = sources;
+    try {
+      mojo.doExecute();
+    } catch (MojoExecutionException e) {
+      throw new RuntimeException(e);
     }
   }
 }
