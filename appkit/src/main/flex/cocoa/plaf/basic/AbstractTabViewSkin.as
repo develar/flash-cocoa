@@ -76,6 +76,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
   public function hide():void {
     if (contentView != null) {
       removeChild(DisplayObject(contentView));
+      contentView = null;
     }
   }
 
