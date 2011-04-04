@@ -6,5 +6,6 @@ public interface TabViewSkin {
   function get contentInsets():Insets;
 
   function show(viewable:Viewable):void;
+  function hide():void;
 }
 }

@@ -144,6 +144,6 @@ public class ImageRetriever {
       }
     }
 
-    return -(low + 1);  // key not found.
+    return -(low + 1);  // key not found
   }
 }

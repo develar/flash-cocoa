@@ -6,7 +6,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.IOUtil;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -60,7 +59,7 @@ public class AssetBuilderMojo extends AbstractMojo {
   @SuppressWarnings({"UnusedDeclaration"})
   private File[] inputs;
 
-  private AssetOutputStream out = null;
+  private AssetOutputStream out;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -113,7 +112,13 @@ public class AssetBuilderMojo extends AbstractMojo {
       throw new MojoExecutionException("Can't write to output file", e);
     }
     finally {
-      IOUtil.close(out);
+      if (out != null) {
+        try {
+          out.close();
+        }
+        catch (IOException ignored) {
+        }
+      }
     }
   }
 
@@ -125,7 +130,7 @@ public class AssetBuilderMojo extends AbstractMojo {
 
     sources = new ArrayList<File>();
     //noinspection unchecked
-    for (Resource resource : (List<Resource>) project.getResources()) {
+    for (Resource resource : project.getResources()) {
       sources.add(new File(resource.getDirectory()));
     }
 
@@ -156,7 +161,7 @@ public class AssetBuilderMojo extends AbstractMojo {
           if (referenceProject == null) {
             continue; // пока что только берем из resource directories, но swc не парсим
           }
-          referenceResourceDirectory = new File(((Resource) referenceProject.getResources().get(0)).getDirectory());
+          referenceResourceDirectory = new File(referenceProject.getResources().get(0).getDirectory());
           if (referenceResourceDirectory.exists()) {
             projectResourceDirectoryMap.put(referenceProjectId, referenceResourceDirectory.getAbsolutePath());
           }

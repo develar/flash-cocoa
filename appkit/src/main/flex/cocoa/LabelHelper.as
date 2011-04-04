@@ -41,7 +41,9 @@ public class LabelHelper {
     if (value != _container) {
       if (_textLine != null) {
         _container.removeDisplayObject(_textLine);
-        value.addDisplayObject(_textLine);
+        if (value != null) {
+          value.addDisplayObject(_textLine);
+        }
       }
       
      _container = value; 

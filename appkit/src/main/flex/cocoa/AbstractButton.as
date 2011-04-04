@@ -11,6 +11,11 @@ public class AbstractButton extends AbstractControl {
   public function get title():String {
     return _title;
   }
+  
+  private var _hoverable:Boolean;
+  public function set hoverable(value:Boolean):void {
+    _hoverable = value;
+  }
 
   public function set title(value:String):void {
     if (value != _title) {
@@ -52,6 +57,10 @@ public class AbstractButton extends AbstractControl {
 
   protected function addHandlers():void {
     skin.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+    
+    if (_hoverable) {
+      addHoverHandlers()
+    }
   }
 
   private function mouseDownHandler(event:MouseEvent):void {
@@ -59,10 +68,15 @@ public class AbstractButton extends AbstractControl {
 
     skin.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
+    if (!_hoverable) {
+      addHoverHandlers();
+      mouseOverHandler(event);
+    }
+  }
+
+  private function addHoverHandlers():void {
     skin.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
     skin.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
-
-    mouseOverHandler(event);
   }
 
   protected function get toggled():Boolean {
@@ -72,8 +86,10 @@ public class AbstractButton extends AbstractControl {
   private function stageMouseUpHandler(event:MouseEvent):void {
     skin.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-    skin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-    skin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+    if (!_hoverable) {
+      skin.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+      skin.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+    }
 
     if (event.target == skin) {
       // может быть уже отвалидировано в roll over/out
@@ -105,6 +121,10 @@ public class AbstractButton extends AbstractControl {
   }
 
   private function mouseOverHandler(event:MouseEvent):void {
+    if (_hoverable && oldState == -1) {
+      oldState = CellState.OFF;
+    }
+    
     state = oldState == CellState.OFF ? CellState.ON : CellState.OFF;
     event.updateAfterEvent();
   }

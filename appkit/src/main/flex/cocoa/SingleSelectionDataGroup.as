@@ -64,7 +64,7 @@ public class SingleSelectionDataGroup extends SelectableDataGroup {
 
   override mx_internal function itemRemoved(item:Object, index:int):void {
     if (selectedIndex == index || selectedIndex >= dataProvider.length) {
-      selectedIndex = 0;
+      selectedIndex = dataProvider.length == 0 ? -1 : 0;
     }
 
     super.itemRemoved(item, index);

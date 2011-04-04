@@ -72,6 +72,12 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
     contentView.move(contentInsets.left, contentInsets.top);
     addChild(DisplayObject(contentView));
   }
+  
+  public function hide():void {
+    if (contentView != null) {
+      removeChild(DisplayObject(contentView));
+    }
+  }
 
   override protected function measure():void {
     if (contentView == null) {

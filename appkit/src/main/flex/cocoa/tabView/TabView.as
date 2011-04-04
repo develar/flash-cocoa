@@ -25,13 +25,18 @@ public class TabView extends SingleSelectionBar {
     if (event.oldIndex != ListSelection.NO_SELECTION && event.oldIndex < items.size) {
       oldItem = PaneItem(items.getItemAt(event.oldIndex));
     }
-    var newItem:PaneItem = PaneItem(items.getItemAt(event.newIndex));
+    var newItem:PaneItem = event.newIndex == -1 ? null : PaneItem(items.getItemAt(event.newIndex));
 
     if (oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */ && hasEventListener(CurrentPaneChangeEvent.CHANGING)) {
       dispatchEvent(new CurrentPaneChangeEvent(CurrentPaneChangeEvent.CHANGING, oldItem, newItem));
     }
 
-    showPane(newItem);
+    if (newItem == null) {
+      TabViewSkin(skin).hide();
+    }
+    else {
+      showPane(newItem);
+    }
 
     if (oldItem != null && hasEventListener(CurrentPaneChangeEvent.CHANGED)) {
       dispatchEvent(new CurrentPaneChangeEvent(CurrentPaneChangeEvent.CHANGED, oldItem, newItem));
