@@ -9,12 +9,12 @@ import spark.layouts.supportClasses.LayoutBase;
  * значение constraint имеет смысл при > 0 — добавляется gap * constraintValue
  */
 public class BarLayout extends LayoutBase {
-  private var _gap:Number;
+  private var _gap:Number = 0;
   public function set gap(value:Number):void {
     _gap = value;
   }
 
-  private var _padding:Number;
+  private var _padding:Number = 0;
   public function set padding(value:Number):void {
     _padding = value;
   }
@@ -37,6 +37,10 @@ public class BarLayout extends LayoutBase {
     var r:Object;
     for (var i:int = 0; i < n; i++) {
       layoutElement = layoutTarget.getElementAt(i);
+      if (!layoutElement.includeInLayout) {
+        continue;
+      }
+
       r = layoutElement.right;
       if (r === null || r != r) {
         layoutElement.setLayoutBoundsSize(NaN, NaN);
@@ -55,6 +59,10 @@ public class BarLayout extends LayoutBase {
 
     for (i = n - 1; i >= 0; i--) {
       layoutElement = layoutTarget.getElementAt(i);
+      if (!layoutElement.includeInLayout) {
+        continue;
+      }
+      
       r = layoutElement.right;
       if (r !== null && r == r) {
         layoutElement.setLayoutBoundsSize(NaN, NaN);
