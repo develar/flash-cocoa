@@ -16,6 +16,8 @@ import flash.text.engine.TextLine;
 import flash.ui.Keyboard;
 
 import flashx.textLayout.container.TextContainerManager;
+import flashx.textLayout.conversion.ConversionType;
+import flashx.textLayout.conversion.TextConverter;
 import flashx.textLayout.edit.EditManager;
 import flashx.textLayout.edit.EditingMode;
 import flashx.textLayout.edit.IEditManager;
@@ -52,7 +54,6 @@ import mx.utils.StringUtil;
 
 import spark.components.TextSelectionHighlighting;
 import spark.events.TextOperationEvent;
-import spark.utils.TextUtil;
 
 use namespace mx_internal;
 use namespace tlf_internal;
@@ -791,8 +792,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // If copied/cut from displayAsPassword field the pastedText is '*' characters but this is correct.
-    var pastedText:String = TextUtil.extractText(op.textScrap.textFlow);
-
+    var pastedText:String = TextConverter.getExporter(TextConverter.PLAIN_TEXT_FORMAT).export(op.textScrap.textFlow, ConversionType.STRING_TYPE) as String;
     // If there are no constraints and no newlines there is nothing more to do.
     if (!hasConstraints && pastedText.indexOf("\n") == -1) {
       return;

@@ -4,6 +4,7 @@ import cocoa.plaf.LookAndFeelProvider;
 import cocoa.resources.ResourceManager;
 
 import flash.display.DisplayObject;
+import flash.display.LoaderInfo;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 import flash.system.ApplicationDomain;
@@ -11,6 +12,7 @@ import flash.text.TextFormat;
 import flash.utils.Dictionary;
 
 import mx.core.IChildList;
+import mx.core.RSLData;
 import mx.core.Singleton;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
@@ -167,6 +169,23 @@ public class MainWindowedApplication extends Sprite implements ISystemManager, L
   }
 
   public function invalidateParentSizeAndDisplayList():void {
+  }
+
+  public function get allowDomainsInNewRSLs():Boolean {
+    return false;
+  }
+
+  public function set allowDomainsInNewRSLs(value:Boolean):void {
+  }
+
+  public function get allowInsecureDomainsInNewRSLs():Boolean {
+    return false;
+  }
+
+  public function set allowInsecureDomainsInNewRSLs(value:Boolean):void {
+  }
+
+  public function addPreloadedRSL(loaderInfo:LoaderInfo, rsl:Vector.<RSLData>):void {
   }
 }
 }

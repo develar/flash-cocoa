@@ -2,7 +2,7 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="flex" name="Flex">
-      <configuration flex_sdk="compiler-4.5.0.18365.pom">
+      <configuration flex_sdk="compiler-4.5.0.20968.pom">
         <option name="DO_BUILD" value="false" />
         <option name="OUTPUT_TYPE" value="Application" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
@@ -36,33 +36,28 @@
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/flex" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/locales/en_US" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="aquaLaF" />
     <orderEntry type="module" module-name="cocoa" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.20968" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.2" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.0.20968" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.5.0.20968" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.0.20968" level="project" />
+    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.3-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.flyti:collections:swc:1.3.4" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.0.18365" level="project" />
+    <orderEntry type="module" module-name="collections" />
     <orderEntry type="module" module-name="foundation" />
     <orderEntry type="module" module-name="acocoa" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:sparkskins:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:applicationupdater:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:applicationupdater_ui:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:servicemonitor:swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.0.18365" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:rb.swc:4.5.0.18365" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:swc:4.5.0.20968" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:rb.swc:4.5.0.20968" level="project" />
     <orderEntry type="module" module-name="cocoa" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.1" level="project" />
   </component>
 </module>
 

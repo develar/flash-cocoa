@@ -26,6 +26,14 @@ public final class FileUtil {
     return bytes;
   }
 
+  public static function readObject(file:File):Object {
+    var fileStream:FileStream = new FileStream();
+    fileStream.open(file, FileMode.READ);
+    var object:Object = fileStream.readObject();
+    fileStream.close();
+    return object;
+  }
+
   public static function readBytes(filename:String):ByteArray {
     return readBytesByFile(new File(filename));
   }

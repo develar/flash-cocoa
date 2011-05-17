@@ -9,6 +9,7 @@ import flash.display.Screen;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.NativeWindowBoundsEvent;
+import flash.geom.Rectangle;
 
 import mx.managers.SystemManagerGlobals;
 
@@ -17,13 +18,13 @@ import org.flyti.plexus.LocalEventMap;
 public class DocumentWindow {
   private static const DEFAULT_INIT_OPTIONS:NativeWindowInitOptions = new NativeWindowInitOptions();
 
-  public function DocumentWindow(component:Component, map:LocalEventMap, initOptions:NativeWindowInitOptions = null) {
+  public function DocumentWindow(component:Component, map:LocalEventMap, initOptions:NativeWindowInitOptions = null, bounds:Rectangle = null) {
     if (initOptions == null) {
       initOptions = DEFAULT_INIT_OPTIONS;
     }
     _nativeWindow = new NativeWindow(initOptions);
     
-    init(component, map);
+    init(component, map, bounds || Screen.mainScreen.visibleBounds);
   }
 
   // keep link
@@ -47,7 +48,7 @@ public class DocumentWindow {
     return _contentView.component;
   }
 
-  private function init(component:Component, map:LocalEventMap):void {
+  private function init(component:Component, map:LocalEventMap, bounds:Rectangle):void {
     _contentView = component.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
 
     if (map != null) {
@@ -59,9 +60,8 @@ public class DocumentWindow {
     _nativeWindow.stage.scaleMode = StageScaleMode.NO_SCALE;
     _nativeWindow.stage.align = StageAlign.TOP_LEFT;
 
-    var screen:Screen = Screen.mainScreen;
     _nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, windowResizeHandler);
-    _nativeWindow.bounds = screen.visibleBounds;
+    _nativeWindow.bounds = bounds;
     _nativeWindow.activate();
   }
   

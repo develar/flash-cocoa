@@ -20,7 +20,6 @@ import flash.geom.Point;
 import flash.geom.Transform;
 import flash.geom.Vector3D;
 
-import mx.automation.IAutomationObject;
 import mx.controls.IFlexContextMenu;
 import mx.core.AdvancedLayoutFeatures;
 import mx.core.DesignLayer;
@@ -670,7 +669,7 @@ use namespace mx_internal;
  *  class for other classes.</p>
  */
 [Abstract]
-public class AbstractView extends Sprite implements View, IAutomationObject, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
+public class AbstractView extends Sprite implements View, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
   public static const LAYOUT_DIRECTION_LTR:String = "ltr";
 
   private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
@@ -852,10 +851,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
    */
   mx_internal var effectOverlay:UIComponent;
 
-  /**
-   *  Color used for overlay.
-   */
-  mx_internal var effectOverlayColor:uint;
 
   /**
    *  Counter to keep track of the number of current users
@@ -2283,51 +2278,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
   public function set isPopUp(value:Boolean):void {
   }
 
-  private var _automationDelegate:IAutomationObject;
-
-  public function get automationDelegate():Object {
-    return _automationDelegate;
-  }
-
-  public function set automationDelegate(value:Object):void {
-    _automationDelegate = value as IAutomationObject;
-  }
-
-  private var _automationName:String = null;
-
-  public function get automationName():String {
-    if (_automationName) {
-      return _automationName;
-    }
-    if (automationDelegate) {
-      return automationDelegate.automationName;
-    }
-
-    return "";
-  }
-
-  public function set automationName(value:String):void {
-    _automationName = value;
-  }
-
-  public function get automationValue():Array {
-    if (automationDelegate) {
-      return automationDelegate.automationValue;
-    }
-
-    return [];
-  }
-
-  private var _showInAutomationHierarchy:Boolean = true;
-
-  public function get showInAutomationHierarchy():Boolean {
-    return _showInAutomationHierarchy;
-  }
-
-  public function set showInAutomationHierarchy(value:Boolean):void {
-    _showInAutomationHierarchy = value;
-  }
-
   override public function addChild(child:DisplayObject):DisplayObject {
     var formerParent:DisplayObjectContainer = child.parent;
     if (formerParent != null && !(formerParent is Loader)) {
@@ -3583,78 +3533,6 @@ public class AbstractView extends Sprite implements View, IAutomationObject, ILa
     }
 
     return child == this;
-  }
-
-  public function createAutomationIDPart(child:IAutomationObject):Object {
-    if (automationDelegate) {
-      return automationDelegate.createAutomationIDPart(child);
-    }
-    return null;
-  }
-
-  public function createAutomationIDPartWithRequiredProperties(child:IAutomationObject, properties:Array):Object {
-    if (automationDelegate) {
-      return automationDelegate.createAutomationIDPartWithRequiredProperties(child, properties);
-    }
-    return null;
-  }
-
-  public function resolveAutomationIDPart(criteria:Object):Array {
-    if (automationDelegate) {
-      return automationDelegate.resolveAutomationIDPart(criteria);
-    }
-    return [];
-  }
-
-  public function getAutomationChildAt(index:int):IAutomationObject {
-    if (automationDelegate) {
-      return automationDelegate.getAutomationChildAt(index);
-    }
-    return null;
-  }
-
-  public function getAutomationChildren():Array {
-    if (automationDelegate) {
-      return automationDelegate.getAutomationChildren();
-    }
-    return null;
-  }
-
-  public function get numAutomationChildren():int {
-    if (automationDelegate) {
-      return automationDelegate.numAutomationChildren;
-    }
-    return 0;
-  }
-
-  public function get automationTabularData():Object {
-    if (automationDelegate) {
-      return automationDelegate.automationTabularData;
-    }
-    return null;
-  }
-
-  public function get automationOwner():DisplayObjectContainer {
-    return owner;
-  }
-
-  public function get automationParent():DisplayObjectContainer {
-    return parent;
-  }
-
-  public function get automationEnabled():Boolean {
-    return enabled;
-  }
-
-  public function get automationVisible():Boolean {
-    return visible;
-  }
-
-  public function replayAutomatableEvent(event:Event):Boolean {
-    if (automationDelegate) {
-      return automationDelegate.replayAutomatableEvent(event);
-    }
-    return false;
   }
 
   private static const fakeMouseX:QName = new QName(mx_internal, "_mouseX");

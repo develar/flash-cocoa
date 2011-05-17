@@ -1,6 +1,7 @@
 package cocoa {
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
+import flash.display.LoaderInfo;
 import flash.display.Sprite;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -12,6 +13,7 @@ import mx.core.IChildList;
 import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IUIComponent;
+import mx.core.RSLData;
 import mx.core.Singleton;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
@@ -388,6 +390,23 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
   }
 
   public function set document(value:Object):void {
+  }
+
+  public function get allowDomainsInNewRSLs():Boolean {
+    return false;
+  }
+
+  public function set allowDomainsInNewRSLs(value:Boolean):void {
+  }
+
+  public function get allowInsecureDomainsInNewRSLs():Boolean {
+    return false;
+  }
+
+  public function set allowInsecureDomainsInNewRSLs(value:Boolean):void {
+  }
+
+  public function addPreloadedRSL(loaderInfo:LoaderInfo, rsl:Vector.<RSLData>):void {
   }
 }
 }

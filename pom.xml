@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>22</version>
+    <version>24</version>
   </parent>
 
   <name>Cocoa Aggregator</name>
@@ -22,7 +22,7 @@
     <module>acocoa</module>
     <module>aquaLaFAssetBuilder</module>
     <module>aquaLaF</module>
-    <module>demo</module>
+    <!--<module>demo</module>-->
   </modules>
 
   <profiles>

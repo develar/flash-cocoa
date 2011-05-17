@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/cocoa-mx/cocoa-mx.iml" filepath="$PROJECT_DIR$/cocoa-mx/cocoa-mx.iml" />
       <module fileurl="file://$PROJECT_DIR$/cocoaAggregator.iml" filepath="$PROJECT_DIR$/cocoaAggregator.iml" />
       <module fileurl="file://$PROJECT_DIR$/collections/collections.iml" filepath="$PROJECT_DIR$/collections/collections.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/foundation/foundation.iml" filepath="$PROJECT_DIR$/foundation/foundation.iml" />
     </modules>
   </component>
