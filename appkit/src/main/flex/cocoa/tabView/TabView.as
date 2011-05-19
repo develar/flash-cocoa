@@ -27,8 +27,8 @@ public class TabView extends SingleSelectionBar {
     }
     var newItem:PaneItem = event.newIndex == -1 ? null : PaneItem(items.getItemAt(event.newIndex));
 
-    if (oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */ && hasEventListener(CurrentPaneChangeEvent.CHANGING)) {
-      dispatchEvent(new CurrentPaneChangeEvent(CurrentPaneChangeEvent.CHANGING, oldItem, newItem));
+    if (oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */ && _currentPaneChangeHandler != null) {
+      _currentPaneChangeHandler(oldItem, newItem, true);
     }
 
     if (newItem == null) {
@@ -38,13 +38,18 @@ public class TabView extends SingleSelectionBar {
       showPane(newItem);
     }
 
-    if (oldItem != null && hasEventListener(CurrentPaneChangeEvent.CHANGED)) {
-      dispatchEvent(new CurrentPaneChangeEvent(CurrentPaneChangeEvent.CHANGED, oldItem, newItem));
+    if (oldItem != null && _currentPaneChangeHandler != null) {
+      _currentPaneChangeHandler(oldItem, newItem, false);
     }
     
     if (hasEventListener("selectedItemChanged")) {
       dispatchEvent(new Event("selectedItemChanged"));
     }
+  }
+
+  private var _currentPaneChangeHandler:Function;
+  public function set currentPaneChangeHandler(value:Function):void {
+    _currentPaneChangeHandler = value;
   }
 
   protected function showPane(paneItem:PaneItem):void {
