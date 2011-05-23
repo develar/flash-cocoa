@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="flex" name="Flex">
       <configuration flex_sdk="compiler-4.5.0.20968.pom">
-        <option name="DO_BUILD" value="false" />
+        <option name="DO_BUILD" value="true" />
         <option name="OUTPUT_TYPE" value="Application" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
         <option name="USE_CUSTOM_CONFIG_FILE" value="true" />
@@ -54,8 +54,10 @@
     <orderEntry type="module" module-name="collections" />
     <orderEntry type="module" module-name="foundation" />
     <orderEntry type="module" module-name="acocoa" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:swc:4.5.0.20968" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:2.6" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:swc:4.5.0.20968" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:rb.swc:4.5.0.20968" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airspark:rb.swc:4.5.0.20968" level="project" />
     <orderEntry type="module" module-name="cocoa" />
   </component>

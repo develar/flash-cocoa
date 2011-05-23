@@ -13,6 +13,17 @@ use namespace mx_internal;
 
 public class HSlider extends spark.components.HSlider implements UIPartController
 {
+
+   override mx_internal function initProtoChain():void
+    {
+
+    }
+
+  override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void
+    {
+
+    }
+
 	override public function set enabled(value:Boolean):void
 	{
 		super.enabled = value;

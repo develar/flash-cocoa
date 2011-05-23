@@ -1,38 +1,8 @@
-<?xml version="1.0"?>
-<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa"
-                        xmlns:ac="acocoa"
-                        creationPolicy="none" width="1500" height="1500"
-                        creationComplete="creationCompleteHandler()">
+<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" laf="{new AquaLookAndFeel()}">
   <fx:Script><![CDATA[
-    import cocoa.HUDWindow;
-    import cocoa.dialog.DialogEventMap;
-    import cocoa.dialog.events.ShowDialogEvent;
     import cocoa.plaf.aqua.AquaLookAndFeel;
-
-    import org.flyti.plexus.EventMap;
-    import org.flyti.plexus.PlexusManager;
-    import org.flyti.plexus.GlobalDispatcher;
-
-    private function creationCompleteHandler():void {
-      laf = new AquaLookAndFeel();
-      createDeferredContent();
-      GlobalDispatcher;
-
-      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialog(), false));
-//      return;
-      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(new DemoApplicationDialogWithDialog(), false));
-
-      var hudWindow:HUDWindow = new HUDWindow();
-      hudWindow.resizable = false;
-      hudWindow.title = "Test";
-      hudWindow.contentView = new TestHUDWindow();
-      PlexusManager.instance.container.dispatcher.dispatchEvent(new ShowDialogEvent(hudWindow, false));
-    }
-
-    override protected function initializeMaps():void {
-      maps = new <EventMap>[
-        new DialogEventMap()
-      ];
-    }
     ]]></fx:Script>
+  <Container xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa">
+    <PushButton title="FF"/>
+  </Container>
 </ac:WindowedApplication>

@@ -1,11 +1,9 @@
-<?xml version="1.0"?>
 <Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:text="cocoa.text.*">
   <fx:Script><![CDATA[
     import cocoa.MenuItem;
     import cocoa.pane.PaneItem;
     import cocoa.plaf.DialogSkin;
     import cocoa.plaf.basic.BottomBarStyle;
-    import cocoa.plaf.basic.MenuItemRenderer;
     import cocoa.resources.ResourceMetadata;
 
     import org.flyti.util.ArrayList;
@@ -15,7 +13,7 @@
     private static const listData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8"]);
     private static const shortListData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 3 Looooooooong"]);
 
-    private static const treeData:Array = ["Item 1", "Item 3 Looooooooong", {label: "dsfsdf", children: listData}];
+    private static const treeData:Array = ["Item 1", "Item 3 Looooooooong", {label:"dsfsdf", children:listData}];
 
     [ResourceBundle("TestPane")]
     private static const tabViewPanes:ArrayList = new ArrayList(new <Object>[
@@ -26,7 +24,7 @@
 
     private static function paneFactory(buttonTitle:String):IFactory {
       var factory:ClassFactory = new ClassFactory(TestPane);
-      factory.properties = {buttonTitle: buttonTitle};
+      factory.properties = {buttonTitle:buttonTitle};
       return factory;
     }
 

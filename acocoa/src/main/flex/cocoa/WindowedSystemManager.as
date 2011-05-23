@@ -3,6 +3,7 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.LoaderInfo;
 import flash.display.Sprite;
+import flash.errors.IllegalOperationError;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.system.ApplicationDomain;
@@ -19,21 +20,16 @@ import mx.core.mx_internal;
 import mx.events.FlexEvent;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
-import mx.managers.NativeDragManagerImpl;
-import mx.managers.SystemManagerGlobals;
+import mx.managers.PopUpManagerImpl;
+import mx.managers.systemClasses.ActiveWindowManager;
 
 use namespace mx_internal;
 
 public class WindowedSystemManager extends Sprite implements ISystemManager {
   // offset due: 0 child of system manager is application
-  public static const OFFSET:int = 1;
+  public static const OFFSET:int = 0;
 
   private var contentView:DisplayObject;
-
-  public function WindowedSystemManager(contentView:IUIComponent) {
-    this.contentView = DisplayObject(contentView);
-    SystemManagerGlobals.topLevelSystemManagers.push(this);
-  }
 
   override public function get width():Number {
     return stage.stageWidth;
@@ -43,21 +39,14 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
     return stage.stageHeight;
   }
 
-  public function init():void {
-    var c:Class = Singleton.getClass("mx.managers::IActiveWindowManager");
-    if (c) {
-      registerImplementation("mx.managers::IActiveWindowManager", new c(this));
-    }
+  public function init(contentView:IUIComponent):void {
+    Singleton.registerClass("mx.managers::IPopUpManager", PopUpManagerImpl);
+    registerImplementation("mx.managers::IActiveWindowManager", new ActiveWindowManager(this));
 
-    IFlexDisplayObject(contentView).setActualSize(stage.stageWidth, stage.stageHeight);
-
-    addRawChildAt(contentView, 0);
-//    addingChild(contentView);
-//    stage.addChild(contentView);
-//    IUIComponent(contentView).initialize();
-
-    if (Singleton.getClass("mx.managers::IDragManager").getInstance() is NativeDragManagerImpl) {
-      NativeDragManagerImpl(Singleton.getClass("mx.managers::IDragManager").getInstance()).registerSystemManager(this);
+    if (contentView != null) {
+      IFlexDisplayObject(contentView).setActualSize(stage.stageWidth, stage.stageHeight);
+      this.contentView = DisplayObject(contentView);
+      addRawChildAt(this.contentView, 0);
     }
   }
 
@@ -79,23 +68,8 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
     return _popUpChildren;
   }
 
-  private var _cursorChildren:SystemChildList;
   public function get cursorChildren():IChildList {
-    if (_cursorChildren == null) {
-      _cursorChildren = new SystemChildList(this, "toolTipIndex", "cursorIndex");
-    }
-
-    return _cursorChildren;
-  }
-
-  // The index of the highest child that is a cursor
-  private var _cursorIndex:int = 0;
-  internal function get cursorIndex():int {
-    return _cursorIndex;
-  }
-
-  internal function set cursorIndex(value:int):void {
-    _cursorIndex = value;
+    throw new IllegalOperationError();
   }
 
   override public function setChildIndex(child:DisplayObject, index:int):void {
@@ -128,7 +102,7 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
 
   override public function getObjectsUnderPoint(point:Point):Array {
     var children:Array = [];
-    // Get all the children that aren't tooltips and cursors.
+    // Get all the children that aren't tooltips
     var n:int = _topMostIndex;
     for (var i:int = 0; i < n; i++) {
       var child:DisplayObject = super.getChildAt(i);
@@ -177,9 +151,7 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
   }
 
   public function set toolTipIndex(value:int):void {
-    var delta:int = value - _toolTipIndex;
     _toolTipIndex = value;
-    cursorIndex += delta;
   }
 
   private var _topMostIndex:int;
@@ -193,7 +165,7 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
     toolTipIndex += delta;
   }
 
-  private var _noTopMostIndex:int = 1; // fucked flex sdk preloader set it as 1 for mouse catcher (missed in our case) and 2 as app (we add app directly)
+  private var _noTopMostIndex:int = OFFSET; // fucked flex sdk preloader set it as 1 for mouse catcher (missed in our case) and 2 as app (we add app directly)
   public function get noTopMostIndex():int {
     return _noTopMostIndex;
   }
@@ -340,8 +312,15 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
     return null;
   }
 
+  private var _screen:Rectangle;
   public function get screen():Rectangle {
-    return null;
+    if (_screen == null) {
+      _screen = new Rectangle();
+    }
+
+    _screen.width = super.parent.width;
+    _screen.height = super.parent.height;
+    return _screen;
   }
 
   public function get topLevelSystemManager():ISystemManager {

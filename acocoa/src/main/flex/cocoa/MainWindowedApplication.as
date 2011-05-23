@@ -1,7 +1,6 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
-import cocoa.resources.ResourceManager;
 
 import flash.display.DisplayObject;
 import flash.display.LoaderInfo;
@@ -13,16 +12,7 @@ import flash.utils.Dictionary;
 
 import mx.core.IChildList;
 import mx.core.RSLData;
-import mx.core.Singleton;
-import mx.core.UIComponentGlobals;
-import mx.core.mx_internal;
-import mx.managers.ILayoutManager;
 import mx.managers.ISystemManager;
-import mx.managers.LayoutManager;
-import mx.managers.NativeDragManagerImpl;
-import mx.managers.SystemManagerGlobals;
-
-use namespace mx_internal;
 
 public class MainWindowedApplication extends Sprite implements ISystemManager, LookAndFeelProvider {
   public function MainWindowedApplication() {
@@ -39,13 +29,7 @@ public class MainWindowedApplication extends Sprite implements ISystemManager, L
   }
 
   private function init():void {
-    Singleton.registerClass("mx.managers::ILayoutManager", LayoutManager);
-    Singleton.registerClass("mx.resources::IResourceManager", ResourceManager);
-    Singleton.registerClass("mx.managers::IDragManager", NativeDragManagerImpl);
-
-    SystemManagerGlobals.topLevelSystemManagers[0] = this;
-    UIComponentGlobals.layoutManager = ILayoutManager(Singleton.getInstance("mx.managers::ILayoutManager"));
-
+    WindowInitUtil.initMainSystemManager(this);
     initializeMaps();
   }
 

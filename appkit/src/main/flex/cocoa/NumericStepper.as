@@ -390,5 +390,15 @@ public class NumericStepper extends Spinner implements UIPartController, Viewabl
 
   override public function invalidateSkinState():void {
   }
+
+  override mx_internal function initProtoChain():void
+    {
+
+    }
+
+  override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void
+    {
+
+    }
 }
 }
