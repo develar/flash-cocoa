@@ -2,7 +2,6 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
-import mx.core.IMXMLObject;
 import mx.core.IUIComponent;
 import mx.core.UIComponent;
 
@@ -52,12 +51,11 @@ public class WindowedApplication extends WindowedSystemManager implements LookAn
 
   override public function init(contentView:IUIComponent):void {
     WindowInitUtil.initMainSystemManager(this);
+    preInitialize();
     super.init(contentView);
-
-    initializeMaps();
   }
 
-  protected function initializeMaps():void {
+  protected function preInitialize():void {
 
   }
 }

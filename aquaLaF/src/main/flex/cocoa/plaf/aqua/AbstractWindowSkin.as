@@ -22,6 +22,7 @@ import mx.core.IFlexDisplayObject;
 import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 import mx.core.mx_internal;
+import mx.managers.IFocusManager;
 import mx.managers.IFocusManagerContainer;
 
 use namespace mx_internal;
@@ -253,6 +254,9 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
 
   override public function get isPopUp():Boolean {
     return true;
+  }
+
+  public function set focusManager(value:IFocusManager):void {
   }
 }
 }

@@ -1,6 +1,6 @@
 package cocoa.text {
 import cocoa.MeasurementAdjustResult;
-import cocoa.util.TextLineUtil;
+import cocoa.text.TextLineUtil;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;

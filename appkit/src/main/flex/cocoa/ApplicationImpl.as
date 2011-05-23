@@ -232,15 +232,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application 
    *  Disable all the built-in items except "Print...".
    */
   private function initContextMenu():void {
-    // context menu already set, nothing to init
-    if (flexContextMenu != null) {
-      // make sure we set it back on systemManager b/c it may have been overridden by now
-      if (systemManager is InteractiveObject) {
-        InteractiveObject(systemManager).contextMenu = contextMenu;
-      }
-      return;
-    }
-
     var defaultMenu:ContextMenu = new ContextMenu();
     defaultMenu.hideBuiltInItems();
     defaultMenu.builtInItems.print = true;

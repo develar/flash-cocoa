@@ -1,6 +1,4 @@
-package cocoa.util {
-import cocoa.text.SwfContext;
-
+package cocoa.text {
 import flash.text.engine.ElementFormat;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
@@ -15,7 +13,7 @@ public final class TextLineUtil {
   private static var textLine:TextLine;
 
   // see usage in LabelHelper/EditableTextView
-  public static function create(textBlock:TextBlock, swfContext:SwfContext, textLine:TextLine, availableWidth:Number = 100000):TextLine {
+  public static function create(textBlock:TextBlock, swfContext:SwfContext, textLine:TextLine = null, availableWidth:Number = 100000):TextLine {
     if (swfContext == null) {
       if (textLine == null) {
         return textBlock.createTextLine(null, availableWidth);

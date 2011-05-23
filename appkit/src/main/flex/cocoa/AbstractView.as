@@ -20,10 +20,8 @@ import flash.geom.Point;
 import flash.geom.Transform;
 import flash.geom.Vector3D;
 
-import mx.controls.IFlexContextMenu;
 import mx.core.AdvancedLayoutFeatures;
 import mx.core.DesignLayer;
-import mx.core.EventPriority;
 import mx.core.FlexGlobals;
 import mx.core.IInvalidating;
 import mx.core.ILayoutDirectionElement;
@@ -34,8 +32,6 @@ import mx.core.LayoutElementUIComponentUtils;
 import mx.core.UIComponent;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
-import mx.effects.EffectManager;
-import mx.effects.IEffectInstance;
 import mx.events.DynamicEvent;
 import mx.events.FlexEvent;
 import mx.events.MoveEvent;
@@ -61,7 +57,6 @@ import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
 import mx.managers.IToolTipManagerClient;
-import mx.managers.SystemManagerGlobals;
 import mx.styles.ISimpleStyleClient;
 import mx.styles.IStyleClient;
 import mx.utils.MatrixUtil;
@@ -1454,36 +1449,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     dispatchEvent(new Event("scaleZChanged"));
   }
 
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the <code>scaleX</code> property, which can be useful since components
-   *  can override <code>scaleX</code> and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $scaleX():Number {
-    return super.scaleX;
-  }
-
-  mx_internal final function set $scaleX(value:Number):void {
-    super.scaleX = value;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the <code>scaleY</code> property, which can be useful since components
-   *  can override <code>scaleY</code> and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $scaleY():Number {
-    return super.scaleY;
-  }
-
-  mx_internal final function set $scaleY(value:Number):void {
-    super.scaleY = value;
-  }
-
   private var _visible:Boolean = true;
 
   [Bindable("hide")]
@@ -1746,14 +1711,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   }
 
   /**
-   *  IFocusManagerContainers have this property assigned by the framework
-   */
-  public function set focusManager(value:IFocusManager):void {
-    _focusManager = value;
-    dispatchEvent(new FlexEvent(FlexEvent.ADD_FOCUS_MANAGER));
-  }
-
-  /**
    * Set by the SystemManager so that each UIComponent has a references to its SystemManager
    */
   private var _systemManager:ISystemManager;
@@ -1794,27 +1751,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   public function set systemManager(value:ISystemManager):void {
     _systemManager = value;
     flags &= ~SYSTEM_MANAGER_DIRTY;
-  }
-
-  /**
-   * Returns the current system manager, <code>systemManager</code>, unless it is null.
-   * If the current system manager is null, then search to find the correct system manager.
-   *
-   *  @return A system manager. This value is never null.
-   */
-  mx_internal function getNonNullSystemManager():ISystemManager {
-    var sm:ISystemManager = systemManager;
-
-    //		if (!sm) subapp не поддерживаем
-    //		{
-    //			sm = ISystemManager(SystemManager.getSWFRoot(this));
-    //		}
-
-    if (sm == null) {
-      return SystemManagerGlobals.topLevelSystemManagers[0];
-    }
-
-    return sm;
   }
 
   private function invalidateSystemManager():void {
@@ -2223,34 +2159,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     throw new Error("abstract");
   }
 
-  /**
-   * The list of effects that are currently playing on the component, as an Array of EffectInstance instances.
-   */
-  public function get activeEffects():Array {
-    return _effectsStarted;
-  }
-
-  private var _flexContextMenu:IFlexContextMenu;
-
-  /**
-   *  The context menu for this UIComponent.
-   */
-  public function get flexContextMenu():IFlexContextMenu {
-    return _flexContextMenu;
-  }
-
-  public function set flexContextMenu(value:IFlexContextMenu):void {
-    if (_flexContextMenu) {
-      _flexContextMenu.unsetContextMenu(this);
-    }
-
-    _flexContextMenu = value;
-
-    if (value != null) {
-      _flexContextMenu.setContextMenu(this);
-    }
-  }
-
   mx_internal var _toolTip:String;
 
   [Bindable("toolTipChanged")]
@@ -2480,15 +2388,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
    *  the <code>addChild()</code> method to add the component to its parent. </p>
    */
   protected function createChildren():void {
-  }
-
-  /**
-   *  Performs any final processing after child objects are created.
-   */
-  protected function childrenCreated():void {
-    invalidateProperties();
-    invalidateSize();
-    invalidateDisplayList();
   }
 
   public final function invalidateProperties():void {
@@ -3223,164 +3122,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   }
 
   /**
-   *  For each effect event, registers the EffectManager
-   *  as one of the event listeners.
-   *  You typically never need to call this method.
-   *
-   *  @param effects The names of the effect events.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function registerEffects(effects:Array /* of String */):void {
-    var n:int = effects.length;
-    for (var i:int = 0; i < n; i++) {
-      // Ask the EffectManager for the event associated with this effectTrigger
-      var event:String = EffectManager.getEventForEffectTrigger(effects[i]);
-
-      if (event != null && event != "") {
-        addEventListener(event, EffectManager.eventHandler, false, EventPriority.EFFECT);
-      }
-    }
-  }
-
-  mx_internal var _effectsStarted:Array = [];
-  mx_internal var _affectedProperties:Object = {};
-
-  /**
-   *  Contains <code>true</code> if an effect is currently playing on the component.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  private var _isEffectStarted:Boolean = false;
-  mx_internal function get isEffectStarted():Boolean {
-    return _isEffectStarted;
-  }
-
-  mx_internal function set isEffectStarted(value:Boolean):void {
-    _isEffectStarted = value;
-  }
-
-  private var preventDrawFocus:Boolean = false;
-
-  /**
-   *  Called by the effect instance when it starts playing on the component.
-   *  You can use this method to perform a modification to the component as part
-   *  of an effect. You can use the <code>effectFinished()</code> method
-   *  to restore the modification when the effect ends.
-   *
-   *  @param effectInst The effect instance object playing on the component.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function effectStarted(effectInst:IEffectInstance):void {
-    // Check that the instance isn't already in our list
-    _effectsStarted.push(effectInst);
-
-    var aProps:Array = effectInst.effect.getAffectedProperties();
-    for (var j:int = 0; j < aProps.length; j++) {
-      var propName:String = aProps[j];
-      if (_affectedProperties[propName] == undefined) {
-        _affectedProperties[propName] = [];
-      }
-
-      _affectedProperties[propName].push(effectInst);
-    }
-
-    isEffectStarted = true;
-    // Hide the focus ring if the target already has one drawn
-    if (effectInst.hideFocusRing) {
-      preventDrawFocus = true;
-      //			drawFocus(false);
-    }
-  }
-
-
-  private var _endingEffectInstances:Array = [];
-
-  /**
-   *  Called by the effect instance when it stops playing on the component.
-   *  You can use this method to restore a modification to the component made
-   *  by the <code>effectStarted()</code> method when the effect started,
-   *  or perform some other action when the effect ends.
-   *
-   *  @param effectInst The effect instance object playing on the component.
-   */
-  public function effectFinished(effectInst:IEffectInstance):void {
-    _endingEffectInstances.push(effectInst);
-    invalidateProperties();
-
-    // weak reference
-    UIComponentGlobals.layoutManager.addEventListener(FlexEvent.UPDATE_COMPLETE, updateCompleteHandler, false, 0, true);
-  }
-
-  /**
-   *  Ends all currently playing effects on the component.
-   */
-  public function endEffectsStarted():void {
-    var len:int = _effectsStarted.length;
-    for (var i:int = 0; i < len; i++) {
-      _effectsStarted[i].end();
-    }
-  }
-
-  private function updateCompleteHandler(event:FlexEvent):void {
-    UIComponentGlobals.layoutManager.removeEventListener(FlexEvent.UPDATE_COMPLETE, updateCompleteHandler);
-    processEffectFinished(_endingEffectInstances);
-    _endingEffectInstances = [];
-  }
-
-  private function processEffectFinished(effectInsts:Array):void {
-    // Find the instance in our list.
-    for (var i:int = _effectsStarted.length - 1; i >= 0; i--) {
-      for (var j:int = 0; j < effectInsts.length; j++) {
-        var effectInst:IEffectInstance = effectInsts[j];
-        if (effectInst == _effectsStarted[i]) {
-          // Remove the effect from our array.
-          var removedInst:IEffectInstance = _effectsStarted[i];
-          _effectsStarted.splice(i, 1);
-
-          // Remove the affected properties from our internal object
-          var aProps:Array = removedInst.effect.getAffectedProperties();
-          for (var k:int = 0; k < aProps.length; k++) {
-            var propName:String = aProps[k];
-            if (_affectedProperties[propName] != undefined) {
-              for (var l:int = 0; l < _affectedProperties[propName].length; l++) {
-                if (_affectedProperties[propName][l] == effectInst) {
-                  _affectedProperties[propName].splice(l, 1);
-                  break;
-                }
-              }
-
-              if (_affectedProperties[propName].length == 0) {
-                delete _affectedProperties[propName];
-              }
-            }
-          }
-          break;
-        }
-      }
-    }
-
-    isEffectStarted = _effectsStarted.length > 0;
-    if (effectInst && effectInst.hideFocusRing) {
-      preventDrawFocus = false;
-    }
-  }
-
-  mx_internal function getEffectsForProperty(propertyName:String):Array {
-    return _affectedProperties[propertyName] != undefined ? _affectedProperties[propertyName] : [];
-  }
-
-  /**
    *  Callback that then calls queued functions.
    */
   private function callLaterDispatcher(event:Event):void {
@@ -3597,10 +3338,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
 
     _transform = value;
-  }
-
-  mx_internal function get $transform():flash.geom.Transform {
-    return super.transform;
   }
 
   override public function get transform():flash.geom.Transform {

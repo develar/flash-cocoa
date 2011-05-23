@@ -1,6 +1,6 @@
 package cocoa {
 import cocoa.text.TextFormat;
-import cocoa.util.TextLineUtil;
+import cocoa.text.TextLineUtil;
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.TextBlock;
@@ -244,7 +244,7 @@ public class LabelHelper {
     return width;
   }
 
-  private function getTruncationPosition(line:TextLine, allowedWidth:Number):int {
+  private static function getTruncationPosition(line:TextLine, allowedWidth:Number):int {
     var consumedWidth:Number = 0;
     var charPosition:int = line.textBlockBeginIndex;
     var n:int = charPosition + line.rawTextLength;

@@ -17,6 +17,7 @@ import cocoa.plaf.basic.PaneLabelRenderer;
 import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
+import cocoa.plaf.basic.TableViewSkin;
 import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
 import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.SimpleTextLayoutFormat;
@@ -63,6 +64,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
     data["Box"] = BoxSkin;
+    data["TableView"] = TableViewSkin;
 
     data["Toolbar"] = ToolbarSkin;
     data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));

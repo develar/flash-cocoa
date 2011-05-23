@@ -1,8 +1,29 @@
-<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" laf="{new AquaLookAndFeel()}">
+<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*">
   <fx:Script><![CDATA[
-    import cocoa.plaf.aqua.AquaLookAndFeel;
+    import cocoa.Insets;
+    import cocoa.plaf.TextFormatID;
+    import cocoa.tableView.TableColumn;
+    import cocoa.tableView.TextTableColumn;
+    import cocoa.text.TextLineRendererFactory;
+
+    override protected function preInitialize():void {
+      var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatID.SYSTEM));
+      var dataSource:DemoTableViewDataSource = new DemoTableViewDataSource(laf);
+      tableView.dataSource = dataSource;
+      var insets:Insets = new Insets(4, NaN, NaN, 5);
+      var firstColumn:TextTableColumn = new TextTableColumn('a', textLineRendererFactory, tableView, insets);
+      firstColumn.width = 120;
+      tableView.columns = new <TableColumn>[firstColumn, new TextTableColumn('b', textLineRendererFactory, tableView, insets)];
+    }
     ]]></fx:Script>
-  <Container xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa">
-    <PushButton title="FF"/>
+  <ac:laf>
+    <aqua:AquaLookAndFeel/>
+  </ac:laf>
+
+  <Container>
+    <layout>
+      <s:HorizontalLayout/>
+    </layout>
+    <tableview:TableView id="tableView" width="100%"/>
   </Container>
 </ac:WindowedApplication>
