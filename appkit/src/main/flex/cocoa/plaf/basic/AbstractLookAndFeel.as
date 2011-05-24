@@ -57,6 +57,19 @@ public class AbstractLookAndFeel implements LookAndFeel {
     }
   }
 
+  public function getInt(key:String):int {
+    var value:* = data[key];
+    if (value != undefined) {
+      return value;
+    }
+    else if (_parent == null) {
+      throw new ArgumentError("Unknown " + key);
+    }
+    else {
+      return _parent.getInt(key);
+    }
+  }
+
   public function getIcon(key:String):Icon {
     var value:Object = data[key];
     if (value != null) {

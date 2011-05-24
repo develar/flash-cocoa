@@ -3,6 +3,7 @@ import cocoa.ClassFactory;
 import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.SingletonClassFactory;
+import cocoa.Size;
 import cocoa.border.LinearGradientBorder;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
@@ -65,6 +66,21 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["Box"] = BoxSkin;
     data["TableView"] = TableViewSkin;
+    data["small.TableView"] = TableViewSkin;
+
+    data["TableView.rowHeight"] = 17;
+    data["small.TableView.rowHeight"] = 14;
+
+    var intercellSpacing:Size = new Size(3, 2);
+    data["TableView.intercellSpacing"] = intercellSpacing;
+    data["small.TableView.intercellSpacing"] = intercellSpacing;
+
+    data["TableView.background"] = intercellSpacing;
+    data["small.TableView.background"] = intercellSpacing;
+
+    var background:Vector.<uint> = new <uint>[0xffffff, 0xedf3fe];
+    data["TableView.background"] = background;
+    data["small.TableView.background"] = background;
 
     data["Toolbar"] = ToolbarSkin;
     data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));

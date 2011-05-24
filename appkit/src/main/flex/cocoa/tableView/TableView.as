@@ -1,14 +1,28 @@
 package cocoa.tableView {
 import cocoa.AbstractComponent;
 import cocoa.ScrollPolicy;
+import cocoa.Size;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
 
 public class TableView extends AbstractComponent {
-  private var _rowHeight:Number = 17;
+  private var _rowHeight:Number;
   public function get rowHeight():Number {
     return _rowHeight;
   }
   public function set rowHeight(value:Number):void {
     _rowHeight = value;
+  }
+
+  /**
+   * height must be even
+   */
+  private var _intercellSpacing:Size;
+  public function get intercellSpacing():Size {
+    return _intercellSpacing;
+  }
+  public function set intercellSpacing(value:Size):void {
+    _intercellSpacing = value;
   }
 
   private var _columns:Vector.<TableColumn>;
@@ -45,6 +59,13 @@ public class TableView extends AbstractComponent {
 
   override protected function get primaryLaFKey():String {
     return "TableView";
+  }
+
+  override public function createView(laf:LookAndFeel):Skin {
+    _rowHeight = laf.getInt(lafKey + ".rowHeight");
+    _intercellSpacing = Size(laf.getObject(lafKey + ".intercellSpacing"));
+
+    return super.createView(laf);
   }
 }
 }

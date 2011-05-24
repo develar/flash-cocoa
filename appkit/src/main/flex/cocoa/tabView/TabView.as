@@ -15,10 +15,7 @@ import spark.events.IndexChangeEvent;
 
 use namespace ui;
 
-public class
-
-
-TabView extends SingleSelectionBar {
+public class TabView extends SingleSelectionBar {
   public static const DEFAULT:int = 0;
   public static const BORDERLESS:int = 1;
 

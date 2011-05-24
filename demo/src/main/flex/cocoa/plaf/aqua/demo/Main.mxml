@@ -7,10 +7,10 @@
     import cocoa.text.TextLineRendererFactory;
 
     override protected function preInitialize():void {
-      var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatID.SYSTEM));
+      var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatID.SMALL_SYSTEM));
       var dataSource:DemoTableViewDataSource = new DemoTableViewDataSource(laf);
       tableView.dataSource = dataSource;
-      var insets:Insets = new Insets(4, NaN, NaN, 5);
+      var insets:Insets = new Insets(2, NaN, NaN, 3);
       var firstColumn:TextTableColumn = new TextTableColumn('a', textLineRendererFactory, tableView, insets);
       firstColumn.width = 120;
       tableView.columns = new <TableColumn>[firstColumn, new TextTableColumn('b', textLineRendererFactory, tableView, insets)];
@@ -20,10 +20,10 @@
     <aqua:AquaLookAndFeel/>
   </ac:laf>
 
-  <Container>
+  <Container height="200">
     <layout>
       <s:HorizontalLayout/>
     </layout>
-    <tableview:TableView id="tableView" width="100%"/>
+    <tableview:TableView id="tableView" width="100%" height="200" lafSubkey="small"/>
   </Container>
 </ac:WindowedApplication>

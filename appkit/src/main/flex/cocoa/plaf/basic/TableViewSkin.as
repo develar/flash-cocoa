@@ -26,9 +26,12 @@ public class TableViewSkin extends AbstractSkin {
 
     var component:TableView = TableView(component);
 
-    tableBody = new TableBody(component);
+    tableBody = new TableBody(component, laf);
 
-    if (component.horizontalScrollPolicy != ScrollPolicy.OFF && component.verticalScrollPolicy != ScrollPolicy.OFF) {
+    if (component.horizontalScrollPolicy == ScrollPolicy.OFF && component.verticalScrollPolicy == ScrollPolicy.OFF) {
+      contentView = tableBody;
+    }
+    else {
       scrollView = new ScrollView();
       scrollView.hasFocusableChildren = false;
       scrollView.documentView = tableBody;
@@ -37,9 +40,6 @@ public class TableViewSkin extends AbstractSkin {
       scrollView.verticalScrollPolicy = component.verticalScrollPolicy;
 
       contentView = scrollView;
-    }
-    else {
-      contentView = tableBody;
     }
 
     addChild(DisplayObject(contentView));

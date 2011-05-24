@@ -49,8 +49,8 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
         SegmentedControlController(controllerFactory.newInstance()).register(segmentedControl);
       }
 
-      layout.gap = int(laf.getObject(segmentedControl.lafSubkey + ".gap"));
-      segmentedControlPlacement = int(laf.getObject(segmentedControl.lafSubkey + ".placement"));
+      layout.gap = laf.getInt(segmentedControl.lafSubkey + ".gap");
+      segmentedControlPlacement = laf.getInt(segmentedControl.lafSubkey + ".placement");
       addChild(segmentedControl);
       component.uiPartAdded("segmentedControl", segmentedControl);
     }
