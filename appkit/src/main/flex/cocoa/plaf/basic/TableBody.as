@@ -1,5 +1,4 @@
 package cocoa.plaf.basic {
-import cocoa.AbstractView;
 import cocoa.Size;
 import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
@@ -11,15 +10,15 @@ import flash.display.Graphics;
 import flash.display.Shape;
 import flash.geom.Rectangle;
 
-import spark.core.IViewport;
-
-public class TableBody extends AbstractView implements IViewport {
+public class TableBody extends ListBody {
   private var tableView:TableView;
   private var dataSource:TableViewDataSource;
   private var rowHeight:Number;
 
   private var background:Shape;
   private var laf:LookAndFeel;
+
+  private var numberOfVisibleRows:int;
 
   public function TableBody(tableView:TableView, laf:LookAndFeel) {
     this.tableView = tableView;
@@ -32,42 +31,8 @@ public class TableBody extends AbstractView implements IViewport {
     }
   }
 
-  public function get contentWidth():Number {
-    return 0;
-  }
-
-  private var _contentHeight:Number;
-  public function get contentHeight():Number {
-    return _contentHeight;
-  }
-
-  public function get horizontalScrollPosition():Number {
-    return 0;
-  }
-
-  public function set horizontalScrollPosition(value:Number):void {
-  }
-
-  public function get verticalScrollPosition():Number {
-    return 0;
-  }
-
-  public function set verticalScrollPosition(value:Number):void {
-  }
-
-  public function getHorizontalScrollPositionDelta(navigationUnit:uint):Number {
-    return 0;
-  }
-
-  public function getVerticalScrollPositionDelta(navigationUnit:uint):Number {
-    return 0;
-  }
-
-  public function get clipAndEnableScrolling():Boolean {
-    return true;
-  }
-
-  public function set clipAndEnableScrolling(value:Boolean):void {
+  override protected function get rowHeightWithSpacing():Number {
+    return rowHeight + tableView.intercellSpacing.height;
   }
 
   override protected function createChildren():void {
@@ -78,7 +43,7 @@ public class TableBody extends AbstractView implements IViewport {
   }
 
   override protected function measure():void {
-    _contentHeight = dataSource.numberOfRows * (rowHeight + tableView.intercellSpacing.height);
+    _contentHeight = dataSource.numberOfRows * rowHeightWithSpacing;
     measuredHeight = _contentHeight;
 
     var minWidth:Number = 0;
@@ -95,27 +60,77 @@ public class TableBody extends AbstractView implements IViewport {
     return child;
   }
 
+  override public function removeChild(child:DisplayObject):DisplayObject {
+    removeDisplayObject(child);
+    return child;
+  }
+
+  override protected function verticalScrollPositionChanged(delta:Number):void {
+    var columns:Vector.<TableColumn> = tableView.columns;
+    var numberOfRenderers:int = delta / rowHeightWithSpacing;
+    if (numberOfRenderers > numberOfVisibleRows || numberOfRenderers <= -numberOfVisibleRows) {
+      numberOfRenderers = numberOfVisibleRows;
+    }
+
+    for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
+      var column:TableColumn = columns[columnIndex];
+      column.reuse(numberOfRenderers);
+      if (numberOfRenderers != numberOfVisibleRows) {
+        column.moveValidVisibleRenderersByY(numberOfRenderers);
+      }
+    }
+
+    trace(_verticalScrollPosition);
+    var endRowIndex:int;
+    var startRowIndex:int;
+    if (numberOfRenderers > 0) {
+      endRowIndex = _verticalScrollPosition / rowHeightWithSpacing + numberOfVisibleRows;
+      startRowIndex = endRowIndex - numberOfRenderers;
+      var relativeRowIndex:int = numberOfVisibleRows - numberOfRenderers;
+      drawCells(_verticalScrollPosition + (relativeRowIndex * rowHeightWithSpacing), startRowIndex, endRowIndex, relativeRowIndex);
+    }
+    else {
+      startRowIndex = _verticalScrollPosition / rowHeightWithSpacing;
+      endRowIndex = startRowIndex - numberOfRenderers;
+      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
+    }
+  }
+
   override protected function updateDisplayList(w:Number, h:Number):void {
+    if (clipAndEnableScrolling) {
+      scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, w, h);
+    }
+
     calculateColumnWidth(w);
 
     drawBackground(w, h);
 
-    var intercellSpacing:Size = tableView.intercellSpacing;
-    var startRowIndex:int = 0;
-    const rowHeightWithSpacing:Number = rowHeight + intercellSpacing.height;
-    var endRowIndex:int = h / rowHeightWithSpacing;
-    //noinspection JSMismatchedCollectionQueryUpdate
+    const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
+    const startRowIndex:Number = _verticalScrollPosition / rowHeightWithSpacing;
+    const endRowIndex:Number = ((h + _verticalScrollPosition) / rowHeightWithSpacing) + 1;
+    numberOfVisibleRows = endRowIndex - startRowIndex;
+    drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
+  }
+
+  private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, startRelativeRowIndex:int):void {
+    const intercellSpacing:Size = tableView.intercellSpacing;
+    startY += intercellSpacing.height / 2;
+
+    const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
     var columns:Vector.<TableColumn> = tableView.columns;
-    var y:Number = intercellSpacing.height / 2;
-    for (var rowIndex:int = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
-      var x:Number = 0;
-      for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
-        var column:TableColumn = columns[columnIndex];
-        column.createAndLayoutRenderer(rowIndex, x, y);
-        x += column.actualWidth + intercellSpacing.width;
+    var x:Number = 0;
+    for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
+      var column:TableColumn = columns[columnIndex];
+      column.preLayout(numberOfVisibleRows);
+
+      var y:Number = startY;
+      for (var rowIndex:int = startRowIndex, relativeRowIndex:int = startRelativeRowIndex; rowIndex < endRowIndex; rowIndex++, relativeRowIndex++) {
+        column.createAndLayoutRenderer(rowIndex, relativeRowIndex, x, y);
+        y += rowHeightWithSpacing;
       }
 
-      y += rowHeightWithSpacing;
+      x += column.actualWidth + intercellSpacing.width;
+      column.postLayout();
     }
   }
 
@@ -123,7 +138,7 @@ public class TableBody extends AbstractView implements IViewport {
     var g:Graphics = background.graphics;
     g.clear();
 
-    const rowHeightWithSpacing:Number = rowHeight + tableView.intercellSpacing.height;
+    const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
     var colors:Vector.<uint> = laf.getColors(tableView.lafKey + ".background");
     var numberOfStripes:int = Math.ceil(h / rowHeight) + 1;
     var y:Number = 0;

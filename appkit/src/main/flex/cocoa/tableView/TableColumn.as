@@ -49,7 +49,7 @@ public class TableColumn {
     _actualWidth = value;
   }
 
-  public function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject {
+  public function createAndLayoutRenderer(rowIndex:int, relativeRowIndex:Number, x:Number, y:Number):DisplayObject {
     throw new IllegalOperationError();
   }
 
@@ -60,6 +60,20 @@ public class TableColumn {
 
   public function layoutRenderer(renderer:DisplayObject, x:Number, y:Number):void {
     
+  }
+
+  public function reuse(numberOfRenderers:int):void {
+
+  }
+
+  public function preLayout(numberOfVisibleRows:int):void {
+  }
+
+  public function postLayout():void {
+  }
+
+  public function moveValidVisibleRenderersByY(numberOfRenderers:int):void {
+
   }
 }
 }

@@ -24,6 +24,7 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
       case "incrementButton": return 500;
       case "repeatInterval": return 35;
       case "skinClass": return skinClass;
+      case "liveDragging": return true;
     }
 
     return undefined;

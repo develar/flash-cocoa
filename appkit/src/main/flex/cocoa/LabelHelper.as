@@ -163,11 +163,11 @@ public class LabelHelper {
     }
 
     if (_textLine == null) {
-      _textLine = TextLineUtil.create(textBlock, _textFormat.swfContext, null, availableWidth);
+      _textLine = TextLineUtil.create(textBlock, _textFormat.swfContext, availableWidth);
       _container.addDisplayObject(_textLine);
     }
     else {
-      TextLineUtil.create(textBlock, _textFormat.swfContext, _textLine, availableWidth);
+      TextLineUtil.recreate(textBlock, _textFormat.swfContext, _textLine, availableWidth);
     }
 
     if (_textLine == null) {
@@ -177,7 +177,7 @@ public class LabelHelper {
       truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
       if (truncated && _useTruncationIndicator) {
         textElement.text = _text.slice(0, getTruncationPosition(_textLine, availableWidth - getTruncationIndicatorWidth(textElement.elementFormat))) + TRUNCATION_INDICATOR;
-        TextLineUtil.create(textBlock, _textFormat.swfContext, _textLine);
+        TextLineUtil.recreate(textBlock, _textFormat.swfContext, _textLine);
       }
     }
 
@@ -232,10 +232,10 @@ public class LabelHelper {
       textElement.text = TRUNCATION_INDICATOR;
 
       if (textLineForTruncationIndicator == null) {
-        textLineForTruncationIndicator = TextLineUtil.create(textBlock, _textFormat.swfContext, null);
+        textLineForTruncationIndicator = TextLineUtil.create(textBlock, _textFormat.swfContext);
       }
       else {
-        TextLineUtil.create(textBlock, _textFormat.swfContext, textLineForTruncationIndicator);
+        TextLineUtil.recreate(textBlock, _textFormat.swfContext, textLineForTruncationIndicator);
       }
 
       truncationIndicatorMap[format] = width = textLineForTruncationIndicator.textWidth;

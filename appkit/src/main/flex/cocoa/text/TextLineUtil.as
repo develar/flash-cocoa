@@ -13,27 +13,24 @@ public final class TextLineUtil {
   private static var textLine:TextLine;
 
   // see usage in LabelHelper/EditableTextView
-  public static function create(textBlock:TextBlock, swfContext:SwfContext, textLine:TextLine = null, availableWidth:Number = 100000):TextLine {
+  public static function create(textBlock:TextBlock, swfContext:SwfContext, availableWidth:Number = 100000):TextLine {
     if (swfContext == null) {
-      if (textLine == null) {
-        return textBlock.createTextLine(null, availableWidth);
-      }
-      else {
-        textBlock.recreateTextLine(textLine, null, availableWidth);
-        return null;
-      }
+      return textBlock.createTextLine(null, availableWidth);
     }
     else {
-      if (textLine == null) {
-        textBlockCreateTextLineArgs[1] = availableWidth;
-        return swfContext.callInContext(textBlock.createTextLine, textBlock, textBlockCreateTextLineArgs);
-      }
-      else {
-        textBlockRecreateTextLineArgs[0] = textLine;
-        textBlockRecreateTextLineArgs[2] = availableWidth;
-        swfContext.callInContext(textBlock.recreateTextLine, textBlock, textBlockRecreateTextLineArgs);
-        return null;
-      }
+      textBlockCreateTextLineArgs[1] = availableWidth;
+      return swfContext.callInContext(textBlock.createTextLine, textBlock, textBlockCreateTextLineArgs);
+    }
+  }
+
+  public static function recreate(textBlock:TextBlock, swfContext:SwfContext, textLine:TextLine, availableWidth:Number = 100000):void {
+    if (swfContext == null) {
+      textBlock.recreateTextLine(textLine, null, availableWidth);
+    }
+    else {
+      textBlockRecreateTextLineArgs[0] = textLine;
+      textBlockRecreateTextLineArgs[2] = availableWidth;
+      swfContext.callInContext(textBlock.recreateTextLine, textBlock, textBlockRecreateTextLineArgs);
     }
   }
 
@@ -55,10 +52,10 @@ public final class TextLineUtil {
     textElement.text = text;
 
     if (textLine == null) {
-      textLine = create(textBlock, swfContext, null);
+      textLine = create(textBlock, swfContext);
     }
     else {
-      create(textBlock, swfContext, textLine);
+      recreate(textBlock, swfContext, textLine);
     }
 
     textElement.elementFormat = null;

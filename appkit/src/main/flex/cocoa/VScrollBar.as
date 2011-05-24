@@ -23,6 +23,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
       case "repeatDelay": return 500;
       case "repeatInterval": return 35;
       case "skinClass": return skinClass;
+      case "liveDragging": return true;
     }
 
     return undefined;

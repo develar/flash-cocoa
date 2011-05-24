@@ -348,7 +348,7 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
   }
 
   public function getSandboxRoot():DisplayObject {
-    return this;
+    return stage;
   }
 
   public function getVisibleApplicationRect(bounds:Rectangle = null, skipToSandboxRoot:Boolean = false):Rectangle {
