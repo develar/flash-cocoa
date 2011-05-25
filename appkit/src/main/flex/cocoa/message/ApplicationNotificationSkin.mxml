@@ -5,13 +5,13 @@
 	</fx:Metadata>
 
   <fx:Script><![CDATA[
-    import cocoa.plaf.TextFormatID;
+    import cocoa.plaf.TextFormatId;
     import cocoa.text.SimpleTextLayoutFormat;
 
     override protected function createChildren():void {
       super.createChildren();
 
-      textDisplay.textFormat = new SimpleTextLayoutFormat(laf.getTextFormat(TextFormatID.SYSTEM));
+      textDisplay.textFormat = new SimpleTextLayoutFormat(laf.getTextFormat(TextFormatId.SYSTEM));
     }
     ]]></fx:Script>
   

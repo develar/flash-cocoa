@@ -8,7 +8,7 @@ import cocoa.View;
 import cocoa.Window;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.basic.AbstractSkin;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 import cocoa.plaf.WindowSkin;
 import cocoa.ui;
 
@@ -121,7 +121,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
   override protected function createChildren():void {
     // skip super.createChildren() так там только инжектирование, а за него отвечает DialogManager
 
-    labelHelper.textFormat = laf.getTextFormat(TextFormatID.SYSTEM);
+    labelHelper.textFormat = laf.getTextFormat(TextFormatId.SYSTEM);
 
     if (_toolbar == null) {
       border = laf.getBorder("Window.b", false);

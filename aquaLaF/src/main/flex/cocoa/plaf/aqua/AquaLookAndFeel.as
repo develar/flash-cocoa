@@ -7,7 +7,7 @@ import cocoa.Size;
 import cocoa.border.LinearGradientBorder;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.ColorPickerMenuController;
@@ -49,18 +49,18 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     LookAndFeelUtil.initAssets(data, assetsDataClass);
     assetsDataClass = null;
 
-    data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT;
-    data[TextFormatID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
+    data[TextFormatId.SYSTEM] = AquaFonts.SYSTEM_FONT;
+    data[TextFormatId.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
-    data[TextFormatID.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
-    data[TextFormatID.SMALL_SYSTEM_EMPHASIZED] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
-    data[TextFormatID.SMALL_SYSTEM_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
+    data[TextFormatId.SMALL_SYSTEM] = AquaFonts.SMALL_SYSTEM_FONT;
+    data[TextFormatId.SMALL_SYSTEM_EMPHASIZED] = AquaFonts.SMALL_EMPHASIZED_SYSTEM_FONT;
+    data[TextFormatId.SMALL_SYSTEM_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
 
-    data[TextFormatID.VIEW] = AquaFonts.VIEW_FONT;
-    data[TextFormatID.VIEW_HIGHLIGHTED] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
+    data[TextFormatId.VIEW] = AquaFonts.VIEW_FONT;
+    data[TextFormatId.VIEW_HIGHLIGHTED] = AquaFonts.VIEW_FONT_HIGHLIGHTED;
 
-    data[TextFormatID.MENU] = AquaFonts.SYSTEM_FONT;
-    data[TextFormatID.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
+    data[TextFormatId.MENU] = AquaFonts.SYSTEM_FONT;
+    data[TextFormatId.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
     data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
@@ -174,7 +174,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
 import cocoa.Insets;
 import cocoa.plaf.LookAndFeelUtil;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 import cocoa.plaf.aqua.HUDPushButtonSkin;
 import cocoa.plaf.aqua.HUDTextInputBorder;
@@ -220,12 +220,12 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
   }
 
   private function initialize():void {
-    data[TextFormatID.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
-    data[TextFormatID.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HUD_HIGHLIGHTED;
-    data[TextFormatID.VIEW] = AquaFonts.VIEW_FONT_HUD;
+    data[TextFormatId.SYSTEM] = AquaFonts.SYSTEM_FONT_HUD;
+    data[TextFormatId.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HUD_HIGHLIGHTED;
+    data[TextFormatId.VIEW] = AquaFonts.VIEW_FONT_HUD;
 
-    data[TextFormatID.MENU] = AquaFonts.SMALL_SYSTEM_FONT;
-    data[TextFormatID.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
+    data[TextFormatId.MENU] = AquaFonts.SMALL_SYSTEM_FONT;
+    data[TextFormatId.MENU_HIGHLIGHTED] = AquaFonts.SMALL_SYSTEM_FONT_HIGHLIGHTED;
 
     LookAndFeelUtil.initAssets(data, assetsDataClass);
     assetsDataClass = null;

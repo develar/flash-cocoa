@@ -1,13 +1,13 @@
 <ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*">
   <fx:Script><![CDATA[
     import cocoa.Insets;
-    import cocoa.plaf.TextFormatID;
+    import cocoa.plaf.TextFormatId;
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TextTableColumn;
     import cocoa.text.TextLineRendererFactory;
 
     override protected function preInitialize():void {
-      var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatID.SMALL_SYSTEM));
+      var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatId.SMALL_SYSTEM));
       tableView.dataSource = new DemoTableViewDataSource(laf);
       var insets:Insets = new Insets(2, NaN, NaN, 3);
       var firstColumn:TextTableColumn = new TextTableColumn('a', textLineRendererFactory, tableView, insets);

@@ -1,6 +1,6 @@
 package cocoa.plaf.basic {
 import cocoa.MenuItem;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 
 import flash.display.Graphics;
 
@@ -41,7 +41,7 @@ public class MenuItemRenderer extends LabeledItemRenderer {
     if (!(menuItem is MenuItem && MenuItem(menuItem).isSeparatorItem)) {
       border = getBorder(highlighted ? "b.highlighted" : "b");
 
-      labelHelper.textFormat = _laf.getTextFormat(highlighted ? TextFormatID.MENU_HIGHLIGHTED : TextFormatID.MENU);
+      labelHelper.textFormat = _laf.getTextFormat(highlighted ? TextFormatId.MENU_HIGHLIGHTED : TextFormatId.MENU);
       labelHelper.validate();
       labelHelper.moveByInsets(h, border.contentInsets);
     }

@@ -1,6 +1,6 @@
 package cocoa {
 import cocoa.plaf.LookAndFeelUtil;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 import cocoa.text.TextFormat;
 
 import flash.text.engine.ElementFormat;
@@ -135,7 +135,7 @@ public class Label extends AbstractView {
       textFormat.format.fontDescription = fontDescription;
     }
     else {
-      var lafTextFormat:TextFormat = LookAndFeelUtil.find(parent).getTextFormat(TextFormatID.VIEW);
+      var lafTextFormat:TextFormat = LookAndFeelUtil.find(parent).getTextFormat(TextFormatId.VIEW);
       if (textFormat == null) {
         textFormat = lafTextFormat;
       }

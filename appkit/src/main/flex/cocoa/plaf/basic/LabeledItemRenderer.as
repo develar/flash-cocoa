@@ -3,7 +3,7 @@ import cocoa.Border;
 import cocoa.FlexDataGroup;
 import cocoa.LabelHelper;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 
 [Abstract]
 public class LabeledItemRenderer extends AbstractItemRenderer {
@@ -40,7 +40,7 @@ public class LabeledItemRenderer extends AbstractItemRenderer {
 
   override public function set laf(value:LookAndFeel):void {
     super.laf = value;
-    labelHelper.textFormat = _laf.getTextFormat(TextFormatID.SYSTEM);
+    labelHelper.textFormat = _laf.getTextFormat(TextFormatId.SYSTEM);
   }
 
   override protected function measure():void {

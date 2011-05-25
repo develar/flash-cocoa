@@ -1,6 +1,6 @@
 package cocoa.plaf.basic {
 import cocoa.LabelHelper;
-import cocoa.plaf.TextFormatID;
+import cocoa.plaf.TextFormatId;
 import cocoa.plaf.TitledComponentSkin;
 
 [Abstract]
@@ -8,7 +8,7 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
   protected var labelHelper:LabelHelper;
 
   protected function get titleTextFormatID():String {
-    return TextFormatID.SYSTEM;
+    return TextFormatId.SYSTEM;
   }
 
   public function set title(value:String):void {
