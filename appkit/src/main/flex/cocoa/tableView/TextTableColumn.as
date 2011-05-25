@@ -26,9 +26,9 @@ public class TextTableColumn extends TableColumn {
     var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex));
     visibleRenderers[relativeRowIndex] = line;
 
-    if (visibleRenderers.indexOf(line) != visibleRenderers.lastIndexOf(line)) {
-      throw new IllegalOperationError();
-    }
+    //if (visibleRenderers.indexOf(line) != visibleRenderers.lastIndexOf(line)) {
+    //  throw new IllegalOperationError();
+    //}
 
     line.x = x + textInsets.left;
     line.y = y + tableView.rowHeight - textInsets.bottom;

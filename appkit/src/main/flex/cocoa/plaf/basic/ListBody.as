@@ -58,14 +58,15 @@ public class ListBody extends AbstractView implements IViewport {
       return;
     }
 
-    var delta:Number = value - _verticalScrollPosition;
+    var oldVerticalScrollPosition:Number = _verticalScrollPosition;
+    var delta:Number = value - oldVerticalScrollPosition;
     _verticalScrollPosition = value;
 
     scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
-    verticalScrollPositionChanged(delta);
+    verticalScrollPositionChanged(delta, oldVerticalScrollPosition);
   }
 
-  protected function verticalScrollPositionChanged(delta:Number):void {
+  protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
     throw new IllegalOperationError();
   }
 

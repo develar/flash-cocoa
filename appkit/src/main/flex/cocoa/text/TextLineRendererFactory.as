@@ -1,5 +1,5 @@
 package cocoa.text {
-import cocoa.tableView.ListViewRendererFactory;
+import cocoa.tableView.ListViewItemRendererFactory;
 
 import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
@@ -7,7 +7,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 
-public class TextLineRendererFactory implements ListViewRendererFactory {
+public class TextLineRendererFactory implements ListViewItemRendererFactory {
   private static const textElement:TextElement = new TextElement();
   private static const textBlock:TextBlock = new TextBlock(textElement);
 
@@ -33,7 +33,11 @@ public class TextLineRendererFactory implements ListViewRendererFactory {
 
   public function reuse(visibleRenderers:Vector.<TextLine>, numberOfRenderers:int):void {
     var absDelta:int = (numberOfRenderers ^ (numberOfRenderers >> 31)) - (numberOfRenderers >> 31);
+
+    youngOrphanLines.fixed = false;
     youngOrphanLines.length = youngOrphanCount + absDelta;
+    youngOrphanLines.fixed = true;
+
     for (var i:int = numberOfRenderers > 0 ? 0 : visibleRenderers.length - absDelta; i < absDelta; i++) {
       // clear (update length and delete old visible renderers) visibleRenderers later, see TextTableColumn#createAndLayoutRenderer
       const textLine:TextLine = visibleRenderers[i];
@@ -74,7 +78,9 @@ public class TextLineRendererFactory implements ListViewRendererFactory {
 
       if (youngOrphanCount == 0) {
         orphanLines.length = orphanCount;
+        youngOrphanLines.fixed = false;
         youngOrphanLines.length = 0;
+        youngOrphanLines.fixed = true;
         return;
       }
 
@@ -84,6 +90,10 @@ public class TextLineRendererFactory implements ListViewRendererFactory {
         _container.removeChild(line);
         orphanLines[orphanCount++] = line;
       }
+
+      youngOrphanLines.fixed = false;
+      youngOrphanLines.length = 0;
+      youngOrphanLines.fixed = true;
     }
   }
 }

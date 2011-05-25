@@ -3,7 +3,7 @@ import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 
 public class TableColumn {
-  public function TableColumn(dataField:String, rendererFactory:ListViewRendererFactory) {
+  public function TableColumn(dataField:String, rendererFactory:ListViewItemRendererFactory) {
     _dataField = dataField;
     _rendererFactory = rendererFactory;
   }
@@ -53,8 +53,8 @@ public class TableColumn {
     throw new IllegalOperationError();
   }
 
-  private var _rendererFactory:ListViewRendererFactory;
-  public function get rendererFactory():ListViewRendererFactory {
+  private var _rendererFactory:ListViewItemRendererFactory;
+  public function get rendererFactory():ListViewItemRendererFactory {
     return _rendererFactory;
   }
 

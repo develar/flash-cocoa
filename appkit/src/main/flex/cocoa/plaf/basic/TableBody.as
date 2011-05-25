@@ -19,6 +19,7 @@ public class TableBody extends ListBody {
   private var laf:LookAndFeel;
 
   private var numberOfVisibleRows:int;
+  private var invisibleLastRendererPartBottom:Number;
 
   public function TableBody(tableView:TableView, laf:LookAndFeel) {
     this.tableView = tableView;
@@ -62,9 +63,9 @@ public class TableBody extends ListBody {
     return child;
   }
 
-  override protected function verticalScrollPositionChanged(delta:Number):void {
+  override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
     var columns:Vector.<TableColumn> = tableView.columns;
-    var numberOfRenderers:int = delta / rowHeightWithSpacing;
+    var numberOfRenderers:int = (delta + (delta > 0 ? (oldVerticalScrollPosition % rowHeightWithSpacing) : invisibleLastRendererPartBottom)) / rowHeightWithSpacing;
     if (numberOfRenderers > numberOfVisibleRows || numberOfRenderers <= -numberOfVisibleRows) {
       numberOfRenderers = numberOfVisibleRows;
     }
@@ -77,7 +78,8 @@ public class TableBody extends ListBody {
       }
     }
 
-    background.y = _verticalScrollPosition - (_verticalScrollPosition % rowHeightWithSpacing);
+    const invisibleFirstRendererPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
+    background.y = _verticalScrollPosition - invisibleFirstRendererPartTop;
     var bs:Rectangle = background.scrollRect;
     if (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0) {
       if (bs.y != 0) {
@@ -99,12 +101,12 @@ public class TableBody extends ListBody {
       endRowIndex = _verticalScrollPosition / rowHeightWithSpacing + numberOfVisibleRows;
       startRowIndex = endRowIndex - numberOfRenderers;
       var relativeRowIndex:int = numberOfVisibleRows - numberOfRenderers;
-      drawCells(_verticalScrollPosition + (relativeRowIndex * rowHeightWithSpacing), startRowIndex, endRowIndex, relativeRowIndex);
+      drawCells(height, _verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRendererPartTop, startRowIndex, endRowIndex, relativeRowIndex);
     }
     else {
       startRowIndex = _verticalScrollPosition / rowHeightWithSpacing;
       endRowIndex = startRowIndex - numberOfRenderers;
-      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
+      drawCells(height, _verticalScrollPosition, startRowIndex, endRowIndex, 0);
     }
   }
 
@@ -121,12 +123,13 @@ public class TableBody extends ListBody {
     const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
     const endRowIndex:int = Math.ceil((h + _verticalScrollPosition) / rowHeightWithSpacing);
     numberOfVisibleRows = endRowIndex - startRowIndex;
-    drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
+    drawCells(h, _verticalScrollPosition, startRowIndex, endRowIndex, 0);
   }
 
-  private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, startRelativeRowIndex:int):void {
+  private function drawCells(height:Number, startY:Number, startRowIndex:int, endRowIndex:int, startRelativeRowIndex:int):void {
     const intercellSpacing:Size = tableView.intercellSpacing;
-    startY += intercellSpacing.height / 2;
+    const cellTopPadding:Number = intercellSpacing.height / 2;
+    startY += cellTopPadding;
 
     const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
     var columns:Vector.<TableColumn> = tableView.columns;
@@ -144,6 +147,8 @@ public class TableBody extends ListBody {
       x += column.actualWidth + intercellSpacing.width;
       column.postLayout();
     }
+
+    invisibleLastRendererPartBottom = y - cellTopPadding - _verticalScrollPosition - height;
   }
 
   private function drawBackground(w:Number, h:Number):void {
