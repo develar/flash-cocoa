@@ -19,8 +19,7 @@ public final class LookAndFeelUtil {
     var laf:LookAndFeel;
     while (p != null) {
       if (p is LookAndFeelProvider) {
-        laf = LookAndFeelProvider(p).laf;
-        if (laf != null) {
+        if ((laf = LookAndFeelProvider(p).laf) != null) {
           return laf;
         }
       }

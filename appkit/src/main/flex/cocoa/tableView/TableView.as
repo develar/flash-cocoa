@@ -14,6 +14,14 @@ public class TableView extends AbstractComponent {
     _rowHeight = value;
   }
 
+  private var _minNumberOfRows:int;
+  public function get minNumberOfRows():int {
+    return _minNumberOfRows;
+  }
+  public function set minNumberOfRows(value:int):void {
+    _minNumberOfRows = value;
+  }
+
   /**
    * height must be even
    */
