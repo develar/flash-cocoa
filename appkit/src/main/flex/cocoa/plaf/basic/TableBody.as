@@ -24,15 +24,12 @@ public class TableBody extends ListBody {
     this.tableView = tableView;
     this.laf = laf;
     this.rowHeight = tableView.rowHeight;
+    rowHeightWithSpacing = rowHeight + tableView.intercellSpacing.height;
     dataSource = tableView.dataSource;
 
     for each (var column:TableColumn in tableView.columns) {
       column.rendererFactory.container = this;
     }
-  }
-
-  override protected function get rowHeightWithSpacing():Number {
-    return rowHeight + tableView.intercellSpacing.height;
   }
 
   override protected function createChildren():void {
@@ -80,6 +77,21 @@ public class TableBody extends ListBody {
       }
     }
 
+    background.y = _verticalScrollPosition - (_verticalScrollPosition % rowHeightWithSpacing);
+    var bs:Rectangle = background.scrollRect;
+    if (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0) {
+      if (bs.y != 0) {
+        bs.y = 0;
+        bs.height -= rowHeightWithSpacing;
+        background.scrollRect = bs;
+      }
+    }
+    else if (bs.y == 0) {
+      bs.y = rowHeightWithSpacing;
+      bs.height += rowHeightWithSpacing;
+      background.scrollRect = bs;
+    }
+
     trace(_verticalScrollPosition);
     var endRowIndex:int;
     var startRowIndex:int;
@@ -106,8 +118,8 @@ public class TableBody extends ListBody {
     drawBackground(w, h);
 
     const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
-    const startRowIndex:Number = _verticalScrollPosition / rowHeightWithSpacing;
-    const endRowIndex:Number = ((h + _verticalScrollPosition) / rowHeightWithSpacing) + 1;
+    const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
+    const endRowIndex:int = Math.ceil((h + _verticalScrollPosition) / rowHeightWithSpacing);
     numberOfVisibleRows = endRowIndex - startRowIndex;
     drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
   }
@@ -138,7 +150,6 @@ public class TableBody extends ListBody {
     var g:Graphics = background.graphics;
     g.clear();
 
-    const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
     var colors:Vector.<uint> = laf.getColors(tableView.lafKey + ".background");
     var numberOfStripes:int = Math.ceil(h / rowHeight) + 1;
     var y:Number = 0;

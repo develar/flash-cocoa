@@ -58,10 +58,6 @@ public class TableColumn {
     return _rendererFactory;
   }
 
-  public function layoutRenderer(renderer:DisplayObject, x:Number, y:Number):void {
-    
-  }
-
   public function reuse(numberOfRenderers:int):void {
 
   }
