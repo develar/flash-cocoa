@@ -1,5 +1,5 @@
 package cocoa.plaf {
-public final class TextFormatID {
+public final class TextFormatId {
   public static const SYSTEM:String = "f.System";
   public static const SYSTEM_HIGHLIGHTED:String = "f.System.h";
 
