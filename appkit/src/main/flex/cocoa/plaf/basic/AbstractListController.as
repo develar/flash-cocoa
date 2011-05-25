@@ -20,6 +20,7 @@ public class AbstractListController {
       // мы не можем использовать mouse over/mouse out в силу того,
       // что если мы изменили highlighted item с клавиатуры и при этом мышь по прежнему над некоторым item — то малейшее движение мыши вновь устанавливает highlighted на item под мышью
       itemGroup.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+      itemGroup.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler2);
       itemGroup.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
     }
   }
@@ -30,6 +31,9 @@ public class AbstractListController {
       highlightedRenderer = null;
       event.updateAfterEvent();
     }
+  }
+  protected function mouseMoveHandler2(event:MouseEvent):void {
+
   }
 
   protected function mouseMoveHandler(event:MouseEvent):void {

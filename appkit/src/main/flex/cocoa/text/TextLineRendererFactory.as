@@ -38,9 +38,18 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
     youngOrphanLines.length = youngOrphanCount + absDelta;
     youngOrphanLines.fixed = true;
 
-    for (var i:int = numberOfRenderers > 0 ? 0 : visibleRenderers.length - absDelta; i < absDelta; i++) {
+    var i:int;
+    var n:int;
+    if (numberOfRenderers > 0) {
+      n = numberOfRenderers;
+    }
+    else {
+      n = visibleRenderers.length;
+      i = n + numberOfRenderers;
+    }
+    for (; i < n; i++) {
       // clear (update length and delete old visible renderers) visibleRenderers later, see TextTableColumn#createAndLayoutRenderer
-      const textLine:TextLine = visibleRenderers[i];
+      var textLine:TextLine = visibleRenderers[i];
       if (textLine == null) {
         throw new IllegalOperationError();
       }
