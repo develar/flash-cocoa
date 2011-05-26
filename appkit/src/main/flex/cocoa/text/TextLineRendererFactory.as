@@ -1,8 +1,8 @@
 package cocoa.text {
 import cocoa.tableView.ListViewItemRendererFactory;
+import cocoa.tableView.TextLineLinkedList;
 
 import flash.display.DisplayObjectContainer;
-import flash.errors.IllegalOperationError;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
@@ -31,40 +31,40 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
     _container = value;
   }
 
-  public function reuse(visibleRenderers:Vector.<TextLine>, rowCountDelta:int, visibleRowCount:int, finalPass:Boolean):void {
-    var abcNumberOfRows:int = (rowCountDelta ^ (rowCountDelta >> 31)) - (rowCountDelta >> 31);
+  public function reuse(list:TextLineLinkedList, rowCountDelta:int, finalPass:Boolean):void {
+    var line:TextLine;
     if (finalPass) {
-      orphanLines.length = orphanCount + abcNumberOfRows;
-    }
-    else {
-      youngOrphanLines.length = youngOrphanCount + abcNumberOfRows;
-    }
-
-    var i:int;
-    var n:int;
-    if (rowCountDelta > 0) {
-      n = rowCountDelta;
-    }
-    else {
-      n = visibleRowCount;
-      i = n + rowCountDelta;
-    }
-
-    // clear (update length and delete old visible renderers) visibleRenderers later, see TextTableColumn#createAndLayoutRenderer
-    if (finalPass) {
-      while (i < n) {
-        var line:TextLine = visibleRenderers[i++];
-        _container.removeChild(line);
-        orphanLines[orphanCount++] = line;
+      if (rowCountDelta > 0) {
+        orphanLines.length = orphanCount + rowCountDelta;
+        while (rowCountDelta-- > 0) {
+          line = list.removeFirst().line;
+          _container.removeChild(line);
+          orphanLines[orphanCount++] = line;
+        }
+      }
+      else {
+        orphanLines.length = orphanCount - rowCountDelta;
+        while (rowCountDelta++ < 0) {
+          line = list.removeLast().line;
+          _container.removeChild(line);
+          orphanLines[orphanCount++] = line;
+        }
       }
     }
     else {
-      while (i < n) {
-        var textLine:TextLine = visibleRenderers[i++];
-        if (textLine == null) {
-          throw new IllegalOperationError("dd");
+      if (rowCountDelta > 0) {
+        youngOrphanLines.length = youngOrphanCount + rowCountDelta;
+        while (rowCountDelta-- > 0) {
+          line = list.removeFirst().line;
+          youngOrphanLines[youngOrphanCount++] = line;
         }
-        youngOrphanLines[youngOrphanCount++] = textLine;
+      }
+      else {
+        youngOrphanLines.length = youngOrphanCount - rowCountDelta;
+        while (rowCountDelta++ < 0) {
+          line = list.removeLast().line;
+          youngOrphanLines[youngOrphanCount++] = line;
+        }
       }
     }
   }

@@ -12,7 +12,9 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
   private var tableView:TableView;
   private var textInsets:Insets;
 
-  private const visibleRenderers:Vector.<TextLine> = new Vector.<TextLine>();
+  private const cells:TextLineLinkedList = new TextLineLinkedList();
+
+  private var firstInvalidCellEntry:TextLineLinkedListEntry;
 
   public function TextTableColumn(dataField:String, rendererFactory:TextLineRendererFactory, tableView:TableView, textInsets:Insets) {
     super(dataField, rendererFactory);
@@ -23,61 +25,58 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
     this.textInsets = textInsets;
   }
 
-  public function createAndLayoutRenderer(rowIndex:int, relativeRowIndex:Number, x:Number, y:Number):DisplayObject {
+  public function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject {
     var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex));
-    visibleRenderers[relativeRowIndex] = line;
+    if (firstInvalidCellEntry != null) {
+      firstInvalidCellEntry.line = line;
+      firstInvalidCellEntry = firstInvalidCellEntry.next;
+    }
+    else {
+      cells.addLast(new TextLineLinkedListEntry(line));
+    }
 
     line.x = x + textInsets.left;
     line.y = y + tableView.rowHeight - textInsets.bottom;
     return line;
   }
 
-  public function cc(visibleRowCount:int):void {
-    for each (var textLine:TextLine in visibleRenderers) {
-      if (visibleRenderers.indexOf(textLine) != visibleRenderers.lastIndexOf(textLine)) {
-        throw new IllegalOperationError();
-      }
-    }
-
-    if (visibleRenderers[visibleRowCount - 1] == null) {
-      throw new IllegalOperationError();
-    }
+  public function reuse(rowCountDelta:int, finalPass:Boolean):void {
+    textLineRendererFactory.reuse(cells, rowCountDelta, finalPass);
   }
 
-  public function reuse(rowCountDelta:int, visibleRowCount:int, finalPass:Boolean):void {
-    textLineRendererFactory.reuse(visibleRenderers, rowCountDelta, visibleRowCount, finalPass);
-  }
+  public function preLayout(relativeStartRowIndex:Number):void {
+    if (cells.size == 0 || relativeStartRowIndex == cells.size) {
+      return;
+    }
 
-  public function moveValidVisibleRenderersByY(rowCountDelta:int, visibleRowCount:int):void {
-    var i:int;
-    if (rowCountDelta > 0) {
-      for (i = rowCountDelta; i < visibleRowCount; i++) {
-        visibleRenderers[i - rowCountDelta] = visibleRenderers[i];
+    if (relativeStartRowIndex > (cells.size >> 1)) {
+      firstInvalidCellEntry = cells.tail;
+      var n:int = cells.size - relativeStartRowIndex - 1;
+      while (n-- > 0) {
+        firstInvalidCellEntry = firstInvalidCellEntry.previous;
       }
     }
     else {
-      for (i = visibleRowCount + rowCountDelta - 1; i >= 0; i--) {
-        visibleRenderers[i - rowCountDelta] = visibleRenderers[i];
+      firstInvalidCellEntry = cells.head;
+      while (relativeStartRowIndex-- > 0) {
+        firstInvalidCellEntry = firstInvalidCellEntry.next;
       }
     }
   }
 
   public function postLayout():void {
     textLineRendererFactory.postLayout();
-  }
-
-  public function maxVisibleRowCountChanged(maxVisibleRowCount:int):void {
-    visibleRenderers.fixed = false;
-    visibleRenderers.length = maxVisibleRowCount;
-    visibleRenderers.fixed = true;
+    firstInvalidCellEntry = null;
   }
 
   public function set container(container:DisplayObjectContainer):void {
     rendererFactory.container = container;
   }
 
-  public function clearLastRenderer():void {
-    visibleRenderers[visibleRenderers.length - 1] = null;
+  public function cc(visibleRowCount:int):void {
+    if (cells.size != visibleRowCount) {
+      throw new IllegalOperationError();
+    }
   }
 }
 }

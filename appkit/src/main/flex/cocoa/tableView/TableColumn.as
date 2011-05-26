@@ -23,22 +23,18 @@ public interface TableColumn {
 
   function set actualWidth(value:Number):void;
 
-  function createAndLayoutRenderer(rowIndex:int, relativeRowIndex:Number, x:Number, y:Number):DisplayObject;
+  function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject;
 
   /**
    * @param rowCountDelta delta, greater than 0 if removed from top, less than 0 if removed from bottom
    * @param finalPass will be createAndLayoutRenderer called (false) after or not (true)
    */
-  function reuse(rowCountDelta:int, visibleRowCount:int, finalPass:Boolean):void;
+  function reuse(rowCountDelta:int, finalPass:Boolean):void;
 
   function postLayout():void;
 
-  function moveValidVisibleRenderersByY(rowCountDelta:int, visibleRowCount:int):void;
-
-  function maxVisibleRowCountChanged(maxVisibleRowCount:int):void;
-
   function set container(container:DisplayObjectContainer):void;
 
-  function clearLastRenderer():void;
+  function preLayout(relativeStartRowIndex:Number):void;
 }
 }
