@@ -70,9 +70,13 @@ public class TableBody extends ListBody {
     return child;
   }
 
-  override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
-    trace(_verticalScrollPosition);
+  private function calculateInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number):int {
+    const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
+    const remainderSpace:int = availableSpace % rowHeightWithSpacing;
+    return remainderSpace > 0 ? (rowHeightWithSpacing - remainderSpace) : 0;
+  }
 
+  override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
 
     background.y = _verticalScrollPosition - invisibleFirstRowPartTop;
@@ -80,13 +84,12 @@ public class TableBody extends ListBody {
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
     const remainderSpace:int = availableSpace % rowHeightWithSpacing;
-    var invisibleLastRowPartBottom:Number = 0;
     if (remainderSpace > 0) {
       newVisibleRowCount++;
-      invisibleLastRowPartBottom = rowHeightWithSpacing - remainderSpace;
     }
 
-    var removedRowCount:int = (delta + (delta > 0 ? (oldVerticalScrollPosition % rowHeightWithSpacing) : -invisibleLastRowPartBottom)) / rowHeightWithSpacing;
+    const oldInvisibleFirstRowPartTop:Number = oldVerticalScrollPosition % rowHeightWithSpacing;
+    var removedRowCount:int = (delta + (delta > 0 ? oldInvisibleFirstRowPartTop : -calculateInvisibleLastRowPartBottom(oldInvisibleFirstRowPartTop))) / rowHeightWithSpacing;
     if (removedRowCount > visibleRowCount || removedRowCount <= -visibleRowCount) {
       removedRowCount = visibleRowCount;
     }
@@ -107,16 +110,16 @@ public class TableBody extends ListBody {
     if (addedRowCount != 0) {
       var endRowIndex:int;
       var startRowIndex:int;
-      if (removedRowCount < 0) {
+      if (delta < 0) {
         startRowIndex = _verticalScrollPosition / rowHeightWithSpacing;
         endRowIndex = startRowIndex + addedRowCount;
-        drawCells(_verticalScrollPosition - invisibleFirstRowPartTop, startRowIndex, endRowIndex, 0);
+        drawCells(_verticalScrollPosition - invisibleFirstRowPartTop, startRowIndex, endRowIndex, true);
       }
       else {
         endRowIndex = _verticalScrollPosition / rowHeightWithSpacing + visibleRowCount;
         startRowIndex = endRowIndex - addedRowCount;
         var relativeRowIndex:int = visibleRowCount - addedRowCount;
-        drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, relativeRowIndex);
+        drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, false);
       }
     }
     else if (removedRowCount != 0) {
@@ -186,14 +189,14 @@ public class TableBody extends ListBody {
       }
     }
     else if (drawn) {
-      drawCells(_verticalScrollPosition, endRowIndex - numberOfRowsDelta, endRowIndex, maxVisibleRowCount - numberOfRowsDelta);
+      drawCells(_verticalScrollPosition, endRowIndex - numberOfRowsDelta, endRowIndex, false);
     }
     else {
-      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
+      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
     }
   }
 
-  private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, startRelativeRowIndex:int):void {
+  private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, head:Boolean):void {
     const intercellSpacing:Size = tableView.intercellSpacing;
     startY += intercellSpacing.height / 2;
     endRowIndex = Math.min(endRowIndex, tableView.dataSource.rowCount);
@@ -204,7 +207,7 @@ public class TableBody extends ListBody {
     var y:Number;
     for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
       var column:TableColumn = columns[columnIndex];
-      column.preLayout(startRelativeRowIndex);
+      column.preLayout(head);
 
       y = startY;
       for (var rowIndex:int = startRowIndex; rowIndex < endRowIndex; rowIndex++) {

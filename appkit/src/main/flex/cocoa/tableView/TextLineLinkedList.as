@@ -44,6 +44,10 @@ public class TextLineLinkedList {
     insert(size, entry);
   }
 
+  public function addFirst(entry:TextLineLinkedListEntry):void {
+    insert(0, entry);
+  }
+
   private function insert(index:int, entry:TextLineLinkedListEntry):void {
     if (size == 0) {
       head = tail = entry;
@@ -63,6 +67,32 @@ public class TextLineLinkedList {
     }
 
     size++;
+  }
+
+  public function addAfter(current:TextLineLinkedListEntry, entry:TextLineLinkedListEntry):void {
+    if (current == tail) {
+      addLast(entry);
+    }
+    else {
+      addBefore(current.next, entry);
+    }
+  }
+
+  public function addBefore(current:TextLineLinkedListEntry, entry:TextLineLinkedListEntry):void {
+    if (current == head) {
+      addFirst(entry);
+    }
+    else if (current == null) {
+      addLast(entry);
+    }
+    else {
+      var p:TextLineLinkedListEntry = current.previous;
+      entry.next = current;
+      p.next = entry;
+      entry.previous = p;
+      current.previous = entry;
+      size++;
+    }
   }
 }
 }

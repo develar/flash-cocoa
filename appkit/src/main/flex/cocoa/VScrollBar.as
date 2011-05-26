@@ -1,12 +1,16 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 
+import flash.events.Event;
 import flash.events.MouseEvent;
 
+import mx.core.IInvalidating;
 import mx.core.UIComponent;
 import mx.core.mx_internal;
 
 import spark.components.VScrollBar;
+import spark.core.IViewport;
+import spark.core.NavigationUnit;
 
 use namespace mx_internal;
 
@@ -101,6 +105,36 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
 
   override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void {
 
+  }
+
+  // flex impl skip validation (as in increment button down handler), we add it
+  override mx_internal function mouseWheelHandler(event:MouseEvent):void {
+    const vp:IViewport = viewport;
+    if (event.isDefaultPrevented() || !vp || !vp.visible || !visible) {
+      return;
+    }
+
+    const delta:int = event.delta;
+
+    var nSteps:uint = Math.abs(delta);
+    var navigationUnit:uint;
+    var scrollPositionChanged:Boolean;
+
+    // Scroll delta "steps".
+    navigationUnit = (delta < 0) ? NavigationUnit.DOWN : NavigationUnit.UP;
+    for (var vStep:int = 0; vStep < nSteps; vStep++) {
+      var vspDelta:Number = vp.getVerticalScrollPositionDelta(navigationUnit);
+      if (!isNaN(vspDelta)) {
+        setValue(nearestValidValue(vp.verticalScrollPosition + vspDelta, snapInterval));
+        scrollPositionChanged = true;
+      }
+    }
+
+    if (scrollPositionChanged && hasEventListener(Event.CHANGE)) {
+      dispatchEvent(new Event(Event.CHANGE));
+    }
+
+    event.preventDefault();
   }
 }
 }

@@ -35,6 +35,6 @@ public interface TableColumn {
 
   function set container(container:DisplayObjectContainer):void;
 
-  function preLayout(relativeStartRowIndex:Number):void;
+  function preLayout(head:Boolean):void;
 }
 }

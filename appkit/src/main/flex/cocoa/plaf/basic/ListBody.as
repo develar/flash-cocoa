@@ -82,10 +82,12 @@ public class ListBody extends AbstractView implements IViewport {
     switch (navigationUnit) {
       case NavigationUnit.DOWN:
       case NavigationUnit.PAGE_DOWN:
+        return rowHeightWithSpacing;
+
       case NavigationUnit.UP:
       case NavigationUnit.PAGE_UP:
-        //return rowHeightWithSpacing;
-        return 15;
+        return -rowHeightWithSpacing;
+        //return -15;
 
       default:
         return 0;

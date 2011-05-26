@@ -14,7 +14,7 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
 
   private const cells:TextLineLinkedList = new TextLineLinkedList();
 
-  private var firstInvalidCellEntry:TextLineLinkedListEntry;
+  private var previousEntry:TextLineLinkedListEntry;
 
   public function TextTableColumn(dataField:String, rendererFactory:TextLineRendererFactory, tableView:TableView, textInsets:Insets) {
     super(dataField, rendererFactory);
@@ -27,13 +27,15 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
 
   public function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject {
     var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex));
-    if (firstInvalidCellEntry != null) {
-      firstInvalidCellEntry.line = line;
-      firstInvalidCellEntry = firstInvalidCellEntry.next;
+    var newEntry:TextLineLinkedListEntry = new TextLineLinkedListEntry(line);
+    if (previousEntry == null) {
+      cells.addFirst(newEntry);
     }
     else {
-      cells.addLast(new TextLineLinkedListEntry(line));
+      cells.addAfter(previousEntry, newEntry);
     }
+
+    previousEntry = newEntry;
 
     line.x = x + textInsets.left;
     line.y = y + tableView.rowHeight - textInsets.bottom;
@@ -44,29 +46,15 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
     textLineRendererFactory.reuse(cells, rowCountDelta, finalPass);
   }
 
-  public function preLayout(relativeStartRowIndex:Number):void {
-    if (cells.size == 0 || relativeStartRowIndex == cells.size) {
-      return;
-    }
-
-    if (relativeStartRowIndex > (cells.size >> 1)) {
-      firstInvalidCellEntry = cells.tail;
-      var n:int = cells.size - relativeStartRowIndex - 1;
-      while (n-- > 0) {
-        firstInvalidCellEntry = firstInvalidCellEntry.previous;
-      }
-    }
-    else {
-      firstInvalidCellEntry = cells.head;
-      while (relativeStartRowIndex-- > 0) {
-        firstInvalidCellEntry = firstInvalidCellEntry.next;
-      }
+  public function preLayout(head:Boolean):void {
+    if (!head) {
+      previousEntry = cells.tail;
     }
   }
 
   public function postLayout():void {
     textLineRendererFactory.postLayout();
-    firstInvalidCellEntry = null;
+    previousEntry = null;
   }
 
   public function set container(container:DisplayObjectContainer):void {
