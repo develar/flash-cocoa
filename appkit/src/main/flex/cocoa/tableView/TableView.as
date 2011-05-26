@@ -14,12 +14,12 @@ public class TableView extends AbstractComponent {
     _rowHeight = value;
   }
 
-  private var _minNumberOfRows:int;
-  public function get minNumberOfRows():int {
-    return _minNumberOfRows;
+  private var _minRowCount:int;
+  public function get minRowCount():int {
+    return _minRowCount;
   }
-  public function set minNumberOfRows(value:int):void {
-    _minNumberOfRows = value;
+  public function set minRowCount(value:int):void {
+    _minRowCount = value;
   }
 
   /**

@@ -29,7 +29,7 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
   // offset due: 0 child of system manager is application
   public static const OFFSET:int = 0;
 
-  private var contentView:DisplayObject;
+  protected var contentView:DisplayObject;
 
   override public function get width():Number {
     return stage.stageWidth;

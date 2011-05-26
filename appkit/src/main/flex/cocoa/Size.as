@@ -1,5 +1,5 @@
 package cocoa {
-public class Size {
+public final class Size {
   public var width:Number;
   public var height:Number;
 

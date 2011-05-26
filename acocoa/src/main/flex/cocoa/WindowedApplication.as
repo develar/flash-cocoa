@@ -2,6 +2,8 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
+import flash.events.NativeWindowBoundsEvent;
+
 import mx.core.IUIComponent;
 import mx.core.UIComponent;
 
@@ -53,7 +55,23 @@ public class WindowedApplication extends WindowedSystemManager implements LookAn
     WindowInitUtil.initMainSystemManager(this);
     preInitialize();
     super.init(contentView);
+
+    stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, resizeHandler);
   }
+
+  private function resizeHandler(event:NativeWindowBoundsEvent):void {
+    //if (contentView.parent == null) {
+    //  var sm:WindowedSystemManager = new WindowedSystemManager();
+    //  stage.addChild(sm);
+    //  sm.init(_contentView);
+    //}
+    //else {
+      IUIComponent(contentView).setActualSize(stage.stageWidth, stage.stageHeight);
+    //}
+
+    UIComponent(contentView).validateNow();
+  }
+
 
   protected function preInitialize():void {
 

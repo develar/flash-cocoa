@@ -814,7 +814,7 @@ public class DemoTableViewDataSource implements TableViewDataSource {
     this.laf = laf;
   }
 
-  public function get numberOfRows():int {
+  public function get rowCount():int {
     return data.record.length();
   }
 

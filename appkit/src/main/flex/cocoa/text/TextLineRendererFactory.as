@@ -31,29 +31,41 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
     _container = value;
   }
 
-  public function reuse(visibleRenderers:Vector.<TextLine>, numberOfRenderers:int):void {
-    var absDelta:int = (numberOfRenderers ^ (numberOfRenderers >> 31)) - (numberOfRenderers >> 31);
-
-    youngOrphanLines.fixed = false;
-    youngOrphanLines.length = youngOrphanCount + absDelta;
-    youngOrphanLines.fixed = true;
+  public function reuse(visibleRenderers:Vector.<TextLine>, rowCountDelta:int, visibleRowCount:int, finalPass:Boolean):void {
+    var abcNumberOfRows:int = (rowCountDelta ^ (rowCountDelta >> 31)) - (rowCountDelta >> 31);
+    if (finalPass) {
+      orphanLines.length = orphanCount + abcNumberOfRows;
+    }
+    else {
+      youngOrphanLines.length = youngOrphanCount + abcNumberOfRows;
+    }
 
     var i:int;
     var n:int;
-    if (numberOfRenderers > 0) {
-      n = numberOfRenderers;
+    if (rowCountDelta > 0) {
+      n = rowCountDelta;
     }
     else {
-      n = visibleRenderers.length;
-      i = n + numberOfRenderers;
+      n = visibleRowCount;
+      i = n + rowCountDelta;
     }
-    for (; i < n; i++) {
-      // clear (update length and delete old visible renderers) visibleRenderers later, see TextTableColumn#createAndLayoutRenderer
-      var textLine:TextLine = visibleRenderers[i];
-      if (textLine == null) {
-        throw new IllegalOperationError();
+
+    // clear (update length and delete old visible renderers) visibleRenderers later, see TextTableColumn#createAndLayoutRenderer
+    if (finalPass) {
+      while (i < n) {
+        var line:TextLine = visibleRenderers[i++];
+        _container.removeChild(line);
+        orphanLines[orphanCount++] = line;
       }
-      youngOrphanLines[youngOrphanCount++] = textLine;
+    }
+    else {
+      while (i < n) {
+        var textLine:TextLine = visibleRenderers[i++];
+        if (textLine == null) {
+          throw new IllegalOperationError("dd");
+        }
+        youngOrphanLines[youngOrphanCount++] = textLine;
+      }
     }
   }
 
@@ -78,6 +90,7 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
       _container.addChild(line);
     }
 
+    line.userData = text;
     return line;
   }
 
@@ -87,9 +100,7 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
 
       if (youngOrphanCount == 0) {
         orphanLines.length = orphanCount;
-        youngOrphanLines.fixed = false;
         youngOrphanLines.length = 0;
-        youngOrphanLines.fixed = true;
         return;
       }
 
@@ -100,9 +111,7 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
         orphanLines[orphanCount++] = line;
       }
 
-      youngOrphanLines.fixed = false;
       youngOrphanLines.length = 0;
-      youngOrphanLines.fixed = true;
     }
   }
 }

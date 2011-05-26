@@ -19,7 +19,7 @@
     <aqua:AquaLookAndFeel/>
   </ac:laf>
 
-  <Container height="200">
+  <Container>
     <layout>
       <s:HorizontalLayout/>
     </layout>

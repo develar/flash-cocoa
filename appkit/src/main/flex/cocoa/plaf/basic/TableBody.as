@@ -4,10 +4,12 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
+import cocoa.tableView.TextTableColumn;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Shape;
+import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 
 public class TableBody extends ListBody {
@@ -18,7 +20,11 @@ public class TableBody extends ListBody {
   private var background:Shape;
   private var laf:LookAndFeel;
 
-  private var numberOfVisibleRows:int;
+  private var visibleRowCount:int = -1;
+  private var maxVisibleRowCount:int = -1;
+
+  private var oldWidth:Number = 0;
+  private var oldHeight:Number = 0;
 
   public function TableBody(tableView:TableView, laf:LookAndFeel) {
     this.tableView = tableView;
@@ -28,7 +34,7 @@ public class TableBody extends ListBody {
     dataSource = tableView.dataSource;
 
     for each (var column:TableColumn in tableView.columns) {
-      column.rendererFactory.container = this;
+      column.container = this;
     }
   }
 
@@ -40,7 +46,8 @@ public class TableBody extends ListBody {
   }
 
   override protected function measure():void {
-    _contentHeight = Math.max(dataSource.numberOfRows, tableView.minNumberOfRows) * rowHeightWithSpacing;
+    measuredMinHeight = tableView.minRowCount * rowHeightWithSpacing;
+    _contentHeight = Math.max(dataSource.rowCount, tableView.minRowCount) * rowHeightWithSpacing;
     measuredHeight = _contentHeight;
 
     var minWidth:Number = 0;
@@ -64,55 +71,105 @@ public class TableBody extends ListBody {
 
   override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
-    const invisibleLastRowPartBottom:Number = (numberOfVisibleRows * rowHeightWithSpacing) - height - invisibleFirstRowPartTop;
+    var availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
+    var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
+    var remainderSpace:int = availableSpace % rowHeightWithSpacing;
+    var invisibleLastRowPartBottom:Number = 0;
+    if (remainderSpace > 0) {
+      newVisibleRowCount++;
+      invisibleLastRowPartBottom = rowHeightWithSpacing - remainderSpace;
+    }
+
     var columns:Vector.<TableColumn> = tableView.columns;
-    var numberOfRenderers:int = (delta + (delta > 0 ? (oldVerticalScrollPosition % rowHeightWithSpacing) : -invisibleLastRowPartBottom)) / rowHeightWithSpacing;
-    if (numberOfRenderers == 0) {
-      return;
-    }
-    
-    if (numberOfRenderers > numberOfVisibleRows || numberOfRenderers <= -numberOfVisibleRows) {
-      numberOfRenderers = numberOfVisibleRows;
-    }
-
-    for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
-      var column:TableColumn = columns[columnIndex];
-      column.reuse(numberOfRenderers);
-      if (numberOfRenderers != numberOfVisibleRows) {
-        column.moveValidVisibleRenderersByY(numberOfRenderers);
-      }
-    }
-
-
-    background.y = _verticalScrollPosition - invisibleFirstRowPartTop;
-    var bs:Rectangle = background.scrollRect;
-    if (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0) {
-      if (bs.y != 0) {
-        bs.y = 0;
-        bs.height -= rowHeightWithSpacing;
-        background.scrollRect = bs;
-      }
-    }
-    else if (bs.y == 0) {
-      bs.y = rowHeightWithSpacing;
-      bs.height += rowHeightWithSpacing;
-      background.scrollRect = bs;
+    var rowCountDelta:int = (delta + (delta > 0 ? (oldVerticalScrollPosition % rowHeightWithSpacing) : -invisibleLastRowPartBottom)) / rowHeightWithSpacing;
+    if (rowCountDelta > visibleRowCount || rowCountDelta <= -visibleRowCount) {
+      rowCountDelta = visibleRowCount;
     }
 
     trace(_verticalScrollPosition);
+
+    if (rowCountDelta != 0) {
+      background.y = _verticalScrollPosition - invisibleFirstRowPartTop;
+
+      var needMoveValidVisibleRenders:Boolean = rowCountDelta != maxVisibleRowCount;
+      var effectiveRowCountDelta:int = rowCountDelta;
+      if (needMoveValidVisibleRenders && rowCountDelta < 0 && maxVisibleRowCount != newVisibleRowCount) {
+        effectiveRowCountDelta++;
+        if (effectiveRowCountDelta == 0) {
+          needMoveValidVisibleRenders = false;
+        }
+      }
+
+      for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
+        var column:TableColumn = columns[columnIndex];
+        column.reuse(rowCountDelta, visibleRowCount, false);
+        if (needMoveValidVisibleRenders) {
+          column.moveValidVisibleRenderersByY(effectiveRowCountDelta, visibleRowCount);
+        }
+      }
+    }
+
     var endRowIndex:int;
     var startRowIndex:int;
-    if (numberOfRenderers > 0) {
-      endRowIndex = _verticalScrollPosition / rowHeightWithSpacing + numberOfVisibleRows;
-      startRowIndex = endRowIndex - numberOfRenderers;
-      var relativeRowIndex:int = numberOfVisibleRows - numberOfRenderers;
-      drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, relativeRowIndex);
+    if (rowCountDelta < 0) {
+      rowCountDelta -= newVisibleRowCount - visibleRowCount;
+      if (rowCountDelta != 0) {
+        startRowIndex = _verticalScrollPosition / rowHeightWithSpacing;
+        endRowIndex = startRowIndex - rowCountDelta;
+        drawCells(_verticalScrollPosition - invisibleFirstRowPartTop, startRowIndex, endRowIndex, 0);
+      }
+      clearLastRenderer(newVisibleRowCount, columns, rowCountDelta == 0);
     }
     else {
-      startRowIndex = _verticalScrollPosition / rowHeightWithSpacing;
-      endRowIndex = startRowIndex - numberOfRenderers;
-      drawCells(_verticalScrollPosition - invisibleFirstRowPartTop, startRowIndex, endRowIndex, 0);
+      rowCountDelta += newVisibleRowCount - visibleRowCount;
+      endRowIndex = _verticalScrollPosition / rowHeightWithSpacing + newVisibleRowCount;
+      if (rowCountDelta > 0) {
+        startRowIndex = endRowIndex - rowCountDelta;
+      }
+      else if (newVisibleRowCount == visibleRowCount) {
+        cc();
+        return;
+      }
+
+      clearLastRenderer(newVisibleRowCount, columns, false);
+
+      startRowIndex = endRowIndex - rowCountDelta;
+      var relativeRowIndex:int = visibleRowCount - rowCountDelta;
+      drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, relativeRowIndex);
     }
+
+    cc();
+  }
+
+  private function clearLastRenderer(newVisibleRowCount:int, columns:Vector.<TableColumn>, callPostLayout:Boolean):void {
+    if (newVisibleRowCount != visibleRowCount) {
+      visibleRowCount = newVisibleRowCount;
+      for (var j:int = 0; j < columns.length; j++) {
+        var column:TableColumn = columns[j];
+        column.clearLastRenderer();
+        if (callPostLayout) {
+          column.postLayout();
+        }
+      }
+    }
+  }
+
+  private function cc():void {
+    if (numChildren != (1 + (visibleRowCount * 2))) {
+      throw new IllegalOperationError();
+    }
+
+    for each (var column:TextTableColumn in tableView.columns) {
+      column.cc(visibleRowCount);
+    }
+  }
+
+  private function calculateMaxVisibleRowCount(h:Number):int {
+    var remainder:Number = h % rowHeightWithSpacing;
+    // если остаток более 1, значит таблица не содержит всегда константное число видимых строк —
+    // если первый занимает мало пикселей и последний занимает мало пикселей (в сумме равное remainder),
+    // то текущее число отображаемых строк будет равно максимальному, иначе оно будет на единицу меньше
+    return int(h / rowHeightWithSpacing) + (remainder > 1 ? 2 : remainder);
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
@@ -120,21 +177,54 @@ public class TableBody extends ListBody {
       scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, w, h);
     }
 
-    calculateColumnWidth(w);
+    if (oldWidth != w) {
+      oldWidth = w;
+      calculateColumnWidth(w);
+    }
 
-    drawBackground(w, h);
+    const newMaxVisibleRowCount:int = calculateMaxVisibleRowCount(h);
+    const drawn:Boolean = maxVisibleRowCount != -1;
+    var numberOfRowsDelta:int = drawn ? newMaxVisibleRowCount - maxVisibleRowCount : 1;
 
-    const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
+    maxVisibleRowCount = newMaxVisibleRowCount;
+
+    drawBackground(w);
+
+    if (oldHeight == h) {
+      return;
+    }
+
+    oldHeight = h;
+
+    if (numberOfRowsDelta == 0) {
+      return;
+    }
+
     const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
     const endRowIndex:int = Math.ceil((h + _verticalScrollPosition) / rowHeightWithSpacing);
-    numberOfVisibleRows = endRowIndex - startRowIndex;
-    drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0);
+    visibleRowCount = endRowIndex - startRowIndex;
+
+    var columns:Vector.<TableColumn> = tableView.columns;
+    var i:int;
+    if (numberOfRowsDelta < 0) {
+      for (i = 0; i < columns.length; i++) {
+        var column:TableColumn = columns[i];
+        column.reuse(numberOfRowsDelta, visibleRowCount, true);
+        column.maxVisibleRowCountChanged(maxVisibleRowCount);
+      }
+    }
+    else if (drawn) {
+      drawCells(_verticalScrollPosition, endRowIndex - numberOfRowsDelta, endRowIndex, maxVisibleRowCount - numberOfRowsDelta, true);
+    }
+    else {
+      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, 0, true);
+    }
   }
 
-  private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, startRelativeRowIndex:int):void {
+  private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, startRelativeRowIndex:int, numberOfVisibleRowsChanged:Boolean = false):void {
     const intercellSpacing:Size = tableView.intercellSpacing;
     startY += intercellSpacing.height / 2;
-    endRowIndex = Math.min(endRowIndex, tableView.dataSource.numberOfRows);
+    endRowIndex = Math.min(endRowIndex, tableView.dataSource.rowCount);
 
     const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
     var columns:Vector.<TableColumn> = tableView.columns;
@@ -142,7 +232,10 @@ public class TableBody extends ListBody {
     var y:Number;
     for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
       var column:TableColumn = columns[columnIndex];
-      column.preLayout(numberOfVisibleRows);
+
+      if (numberOfVisibleRowsChanged) {
+        column.maxVisibleRowCountChanged(maxVisibleRowCount);
+      }
 
       y = startY;
       for (var rowIndex:int = startRowIndex, relativeRowIndex:int = startRelativeRowIndex; rowIndex < endRowIndex; rowIndex++, relativeRowIndex++) {
@@ -155,12 +248,12 @@ public class TableBody extends ListBody {
     }
   }
 
-  private function drawBackground(w:Number, h:Number):void {
+  private function drawBackground(w:Number):void {
     var g:Graphics = background.graphics;
     g.clear();
 
     var colors:Vector.<uint> = laf.getColors(tableView.lafKey + ".background");
-    var numberOfStripes:int = Math.ceil(h / rowHeight) + 1;
+    var numberOfStripes:int = maxVisibleRowCount + 1;
     var y:Number = 0;
     for (var i:int = 0; i < numberOfStripes; i++) {
       g.beginFill(colors[i % 2 == 0 ? 0 : 1], 1);
@@ -169,19 +262,12 @@ public class TableBody extends ListBody {
 
       y += rowHeightWithSpacing;
     }
-
-    if (background.scrollRect == null) {
-      background.scrollRect = new Rectangle(0, 0, w,  h);
-    }
-    else {
-      background.scrollRect.height = h;
-    }
   }
 
   // support only two-columns table where first table column has fixed width and last has remaining width
   private function calculateColumnWidth(w:Number):void {
-    for (var i:int = 0; i < tableView.columns.length; i++) {
-      var columns:Vector.<TableColumn> = tableView.columns;
+    var columns:Vector.<TableColumn> = tableView.columns;
+    for (var i:int = 0; i < columns.length; i++) {
       var column:TableColumn = columns[i];
       var calculatedWidth:Number = column.width;
       if (calculatedWidth != calculatedWidth) {

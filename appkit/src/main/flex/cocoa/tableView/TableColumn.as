@@ -1,75 +1,44 @@
 package cocoa.tableView {
 import flash.display.DisplayObject;
-import flash.errors.IllegalOperationError;
+import flash.display.DisplayObjectContainer;
 
-public class TableColumn {
-  public function TableColumn(dataField:String, rendererFactory:ListViewItemRendererFactory) {
-    _dataField = dataField;
-    _rendererFactory = rendererFactory;
-  }
+public interface TableColumn {
+  function get dataField():String;
 
-  private var _dataField:String;
-  public function get dataField():String {
-    return _dataField;
-  }
-  public function set dataField(value:String):void {
-    _dataField = value;
-  }
+  function set dataField(value:String):void;
 
-  private var _title:String;
-  public function get title():String {
-    return _title;
-  }
-  public function set title(value:String):void {
-    _title = value;
-  }
+  function get title():String;
 
-  private var _width:Number;
-  public function get width():Number {
-    return _width;
-  }
+  function set title(value:String):void;
 
-  public function set width(value:Number):void {
-    _width = value;
-  }
+  function get width():Number;
 
-  private var _minWidth:Number = 0;
-  public function get minWidth():Number {
-    return _minWidth;
-  }
-  public function set minWidth(value:Number):void {
-    _minWidth = value;
-  }
+  function set width(value:Number):void;
 
-  private var _actualWidth:Number;
-  public function get actualWidth():Number {
-    return _actualWidth;
-  }
-  public function set actualWidth(value:Number):void {
-    _actualWidth = value;
-  }
+  function get minWidth():Number;
 
-  public function createAndLayoutRenderer(rowIndex:int, relativeRowIndex:Number, x:Number, y:Number):DisplayObject {
-    throw new IllegalOperationError();
-  }
+  function set minWidth(value:Number):void;
 
-  private var _rendererFactory:ListViewItemRendererFactory;
-  public function get rendererFactory():ListViewItemRendererFactory {
-    return _rendererFactory;
-  }
+  function get actualWidth():Number;
 
-  public function reuse(numberOfRenderers:int):void {
+  function set actualWidth(value:Number):void;
 
-  }
+  function createAndLayoutRenderer(rowIndex:int, relativeRowIndex:Number, x:Number, y:Number):DisplayObject;
 
-  public function preLayout(numberOfVisibleRows:int):void {
-  }
+  /**
+   * @param rowCountDelta delta, greater than 0 if removed from top, less than 0 if removed from bottom
+   * @param finalPass will be createAndLayoutRenderer called (false) after or not (true)
+   */
+  function reuse(rowCountDelta:int, visibleRowCount:int, finalPass:Boolean):void;
 
-  public function postLayout():void {
-  }
+  function postLayout():void;
 
-  public function moveValidVisibleRenderersByY(numberOfRenderers:int):void {
+  function moveValidVisibleRenderersByY(rowCountDelta:int, visibleRowCount:int):void;
 
-  }
+  function maxVisibleRowCountChanged(maxVisibleRowCount:int):void;
+
+  function set container(container:DisplayObjectContainer):void;
+
+  function clearLastRenderer():void;
 }
 }
