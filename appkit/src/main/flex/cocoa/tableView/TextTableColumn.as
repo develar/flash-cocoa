@@ -27,7 +27,7 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
 
   public function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject {
     var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex));
-    var newEntry:TextLineLinkedListEntry = new TextLineLinkedListEntry(line);
+    var newEntry:TextLineLinkedListEntry = cells.create(line);
     if (previousEntry == null) {
       cells.addFirst(newEntry);
     }
