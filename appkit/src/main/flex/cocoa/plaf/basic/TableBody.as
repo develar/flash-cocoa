@@ -77,13 +77,18 @@ public class TableBody extends ListBody {
 
   override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
+    background.y = _verticalScrollPosition - invisibleFirstRowPartTop - (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0 ? 0 : rowHeightWithSpacing);
 
-    background.y = _verticalScrollPosition - invisibleFirstRowPartTop;
+    if (oldHeight != height) {
+      // updateDisplayList responsible for
+      return;
+    }
+
+    trace(_verticalScrollPosition);
 
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
-    const remainderSpace:int = availableSpace % rowHeightWithSpacing;
-    if (remainderSpace > 0) {
+    if ((availableSpace % rowHeightWithSpacing) > 0) {
       newVisibleRowCount++;
     }
 
@@ -97,7 +102,6 @@ public class TableBody extends ListBody {
     visibleRowCount = newVisibleRowCount;
 
     adjustRows(removedRowCountDelta, Math.abs(removedRowCountDelta) + visibleRowCountDelta, delta < 0, invisibleFirstRowPartTop);
-    cc();
   }
 
   private function adjustRows(removedRowCountDelta:int, addedRowCount:int, head:Boolean, invisibleFirstRowPartTop:Number):void {
@@ -129,6 +133,8 @@ public class TableBody extends ListBody {
         columns[columnIndex].postLayout();
       }
     }
+
+    cc();
   }
 
   private function cc():void {
@@ -164,8 +170,14 @@ public class TableBody extends ListBody {
       return;
     }
 
+    oldHeight = h;
+
     if (visibleRowCount != -1) {
-      oldHeight = h;
+      var head:Boolean;
+      if (h == (contentHeight - verticalScrollPosition)) {
+        head = true;
+      }
+
       const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
       const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
       var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
@@ -177,7 +189,7 @@ public class TableBody extends ListBody {
       const visibleRowCountDelta:int = newVisibleRowCount - visibleRowCount;
       if (visibleRowCountDelta != 0) {
         visibleRowCount = newVisibleRowCount;
-        adjustRows(visibleRowCountDelta < 0 ? visibleRowCountDelta : 0, visibleRowCountDelta > 0 ? visibleRowCountDelta : 0, false, invisibleFirstRowPartTop);
+        adjustRows(visibleRowCountDelta < 0 ? visibleRowCountDelta : 0, visibleRowCountDelta > 0 ? visibleRowCountDelta : 0, head, invisibleFirstRowPartTop);
       }
     }
     else {
