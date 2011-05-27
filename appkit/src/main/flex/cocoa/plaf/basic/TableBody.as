@@ -22,7 +22,6 @@ public class TableBody extends ListBody {
   private var laf:LookAndFeel;
 
   private var visibleRowCount:int = -1;
-  private var maxVisibleRowCount:int = -1;
 
   private var oldWidth:Number = 0;
   private var oldHeight:Number = 0;
@@ -70,8 +69,8 @@ public class TableBody extends ListBody {
     return child;
   }
 
-  private function calculateInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number):int {
-    const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
+  private function calculateInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number, h:Number):int {
+    const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     const remainderSpace:int = availableSpace % rowHeightWithSpacing;
     return remainderSpace > 0 ? (rowHeightWithSpacing - remainderSpace) : 0;
   }
@@ -89,46 +88,47 @@ public class TableBody extends ListBody {
     }
 
     const oldInvisibleFirstRowPartTop:Number = oldVerticalScrollPosition % rowHeightWithSpacing;
-    var removedRowCount:int = (delta + (delta > 0 ? oldInvisibleFirstRowPartTop : -calculateInvisibleLastRowPartBottom(oldInvisibleFirstRowPartTop))) / rowHeightWithSpacing;
-    if (removedRowCount > visibleRowCount || removedRowCount <= -visibleRowCount) {
-      removedRowCount = visibleRowCount;
+    var removedRowCountDelta:int = (delta + (delta > 0 ? oldInvisibleFirstRowPartTop : -calculateInvisibleLastRowPartBottom(oldInvisibleFirstRowPartTop, height))) / rowHeightWithSpacing;
+    if (removedRowCountDelta > visibleRowCount || removedRowCountDelta <= -visibleRowCount) {
+      removedRowCountDelta = visibleRowCount;
     }
 
     const visibleRowCountDelta:int = newVisibleRowCount - visibleRowCount;
     visibleRowCount = newVisibleRowCount;
 
-    const addedRowCount:int = Math.abs(removedRowCount) + visibleRowCountDelta;
+    adjustRows(removedRowCountDelta, Math.abs(removedRowCountDelta) + visibleRowCountDelta, delta < 0, invisibleFirstRowPartTop);
+    cc();
+  }
 
+  private function adjustRows(removedRowCountDelta:int, addedRowCount:int, head:Boolean, invisibleFirstRowPartTop:Number):void {
     var columns:Vector.<TableColumn> = tableView.columns;
     var columnIndex:int;
-    if (removedRowCount != 0) {
+    if (removedRowCountDelta != 0) {
       for (columnIndex = 0; columnIndex < columns.length; columnIndex++) {
-        columns[columnIndex].reuse(removedRowCount, false);
+        columns[columnIndex].reuse(removedRowCountDelta, false);
       }
     }
 
     if (addedRowCount != 0) {
       var endRowIndex:int;
       var startRowIndex:int;
-      if (delta < 0) {
+      if (head) {
         startRowIndex = _verticalScrollPosition / rowHeightWithSpacing;
         endRowIndex = startRowIndex + addedRowCount;
-        drawCells(_verticalScrollPosition - invisibleFirstRowPartTop, startRowIndex, endRowIndex, true);
+        drawCells(_verticalScrollPosition - invisibleFirstRowPartTop, startRowIndex, endRowIndex, head);
       }
       else {
         endRowIndex = _verticalScrollPosition / rowHeightWithSpacing + visibleRowCount;
         startRowIndex = endRowIndex - addedRowCount;
         var relativeRowIndex:int = visibleRowCount - addedRowCount;
-        drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, false);
+        drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, head);
       }
     }
-    else if (removedRowCount != 0) {
+    else if (removedRowCountDelta != 0) {
       for (columnIndex = 0; columnIndex < columns.length; columnIndex++) {
         columns[columnIndex].postLayout();
       }
     }
-
-    cc();
   }
 
   private function cc():void {
@@ -158,40 +158,32 @@ public class TableBody extends ListBody {
       calculateColumnWidth(w);
     }
 
-    const newMaxVisibleRowCount:int = calculateMaxVisibleRowCount(h);
-    const drawn:Boolean = maxVisibleRowCount != -1;
-    var numberOfRowsDelta:int = drawn ? newMaxVisibleRowCount - maxVisibleRowCount : 1;
-
-    maxVisibleRowCount = newMaxVisibleRowCount;
-
-    drawBackground(w);
+    drawBackground(w, calculateMaxVisibleRowCount(h));
 
     if (oldHeight == h) {
       return;
     }
 
-    oldHeight = h;
+    if (visibleRowCount != -1) {
+      oldHeight = h;
+      const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
+      const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
+      var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
+      const remainderSpace:int = availableSpace % rowHeightWithSpacing;
+      if (remainderSpace > 0) {
+        newVisibleRowCount++;
+      }
 
-    if (numberOfRowsDelta == 0) {
-      return;
-    }
-
-    const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
-    const endRowIndex:int = Math.ceil((h + _verticalScrollPosition) / rowHeightWithSpacing);
-    visibleRowCount = endRowIndex - startRowIndex;
-
-    var columns:Vector.<TableColumn> = tableView.columns;
-    var i:int;
-    if (numberOfRowsDelta < 0) {
-      for (i = 0; i < columns.length; i++) {
-        var column:TableColumn = columns[i];
-        column.reuse(numberOfRowsDelta, true);
+      const visibleRowCountDelta:int = newVisibleRowCount - visibleRowCount;
+      if (visibleRowCountDelta != 0) {
+        visibleRowCount = newVisibleRowCount;
+        adjustRows(visibleRowCountDelta < 0 ? visibleRowCountDelta : 0, visibleRowCountDelta > 0 ? visibleRowCountDelta : 0, false, invisibleFirstRowPartTop);
       }
     }
-    else if (drawn) {
-      drawCells(_verticalScrollPosition, endRowIndex - numberOfRowsDelta, endRowIndex, false);
-    }
     else {
+      const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
+      const endRowIndex:int = Math.ceil((h + _verticalScrollPosition) / rowHeightWithSpacing);
+      visibleRowCount = endRowIndex - startRowIndex;
       drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
     }
   }
@@ -220,7 +212,7 @@ public class TableBody extends ListBody {
     }
   }
 
-  private function drawBackground(w:Number):void {
+  private function drawBackground(w:Number, maxVisibleRowCount:int):void {
     var g:Graphics = background.graphics;
     g.clear();
 

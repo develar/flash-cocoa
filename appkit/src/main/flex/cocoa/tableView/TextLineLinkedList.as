@@ -7,7 +7,7 @@ public class TextLineLinkedList {
   public var tail:TextLineLinkedListEntry;
   public var size:int;
 
-  private const pool:Vector.<TextLineLinkedListEntry> = new Vector.<TextLineLinkedListEntry>(128, true);
+  private const pool:Vector.<TextLineLinkedListEntry> = new Vector.<TextLineLinkedListEntry>(32, true);
   private var poolSize:int;
 
   private function addToPool(o:TextLineLinkedListEntry):void {
