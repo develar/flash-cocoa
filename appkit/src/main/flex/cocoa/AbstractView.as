@@ -9,7 +9,6 @@ import flash.display.Loader;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.events.Event;
-import flash.events.EventPhase;
 import flash.events.FocusEvent;
 import flash.events.IEventDispatcher;
 import flash.geom.ColorTransform;
@@ -747,8 +746,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     // Make the component invisible until the initialization sequence is complete.
     // It will be set visible when the 'initialized' flag is set.
     super.visible = false;
-
-    addEventListener(Event.REMOVED, removedHandler);
 
     _width = super.width;
     _height = super.height;
@@ -1687,17 +1684,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   public function set systemManager(value:ISystemManager):void {
     _systemManager = value;
     flags &= ~SYSTEM_MANAGER_DIRTY;
-  }
-
-  private function invalidateSystemManager():void {
-    var n:int = numChildren;
-    for (var i:int = 0; i < n; i++) {
-      var child:AbstractView = getChildAt(i) as AbstractView;
-      if (child != null) {
-        child.invalidateSystemManager();
-      }
-    }
-    flags |= SYSTEM_MANAGER_DIRTY;
   }
 
   private var _nestLevel:int = 0;
@@ -2912,29 +2898,18 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   }
 
   public function setActualSize(w:Number, h:Number):void {
-    // trace("setActualSize: " + this + " width = " + w + " height = " + h);
-
     var changed:Boolean = false;
-
     if (_width != w) {
       _width = w;
       if (_layoutFeatures != null) {
         _layoutFeatures.layoutWidth = w;  // for the mirror transform
         invalidateTransform();
       }
-      //			if (hasEventListener("widthChanged"))
-      //			{
-      //				dispatchEvent(new Event("widthChanged"));
-      //			}
       changed = true;
     }
 
     if (_height != h) {
       _height = h;
-      //			if (hasEventListener("heightChanged"))
-      //			{
-      //				dispatchEvent(new Event("heightChanged"));
-      //			}
       changed = true;
     }
 
@@ -2996,16 +2971,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  /**
-   *  Helper method for dispatching a PropertyChangeEvent
-   *  when a property is updated.
-   *
-   *  @param prop Name of the property that changed.
-   *
-   *  @param oldValue Old value of the property.
-   *
-   *  @param value New value of the property.
-   */
   protected final function dispatchPropertyChangeEvent(prop:String, oldValue:*, value:*):void {
     if (hasEventListener("propertyChange")) {
       dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, prop, oldValue, value));
@@ -3124,12 +3089,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     // won't receive keyboard events.
     if (isOurFocus(DisplayObject(event.target))) {
       //			drawFocus(false);
-    }
-  }
-
-  private function removedHandler(event:Event):void {
-    if (event.eventPhase == EventPhase.AT_TARGET) {
-      invalidateSystemManager();
     }
   }
 

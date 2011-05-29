@@ -134,7 +134,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   private function hsbRequiredHeight():Number {
-    return Math.max(minViewportInset, _horizontalScrollBar.getPreferredBoundsHeight());
+    return _horizontalScrollBar.getPreferredBoundsHeight();
   }
 
   private function get vsbVisible():Boolean {
@@ -142,10 +142,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   private function vsbRequiredWidth():Number {
-    return Math.max(minViewportInset, _verticalScrollBar.getPreferredBoundsWidth());
+    return _verticalScrollBar.getPreferredBoundsWidth();
   }
-
-  private var minViewportInset:Number = 0;
 
   private static const sharedPoint:Point = new Point(0, 0);
   private function getLayoutContentSize():Point {
@@ -196,8 +194,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
         break;
     }
 
-    var measuredW:Number = showHSB ? hsbRequiredHeight() : minViewportInset;
-    var measuredH:Number = showVSB ? vsbRequiredWidth() : minViewportInset;
+    var measuredW:Number = showHSB ? hsbRequiredHeight() : 0;
+    var measuredH:Number = showVSB ? vsbRequiredWidth() : 0;
 
     // The measured size of the viewport is just its preferredBounds, except:
     // don't give up space if doing so would make an auto scrollbar visible.
@@ -230,17 +228,23 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
       measuredH += Math.max(viewportPreferredH, (showVSB) ? vsb.getMinBoundsHeight() : 0);
     }
 
-    var minW:Number = minViewportInset * 2;
-    var minH:Number = minViewportInset * 2;
+    var minW:Number = 0;
+    var minH:Number = 0;
     // If the viewport's explicit size is set, then include that in the scroller's minimum size
     if (_documentView is IUIComponent) {
       var viewportUIC:IUIComponent = IUIComponent(_documentView);
       if (!isNaN(viewportUIC.explicitWidth)) {
         minW += viewportUIC.explicitWidth;
       }
+      else {
+        minW += viewportUIC.minWidth;
+      }
 
       if (!isNaN(viewportUIC.explicitHeight)) {
         minH += viewportUIC.explicitHeight;
+      }
+      else {
+        minH += viewportUIC.minHeight;
       }
     }
 
@@ -275,8 +279,8 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     var explicitViewportW:Number = viewportUIC ? viewportUIC.explicitWidth : NaN;
     var explicitViewportH:Number = viewportUIC ? viewportUIC.explicitHeight : NaN;
 
-    var viewportW:Number = isNaN(explicitViewportW) ? (w - (minViewportInset * 2)) : explicitViewportW;
-    var viewportH:Number = isNaN(explicitViewportH) ? (h - (minViewportInset * 2)) : explicitViewportH;
+    var viewportW:Number = isNaN(explicitViewportW) ? w : explicitViewportW;
+    var viewportH:Number = isNaN(explicitViewportH) ? h : explicitViewportH;
 
     // Decide which scrollbars will be visible based on the viewport's content size
     // and the scroller's scroll policies. A scrollbar is shown if the content size
@@ -297,10 +301,10 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     // Reset the viewport's width,height to account for the visible scrollbars, unless
     // the viewport's size was explicitly set, then we just use that.
     if (isNaN(explicitViewportW)) {
-      viewportW = w - (vsbVisible ? (minViewportInset + vsbRequiredWidth()) : (minViewportInset * 2));
+      viewportW = w - (vsbVisible ? vsbRequiredWidth() : 0);
     }
     if (isNaN(explicitViewportH)) {
-      viewportH = h - (hsbVisible ? (minViewportInset + hsbRequiredHeight()) : (minViewportInset * 2));
+      viewportH = h - (hsbVisible ? hsbRequiredHeight() : 0);
     }
 
     // If the scrollBarPolicy is auto, and we're only showing one scrollbar,
@@ -313,15 +317,15 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     }
 
     if (isNaN(explicitViewportW)) {
-      viewportW = w - (vsbVisible ? (minViewportInset + vsbRequiredWidth()) : (minViewportInset * 2));
+      viewportW = w - (vsbVisible ? vsbRequiredWidth() : 0);
     }
     if (isNaN(explicitViewportH)) {
-      viewportH = h - (hsbVisible ? (minViewportInset + hsbRequiredHeight()) : (minViewportInset * 2));
+      viewportH = h - (hsbVisible ? hsbRequiredHeight() : 0);
     }
 
     // Layout the viewport and scrollbars.
     _documentView.setLayoutBoundsSize(viewportW, viewportH);
-    _documentView.setLayoutBoundsPosition(minViewportInset, minViewportInset);
+    _documentView.setLayoutBoundsPosition(0, 0);
 
     if (hsbVisible) {
       var hsbH:Number = hsb.getExplicitOrMeasuredHeight();

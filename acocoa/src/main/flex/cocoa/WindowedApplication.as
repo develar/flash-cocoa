@@ -66,7 +66,8 @@ public class WindowedApplication extends WindowedSystemManager implements LookAn
     //  sm.init(_contentView);
     //}
     //else {
-      IUIComponent(contentView).setActualSize(stage.stageWidth, stage.stageHeight);
+    var c:IUIComponent = IUIComponent(contentView);
+    c.setActualSize(Math.max(stage.stageWidth, c.minWidth), Math.max(stage.stageHeight, c.minHeight));
     //}
 
     UIComponent(contentView).validateNow();

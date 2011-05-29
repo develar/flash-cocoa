@@ -11,8 +11,6 @@ public class ListBody extends AbstractView implements IViewport {
   protected var rowHeightWithSpacing:Number;
   protected var oldHeight:Number = 0;
 
-  protected var oldVerticalScrollPosition:Number = 0;
-
   protected var _clipAndEnableScrolling:Boolean;
   public function get clipAndEnableScrolling():Boolean {
     return _clipAndEnableScrolling;
@@ -61,7 +59,7 @@ public class ListBody extends AbstractView implements IViewport {
       return;
     }
 
-    oldVerticalScrollPosition = _verticalScrollPosition;
+    var oldVerticalScrollPosition:Number = _verticalScrollPosition;
     var delta:Number = value - oldVerticalScrollPosition;
     _verticalScrollPosition = value;
 

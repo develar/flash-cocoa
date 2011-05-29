@@ -6,6 +6,7 @@ import cocoa.tableView.TableView;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;
+import flash.errors.IllegalOperationError;
 
 import mx.core.IUIComponent;
 
@@ -60,11 +61,21 @@ public class TableViewSkin extends AbstractSkin {
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
+    if (h - border.contentInsets.height == -1) {
+      throw new IllegalOperationError();
+    }
     contentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
 
     var g:Graphics = graphics;
     g.clear();
     border.draw(null, g, w, h);
+  }
+
+  override public function setActualSize(w:Number, h:Number):void {
+    if (h  == 1) {
+      throw new IllegalOperationError();
+    }
+    super.setActualSize(w, h);
   }
 }
 }

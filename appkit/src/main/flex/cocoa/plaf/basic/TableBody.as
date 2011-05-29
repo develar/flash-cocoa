@@ -1,15 +1,11 @@
 package cocoa.plaf.basic {
-import by.blooddy.crypto.image.PNG24Encoder;
-
 import cocoa.Size;
 import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
-import cocoa.tableView.TextLineLinkedListEntry;
 import cocoa.tableView.TextTableColumn;
 
-import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Shape;
@@ -17,7 +13,6 @@ import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 import flash.text.engine.TextLine;
 import flash.utils.Dictionary;
-import flash.utils.getDefinitionByName;
 
 public class TableBody extends ListBody {
   private var tableView:TableView;
@@ -82,17 +77,6 @@ public class TableBody extends ListBody {
   }
 
   override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
-    if (displayListInvalid) {
-      // updateDisplayList responsible for
-
-      var m:String = "skip verticalScrollPositionChanged " + delta;
-      var bitmapData:BitmapData = new BitmapData(parent.width, parent.height, false);
-      bitmapData.draw(parent);
-      getDefinitionByName("cocoa.plaf.aqua.demo.Main").dd(m, PNG24Encoder.encode(bitmapData));
-      bitmapData.dispose();
-      trace(m);
-    }
-
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
     background.y = _verticalScrollPosition - invisibleFirstRowPartTop - (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0 ? 0 : rowHeightWithSpacing);
 
@@ -100,8 +84,6 @@ public class TableBody extends ListBody {
       // updateDisplayList responsible for
       return;
     }
-
-    trace(_verticalScrollPosition);
 
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
@@ -173,8 +155,7 @@ public class TableBody extends ListBody {
         map[line.y] = xx;
       }
       else if (xx.length > 1) {
-        //throw new IllegalOperationError();
-        trace("FUCJJJ");
+        throw new IllegalOperationError();
       }
       else {
         xx[1] = line.x;
@@ -191,11 +172,8 @@ public class TableBody extends ListBody {
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    var tail:TextLineLinkedListEntry = TextTableColumn(tableView.columns[0]).cells.tail;
-    if (tail != null && tail.line.userData != "Duquesne") {
-      trace("dfd");
-    }
-
+    var s:Rectangle = scrollRect;
+    var oldVerticalScrollPosition:Number = s == null ? 0 : s.y;
     if (clipAndEnableScrolling) {
       scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, w, h);
     }
@@ -212,10 +190,6 @@ public class TableBody extends ListBody {
     }
 
     var heightDelta:Number = h - oldHeight;
-
-
-    trace("updateDisplayList " + heightDelta);
-
     if (visibleRowCount != -1) {
       const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
 
@@ -237,11 +211,7 @@ public class TableBody extends ListBody {
       // если высота увеличилась и при этом мы достигли конца данных (то есть больше нет строк для отображения вниз (verticalScrollPosition установлен в максимум, а максимум это наш contentHeight - height)),
       // то мы должны добавить строки как в конец (должны проверить остаток неотображенных строк в конце), так и в начало
       if (heightDelta > 0 && h == (contentHeight - verticalScrollPosition)) {
-        const startRowIndex:int = oldVerticalScrollPosition / rowHeightWithSpacing;
-        const startRowIndex:int = computeEndIndex(oldHeight, oldVerticalScrollPosition);
-        if ((TextTableColumn(tableView.columns[0]).cells.tail.line.userData != tableView.dataSource.getStringValue(tableView.columns[0], startRowIndex - 1))) {
-          trace("FIIIIIII");
-        }
+        const startRowIndex:int = oldVerticalScrollPosition / rowHeightWithSpacing + (visibleRowCount - visibleRowCountDelta);
         const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
         const addedToTailRowCount:int = endRowIndex - startRowIndex;
         if (addedToTailRowCount != 0) {
@@ -250,23 +220,12 @@ public class TableBody extends ListBody {
         }
 
         const addedToHeadRowCount:int = visibleRowCountDelta - addedToTailRowCount;
-        trace(startRowIndex, endRowIndex, addedToHeadRowCount);
         if (addedToHeadRowCount != 0) {
           adjustRows(0, addedToHeadRowCount, true, invisibleFirstRowPartTop);
         }
       }
       else {
         adjustRows(visibleRowCountDelta < 0 ? visibleRowCountDelta : 0, visibleRowCountDelta > 0 ? visibleRowCountDelta : 0, false, invisibleFirstRowPartTop);
-
-        //if (head && (TextTableColumn(tableView.columns[0]).cells.tail.line.y + 4 - _verticalScrollPosition) != h) {
-        //  trace("PRE FFFFFF");
-        //}
-        //if (head && TextTableColumn(tableView.columns[0]).cells.tail.line.userData != "Duquesne") {
-        //  trace("PRE FFFFFF 32");
-        //}
-        //if (head && TextTableColumn(tableView.columns[0]).cells.tail.line.userData == "Duquesne") {
-        //  trace("LAST!!!!!");
-        //}
       }
     }
     else {
