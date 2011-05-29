@@ -36,7 +36,7 @@ public class ListBody extends AbstractView implements IViewport {
     return _contentHeight;
   }
 
-  private var _horizontalScrollPosition:Number = 0;
+  protected var _horizontalScrollPosition:Number = 0;
   public function get horizontalScrollPosition():Number {
     return _horizontalScrollPosition;
   }
@@ -85,13 +85,11 @@ public class ListBody extends AbstractView implements IViewport {
     switch (navigationUnit) {
       case NavigationUnit.DOWN:
       case NavigationUnit.PAGE_DOWN:
-        //return rowHeightWithSpacing;
-        return 15;
+        return rowHeightWithSpacing;
 
       case NavigationUnit.UP:
       case NavigationUnit.PAGE_UP:
-        //return -rowHeightWithSpacing;
-        return -15;
+        return -rowHeightWithSpacing;
 
       default:
         return 0;

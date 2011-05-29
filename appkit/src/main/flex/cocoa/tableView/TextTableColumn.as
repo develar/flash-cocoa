@@ -8,13 +8,13 @@ import flash.errors.IllegalOperationError;
 import flash.text.engine.TextLine;
 
 public class TextTableColumn extends AbstractTableColumn implements TableColumn {
-  private var textLineRendererFactory:TextLineRendererFactory;
-  private var tableView:TableView;
-  private var textInsets:Insets;
+  protected var textLineRendererFactory:TextLineRendererFactory;
+  protected var tableView:TableView;
+  protected var textInsets:Insets;
 
   public const cells:TextLineLinkedList = new TextLineLinkedList();
 
-  private var previousEntry:TextLineLinkedListEntry;
+  protected var previousEntry:TextLineLinkedListEntry;
 
   public function TextTableColumn(dataField:String, rendererFactory:TextLineRendererFactory, tableView:TableView, textInsets:Insets) {
     super(dataField, rendererFactory);
@@ -26,7 +26,7 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
   }
 
   public function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject {
-    var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex));
+    var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex), actualWidth);
     var newEntry:TextLineLinkedListEntry = cells.create(line);
     if (previousEntry == null) {
       cells.addFirst(newEntry);

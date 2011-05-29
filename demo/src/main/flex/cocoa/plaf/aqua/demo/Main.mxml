@@ -9,7 +9,7 @@
 
     override protected function preInitialize():void {
       var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatId.SMALL_SYSTEM));
-      tableView.dataSource = new DemoTableViewDataSource(laf);
+      tableView.dataSource = new DemoTableViewDataSource();
       var insets:Insets = new Insets(2, NaN, NaN, 3);
       var firstColumn:TextTableColumn = new TextTableColumn('a', textLineRendererFactory, tableView, insets);
       firstColumn.width = 120;

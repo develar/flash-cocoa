@@ -1,9 +1,11 @@
 package cocoa.plaf.aqua.demo {
-import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableViewDataSource;
 
 import flash.errors.IllegalOperationError;
+
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
 
 public class DemoTableViewDataSource implements TableViewDataSource {
   private var data:XML = <records>	<record>
@@ -808,22 +810,22 @@ public class DemoTableViewDataSource implements TableViewDataSource {
 	</record>
 </records>
     ;
-  private var laf:LookAndFeel;
-
-  public function DemoTableViewDataSource(laf:LookAndFeel) {
-    this.laf = laf;
-  }
 
   public function get rowCount():int {
     return data.record.length();
   }
 
-  public function getValue(column:TableColumn, rowIndex:int):Object {
+  public function getObjectValue(column:TableColumn, rowIndex:int):Object {
     throw new IllegalOperationError();
   }
 
   public function getStringValue(column:TableColumn, rowIndex:int):String {
     return data.record[rowIndex][column.dataField];
+  }
+
+  private var resetSignal:ISignal = new Signal();
+  public function get reset():ISignal {
+    return resetSignal;
   }
 }
 }

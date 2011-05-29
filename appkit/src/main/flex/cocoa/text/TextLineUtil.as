@@ -3,8 +3,14 @@ import flash.text.engine.ElementFormat;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
+import flash.utils.Dictionary;
 
 public final class TextLineUtil {
+  private static const TRUNCATION_INDICATOR:String = "…";
+
+  private static var truncationIndicatorMap:Dictionary;
+  private static var textLineForTruncationIndicator:TextLine;
+
   private static const textBlockCreateTextLineArgs:Array = [null, 0];
   private static const textBlockRecreateTextLineArgs:Array = [null, null, 0];
   
@@ -60,6 +66,50 @@ public final class TextLineUtil {
 
     textElement.elementFormat = null;
     return textLine;
+  }
+
+  public static function truncate(text:String, textElement:TextElement, textLine:TextLine, swfContext:SwfContext, availableWidth:Number):void {
+    textElement.text = text.slice(0, getTruncationPosition(textLine, availableWidth - getTruncationIndicatorWidth(textElement, textElement.elementFormat, swfContext))) + TRUNCATION_INDICATOR;
+    recreate(textElement.textBlock, swfContext, textLine);
+  }
+
+  private static function getTruncationIndicatorWidth(textElement:TextElement, format:ElementFormat, swfContext:SwfContext):Number {
+    if (truncationIndicatorMap == null) {
+      truncationIndicatorMap = new Dictionary(true);
+    }
+
+    var width:Number = truncationIndicatorMap[format];
+    if (width != width) {
+      textElement.text = TRUNCATION_INDICATOR;
+
+      if (textLineForTruncationIndicator == null) {
+        textLineForTruncationIndicator = TextLineUtil.create(textElement.textBlock, swfContext);
+      }
+      else {
+        TextLineUtil.recreate(textElement.textBlock, swfContext, textLineForTruncationIndicator);
+      }
+
+      truncationIndicatorMap[format] = width = textLineForTruncationIndicator.textWidth;
+    }
+
+    return width;
+  }
+
+  private static function getTruncationPosition(line:TextLine, allowedWidth:Number):int {
+    var consumedWidth:Number = 0;
+    var charPosition:int = line.textBlockBeginIndex;
+    var n:int = charPosition + line.rawTextLength;
+    while (charPosition < n) {
+      const atomIndex:int = line.getAtomIndexAtCharIndex(charPosition);
+      consumedWidth += line.getAtomBounds(atomIndex).width;
+      if (consumedWidth > allowedWidth) {
+        break;
+      }
+
+      charPosition = line.getAtomTextBlockEndIndex(atomIndex);
+    }
+
+    return charPosition;
   }
 }
 }

@@ -44,6 +44,15 @@ public class TableBody extends ListBody {
 
     background = new Shape();
     addDisplayObject(background);
+
+    dataSource.reset.add(dataSourceResetHandler);
+  }
+
+  private function dataSourceResetHandler():void {
+    _verticalScrollPosition = 0;
+    _horizontalScrollPosition = 0;
+    visibleRowCount = -visibleRowCount - 1;
+    invalidateDisplayList();
   }
 
   override protected function measure():void {
@@ -133,11 +142,12 @@ public class TableBody extends ListBody {
       }
     }
 
-    cc();
+    //cc();
   }
 
+  //noinspection JSUnusedLocalSymbols
   private function cc():void {
-    if (numChildren != (1 + (visibleRowCount * 2))) {
+    if (numChildren != (1 + (visibleRowCount * tableView.columns.length))) {
       throw new IllegalOperationError();
     }
     for each (var column:TextTableColumn in tableView.columns) {
@@ -147,7 +157,11 @@ public class TableBody extends ListBody {
     var i:int = numChildren - 1;
     var map:Dictionary = new Dictionary();
     while (i > 0) {
-      var line:TextLine = TextLine(getChildAt(i--));
+      var line:TextLine = getChildAt(i--) as TextLine;
+      if (line == null) {
+        continue;
+      }
+
       var xx:Vector.<Number> = map[line.y];
       if (xx == null) {
         xx = new Vector.<Number>(1);
@@ -185,12 +199,11 @@ public class TableBody extends ListBody {
 
     drawBackground(w, computeMaxVisibleRowCount(h));
 
-    if (oldHeight == h) {
-      return;
-    }
+    if (visibleRowCount > -1) {
+      if (oldHeight == h) {
+        return;
+      }
 
-    var heightDelta:Number = h - oldHeight;
-    if (visibleRowCount != -1) {
       const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
 
       const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
@@ -207,10 +220,9 @@ public class TableBody extends ListBody {
       }
 
       visibleRowCount = newVisibleRowCount;
-      
       // если высота увеличилась и при этом мы достигли конца данных (то есть больше нет строк для отображения вниз (verticalScrollPosition установлен в максимум, а максимум это наш contentHeight - height)),
       // то мы должны добавить строки как в конец (должны проверить остаток неотображенных строк в конце), так и в начало
-      if (heightDelta > 0 && h == (contentHeight - verticalScrollPosition)) {
+      if ((h - oldHeight) > 0 && h == (contentHeight - verticalScrollPosition)) {
         const startRowIndex:int = oldVerticalScrollPosition / rowHeightWithSpacing + (visibleRowCount - visibleRowCountDelta);
         const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
         const addedToTailRowCount:int = endRowIndex - startRowIndex;
@@ -236,6 +248,13 @@ public class TableBody extends ListBody {
   }
 
   private function initialDrawCells(h:Number):void {
+    if (visibleRowCount != -1) {
+      var columns:Vector.<TableColumn> = tableView.columns;
+      for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
+        columns[columnIndex].reuse(visibleRowCount + 1, false);
+      }
+    }
+
     const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
     const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
     visibleRowCount = endRowIndex - startRowIndex;
@@ -274,10 +293,10 @@ public class TableBody extends ListBody {
     var g:Graphics = background.graphics;
     g.clear();
 
-    var colors:Vector.<uint> = laf.getColors(tableView.lafKey + ".background");
-    var numberOfStripes:int = maxVisibleRowCount + 1;
+    var colors:Vector.<uint> = laf.getColors(tableView.lafKey + ".bg");
+    var stripeCount:int = maxVisibleRowCount + 1;
     var y:Number = 0;
-    for (var i:int = 0; i < numberOfStripes; i++) {
+    for (var i:int = 0; i < stripeCount; i++) {
       g.beginFill(colors[i % 2 == 0 ? 0 : 1], 1);
       g.drawRect(0, y, w, rowHeightWithSpacing);
       g.endFill();

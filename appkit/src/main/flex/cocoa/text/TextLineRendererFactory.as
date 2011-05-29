@@ -3,9 +3,11 @@ import cocoa.tableView.ListViewItemRendererFactory;
 import cocoa.tableView.TextLineLinkedList;
 
 import flash.display.DisplayObjectContainer;
+import flash.text.engine.ElementFormat;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
+import flash.text.engine.TextLineCreationResult;
 
 public class TextLineRendererFactory implements ListViewItemRendererFactory {
   private static const textElement:TextElement = new TextElement();
@@ -37,17 +39,19 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
       if (rowCountDelta > 0) {
         orphanLines.length = orphanCount + rowCountDelta;
         while (rowCountDelta-- > 0) {
-          line = list.removeFirst().line;
-          _container.removeChild(line);
-          orphanLines[orphanCount++] = line;
+          if ((line = list.removeFirst().line) != null) {
+            _container.removeChild(line);
+            orphanLines[orphanCount++] = line;
+          }
         }
       }
       else {
         orphanLines.length = orphanCount - rowCountDelta;
         while (rowCountDelta++ < 0) {
-          line = list.removeLast().line;
-          _container.removeChild(line);
-          orphanLines[orphanCount++] = line;
+          if ((line = list.removeLast().line) != null) {
+            _container.removeChild(line);
+            orphanLines[orphanCount++] = line;
+          }
         }
       }
     }
@@ -55,42 +59,54 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
       if (rowCountDelta > 0) {
         youngOrphanLines.length = youngOrphanCount + rowCountDelta;
         while (rowCountDelta-- > 0) {
-          line = list.removeFirst().line;
-          youngOrphanLines[youngOrphanCount++] = line;
+          if ((line = list.removeFirst().line) != null) {
+            youngOrphanLines[youngOrphanCount++] = line;
+          }
         }
       }
       else {
         youngOrphanLines.length = youngOrphanCount - rowCountDelta;
         while (rowCountDelta++ < 0) {
-          line = list.removeLast().line;
-          youngOrphanLines[youngOrphanCount++] = line;
+          if ((line = list.removeLast().line) != null) {
+            youngOrphanLines[youngOrphanCount++] = line;
+          }
         }
       }
     }
   }
 
-  public function create(text:String, customTextFormat:TextFormat = null):TextLine {
-    var actualFormat:TextFormat = customTextFormat || textFormat;
-    textElement.elementFormat = actualFormat.format;
+  public function create(text:String, availableWidth:Number, customElementFormat:ElementFormat = null, useTruncationIndicator:Boolean = true):TextLine {
+    var swfContext:SwfContext;
+    if (customElementFormat == null) {
+      textElement.elementFormat = textFormat.format;
+      swfContext = textFormat.swfContext;
+    }
+    else {
+      textElement.elementFormat = customElementFormat;
+    }
+
     textElement.text = text;
 
     var line:TextLine;
     if (youngOrphanCount != 0) {
       line = youngOrphanLines[--youngOrphanCount];
-      TextLineUtil.recreate(textBlock, actualFormat.swfContext, line);
+      TextLineUtil.recreate(textBlock, swfContext, line, availableWidth);
     }
     else {
       if (orphanCount != 0) {
         line = orphanLines[--orphanCount];
-        TextLineUtil.recreate(textBlock, actualFormat.swfContext, line);
+        TextLineUtil.recreate(textBlock, swfContext, line, availableWidth);
       }
       else {
-        line = TextLineUtil.create(textBlock, actualFormat.swfContext);
+        line = TextLineUtil.create(textBlock, swfContext, availableWidth);
       }
       _container.addChild(line);
     }
 
-    line.userData = text;
+    if (useTruncationIndicator && textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY) {
+      TextLineUtil.truncate(text, textElement, line, swfContext, availableWidth);
+    }
+
     return line;
   }
 
