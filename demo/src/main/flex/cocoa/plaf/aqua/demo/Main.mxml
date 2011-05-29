@@ -5,6 +5,7 @@
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TextTableColumn;
     import cocoa.text.TextLineRendererFactory;
+    import cocoa.util.FileUtil;
 
     override protected function preInitialize():void {
       var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatId.SMALL_SYSTEM));
@@ -14,6 +15,11 @@
       firstColumn.width = 120;
       tableView.columns = new <TableColumn>[firstColumn, new TextTableColumn('b', textLineRendererFactory, tableView, insets)];
     }
+
+    public static function dd(s:String, v:ByteArray):void {
+      FileUtil.writeBytes("/Users/develar/f/" + s + ".png", v);
+    }
+
     ]]></fx:Script>
   <ac:laf>
     <aqua:AquaLookAndFeel/>

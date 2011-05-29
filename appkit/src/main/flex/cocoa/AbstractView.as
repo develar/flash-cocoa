@@ -49,16 +49,12 @@ import mx.graphics.shaderClasses.HueShader;
 import mx.graphics.shaderClasses.LuminosityShader;
 import mx.graphics.shaderClasses.SaturationShader;
 import mx.graphics.shaderClasses.SoftLightShader;
-import mx.managers.CursorManager;
-import mx.managers.ICursorManager;
 import mx.managers.IFocusManager;
 import mx.managers.IFocusManagerComponent;
 import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
 import mx.managers.IToolTipManagerClient;
-import mx.styles.ISimpleStyleClient;
-import mx.styles.IStyleClient;
 import mx.utils.MatrixUtil;
 
 use namespace mx_internal;
@@ -840,47 +836,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
    * storage for the modified Transform object that can dispatch change events correctly.
    */
   private var _transform:flash.geom.Transform;
-
-  /**
-   *  Sprite used to display an overlay.
-   */
-  mx_internal var effectOverlay:UIComponent;
-
-
-  /**
-   *  Counter to keep track of the number of current users
-   *  of the overlay.
-   */
-  mx_internal var effectOverlayReferenceCount:int = 0;
-
-  private var _usingBridge:int = -1;
-
-  /**
-   *  @private
-   */
-  private function get usingBridge():Boolean {
-    if (_usingBridge == 0 || _systemManager == null) {
-      return false;
-    }
-    else if (_usingBridge == 1) {
-      return true;
-    }
-
-    // no types so no dependencies
-    var mp:Object = _systemManager.getImplementation("mx.managers.IMarshallPlanSystemManager");
-    if (mp == null) {
-      _usingBridge = 0;
-      return false;
-    }
-    else if (mp.useSWFBridge()) {
-      _usingBridge = 1;
-      return true;
-    }
-    else {
-      _usingBridge = 0;
-      return false;
-    }
-  }
 
   private var _owner:DisplayObjectContainer;
   public function get owner():DisplayObjectContainer {
@@ -1664,25 +1619,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     _tweeningProperties = value;
   }
 
-  /**
-   * Gets the CursorManager that controls the cursor for this component and its peers.
-   * Each top-level window has its own instance of a CursorManager;
-   * To make sure you're talking to the right one, use this method.
-   */
-  public function get cursorManager():ICursorManager {
-    var o:DisplayObject = parent;
-
-    while (o) {
-      if (o is IUIComponent && "cursorManager" in o) {
-        return o["cursorManager"];
-      }
-
-      o = o.parent;
-    }
-
-    return CursorManager.getInstance();
-  }
-
   private var _focusManager:IFocusManager;
 
   /**
@@ -2193,7 +2129,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
 
     addingChild(child);
-    super.addChildAt(child, effectOverlayReferenceCount && child != effectOverlay ? Math.max(0, super.numChildren - 1) : super.numChildren);
+    super.addChild(child);
     childAdded(child);
 
     return child;
@@ -2203,11 +2139,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     var formerParent:DisplayObjectContainer = child.parent;
     if (formerParent && !(formerParent is Loader)) {
       formerParent.removeChild(child);
-    }
-
-    // If there is an overlay, place the child underneath it.
-    if (effectOverlayReferenceCount && child != effectOverlay) {
-      index = Math.min(index, Math.max(0, super.numChildren - 1));
     }
 
     addingChild(child);
@@ -2229,23 +2160,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     return child;
   }
 
-  override public function setChildIndex(child:DisplayObject, newIndex:int):void {
-    // Place the child underneath the overlay.
-    if (effectOverlayReferenceCount && child != effectOverlay) {
-      newIndex = Math.min(newIndex, Math.max(0, super.numChildren - 2));
-    }
-
-    super.setChildIndex(child, newIndex);
-  }
-
-  mx_internal final function $removeChildAt(index:int):DisplayObject {
-    return super.removeChildAt(index);
-  }
-
-  mx_internal final function $setChildIndex(child:DisplayObject, index:int):void {
-    super.setChildIndex(child, index);
-  }
-
   /**
    * В Flex UIComponent он как mx_internal и используется в mx.states.RemoveChild
    */
@@ -2264,7 +2178,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
     // systemManager getter tries to set the internal _systemManager varaible if it is null. Hence a call to the getter is necessary.
     // Stage can be null when an untrusted application is loaded by an application that isn't on stage yet.
-    if (systemManager != null && (_systemManager.stage != null || usingBridge)) {
+    if (systemManager != null && (_systemManager.stage != null)) {
       if (methodQueue != null && methodQueue.length > 0 && (flags & LISTENING_FOR_RENDER) == 0) {
         _systemManager.addEventListener(FlexEvent.RENDER, callLaterDispatcher);
         _systemManager.addEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
@@ -2305,22 +2219,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
       InteractiveObject(child).doubleClickEnabled = true;
     }
 
-    // Sets up the inheritingStyles and nonInheritingStyles objects and their proto chains so that getStyle() works.
-    // If this object already has some children, then reinitialize the children's proto chains.
-    if (child is IStyleClient) {
-      IStyleClient(child).regenerateStyleCache(true);
-    }
-
-    if (child is ISimpleStyleClient) {
-      ISimpleStyleClient(child).styleChanged(null);
-    }
-
-    if (child is IStyleClient) {
-      IStyleClient(child).notifyStyleChangeInChildren(null, true);
-    }
-
     if (child is UIComponent) {
-      UIComponent(child).initThemeColor();
       UIComponent(child).stylesInitialized();
     }
   }
@@ -2433,6 +2332,10 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     p.invalidateDisplayList();
   }
 
+  protected final function get displayListInvalid():Boolean {
+    return (flags & INVALID_DISPLAY_LIST) != 0;
+  }
+
   public final function invalidateDisplayList():void {
     if ((flags & INVALID_DISPLAY_LIST) == 0) {
       flags |= INVALID_DISPLAY_LIST;
@@ -2516,7 +2419,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     var sm:ISystemManager = systemManager;
 
     // Stage can be null when an untrusted application is loaded by an application that isn't on stage yet.
-    if (sm != null && (sm.stage != null || usingBridge)) {
+    if (sm != null && (sm.stage != null)) {
       if ((flags & LISTENING_FOR_RENDER) == 0) {
         // trace("  added");
         sm.addEventListener(FlexEvent.RENDER, callLaterDispatcher);
@@ -2828,9 +2731,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
       updateDisplayList(width, height);
 
       flags &= ~INVALID_DISPLAY_LIST;
-
-      // LAYOUT_DEBUG
-      // LayoutManager.debugHelper.addElement(ILayoutElement(this));
     }
     else {
       validateMatrix();
@@ -3080,7 +2980,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   public function setFocus():void {
     var sm:ISystemManager = systemManager;
-    if (sm && (sm.stage || usingBridge)) {
+    if (sm && (sm.stage)) {
       if (UIComponentGlobals.callLaterDispatcherCount == 0) {
         sm.stage.focus = this;
         UIComponentGlobals.nextFocusObject = null;
@@ -3165,7 +3065,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
     // Stage can be null when an untrusted application is loaded by an application
     // that isn't on stage yet.
-    if (sm && (sm.stage || usingBridge) && (flags & LISTENING_FOR_RENDER) != 0) {
+    if (sm && (sm.stage) && (flags & LISTENING_FOR_RENDER) != 0) {
       // trace("  removed");
       sm.removeEventListener(FlexEvent.RENDER, callLaterDispatcher);
       sm.removeEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);

@@ -12,7 +12,7 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
   private var tableView:TableView;
   private var textInsets:Insets;
 
-  private const cells:TextLineLinkedList = new TextLineLinkedList();
+  public const cells:TextLineLinkedList = new TextLineLinkedList();
 
   private var previousEntry:TextLineLinkedListEntry;
 

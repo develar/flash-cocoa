@@ -1,16 +1,23 @@
 package cocoa.plaf.basic {
+import by.blooddy.crypto.image.PNG24Encoder;
+
 import cocoa.Size;
 import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
+import cocoa.tableView.TextLineLinkedListEntry;
 import cocoa.tableView.TextTableColumn;
 
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Shape;
 import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
+import flash.text.engine.TextLine;
+import flash.utils.Dictionary;
+import flash.utils.getDefinitionByName;
 
 public class TableBody extends ListBody {
   private var tableView:TableView;
@@ -24,7 +31,6 @@ public class TableBody extends ListBody {
   private var visibleRowCount:int = -1;
 
   private var oldWidth:Number = 0;
-  private var oldHeight:Number = 0;
 
   public function TableBody(tableView:TableView, laf:LookAndFeel) {
     this.tableView = tableView;
@@ -69,17 +75,28 @@ public class TableBody extends ListBody {
     return child;
   }
 
-  private function calculateInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number, h:Number):int {
+  private function computeInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number, h:Number):int {
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     const remainderSpace:int = availableSpace % rowHeightWithSpacing;
     return remainderSpace > 0 ? (rowHeightWithSpacing - remainderSpace) : 0;
   }
 
   override protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
+    if (displayListInvalid) {
+      // updateDisplayList responsible for
+
+      var m:String = "skip verticalScrollPositionChanged " + delta;
+      var bitmapData:BitmapData = new BitmapData(parent.width, parent.height, false);
+      bitmapData.draw(parent);
+      getDefinitionByName("cocoa.plaf.aqua.demo.Main").dd(m, PNG24Encoder.encode(bitmapData));
+      bitmapData.dispose();
+      trace(m);
+    }
+
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
     background.y = _verticalScrollPosition - invisibleFirstRowPartTop - (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0 ? 0 : rowHeightWithSpacing);
 
-    if (oldHeight != height) {
+    if (displayListInvalid) {
       // updateDisplayList responsible for
       return;
     }
@@ -93,7 +110,7 @@ public class TableBody extends ListBody {
     }
 
     const oldInvisibleFirstRowPartTop:Number = oldVerticalScrollPosition % rowHeightWithSpacing;
-    var removedRowCountDelta:int = (delta + (delta > 0 ? oldInvisibleFirstRowPartTop : -calculateInvisibleLastRowPartBottom(oldInvisibleFirstRowPartTop, height))) / rowHeightWithSpacing;
+    var removedRowCountDelta:int = (delta + (delta > 0 ? oldInvisibleFirstRowPartTop : -computeInvisibleLastRowPartBottom(oldInvisibleFirstRowPartTop, height))) / rowHeightWithSpacing;
     if (removedRowCountDelta > visibleRowCount || removedRowCountDelta <= -visibleRowCount) {
       removedRowCountDelta = visibleRowCount;
     }
@@ -144,9 +161,28 @@ public class TableBody extends ListBody {
     for each (var column:TextTableColumn in tableView.columns) {
       column.cc(visibleRowCount);
     }
+
+    var i:int = numChildren - 1;
+    var map:Dictionary = new Dictionary();
+    while (i > 0) {
+      var line:TextLine = TextLine(getChildAt(i--));
+      var xx:Vector.<Number> = map[line.y];
+      if (xx == null) {
+        xx = new Vector.<Number>(1);
+        xx[0] = line.x;
+        map[line.y] = xx;
+      }
+      else if (xx.length > 1) {
+        //throw new IllegalOperationError();
+        trace("FUCJJJ");
+      }
+      else {
+        xx[1] = line.x;
+      }
+    }
   }
 
-  private function calculateMaxVisibleRowCount(h:Number):int {
+  private function computeMaxVisibleRowCount(h:Number):int {
     var remainder:Number = h % rowHeightWithSpacing;
     // если остаток более 1, значит таблица не содержит всегда константное число видимых строк —
     // если первый занимает мало пикселей и последний занимает мало пикселей (в сумме равное remainder),
@@ -155,6 +191,11 @@ public class TableBody extends ListBody {
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
+    var tail:TextLineLinkedListEntry = TextTableColumn(tableView.columns[0]).cells.tail;
+    if (tail != null && tail.line.userData != "Duquesne") {
+      trace("dfd");
+    }
+
     if (clipAndEnableScrolling) {
       scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, w, h);
     }
@@ -164,21 +205,20 @@ public class TableBody extends ListBody {
       calculateColumnWidth(w);
     }
 
-    drawBackground(w, calculateMaxVisibleRowCount(h));
+    drawBackground(w, computeMaxVisibleRowCount(h));
 
     if (oldHeight == h) {
       return;
     }
 
-    oldHeight = h;
+    var heightDelta:Number = h - oldHeight;
+
+
+    trace("updateDisplayList " + heightDelta);
 
     if (visibleRowCount != -1) {
-      var head:Boolean;
-      if (h == (contentHeight - verticalScrollPosition)) {
-        head = true;
-      }
-
       const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
+
       const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
       var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
       const remainderSpace:int = availableSpace % rowHeightWithSpacing;
@@ -187,17 +227,64 @@ public class TableBody extends ListBody {
       }
 
       const visibleRowCountDelta:int = newVisibleRowCount - visibleRowCount;
-      if (visibleRowCountDelta != 0) {
-        visibleRowCount = newVisibleRowCount;
-        adjustRows(visibleRowCountDelta < 0 ? visibleRowCountDelta : 0, visibleRowCountDelta > 0 ? visibleRowCountDelta : 0, head, invisibleFirstRowPartTop);
+      if (visibleRowCountDelta == 0) {
+        oldHeight = h;
+        return;
+      }
+
+      visibleRowCount = newVisibleRowCount;
+      
+      // если высота увеличилась и при этом мы достигли конца данных (то есть больше нет строк для отображения вниз (verticalScrollPosition установлен в максимум, а максимум это наш contentHeight - height)),
+      // то мы должны добавить строки как в конец (должны проверить остаток неотображенных строк в конце), так и в начало
+      if (heightDelta > 0 && h == (contentHeight - verticalScrollPosition)) {
+        const startRowIndex:int = oldVerticalScrollPosition / rowHeightWithSpacing;
+        const startRowIndex:int = computeEndIndex(oldHeight, oldVerticalScrollPosition);
+        if ((TextTableColumn(tableView.columns[0]).cells.tail.line.userData != tableView.dataSource.getStringValue(tableView.columns[0], startRowIndex - 1))) {
+          trace("FIIIIIII");
+        }
+        const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
+        const addedToTailRowCount:int = endRowIndex - startRowIndex;
+        if (addedToTailRowCount != 0) {
+          var relativeRowIndex:int = visibleRowCount - addedToTailRowCount;
+          drawCells(_verticalScrollPosition + ((relativeRowIndex - 1) * rowHeightWithSpacing) + rowHeightWithSpacing - invisibleFirstRowPartTop, startRowIndex, endRowIndex, false);
+        }
+
+        const addedToHeadRowCount:int = visibleRowCountDelta - addedToTailRowCount;
+        trace(startRowIndex, endRowIndex, addedToHeadRowCount);
+        if (addedToHeadRowCount != 0) {
+          adjustRows(0, addedToHeadRowCount, true, invisibleFirstRowPartTop);
+        }
+      }
+      else {
+        adjustRows(visibleRowCountDelta < 0 ? visibleRowCountDelta : 0, visibleRowCountDelta > 0 ? visibleRowCountDelta : 0, false, invisibleFirstRowPartTop);
+
+        //if (head && (TextTableColumn(tableView.columns[0]).cells.tail.line.y + 4 - _verticalScrollPosition) != h) {
+        //  trace("PRE FFFFFF");
+        //}
+        //if (head && TextTableColumn(tableView.columns[0]).cells.tail.line.userData != "Duquesne") {
+        //  trace("PRE FFFFFF 32");
+        //}
+        //if (head && TextTableColumn(tableView.columns[0]).cells.tail.line.userData == "Duquesne") {
+        //  trace("LAST!!!!!");
+        //}
       }
     }
     else {
-      const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
-      const endRowIndex:int = Math.ceil((h + _verticalScrollPosition) / rowHeightWithSpacing);
-      visibleRowCount = endRowIndex - startRowIndex;
-      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
+      initialDrawCells(h);
     }
+
+    oldHeight = h;
+  }
+
+  private function initialDrawCells(h:Number):void {
+    const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
+    const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
+    visibleRowCount = endRowIndex - startRowIndex;
+    drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
+  }
+
+  private function computeEndIndex(h:Number, verticalScrollPosition:Number):Number {
+    return Math.ceil((h + verticalScrollPosition) / rowHeightWithSpacing);
   }
 
   private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, head:Boolean):void {

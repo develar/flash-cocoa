@@ -9,6 +9,9 @@ import spark.core.NavigationUnit;
 
 public class ListBody extends AbstractView implements IViewport {
   protected var rowHeightWithSpacing:Number;
+  protected var oldHeight:Number = 0;
+
+  protected var oldVerticalScrollPosition:Number = 0;
 
   protected var _clipAndEnableScrolling:Boolean;
   public function get clipAndEnableScrolling():Boolean {
@@ -58,11 +61,13 @@ public class ListBody extends AbstractView implements IViewport {
       return;
     }
 
-    var oldVerticalScrollPosition:Number = _verticalScrollPosition;
+    oldVerticalScrollPosition = _verticalScrollPosition;
     var delta:Number = value - oldVerticalScrollPosition;
     _verticalScrollPosition = value;
 
-    scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
+    if (!displayListInvalid) {
+      scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
+    }
     verticalScrollPositionChanged(delta, oldVerticalScrollPosition);
   }
 
@@ -82,12 +87,13 @@ public class ListBody extends AbstractView implements IViewport {
     switch (navigationUnit) {
       case NavigationUnit.DOWN:
       case NavigationUnit.PAGE_DOWN:
-        return rowHeightWithSpacing;
+        //return rowHeightWithSpacing;
+        return 15;
 
       case NavigationUnit.UP:
       case NavigationUnit.PAGE_UP:
-        return -rowHeightWithSpacing;
-        //return -15;
+        //return -rowHeightWithSpacing;
+        return -15;
 
       default:
         return 0;
