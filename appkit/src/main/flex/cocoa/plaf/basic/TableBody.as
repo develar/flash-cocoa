@@ -51,13 +51,18 @@ public class TableBody extends ListBody {
   private function dataSourceResetHandler():void {
     _verticalScrollPosition = 0;
     _horizontalScrollPosition = 0;
+    background.y = 0;
+    dispatchPropertyChangeEvent("verticalScrollPosition", -1, 0);
+    dispatchPropertyChangeEvent("horizontalScrollPosition", -1, 0);
     visibleRowCount = -visibleRowCount - 1;
+    invalidateSize();
     invalidateDisplayList();
   }
 
   override protected function measure():void {
     measuredMinHeight = tableView.minRowCount * rowHeightWithSpacing;
     _contentHeight = Math.max(dataSource.rowCount, tableView.minRowCount) * rowHeightWithSpacing;
+    dispatchPropertyChangeEvent("contentHeight", -1, _contentHeight);
     measuredHeight = _contentHeight;
 
     var minWidth:Number = 0;

@@ -29,6 +29,9 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
   }
 
   private var _container:DisplayObjectContainer;
+  public function get container():DisplayObjectContainer {
+    return _container;
+  }
   public function set container(value:DisplayObjectContainer):void {
     _container = value;
   }

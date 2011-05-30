@@ -1,23 +1,10 @@
 package cocoa.tableView {
 import flash.errors.IllegalOperationError;
-import flash.text.engine.TextLine;
 
 public class TextLineLinkedList {
   public var head:TextLineLinkedListEntry;
   public var tail:TextLineLinkedListEntry;
   public var size:int;
-
-  private const pool:Vector.<TextLineLinkedListEntry> = new Vector.<TextLineLinkedListEntry>(32, true);
-  private var poolSize:int;
-
-  private function addToPool(o:TextLineLinkedListEntry):void {
-    if (poolSize == pool.length) {
-      pool.fixed = false;
-      pool.length = poolSize << 1;
-      pool.fixed = true;
-    }
-    pool[poolSize++] = o;
-  }
 
   public function removeFirst():TextLineLinkedListEntry {
     var o:TextLineLinkedListEntry = head;
@@ -33,7 +20,7 @@ public class TextLineLinkedList {
       tail = null;
     }
 
-    addToPool(o);
+    o.addToPool();
     return o;
   }
 
@@ -51,7 +38,7 @@ public class TextLineLinkedList {
       head = null;
     }
 
-    addToPool(o);
+    o.addToPool();
     return o;
   }
 
@@ -107,17 +94,6 @@ public class TextLineLinkedList {
       entry.previous = p;
       current.previous = entry;
       size++;
-    }
-  }
-
-  public function create(line:TextLine):TextLineLinkedListEntry {
-    if (poolSize == 0) {
-      return new TextLineLinkedListEntry(line);
-    }
-    else {
-      var entry:TextLineLinkedListEntry = pool[--poolSize];
-      entry.line = line;
-      return entry;
     }
   }
 }
