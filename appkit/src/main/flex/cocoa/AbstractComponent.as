@@ -135,9 +135,16 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
     layoutMetrics.height = value;
   }
 
-  public function createView(laf:LookAndFeel):Skin {
+  public final function createView(laf:LookAndFeel):Skin {
+    _lafKey = _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
+    if (laf.controlSize != null) {
+      _lafKey = laf.controlSize + "." + _lafKey;
+    }
+
+    preSkinCreate(laf);
+
     if (_skinClass == null) {
-      _skinClass = laf.getClass(lafKey);
+      _skinClass = laf.getClass(_lafKey);
     }
     _skin = new _skinClass();
     _skinClass = null;
@@ -151,13 +158,14 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
       layoutMetrics = null;
     }
     _skin.attach(this, laf);
-    skinAttachedHandler();
+    skinAttached();
     listenSkinParts(_skin);
     return _skin;
   }
 
+  private var _lafKey:String;
   public final function get lafKey():String {
-    return _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
+    return _lafKey;
   }
 
   protected var _lafSubkey:String;
@@ -169,7 +177,11 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
     throw new Error("abstract");
   }
 
-  protected function skinAttachedHandler():void {
+  protected function preSkinCreate(laf:LookAndFeel):void {
+
+  }
+
+  protected function skinAttached():void {
 
   }
 

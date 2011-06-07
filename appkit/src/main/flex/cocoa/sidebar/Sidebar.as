@@ -4,7 +4,6 @@ import cocoa.ViewContainer;
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 import cocoa.sidebar.events.MultipleSelectionChangeEvent;
-import cocoa.sidebar.events.SidebarEvent;
 import cocoa.ui;
 
 import flash.utils.Dictionary;
@@ -64,7 +63,7 @@ public class Sidebar extends Bar {
     }
   }
 
-  private function isEmpty(v:Vector.<int>):Boolean {
+  public static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
   }
 
@@ -89,21 +88,20 @@ public class Sidebar extends Bar {
 
     pane.title = paneMetadata.localizedTitle;
 
-    pane.addEventListener(SidebarEvent.HIDE_PANE, hidePaneHandler);
-    pane.addEventListener(SidebarEvent.HIDE_SIDE, hideSideHandler);
+    pane.paneHid.add(hidePaneHandler);
+    pane.sideHid.add(hideSideHandler);
 
     if (paneGroup != null) {
       paneGroup.addSubview(pane);
     }
   }
 
-  private function hidePaneHandler(event:SidebarEvent):void {
-    var pane:Panel = Panel(event.currentTarget);
+  private function hidePaneHandler(pane:Panel):void {
     assert(!pane.hidden);
     typedPaneLabelBar.adjustSelectionIndices(paneGroup.getSubviewIndex(pane), false);
   }
 
-  private function hideSideHandler(event:SidebarEvent):void {
+  private function hideSideHandler():void {
     selectedIndices = null;
   }
 

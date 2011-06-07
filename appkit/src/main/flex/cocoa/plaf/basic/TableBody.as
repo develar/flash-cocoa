@@ -1,5 +1,4 @@
 package cocoa.plaf.basic {
-import cocoa.Size;
 import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
@@ -10,9 +9,10 @@ import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Shape;
 import flash.errors.IllegalOperationError;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.engine.TextLine;
-import flash.utils.Dictionary;
+import flash.utils.Dictionary
 
 public class TableBody extends ListBody {
   private var tableView:TableView;
@@ -27,11 +27,14 @@ public class TableBody extends ListBody {
 
   private var oldWidth:Number = 0;
 
+  private var intercellSpacing:Point;
+
   public function TableBody(tableView:TableView, laf:LookAndFeel) {
     this.tableView = tableView;
     this.laf = laf;
     this.rowHeight = tableView.rowHeight;
-    rowHeightWithSpacing = rowHeight + tableView.intercellSpacing.height;
+    intercellSpacing = laf.getPoint(tableView.lafKey + ".intercellSpacing");
+    rowHeightWithSpacing = rowHeight + intercellSpacing.y;
     dataSource = tableView.dataSource;
 
     for each (var column:TableColumn in tableView.columns) {
@@ -70,7 +73,7 @@ public class TableBody extends ListBody {
       minWidth += column.minWidth;
     }
 
-    measuredMinWidth = minWidth + (tableView.columns.length - 1) * tableView.intercellSpacing.width;
+    measuredMinWidth = minWidth + (tableView.columns.length - 1) * intercellSpacing.x;
     measuredWidth = 0;
   }
 
@@ -263,7 +266,12 @@ public class TableBody extends ListBody {
     const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
     const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
     visibleRowCount = endRowIndex - startRowIndex;
-    drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
+    if (visibleRowCount != 0) {
+      drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
+    }
+    else {
+      visibleRowCount = -1;
+    }
   }
 
   private function computeEndIndex(h:Number, verticalScrollPosition:Number):Number {
@@ -271,8 +279,7 @@ public class TableBody extends ListBody {
   }
 
   private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, head:Boolean):void {
-    const intercellSpacing:Size = tableView.intercellSpacing;
-    startY += intercellSpacing.height / 2;
+    startY += intercellSpacing.y / 2;
     endRowIndex = Math.min(endRowIndex, tableView.dataSource.rowCount);
 
     const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
@@ -289,7 +296,7 @@ public class TableBody extends ListBody {
         y += rowHeightWithSpacing;
       }
 
-      x += column.actualWidth + intercellSpacing.width;
+      x += column.actualWidth + intercellSpacing.x;
       column.postLayout();
     }
   }
@@ -317,7 +324,7 @@ public class TableBody extends ListBody {
       var column:TableColumn = columns[i];
       var calculatedWidth:Number = column.width;
       if (calculatedWidth != calculatedWidth) {
-        column.actualWidth = w - tableView.columns[0].width - tableView.intercellSpacing.width;
+        column.actualWidth = w - tableView.columns[0].width - intercellSpacing.x;
       }
       else {
         column.actualWidth = calculatedWidth;

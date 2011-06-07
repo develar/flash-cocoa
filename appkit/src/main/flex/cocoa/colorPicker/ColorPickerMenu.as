@@ -1,7 +1,6 @@
 package cocoa.colorPicker {
 import cocoa.Menu;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 import cocoa.resources.ResourceManager;
 import cocoa.ui;
 
@@ -63,10 +62,8 @@ public class ColorPickerMenu extends Menu {
     itemGroup.dataProvider = _items;
   }
 
-  override public function createView(laf:LookAndFeel):Skin {
+  override protected function preSkinCreate(laf:LookAndFeel):void {
     this.laf = laf;
-
-    return super.createView(laf);
   }
 
   private function itemRendererFunction(item:int):IFactory {

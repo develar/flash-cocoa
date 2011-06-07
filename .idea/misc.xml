@@ -48,6 +48,11 @@
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
+    <option name="activeProfiles">
+      <list>
+        <option value="allP" />
+      </list>
+    </option>
   </component>
   <component name="ProjectKey">
     <option name="state" value="project://default" />

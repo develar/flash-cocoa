@@ -42,10 +42,10 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
   /**
    * Maps from renderer index (same as dataProvider index) to the item renderer itself.
    */
-  private var indexToRenderer:Vector.<IVisualElement> = new Vector.<IVisualElement>(); 
-    
+  private var indexToRenderer:Vector.<IVisualElement> = new Vector.<IVisualElement>();
+
   /**
-   * The set of layout element indices requested with getVirtualElementAt() 
+   * The set of layout element indices requested with getVirtualElementAt()
    * during updateDisplayList(), and the set of "old" indices that were requested
    * in the previous pass.  These vectors are used by finishVirtualLayout()
    * to distinguish IRs that can be recycled or discarded. The virtualRendererIndices
@@ -53,20 +53,20 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
    */
   private var virtualRendererIndices:Vector.<int>;
   private var oldVirtualRendererIndices:Vector.<int>;
-    
+
   /**
-   * During a virtual layout, virtualLayoutUnderway is true. This flag is used 
-   * to defeat calls to invalidateSize(), which occur when IRs are lazily validated.   
+   * During a virtual layout, virtualLayoutUnderway is true. This flag is used
+   * to defeat calls to invalidateSize(), which occur when IRs are lazily validated.
    * See invalidateSize() and updateDisplayList().
    */
   private var virtualLayoutUnderway:Boolean = false;
-    
+
   /**
    * freeRenderers - IRs that were created by getLayoutElementAt() but are no longer in view.
-   * They'll be reused by getLayoutElementAt(). The list is updated by finishVirtualLayout().  
+   * They'll be reused by getLayoutElementAt(). The list is updated by finishVirtualLayout().
    */
   private const freeRenderers:Vector.<IVisualElement> = new Vector.<IVisualElement>();
-  
+
   /**
    *  True if we are updating a renderer currently.
    *  We keep track of this so we can ignore any dataProvider collectionChange
@@ -84,7 +84,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
   public function FlexDataGroup() {
     _rendererUpdateDelegate = this;
   }
-  
+
   protected var _laf:LookAndFeel;
   public function get laf():LookAndFeel {
     return _laf;
@@ -93,7 +93,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
   public function set laf(value:LookAndFeel):void {
     _laf = value;
   }
-  
+
   override protected function createChildren():void {
     if (layout == null) {
       layout = new VirtualVerticalDataGroupLayout();
@@ -101,7 +101,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
 
     super.childrenCreated();
   }
-  
+
   override public function parentChanged(p:DisplayObjectContainer):void {
     super.parentChanged(p);
 
@@ -146,9 +146,9 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     if (oldLayout && value && (oldLayout.useVirtualLayout != value.useVirtualLayout)) {
       changeUseVirtualLayout();
     }
-    
+
     super.layout = value;
-    
+
     if (value) {
       value.addEventListener("useVirtualLayoutChanged", layout_useVirtualLayoutChangedHandler);
     }
@@ -310,7 +310,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     const renderer:IVisualElement = indexToRenderer[index] as IVisualElement;
     itemRemoved(renderer is IDataRenderer && (itemRenderer != null || itemRendererFunction != null) ? IDataRenderer(renderer).data : renderer, index);
   }
-    
+
   /**
    *  Remove all of the item renderers, clear the indexToRenderer table, clear
    *  any cached virtual layout data.  Note that
@@ -332,7 +332,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       for (var i:int = freeRenderers.length - 1; i >= 0; i--) {
         super.removeChild(freeRenderers[i] as DisplayObject);
       }
-      
+
       freeRenderers.length = 0;
     }
     else {
@@ -360,7 +360,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     }
     return " ";
   }
-    
+
   //noinspection JSUnusedGlobalSymbols
   /**
    *  Return the indices of the item renderers visible within this DataGroup.
@@ -433,7 +433,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       return allIndices;
     }
   }
-    
+
   /**
    * Create the item renderer for the item, if needed.
    *
@@ -481,13 +481,13 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
 
     return null;
   }
-    
-  /** 
-   * If layout.useVirtualLayout=false, then ensure that there's one item 
+
+  /**
+   * If layout.useVirtualLayout=false, then ensure that there's one item
    * renderer for every dataProvider item. This method is only intended to be called by commitProperties().
-   * 
+   *
    *  Reuse as many of the IItemRenderer renderers in indexToRenders as possible.
-   *  Note that if itemRendererFunction was specified, we can reuse any of them. 
+   *  Note that if itemRendererFunction was specified, we can reuse any of them.
    */
   private function createItemRenderers():void {
     if (!dataProvider) {
@@ -534,7 +534,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       itemAdded(dataProvider.getItemAt(index), index);
     }
   }
-    
+
   override protected function commitProperties():void {
     // If the itemRenderer, itemRendererFunction, or useVirtualLayout properties changed,
     // then recreate the item renderers from scratch.  If just the dataProvider changed,
@@ -563,7 +563,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     // GroupBase's commitProperties reattaches the mask
     super.commitProperties();
   }
-    
+
   /**
    *  Sets the renderer's data, owner and label properties.
    *  It does this by calling rendererUpdateDelegate.updateRenderer().
@@ -590,7 +590,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     // good enough.
     renderersBeingUpdated = false;
   }
-    
+
   public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {
     renderer.owner = this;
 
@@ -623,7 +623,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       var temp:Vector.<int> = virtualRendererIndices;
       virtualRendererIndices = oldVirtualRendererIndices;
       virtualRendererIndices.length = 0;
-      
+
       oldVirtualRendererIndices = temp;
     }
   }
@@ -680,7 +680,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       }
     }
   }
-    
+
  /**
    *  During virtual layout getLayoutElementAt() eagerly validates lazily
    *  created (or recycled) IRs.   We don't want changes to those IRs to
@@ -775,7 +775,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
             }
           }
         }
-        
+
         if (renderer == null) {
           renderer = createRendererForItem(item);
           createdIR = true;
@@ -815,7 +815,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
 
     return renderer;
   }
-    
+
   /**
    *  Returns the index of the data provider item
    *  that the specified item renderer
@@ -872,16 +872,16 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       // item renderers, but it's probably not worth it
     }
   }
-    
+
   /**
    *  Adds the itemRenderer for the specified dataProvider item to this DataGroup.
-   * 
+   *
    *  This method is called as needed by the DataGroup implementation,
    *  it should not be called directly.
    *
    *  @param item The item that was added, the value of dataProvider[index].
    *  @param index The index where the dataProvider item was added.
-   *  
+   *
    *  @langversion 3.0
    *  @playerversion Flash 10
    *  @playerversion AIR 1.5
@@ -924,17 +924,17 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     invalidateSize();
     invalidateDisplayList();
   }
-    
+
   /**
    *  Removes the itemRenderer for the specified dataProvider item from this DataGroup.
-   * 
+   *
    *  This method is called as needed by the DataGroup implementation,
    *  it should not be called directly.
    *
    *  @param item The item that is being removed.
-   * 
+   *
    *  @param index The index of the item that is being removed.
-   *  
+   *
    *  @langversion 3.0
    *  @playerversion Flash 10
    *  @playerversion AIR 1.5
@@ -988,7 +988,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     invalidateSize();
     invalidateDisplayList();
   }
-    
+
   private function addItemRendererToDisplayList(child:DisplayObject, index:int = -1):void {
     const childParent:Object = child.parent;
     const overlayCount:int = _overlay ? _overlay.numDisplayObjects : 0;
@@ -1002,7 +1002,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     if (childParent is FlexDataGroup) {
       FlexDataGroup(childParent)._removeChild(child);
     }
-    
+
     super.addChildAt(child, childIndex);
   }
 
@@ -1056,14 +1056,6 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       }
 
       case CollectionEventKind.REFRESH:
-      {
-        // from a filter or sort...let's just reset everything
-        removeDataProviderListener();
-        dataProviderChanged = true;
-        invalidateProperties();
-        break;
-      }
-
       case CollectionEventKind.RESET:
       {
         // reset everything
@@ -1116,13 +1108,13 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     // renderers that are order-dependent (for instance alternatingItemColor)
     resetRenderersIndices();
   }
-    
+
   private function adjustAfterMove(item:Object, location:int, oldLocation:int):void {
     itemRemoved(item, oldLocation);
     itemAdded(item, location);
     resetRenderersIndices();
   }
-  
+
   private function adjustAfterReplace(items:Array, location:int):void {
     var length:int = items.length;
     for (var i:int = length - 1; i >= 0; i--) {

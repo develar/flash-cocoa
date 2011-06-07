@@ -55,7 +55,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
-  public function set verticalScrollPolicy(value:uint):void {
+  public function set verticalScrollPolicy(value:int):void {
     _verticalScrollPolicy = value;
 
     if (_verticalScrollBar != null) {
@@ -64,7 +64,7 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
   }
 
   private var _horizontalScrollPolicy:int = ScrollPolicy.AUTO;
-  public function set horizontalScrollPolicy(value:uint):void {
+  public function set horizontalScrollPolicy(value:int):void {
     _horizontalScrollPolicy = value;
 
     if (_horizontalScrollBar != null) {
@@ -203,7 +203,6 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
     // the preferred size would force it to show, and the current size would not,
     // then use its current size as the measured size. Note that a scrollbar
     // is only shown if the content size is greater than the viewport size by at least SDT.
-
     var contentSize:Point = getLayoutContentSize();
 
     var viewportPreferredW:Number = _documentView.getPreferredBoundsWidth();
@@ -348,11 +347,6 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
         viewportGroup.invalidateSize();
       }
     }
-
-    // setContentSize(w, h);
   }
-
-  //	private var _contentWidth:Number = 0;
-  //	private var _contentHeight:Number = 0;
 }
 }

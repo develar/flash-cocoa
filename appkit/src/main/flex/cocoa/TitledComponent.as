@@ -18,7 +18,7 @@ public class TitledComponent extends AbstractComponent implements TitledPane {
     }
   }
 
-  override protected function skinAttachedHandler():void {
+  override protected function skinAttached():void {
     if (_title != null) {
       TitledComponentSkin(skin).title = _title;
     }

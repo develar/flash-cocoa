@@ -3,7 +3,6 @@ import cocoa.ClassFactory;
 import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.SingletonClassFactory;
-import cocoa.Size;
 import cocoa.border.LinearGradientBorder;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
@@ -24,6 +23,7 @@ import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.SimpleTextLayoutFormat;
 
 import flash.display.BlendMode;
+import flash.geom.Point;
 import flash.text.engine.FontDescription;
 
 import flashx.textLayout.edit.SelectionFormat;
@@ -65,22 +65,12 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
     data["Box"] = BoxSkin;
-    data["TableView"] = TableViewSkin;
-    data["small.TableView"] = TableViewSkin;
-
+    
+    data["TableView"] = data["small.TableView"] = TableViewSkin;
     data["TableView.rowHeight"] = 17;
     data["small.TableView.rowHeight"] = 14;
-
-    var intercellSpacing:Size = new Size(3, 2);
-    data["TableView.intercellSpacing"] = intercellSpacing;
-    data["small.TableView.intercellSpacing"] = intercellSpacing;
-
-    data["TableView.bg"] = intercellSpacing;
-    data["small.TableView.bg"] = intercellSpacing;
-
-    var background:Vector.<uint> = new <uint>[0xffffff, 0xedf3fe];
-    data["TableView.bg"] = background;
-    data["small.TableView.bg"] = background;
+    data["TableView.intercellSpacing"] = data["small.TableView.intercellSpacing"] = new Point(3, 2); // height (y) must be even
+    data["TableView.bg"] = data["small.TableView.bg"] = new <uint>[0xffffff, 0xedf3fe];
 
     data["Toolbar"] = ToolbarSkin;
     data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));
@@ -122,8 +112,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["ScrollBar.h"] = HScrollBarSkin;
     data["ScrollBar.v"] = VScrollBarSkin;
 
-    data["VSeparator"] = SeparatorSkin;
-    data["HSeparator"] = SeparatorSkin;
+    data["VSeparator"] = data["HSeparator"] = SeparatorSkin;
 
     data["NumericStepper"] = NumericStepperSkin;
     data["CheckBox"] = CheckBoxSkin;
@@ -153,6 +142,15 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
       windowFrameLookAndFeel = new WindowFrameLookAndFeel(this);
     }
     return windowFrameLookAndFeel;
+  }
+
+  private var panelLookAndFeel:PanelLookAndFeel;
+  
+  public function createPanelLookAndFeel():PanelLookAndFeel {
+    if (panelLookAndFeel == null) {
+      panelLookAndFeel = new PanelLookAndFeel(this);
+    }
+    return panelLookAndFeel;
   }
 
   private var hudLookAndFeel:HUDLookAndFeel;
@@ -194,6 +192,17 @@ import flash.text.engine.FontWeight;
 import flashx.textLayout.edit.SelectionFormat;
 import flashx.textLayout.formats.LineBreak;
 import flashx.textLayout.formats.TextAlign;
+
+final class PanelLookAndFeel extends AbstractLookAndFeel {
+  public function PanelLookAndFeel(parent:AquaLookAndFeel) {
+    this.parent = parent;
+    data["small.TableView.b"] = null;
+  }
+
+  override public function get controlSize():String {
+    return "small";
+  }
+}
 
 final class WindowFrameLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/frameAssets", mimeType="application/octet-stream")]

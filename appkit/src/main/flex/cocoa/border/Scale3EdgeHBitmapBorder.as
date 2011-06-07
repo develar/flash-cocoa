@@ -33,7 +33,7 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder {
     g.drawRect(rightSliceX, sharedMatrix.ty, lastSize, actualHeight);
     g.endFill();
   }
-
+  
   override protected function initTransient():void {
     size = bitmaps[0].height;
     lastSize = bitmaps[1].width;

@@ -2,20 +2,18 @@
 <Dialog xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:s="library://ns.adobe.com/flex/spark" title="Window with toolbar">
 
 	<fx:Script><![CDATA[
-		import cocoa.plaf.DialogSkin;
-		import cocoa.plaf.basic.BottomBarStyle;
+    import cocoa.plaf.DialogSkin;
+    import cocoa.plaf.basic.BottomBarStyle;
 
     import org.flyti.util.ArrayList;
 
     private static const testData:ArrayList = new ArrayList(new <Object>["Item 1", "Item 2", "Item 3"]);
 
-		override protected function skinAttachedHandler():void
-		{
-			DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
-			super.skinAttachedHandler();
-		}
-
-		]]></fx:Script>
+    override protected function skinAttached():void {
+      DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
+      super.skinAttached();
+    }
+    ]]></fx:Script>
 
 	<toolbar>
 		<Toolbar>

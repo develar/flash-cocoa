@@ -5,6 +5,7 @@ import cocoa.plaf.CursorData;
 import cocoa.plaf.LookAndFeel;
 import cocoa.text.TextFormat;
 
+import flash.geom.Point;
 import flash.utils.Dictionary;
 
 import flashx.textLayout.edit.SelectionFormat;
@@ -25,10 +26,17 @@ public class AbstractLookAndFeel implements LookAndFeel {
   public function set parent(value:LookAndFeel):void {
     _parent = value;
   }
+  
+  public function get controlSize():String {
+    return null;
+  }
 
   public function getBorder(key:String, nullable:Boolean = false):Border {
-    var value:Object = data[key];
-    if (value != null) {
+    var value:* = data[key];
+    if (nullable && value === null) {
+      return null;
+    }
+    else if (value != null) {
       return Border(value is Border ? value : DeferredInstanceFromClass(value).getInstance());
     }
     else if (_parent == null) {
@@ -57,6 +65,19 @@ public class AbstractLookAndFeel implements LookAndFeel {
     }
   }
 
+  public function getPoint(key:String):Point {
+    var value:Point = data[key];
+    if (value != null) {
+      return value;
+    }
+    else if (_parent == null) {
+      throw new ArgumentError("Unknown " + key);
+    }
+    else {
+      return _parent.getPoint(key);
+    }
+  }
+
   public function getInt(key:String):int {
     var value:* = data[key];
     if (value != undefined) {
@@ -67,6 +88,24 @@ public class AbstractLookAndFeel implements LookAndFeel {
     }
     else {
       return _parent.getInt(key);
+    }
+  }
+
+  public function getString(key:String, nullable:Boolean = false):String {
+    var value:String = data[key];
+    if (value != null) {
+      return value;
+    }
+    else if (_parent == null) {
+      if (nullable) {
+        return null;
+      }
+      else {
+        throw new ArgumentError("Unknown " + key);
+      }
+    }
+    else {
+      return _parent.getString(key, false);
     }
   }
 

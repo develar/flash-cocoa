@@ -10,6 +10,11 @@ import spark.layouts.supportClasses.LayoutBase;
  * SidebarLayout don't measure — sidebar size explicitly determined by skin
  */
 public class SidebarLayout extends LayoutBase implements AdvancedLayout {
+  private var _gap:Number = 0;
+  public function set gap(value:Number):void {
+    _gap = value;
+  }
+
   override public function updateDisplayList(width:Number, height:Number):void {
     var layoutTarget:GroupBase = target;
     var numElements:int = layoutTarget.numElements;
@@ -25,8 +30,9 @@ public class SidebarLayout extends LayoutBase implements AdvancedLayout {
       }
     }
 
-    const elementHeight:Number = Math.round(height / numActiveElements);
-    var firstElementHeight:Number = elementHeight + (height - (elementHeight * numActiveElements));
+    const totalElementH:Number = height - (_gap * (numActiveElements - 1));
+    const elementHeight:Number = Math.round(totalElementH / numActiveElements);
+    var firstElementHeight:Number = elementHeight + (totalElementH - (elementHeight * numActiveElements));
     var efffectiveElementHeight:Number;
     var y:Number = 0;
     for (i = 0; i < numElements; i++) {
@@ -36,7 +42,7 @@ public class SidebarLayout extends LayoutBase implements AdvancedLayout {
       }
 
       layoutElement.setLayoutBoundsPosition(0, y);
-      if (!isNaN(firstElementHeight)) {
+      if (firstElementHeight == firstElementHeight) {
         efffectiveElementHeight = firstElementHeight;
         firstElementHeight = NaN;
       }
@@ -45,7 +51,7 @@ public class SidebarLayout extends LayoutBase implements AdvancedLayout {
       }
 
       layoutElement.setLayoutBoundsSize(width, efffectiveElementHeight);
-      y += efffectiveElementHeight;
+      y += efffectiveElementHeight + _gap;
     }
   }
 

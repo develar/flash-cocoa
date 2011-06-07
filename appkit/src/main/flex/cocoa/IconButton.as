@@ -1,7 +1,6 @@
 package cocoa {
 import cocoa.plaf.IconButtonSkin;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 
 public class IconButton extends PushButton {
   override protected function get primaryLaFKey():String {
@@ -38,18 +37,16 @@ public class IconButton extends PushButton {
     }
   }
 
-  override protected function skinAttachedHandler():void {
-    super.skinAttachedHandler();
+  override protected function skinAttached():void {
+    super.skinAttached();
 
     IconButtonSkin(skin).icon = _icon;
   }
 
-  override public function createView(laf:LookAndFeel):Skin {
+  override protected function preSkinCreate(laf:LookAndFeel):void {
     if (_iconId != null) {
       _icon = laf.getIcon(_iconId);
     }
-
-    return super.createView(laf);
   }
 }
 }

@@ -3,6 +3,7 @@ import cocoa.Border;
 import cocoa.Icon;
 import cocoa.text.TextFormat;
 
+import flash.geom.Point;
 import flash.utils.Dictionary;
 
 import flashx.textLayout.edit.SelectionFormat;
@@ -35,6 +36,11 @@ public interface LookAndFeel {
 
   function getObject(key:String):Object;
 
+  function getPoint(key:String):Point;
+
   function getInt(key:String):int;
+  function getString(key:String, nullable:Boolean = false):String;
+
+  function get controlSize():String;
 }
 }

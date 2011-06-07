@@ -7,7 +7,7 @@ import cocoa.plaf.TitledComponentSkin;
 public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.TitledComponentSkin {
   protected var labelHelper:LabelHelper;
 
-  protected function get titleTextFormatID():String {
+  protected function get titleTextFormatId():String {
     return TextFormatId.SYSTEM;
   }
 
@@ -17,7 +17,7 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
         return;
       }
 
-      labelHelper = new LabelHelper(this, laf == null ? null : laf.getTextFormat(titleTextFormatID));
+      labelHelper = new LabelHelper(this, laf == null ? null : laf.getTextFormat(titleTextFormatId));
     }
     else if (value == labelHelper.text) {
       return;
@@ -33,7 +33,7 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
     super.createChildren();
 
     if (labelHelper != null) {
-      labelHelper.textFormat = laf.getTextFormat(titleTextFormatID);
+      labelHelper.textFormat = laf.getTextFormat(titleTextFormatId);
     }
   }
 }

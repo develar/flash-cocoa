@@ -5,7 +5,6 @@ import cocoa.Viewable;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 import cocoa.plaf.TabViewSkin;
 import cocoa.ui;
 
@@ -80,11 +79,10 @@ public class TabView extends SingleSelectionBar {
     _style = value;
   }
 
-  override public function createView(laf:LookAndFeel):Skin {
+  override protected function preSkinCreate(laf:LookAndFeel):void {
     if (_skinClass == null) {
       _skinClass = laf.getClass(_style == DEFAULT ? lafKey : (lafKey + ".borderless"));
     }
-    return super.createView(laf);
   }
 }
 }

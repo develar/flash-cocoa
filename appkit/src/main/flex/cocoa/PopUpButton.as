@@ -1,9 +1,8 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.basic.PopUpMenuController;
-import cocoa.plaf.Skin;
 import cocoa.plaf.TitledComponentSkin;
+import cocoa.plaf.basic.PopUpMenuController;
 
 import flash.events.Event;
 
@@ -45,11 +44,8 @@ public class PopUpButton extends AbstractControl implements LookAndFeelProvider 
     }
   }
 
-  override public final function createView(laf:LookAndFeel):Skin {
-    super.createView(laf);
+  override protected function preSkinCreate(laf:LookAndFeel):void {
     _laf = laf;
-    PopUpMenuController(laf.getFactory(lafKey + ".menuController", false).newInstance()).register(this);
-    return skin;
   }
 
   public function get selectedItem():Object {
@@ -95,9 +91,10 @@ public class PopUpButton extends AbstractControl implements LookAndFeelProvider 
     }
   }
 
-  override protected function skinAttachedHandler():void {
-    super.skinAttachedHandler();
+  override protected function skinAttached():void {
+    super.skinAttached();
 
+    PopUpMenuController(laf.getFactory(lafKey + ".menuController", false).newInstance()).register(this);
     if (_menu != null) {
       synchronizeTitleAndSelectedItem();
     }

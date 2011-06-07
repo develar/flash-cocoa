@@ -28,9 +28,9 @@
       return factory;
     }
 
-    override protected function skinAttachedHandler():void {
+    override protected function skinAttached():void {
       DialogSkin(skin).bottomBarStyle = BottomBarStyle.application;
-      super.skinAttachedHandler();
+      super.skinAttached();
     }
 
     private function changeListDataProvder():void {

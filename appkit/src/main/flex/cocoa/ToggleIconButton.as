@@ -1,7 +1,6 @@
 package cocoa {
 import cocoa.plaf.IconButtonSkin;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 
 public class ToggleIconButton extends IconButton implements ToggleButton {
   override protected function get toggled():Boolean {
@@ -29,16 +28,16 @@ public class ToggleIconButton extends IconButton implements ToggleButton {
     }
   }
 
-  override public function createView(laf:LookAndFeel):Skin {
+  override protected function preSkinCreate(laf:LookAndFeel):void {
+    super.preSkinCreate(laf);
+    
     if (_alternateIconId != null) {
       _alternateIcon = laf.getIcon(_alternateIconId);
     }
-
-    return super.createView(laf);
   }
 
-  override protected function skinAttachedHandler():void {
-    super.skinAttachedHandler();
+  override protected function skinAttached():void {
+    super.skinAttached();
   }
 
   override public function set state(value:int):void {

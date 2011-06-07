@@ -29,8 +29,8 @@ public class SidebarPaneLabelBar extends SelectableDataGroup {
     var i:int;
     var n:int;
 
-    if (!isEmpty(selectedIndices)) {
-      if (isEmpty(proposedSelectedIndices)) {
+    if (!Sidebar.isEmpty(selectedIndices)) {
+      if (Sidebar.isEmpty(proposedSelectedIndices)) {
         // Going to a null selection, remove all
         removedItems = _selectedIndices;
       }
@@ -51,7 +51,7 @@ public class SidebarPaneLabelBar extends SelectableDataGroup {
         }
       }
     }
-    else if (!isEmpty(proposedSelectedIndices)) {
+    else if (!Sidebar.isEmpty(proposedSelectedIndices)) {
       // Going from a null selection, add all
       addedItems = proposedSelectedIndices;
     }
@@ -77,7 +77,7 @@ public class SidebarPaneLabelBar extends SelectableDataGroup {
   }
 
   public function adjustSelectionIndices(paneIndex:int, selected:Boolean):void {
-    if (isEmpty(selectedIndices)) {
+    if (Sidebar.isEmpty(selectedIndices)) {
       assert(selected);
       _selectedIndices = new <int>[paneIndex];
     }
@@ -100,10 +100,6 @@ public class SidebarPaneLabelBar extends SelectableDataGroup {
 
     var eventIndices:Vector.<int> = new <int>[paneIndex];
     dispatchEvent(new MultipleSelectionChangeEvent(selected ? eventIndices : null, selected ? null : eventIndices));
-  }
-
-  private function isEmpty(v:Vector.<int>):Boolean {
-    return v == null || v.length == 0;
   }
 }
 }

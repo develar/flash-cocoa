@@ -31,14 +31,14 @@
         <MavenRunnerParameters>
           <option name="goals">
             <list>
-              <option value="install" />
+              <option value="compile" />
               <option value="-o" />
             </list>
           </option>
           <option name="profiles">
             <set />
           </option>
-          <option name="workingDirPath" value="$PROJECT_DIR$/aquaLaF" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/../idea/flex/tools/flex-ui-designer/plaf/aqua" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

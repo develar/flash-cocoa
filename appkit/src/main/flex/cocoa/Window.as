@@ -2,16 +2,14 @@ package cocoa {
 import cocoa.pane.TitledPane;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.Skin;
 import cocoa.plaf.WindowSkin;
 
 import flash.events.Event;
-import flash.events.IEventDispatcher;
 
 import org.flyti.plexus.Injectable;
 
 [DefaultProperty("mxmlContent")]
-public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable, IEventDispatcher {
+public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable {
   protected var mySkin:WindowSkin;
   protected var flags:uint = RESIZABLE | CLOSABLE;
 
@@ -64,8 +62,8 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
     dispatchEvent(new Event(Event.CLOSE));
   }
 
-  override protected function skinAttachedHandler():void {
-    super.skinAttachedHandler();
+  override protected function skinAttached():void {
+    super.skinAttached();
 
     mySkin = WindowSkin(skin);
 
@@ -98,7 +96,7 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
       }
     }
 
-    super.skinAttachedHandler();
+    super.skinAttached();
   }
 
   private var _contentView:Viewable;
@@ -119,12 +117,10 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
     _laf = value;
   }
 
-  override public function createView(laf:LookAndFeel):Skin {
+  override protected function preSkinCreate(laf:LookAndFeel):void {
     if (_laf == null) {
       _laf = laf;
     }
-
-    return super.createView(laf);
   }
 }
 }

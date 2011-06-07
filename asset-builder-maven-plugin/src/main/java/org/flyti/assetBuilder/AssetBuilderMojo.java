@@ -232,12 +232,12 @@ public class AssetBuilderMojo extends AbstractMojo {
         final BufferedImage[] sourceImages = border.appleResource == null ? imageRetriever.getImages(key) : imageRetriever.getImagesFromAppleResources(border.appleResource);
         if (border.type == BorderType.Scale3EdgeH) {
           if (border.appleResource == null) {
-            if ((sourceImages[0].getWidth() == sourceImages[1].getWidth())) {
+            if (sourceImages.length == 1 || sourceImages[0].getWidth() == sourceImages[1].getWidth()) {
               out.writeByte(border.type.ordinal());
               // мы рассчитываем slice size для изображения on, а не off состояния, так как зачастую именно оно дает наиболее полный slice size,
               // иначе для off оно будет маленьким и его не хватит для on (на примере Fluent PopUp Button в on будет обрезана стрелка) — мы то считаем один раз для всех состояний.
               // Такая политика — расчет по одному изображения для всех состояний на 100% работает для Aqua UI, а во Fluent UI есть вот такие заморочки.
-              out.write(slice3H(sourceImages, SliceCalculator.calculate(sourceImages[1])));
+              out.write(slice3H(sourceImages, SliceCalculator.calculate(sourceImages[sourceImages.length == 1 ? 0 : 1])));
             }
             else { // see note in Scale3EdgeHBitmapBorderWithSmartFrameInsets, only for Fluent
               out.writeByte(BorderType.Scale3EdgeHWithSmartFrameInsets.ordinal());

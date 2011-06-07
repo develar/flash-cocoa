@@ -1,11 +1,8 @@
 package cocoa.tableView {
-import cocoa.AbstractComponent;
-import cocoa.ScrollPolicy;
-import cocoa.Size;
+import cocoa.AbstractCollectionView;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 
-public class TableView extends AbstractComponent {
+public class TableView extends AbstractCollectionView {
   private var _rowHeight:Number;
   public function get rowHeight():Number {
     return _rowHeight;
@@ -20,17 +17,6 @@ public class TableView extends AbstractComponent {
   }
   public function set minRowCount(value:int):void {
     _minRowCount = Math.max(value, 1);
-  }
-
-  /**
-   * height must be even
-   */
-  private var _intercellSpacing:Size;
-  public function get intercellSpacing():Size {
-    return _intercellSpacing;
-  }
-  public function set intercellSpacing(value:Size):void {
-    _intercellSpacing = value;
   }
 
   private var _columns:Vector.<TableColumn>;
@@ -49,31 +35,12 @@ public class TableView extends AbstractComponent {
     _dataSource = value;
   }
 
-  private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
-  public function get verticalScrollPolicy():int {
-    return _verticalScrollPolicy;
-  }
-  public function set verticalScrollPolicy(value:int):void {
-    _verticalScrollPolicy = value;
-  }
-
-  private var _horizontalScrollPolicy:int = ScrollPolicy.OFF;
-  public function get horizontalScrollPolicy():int {
-    return _horizontalScrollPolicy;
-  }
-  public function set horizontalScrollPolicy(value:int):void {
-    _horizontalScrollPolicy = value;
-  }
-
   override protected function get primaryLaFKey():String {
     return "TableView";
   }
 
-  override public function createView(laf:LookAndFeel):Skin {
+  override protected function preSkinCreate(laf:LookAndFeel):void {
     _rowHeight = laf.getInt(lafKey + ".rowHeight");
-    _intercellSpacing = Size(laf.getObject(lafKey + ".intercellSpacing"));
-
-    return super.createView(laf);
   }
 }
 }

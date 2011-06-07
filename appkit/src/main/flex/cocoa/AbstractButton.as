@@ -45,8 +45,8 @@ public class AbstractButton extends AbstractControl {
     return oldState != -1;
   }
 
-  override protected function skinAttachedHandler():void {
-    super.skinAttachedHandler();
+  override protected function skinAttached():void {
+    super.skinAttached();
 
     if (_title != null) {
       TitledComponentSkin(skin).title = _title;

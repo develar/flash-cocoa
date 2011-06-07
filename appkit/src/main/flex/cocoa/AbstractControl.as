@@ -44,8 +44,8 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
     throw new Error("abstract");
   }
 
-  override protected function skinAttachedHandler():void {
-    super.skinAttachedHandler();
+  override protected function skinAttached():void {
+    super.skinAttached();
 
     if (_toolTip != null) {
       skin.toolTip = _toolTip;

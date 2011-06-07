@@ -1,9 +1,8 @@
 package cocoa {
-import cocoa.sidebar.events.SidebarEvent;
-
 import flash.utils.Dictionary;
 
-import spark.components.supportClasses.TextBase;
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
 
 use namespace ui;
 
@@ -14,8 +13,6 @@ public class Panel extends Window {
   override protected function get skinParts():Dictionary {
     return _skinParts;
   }
-
-  ui var titleDisplay:TextBase;
 
   ui var minimizeButton:PushButton;
   ui var closeSideButton:PushButton;
@@ -28,12 +25,33 @@ public class Panel extends Window {
     closeSideButton.action = closeSideButtonClickHandler;
   }
 
+  private var _emptyText:String;
+  public function get emptyText():String {
+    return _emptyText;
+  }
+  public function set emptyText(value:String):void {
+    _emptyText = value;
+    if (skin != null) {
+      skin.invalidateDisplayList();
+    }
+  }
+
+  private var _paneHid:ISignal = new Signal(Panel);
+  public function get paneHid():ISignal {
+    return _paneHid;
+  }
+
+  private var _sideHid:ISignal = new Signal();
+  public function get sideHid():ISignal {
+    return _sideHid;
+  }
+
   private function minimizeButtonActionHandler():void {
-    dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_PANE));
+    _paneHid.dispatch(this);
   }
 
   private function closeSideButtonClickHandler():void {
-    dispatchEvent(new SidebarEvent(SidebarEvent.HIDE_SIDE));
+    _sideHid.dispatch();
   }
 
   override protected function get primaryLaFKey():String {
