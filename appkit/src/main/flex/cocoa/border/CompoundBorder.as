@@ -26,8 +26,8 @@ public class CompoundBorder extends AbstractBorder {
     return _layoutHeight;
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
-    insideBorder.draw(view, g, w, h);
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+    insideBorder.draw(g, w, h, 0, 0, view);
   }
 }
 }

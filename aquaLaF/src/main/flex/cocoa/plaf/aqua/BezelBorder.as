@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua {
-import cocoa.border.AbstractBorder;
 import cocoa.Insets;
 import cocoa.View;
+import cocoa.border.AbstractBorder;
 
 import flash.display.CapsStyle;
 import flash.display.Graphics;
@@ -18,7 +18,7 @@ internal final class BezelBorder extends AbstractBorder {
     _contentInsets = CONTENT_INSETS;
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
     const right:Number = w - HALF_LINE_THICKNESS;
     const bottom:Number = h - HALF_LINE_THICKNESS;
 

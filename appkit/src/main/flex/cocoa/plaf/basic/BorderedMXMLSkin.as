@@ -21,7 +21,7 @@ public class BorderedMXMLSkin extends MXMLSkin
 
 		var g:Graphics = graphics;
 		g.clear();
-		border.draw(this, g, w, h);
+		border.draw(g, w, h, 0, 0, this);
 	}
 }
 }

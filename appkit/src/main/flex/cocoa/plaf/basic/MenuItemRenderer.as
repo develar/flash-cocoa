@@ -49,7 +49,7 @@ public class MenuItemRenderer extends LabeledItemRenderer {
     var g:Graphics = graphics;
     g.clear();
 
-    border.draw(this, g, w, h);
+    border.draw(g, w, h);
   }
 }
 }

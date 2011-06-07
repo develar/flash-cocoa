@@ -30,6 +30,6 @@ public interface Border {
   /**
    * View для получения состояния view — disabled к примеру
    */
-  function draw(view:View, g:Graphics, w:Number, h:Number):void;
+  function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void;
 }
 }

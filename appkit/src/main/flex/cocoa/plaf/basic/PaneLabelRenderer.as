@@ -16,7 +16,7 @@ public class PaneLabelRenderer extends LabeledItemRenderer {
 
     var g:Graphics = graphics;
     g.clear();
-    getBorder("b." + ((state & SELECTED || state & HIGHLIGHTED) ? "on" : "off")).draw(null, g, w, h);
+    getBorder("b." + ((state & SELECTED || state & HIGHLIGHTED) ? "on" : "off")).draw(g, w, h);
   }
 
   override public function get lafPrefix():String {

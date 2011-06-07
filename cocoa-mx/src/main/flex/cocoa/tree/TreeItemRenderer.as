@@ -150,7 +150,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 
 		var oldFrameX:Number = disclosureBorder.frameInsets.left;
 		disclosureBorder.frameInsets.left += _listData.indent;
-		disclosureBorder.draw(null, g, NaN, NaN);
+		disclosureBorder.draw(g, NaN, NaN);
 		disclosureBorder.frameInsets.left = oldFrameX;
 	}
 

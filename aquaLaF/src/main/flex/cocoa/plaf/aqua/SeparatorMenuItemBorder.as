@@ -1,7 +1,7 @@
 package cocoa.plaf.aqua {
-import cocoa.border.AbstractBorder;
 import cocoa.Border;
 import cocoa.View;
+import cocoa.border.AbstractBorder;
 
 import flash.display.CapsStyle;
 import flash.display.Graphics;
@@ -12,7 +12,7 @@ internal class SeparatorMenuItemBorder extends AbstractBorder implements Border 
     return 12;
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
     g.beginFill(0xffffff, 242 / 255);
     g.drawRect(0, 0, w, 5);
     g.endFill();

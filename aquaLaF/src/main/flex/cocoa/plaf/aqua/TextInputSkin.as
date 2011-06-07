@@ -48,7 +48,7 @@ public class  TextInputSkin extends AbstractSkin {
   override protected function updateDisplayList(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
-    border.draw(this, g, w, h);
+    border.draw(g, w, h, 0, 0, this);
 
     documentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
   }

@@ -336,14 +336,14 @@ public class Tree extends mx.controls.Tree implements View
 			AbstractMultipleBitmapBorder(_border).stateIndex = index;
 			var oldFrameX:Number = _border.frameInsets.left;
 			_border.frameInsets.left += TreeListData(IDropInListItemRenderer(itemRenderer).listData).indent;
-			_border.draw(null, g, width, height);
+			_border.draw(g, width, height);
 			_border.frameInsets.left = oldFrameX;
 		}
 		else
 		{
 			if (index != 0)
 			{
-				_border.draw(null, g, width, height);
+				_border.draw(g, width, height);
 			}
 		}
 	}

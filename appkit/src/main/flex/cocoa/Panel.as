@@ -30,6 +30,10 @@ public class Panel extends Window {
     return _emptyText;
   }
   public function set emptyText(value:String):void {
+    if (_emptyText == value) {
+      return;
+    }
+    
     _emptyText = value;
     if (skin != null) {
       skin.invalidateDisplayList();

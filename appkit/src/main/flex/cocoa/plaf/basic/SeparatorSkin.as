@@ -32,7 +32,7 @@ public class SeparatorSkin extends AbstractSkin {
 
     var g:Graphics = graphics;
     g.clear();
-    border.draw(this, g, w, h);
+    border.draw(g, w, h);
   }
 }
 }

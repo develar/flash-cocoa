@@ -14,7 +14,7 @@ public class EmptyBorder extends AbstractBorder {
     _contentInsets = contentInsets;
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
 
   }
 

@@ -22,7 +22,7 @@ public class TabViewSkin extends AbstractTabViewSkin {
 
     var g:Graphics = graphics;
     g.clear();
-    border.draw(null, g, w, h);
+    border.draw(g, w, h);
   }
 }
 }

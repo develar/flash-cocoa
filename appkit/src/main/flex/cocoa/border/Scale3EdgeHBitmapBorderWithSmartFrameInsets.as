@@ -12,7 +12,7 @@ import flash.display.Graphics;
  * Зачем было нужно actualHeight в Scale3EdgeHBitmapBorder я не помню, но вроде как нужно frameInsets указывать и с bottom — border этот нужен только для fluent, как возникнет какая-то проблема с этим — будем думать.
  */
 public class Scale3EdgeHBitmapBorderWithSmartFrameInsets extends Scale3EdgeHBitmapBorder {
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
     const frameLeft:Number = _frameInsets.left + (bitmaps[0].width - bitmaps[_bitmapIndex].width);
 
     sharedMatrix.tx = frameLeft;

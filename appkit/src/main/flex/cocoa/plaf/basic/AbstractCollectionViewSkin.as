@@ -54,7 +54,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin {
     else {
       contentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
       graphics.clear();
-      border.draw(null, graphics, w, h);
+      border.draw(graphics, w, h);
     }
   }
 

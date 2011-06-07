@@ -44,7 +44,7 @@ public class BorderedDataGroup extends FlexDataGroup implements View {
   override mx_internal function drawBackground():void {
     var g:Graphics = graphics;
     g.clear();
-    _border.draw(this, g, resizeMode == ResizeMode.SCALE ? measuredWidth : unscaledWidth, resizeMode == ResizeMode.SCALE ? measuredHeight : unscaledHeight);
+    _border.draw(g, resizeMode == ResizeMode.SCALE ? measuredWidth : unscaledWidth, resizeMode == ResizeMode.SCALE ? measuredHeight : unscaledHeight, horizontalScrollPosition, verticalScrollPosition, this);
   }
 }
 }

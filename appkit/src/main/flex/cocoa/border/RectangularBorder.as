@@ -5,8 +5,6 @@ import cocoa.View;
 
 import flash.display.Graphics;
 
-import spark.core.IViewport;
-
 public class RectangularBorder extends AbstractBorder {
   private var fillColor:Number;
   protected var strokeColor:Number;
@@ -41,7 +39,7 @@ public class RectangularBorder extends AbstractBorder {
     return _layoutHeight;
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
     const alpha:Number = view == null || view.enabled ? 1 : 0.5;
 
     if (_frameInsets != EMPTY_FRAME_INSETS) {
@@ -61,13 +59,8 @@ public class RectangularBorder extends AbstractBorder {
       g.beginFill(fillColor, alpha);
     }
 
-    var x:Number = _frameInsets.left + offset;
-    var y:Number = _frameInsets.top + offset;
-    if (view is IViewport) {
-      var viewPort:IViewport = IViewport(view);
-      x += viewPort.horizontalScrollPosition;
-      y += viewPort.verticalScrollPosition;
-    }
+    x += _frameInsets.left + offset;
+    y += _frameInsets.top + offset;
 
     if (cornerRadius != cornerRadius) {
       g.drawRect(x, y, w, h);

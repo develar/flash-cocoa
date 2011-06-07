@@ -96,7 +96,7 @@ public class ListViewSkin extends LightFlexUIComponent implements cocoa.plaf.Lis
 
       var g:Graphics = graphics;
       g.clear();
-      border.draw(null, g, w, h);
+      border.draw(g, w, h);
     }
     else {
       contentView.setActualSize(w, h);

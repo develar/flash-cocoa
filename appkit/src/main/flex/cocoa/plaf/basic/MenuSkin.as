@@ -73,7 +73,7 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner {
 
     var g:Graphics = graphics;
     g.clear();
-    _border.draw(this, g, w, h);
+    _border.draw(g, w, h);
   }
 }
 }

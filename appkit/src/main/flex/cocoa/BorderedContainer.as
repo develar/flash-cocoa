@@ -18,7 +18,7 @@ public class BorderedContainer extends Container {
     if (_border != null) {
       var g:Graphics = graphics;
       g.clear();
-      _border.draw(this, g, resizeMode == ResizeMode.SCALE ? measuredWidth : w, resizeMode == ResizeMode.SCALE ? measuredHeight : h);
+      _border.draw(g, resizeMode == ResizeMode.SCALE ? measuredWidth : w, resizeMode == ResizeMode.SCALE ? measuredHeight : h, horizontalScrollPosition, verticalScrollPosition, this);
     }
 
     super.updateDisplayList(w, h);

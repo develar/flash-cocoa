@@ -18,19 +18,19 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder {
     return border;
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
-    sharedMatrix.tx = _frameInsets.left;
-    sharedMatrix.ty = _frameInsets.top;
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+    sharedMatrix.tx = x + _frameInsets.left;
+    sharedMatrix.ty = y + _frameInsets.top;
 
     const actualHeight:Number = h - _frameInsets.top - _frameInsets.bottom;
-    const rightSliceX:Number = w - lastSize - _frameInsets.right;
+    const rightSliceRelativeX:Number = w - lastSize - _frameInsets.right;
     g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
-    g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceX - _frameInsets.left, actualHeight);
+    g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceRelativeX - _frameInsets.left, actualHeight);
     g.endFill();
 
-    sharedMatrix.tx = rightSliceX;
+    sharedMatrix.tx = x + rightSliceRelativeX;
     g.beginBitmapFill(bitmaps[_bitmapIndex + 1], sharedMatrix, false);
-    g.drawRect(rightSliceX, sharedMatrix.ty, lastSize, actualHeight);
+    g.drawRect(sharedMatrix.tx, sharedMatrix.ty, lastSize, actualHeight);
     g.endFill();
   }
   

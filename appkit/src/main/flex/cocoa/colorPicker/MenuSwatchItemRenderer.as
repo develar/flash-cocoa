@@ -65,7 +65,7 @@ public class MenuSwatchItemRenderer extends AbstractView {
   override protected function updateDisplayList(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
-    _laf.getBorder("MenuItem.b", false).draw(null, g, w, h);
+    _laf.getBorder("MenuItem.b", false).draw(g, w, h);
   }
 }
 }

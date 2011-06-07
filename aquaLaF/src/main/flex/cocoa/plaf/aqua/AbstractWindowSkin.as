@@ -220,7 +220,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
       labelHelper.moveToCenter(w, titleY);
     }
 
-    border.draw(this, g, w, hasBottomBar ? (h - BOTTOM_BAR_HEIGHT) : h);
+    border.draw(g, w, hasBottomBar ? (h - BOTTOM_BAR_HEIGHT) : h, 0, 0, this);
 
     drawTitleBottomBorderLine(g, w);
 

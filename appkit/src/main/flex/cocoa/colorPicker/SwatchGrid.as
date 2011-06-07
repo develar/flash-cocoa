@@ -47,7 +47,7 @@ public class SwatchGrid extends Sprite {
     const gridWidth:Number = (columnCount * xStep) - horizontalGap + (cellPadding * 2);
     const gridHeight:Number = (rowCount * yStep) - verticalGap + (cellPadding * 2);
 
-    border.draw(null, g, gridWidth + border.contentInsets.width, gridHeight + border.contentInsets.height);
+    border.draw(g, gridWidth + border.contentInsets.width, gridHeight + border.contentInsets.height);
 
     g.lineStyle(1, swatchBorderColor, 1, false, LineScaleMode.NORMAL, CapsStyle.NONE);
     var i:int;

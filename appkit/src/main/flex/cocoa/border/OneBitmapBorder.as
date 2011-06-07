@@ -45,7 +45,7 @@ public class OneBitmapBorder extends AbstractBitmapBorder {
     return create(Bitmap(new bitmapClass()).bitmapData, contentInsets, frameInsets);
   }
 
-  override public function draw(view:View, g:Graphics, w:Number, h:Number):void {
+  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
     sharedMatrix.tx = _frameInsets.left;
     sharedMatrix.ty = _frameInsets.top;
 

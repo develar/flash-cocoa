@@ -25,7 +25,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
 
     var g:Graphics = graphics;
     g.clear();
-    border.draw(this, g, border.layoutWidth, h);
+    border.draw(g, border.layoutWidth, h, 0, 0, this);
   }
 
   protected function calculateBorderStateIndex():int {

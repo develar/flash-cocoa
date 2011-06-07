@@ -79,7 +79,7 @@ internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIP
     }
 
     if (isOff) {
-      offBorder.draw(null, graphics, w, h);
+      offBorder.draw(graphics, w, h);
     }
     else {
       decrementButton.setLayoutBoundsSize(NaN, NaN);

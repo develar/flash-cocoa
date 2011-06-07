@@ -39,7 +39,7 @@ public class FlexButton extends Button {
   override protected function updateDisplayList(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
-    _border.draw(null, g, w, h);
+    _border.draw(g, w, h);
   }
 
   override protected function attachSkin():void {

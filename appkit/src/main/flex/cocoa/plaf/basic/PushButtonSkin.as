@@ -85,7 +85,7 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
 
     var g:Graphics = graphics;
     g.clear();
-    border.draw(this, g, w, h);
+    border.draw(g, w, h, 0, 0, this);
   }
 
   override public function set enabled(value:Boolean):void {
