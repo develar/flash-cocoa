@@ -1,7 +1,10 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.basic.scrollbar.TrackOrThumbButton;
 
 import flash.events.MouseEvent;
+
+import mx.core.InteractionMode;
 
 import mx.core.UIComponent;
 import mx.core.mx_internal;
@@ -21,13 +24,17 @@ public class HScrollBar extends spark.components.HScrollBar implements UIPartCon
   override public function getStyle(styleProp:String):* {
     switch (styleProp) {
       case "repeatDelay": return 500;
-      case "incrementButton": return 500;
       case "repeatInterval": return 35;
       case "skinClass": return skinClass;
       case "liveDragging": return true;
+      case "interactionMode": return InteractionMode.MOUSE;
     }
 
     return undefined;
+  }
+
+  override protected function pointToValue(x:Number, y:Number):Number {
+    return super.pointToValue(Math.max(0, x - TrackOrThumbButton(track).border.contentInsets.left), y);
   }
 
   public final function _trackMouseDownHandler(event:MouseEvent):void {

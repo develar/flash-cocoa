@@ -1,10 +1,12 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.basic.scrollbar.TrackOrThumbButton;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-import mx.core.IInvalidating;
+import mx.core.InteractionMode;
+
 import mx.core.UIComponent;
 import mx.core.mx_internal;
 
@@ -22,12 +24,17 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
     partAdded(id, instance);
   }
 
+  override protected function pointToValue(x:Number, y:Number):Number {
+    return super.pointToValue(x, Math.max(0, y - TrackOrThumbButton(track).border.contentInsets.top));
+  }
+
   override public function getStyle(styleProp:String):* {
     switch (styleProp) {
       case "repeatDelay": return 500;
       case "repeatInterval": return 35;
       case "skinClass": return skinClass;
       case "liveDragging": return true;
+      case "interactionMode": return InteractionMode.MOUSE;
     }
 
     return undefined;
@@ -71,7 +78,7 @@ public class VScrollBar extends spark.components.VScrollBar implements UIPartCon
       trackSize -= thumbTopPadding;
     }
 
-    var thumbSize:Number = Math.max(thumb.minHeight, Math.min((pageSize / (range + pageSize)) * trackSize, trackSize));
+    var thumbSize:Number = Math.max(thumb.minHeight, Math.min(Math.round(pageSize / (range + pageSize)) * trackSize, trackSize));
     thumb.setLayoutBoundsSize(NaN, thumbSize);
     thumb.setLayoutBoundsPosition(0, Math.round(((value - minimum) * ((trackSize - thumbSize) / range)) + thumbTopPadding));
   }
