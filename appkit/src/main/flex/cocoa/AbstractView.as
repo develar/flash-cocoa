@@ -12,20 +12,15 @@ import flash.errors.IllegalOperationError;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.IEventDispatcher;
-import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
-import flash.geom.PerspectiveProjection;
 import flash.geom.Transform;
 import flash.geom.Vector3D;
 
-import mx.core.AdvancedLayoutFeatures;
 import mx.core.DesignLayer;
 import mx.core.IInvalidating;
-import mx.core.ILayoutDirectionElement;
 import mx.core.IUIComponent;
 import mx.core.IVisualElement;
-import mx.core.LayoutDirection;
 import mx.core.LayoutElementUIComponentUtils;
 import mx.core.UIComponent;
 import mx.core.UIComponentGlobals;
@@ -51,12 +46,10 @@ import mx.managers.IFocusManagerComponent;
 import mx.managers.IFocusManagerContainer;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
-import mx.managers.IToolTipManagerClient;
-import mx.utils.MatrixUtil;
 
 use namespace mx_internal;
 [Abstract]
-public class AbstractView extends Sprite implements View, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
+public class AbstractView extends Sprite implements View, ILayoutManagerClient, IVisualElement {
   public static const LAYOUT_DIRECTION_LTR:String = "ltr";
 
   private static const EMPTY_LAYOUT_METRICS:LayoutMetrics = new LayoutMetrics();
@@ -64,7 +57,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   private static const INITIALIZED:uint = 1 << 0;
   private static const DISABLED:uint = 1 << 11;
   private static const EXCLUDE_FROM_LAYOUT:uint = 1 << 12;
-  private static const PARENT_CHANGED:uint = 1 << 2;
   private static const PROCESSED_DESCRIPTORS:uint = 1 << 3;
   private static const UPDATE_COMPLETE_PENDING:uint = 1 << 4;
 
@@ -79,11 +71,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
    * if component has been reparented, we need to potentially reassign systemManager, cause we could be in a new Window.
    */
   private static const SYSTEM_MANAGER_DIRTY:uint = 1 << 14;
-
-  /**
-   * when false, the transform on this component consists only of translation.  Otherwise, it may be arbitrarily complex.
-   */
-  private static const COMPLEX_LAYOUT_MATRIX:uint = 1 << 13;
 
   private static const HAS_FOCUSABLE_CHILDREN:uint = 1 << 15;
   private static const FOCUS_ENABLED:uint = 1 << 16;
@@ -211,8 +198,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
    */
   private var oldExplicitHeight:Number;
 
-  private var _layoutFeatures:AdvancedLayoutFeatures;
-
   /**
    * storage for the modified Transform object that can dispatch change events correctly.
    */
@@ -225,349 +210,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   public function set owner(value:DisplayObjectContainer):void {
     _owner = value;
-  }
-
-  //----------------------------------
-  //  x
-  //----------------------------------
-
-  [Bindable("xChanged")]
-  [Inspectable(category="General")]
-
-  /**
-   *  Number that specifies the component's horizontal position,
-   *  in pixels, within its parent container.
-   *
-   *  <p>Setting this property directly or calling <code>move()</code>
-   *  has no effect -- or only a temporary effect -- if the
-   *  component is parented by a layout container such as HBox, Grid,
-   *  or Form, because the layout calculations of those containers
-   *  set the <code>x</code> position to the results of the calculation.
-   *  However, the <code>x</code> property must almost always be set
-   *  when the parent is a Canvas or other absolute-positioning
-   *  container because the default value is 0.</p>
-   *
-   *  @default 0
-   */
-  override public function get x():Number {
-    return (_layoutFeatures == null) ? super.x : _layoutFeatures.layoutX;
-  }
-
-  /**
-   *  @private
-   */
-  override public function set x(value:Number):void {
-    if (x == value) {
-      return;
-    }
-
-    if (_layoutFeatures == null) {
-      super.x = value;
-    }
-    else {
-      _layoutFeatures.layoutX = value;
-      invalidateTransform();
-    }
-
-    invalidateProperties();
-
-    if (parent && parent is UIComponent) {
-      UIComponent(parent).childXYChanged();
-    }
-
-    if (hasEventListener("xChanged")) {
-      dispatchEvent(new Event("xChanged"));
-    }
-  }
-
-  override public function get z():Number {
-    return (_layoutFeatures == null) ? super.z : _layoutFeatures.layoutZ;
-  }
-
-  override public function set z(value:Number):void {
-    if (z == value) {
-      return;
-    }
-
-    // validateMatrix when switching between 2D/3D, works around player bug
-    // see sdk-23421
-    var was3D:Boolean = is3D;
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-
-    _layoutFeatures.layoutZ = value;
-    invalidateTransform();
-    invalidateProperties();
-    if (was3D != is3D) {
-      validateMatrix();
-    }
-
-    if (hasEventListener("zChanged")) {
-      dispatchEvent(new Event("zChanged"));
-    }
-  }
-
-  /**
-   *  Sets the x coordinate for the transform center of the component.
-   *
-   *  <p>When this component is the target of a Spark transform effect,
-   *  you can override this property by setting
-   *  the <code>AnimateTransform.autoCenterTransform</code> property.
-   *  If <code>autoCenterTransform</code> is <code>false</code>, the transform
-   *  center is determined by the <code>transformX</code>,
-   *  <code>transformY</code>, and <code>transformZ</code> properties
-   *  of the effect target.
-   *  If <code>autoCenterTransform</code> is <code>true</code>,
-   *  the effect occurs around the center of the target,
-   *  <code>(width/2, height/2)</code>.</p>
-   *
-   *  <p>Setting this property on the Spark effect class
-   *  overrides the setting on the target component.</p>
-   *
-   *  @see spark.effects.AnimateTransform#autoCenterTransform
-   *  @see spark.effects.AnimateTransform#transformX
-   */
-  public function get transformX():Number {
-    return (_layoutFeatures == null) ? 0 : _layoutFeatures.transformX;
-  }
-
-  /**
-   *  @private
-   */
-  public function set transformX(value:Number):void {
-    if (transformX == value) {
-      return;
-    }
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    _layoutFeatures.transformX = value;
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-  }
-
-  /**
-   *  Sets the y coordinate for the transform center of the component.
-   *
-   *  <p>When this component is the target of a Spark transform effect,
-   *  you can override this property by setting
-   *  the <code>AnimateTransform.autoCenterTransform</code> property.
-   *  If <code>autoCenterTransform</code> is <code>false</code>, the transform
-   *  center is determined by the <code>transformX</code>,
-   *  <code>transformY</code>, and <code>transformZ</code> properties
-   *  of the effect target.
-   *  If <code>autoCenterTransform</code> is <code>true</code>,
-   *  the effect occurs around the center of the target,
-   *  <code>(width/2, height/2)</code>.</p>
-   *
-   *  <p>Seeting this property on the Spark effect class
-   *  overrides the setting on the target component.</p>
-   *
-   *  @see spark.effects.AnimateTransform#autoCenterTransform
-   *  @see spark.effects.AnimateTransform#transformY
-   */
-  public function get transformY():Number {
-    return (_layoutFeatures == null) ? 0 : _layoutFeatures.transformY;
-  }
-
-  public function set transformY(value:Number):void {
-    if (transformY == value) {
-      return;
-    }
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    _layoutFeatures.transformY = value;
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-  }
-
-  /**
-   *  Sets the z coordinate for the transform center of the component.
-   *
-   *  <p>When this component is the target of a Spark transform effect,
-   *  you can override this property by setting
-   *  the <code>AnimateTransform.autoCenterTransform</code> property.
-   *  If <code>autoCenterTransform</code> is <code>false</code>, the transform
-   *  center is determined by the <code>transformX</code>,
-   *  <code>transformY</code>, and <code>transformZ</code> properties
-   *  of the effect target.
-   *  If <code>autoCenterTransform</code> is <code>true</code>,
-   *  the effect occurs around the center of the target,
-   *  <code>(width/2, height/2)</code>.</p>
-   *
-   *  <p>Seeting this property on the Spark effect class
-   *  overrides the setting on the target component.</p>
-   *
-   *  @see spark.effects.AnimateTransform#autoCenterTransform
-   *  @see spark.effects.AnimateTransform#transformZ
-   */
-  public function get transformZ():Number {
-    return (_layoutFeatures == null) ? 0 : _layoutFeatures.transformZ;
-  }
-
-  public function set transformZ(value:Number):void {
-    if (transformZ == value) {
-      return;
-    }
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-
-    _layoutFeatures.transformZ = value;
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-  }
-
-  override public function get rotation():Number {
-    return (_layoutFeatures == null) ? super.rotation : _layoutFeatures.layoutRotationZ;
-  }
-
-  override public function set rotation(value:Number):void {
-    if (rotation == value) {
-      return;
-    }
-
-    flags |= COMPLEX_LAYOUT_MATRIX;
-    if (_layoutFeatures == null) {
-      // clamp the rotation value between -180 and 180.  This is what
-      // the Flash player does and what we mimic in CompoundTransform;
-      // however, the Flash player doesn't handle values larger than
-      // 2^15 - 1 (FP-749), so we need to clamp even when we're
-      // just setting super.rotation.
-      super.rotation = MatrixUtil.clampRotation(value);
-    }
-    else {
-      _layoutFeatures.layoutRotationZ = value;
-    }
-
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-  }
-
-  override public function get rotationZ():Number {
-    return rotation;
-  }
-
-  override public function set rotationZ(value:Number):void {
-    rotation = value;
-  }
-
-  /**
-   * Indicates the x-axis rotation of the DisplayObject instance, in degrees, from its original orientation
-   * relative to the 3D parent container. Values from 0 to 180 represent clockwise rotation; values
-   * from 0 to -180 represent counterclockwise rotation. Values outside this range are added to or subtracted from
-   * 360 to obtain a value within the range.
-   *
-   * This property is ignored during calculation by any of Flex's 2D layouts.
-   */
-  override public function get rotationX():Number {
-    return (_layoutFeatures == null) ? super.rotationX : _layoutFeatures.layoutRotationX;
-  }
-
-  /**
-   *  @private
-   */
-  override public function set rotationX(value:Number):void {
-    if (rotationX == value) {
-      return;
-    }
-
-    // validateMatrix when switching between 2D/3D, works around player bug
-    // see sdk-23421
-    var was3D:Boolean = is3D;
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    _layoutFeatures.layoutRotationX = value;
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-    if (was3D != is3D) {
-      validateMatrix();
-    }
-  }
-
-  /**
-   * Indicates the y-axis rotation of the DisplayObject instance, in degrees, from its original orientation
-   * relative to the 3D parent container. Values from 0 to 180 represent clockwise rotation; values
-   * from 0 to -180 represent counterclockwise rotation. Values outside this range are added to or subtracted from
-   * 360 to obtain a value within the range.
-   *
-   * This property is ignored during calculation by any of Flex's 2D layouts.
-   */
-  override public function get rotationY():Number {
-    return (_layoutFeatures == null) ? super.rotationY : _layoutFeatures.layoutRotationY;
-  }
-
-  override public function set rotationY(value:Number):void {
-    if (rotationY == value) {
-      return;
-    }
-
-    // validateMatrix when switching between 2D/3D, works around player bug
-    // see sdk-23421
-    var was3D:Boolean = is3D;
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    _layoutFeatures.layoutRotationY = value;
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-    if (was3D != is3D) {
-      validateMatrix();
-    }
-  }
-
-  [Bindable("yChanged")]
-  [Inspectable(category="General")]
-
-  /**
-   *  Number that specifies the component's vertical position,
-   *  in pixels, within its parent container.
-   *
-   *  <p>Setting this property directly or calling <code>move()</code>
-   *  has no effect -- or only a temporary effect -- if the
-   *  component is parented by a layout container such as HBox, Grid,
-   *  or Form, because the layout calculations of those containers
-   *  set the <code>x</code> position to the results of the calculation.
-   *  However, the <code>x</code> property must almost always be set
-   *  when the parent is a Canvas or other absolute-positioning
-   *  container because the default value is 0.</p>
-   *
-   *  @default 0
-   */
-  override public function get y():Number {
-    return (_layoutFeatures == null) ? super.y : _layoutFeatures.layoutY;
-  }
-
-  override public function set y(value:Number):void {
-    if (y == value) {
-      return;
-    }
-
-    if (_layoutFeatures == null) {
-      super.y = value;
-    }
-    else {
-      _layoutFeatures.layoutY = value;
-      invalidateTransform();
-    }
-    invalidateProperties();
-
-    if (parent && parent is UIComponent) {
-      UIComponent(parent).childXYChanged();
-    }
-
-    if (hasEventListener("yChanged")) {
-      dispatchEvent(new Event("yChanged"));
-    }
   }
 
   private var _width:Number;
@@ -594,12 +236,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
       invalidateParentSizeAndDisplayList();
 
       _width = value;
-
-      // The width is needed for the _layoutFeatures' mirror transform.
-      if (_layoutFeatures) {
-        _layoutFeatures.layoutWidth = _width;
-        invalidateTransform();
-      }
 
       if (hasEventListener("widthChanged")) {
         dispatchEvent(new Event("widthChanged"));
@@ -652,137 +288,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
         dispatchEvent(new Event("heightChanged"));
       }
     }
-  }
-
-  [Bindable("scaleXChanged")]
-  [Inspectable(category="Size", defaultValue="1.0")]
-
-  /**
-   *  Number that specifies the horizontal scaling factor.
-   *
-   *  <p>The default value is 1.0, which means that the object
-   *  is not scaled.
-   *  A <code>scaleX</code> of 2.0 means the object has been
-   *  magnified by a factor of 2, and a <code>scaleX</code> of 0.5
-   *  means the object has been reduced by a factor of 2.</p>
-   *
-   *  <p>A value of 0.0 is an invalid value.
-   *  Rather than setting it to 0.0, set it to a small value, or set
-   *  the <code>visible</code> property to <code>false</code> to hide the component.</p>
-   *
-   *  @default 1.0
-   */
-  override public function get scaleX():Number {
-    return (_layoutFeatures == null) ? super.scaleX : _layoutFeatures.layoutScaleX;
-  }
-
-  override public function set scaleX(value:Number):void {
-    var prevValue:Number = (_layoutFeatures == null) ? scaleX : _layoutFeatures.layoutScaleX;
-    if (prevValue == value) {
-      return;
-    }
-
-    flags |= COMPLEX_LAYOUT_MATRIX;
-
-    // trace("set scaleX:" + this + "value = " + value);
-    if (_layoutFeatures == null) {
-      super.scaleX = value;
-    }
-    else {
-      _layoutFeatures.layoutScaleX = value;
-    }
-    invalidateTransform();
-    invalidateProperties();
-
-    // If we're not compatible with Flex3 (measuredWidth is pre-scale always)
-    // and scaleX is changing we need to invalidate parent size and display list
-    // since we are not going to detect a change in measured sizes during measure.
-    invalidateParentSizeAndDisplayList();
-
-    dispatchEvent(new Event("scaleXChanged"));
-  }
-
-  /**
-   *  Number that specifies the vertical scaling factor.
-   *
-   *  <p>The default value is 1.0, which means that the object
-   *  is not scaled.
-   *  A <code>scaleY</code> of 2.0 means the object has been
-   *  magnified by a factor of 2, and a <code>scaleY</code> of 0.5
-   *  means the object has been reduced by a factor of 2.</p>
-   *
-   *  <p>A value of 0.0 is an invalid value.
-   *  Rather than setting it to 0.0, set it to a small value, or set
-   *  the <code>visible</code> property to <code>false</code> to hide the component.</p>
-   *
-   *  @default 1.0
-   */
-  override public function get scaleY():Number {
-    return (_layoutFeatures == null) ? super.scaleY : _layoutFeatures.layoutScaleY;
-  }
-
-  override public function set scaleY(value:Number):void {
-    var prevValue:Number = (_layoutFeatures == null) ? scaleY : _layoutFeatures.layoutScaleY;
-    if (prevValue == value) {
-      return;
-    }
-
-   flags |= COMPLEX_LAYOUT_MATRIX;
-
-    if (_layoutFeatures == null) {
-      super.scaleY = value;
-    }
-    else {
-      _layoutFeatures.layoutScaleY = value;
-    }
-    invalidateTransform();
-    invalidateProperties();
-
-    // If we're not compatible with Flex3 (measuredWidth is pre-scale always)
-    // and scaleX is changing we need to invalidate parent size and display list
-    // since we are not going to detect a change in measured sizes during measure.
-    invalidateParentSizeAndDisplayList();
-
-    dispatchEvent(new Event("scaleYChanged"));
-  }
-
-  /**
-   *  Number that specifies the scaling factor along the z axis.
-   *
-   *  <p>A scaling along the z axis does not affect a typical component, which lies flat
-   *  in the z=0 plane.  components with children that have 3D transforms applied, or
-   *  components with a non-zero transformZ, is affected.</p>
-   *
-   *  <p>The default value is 1.0, which means that the object
-   *  is not scaled.</p>
-   *
-   *  <p>This property is ignored during calculation by any of Flex's 2D layouts. </p>
-   */
-  override public function get scaleZ():Number {
-    return (_layoutFeatures == null) ? super.scaleZ : _layoutFeatures.layoutScaleZ;
-  }
-
-  override public function set scaleZ(value:Number):void {
-    if (scaleZ == value) {
-      return;
-    }
-
-    // validateMatrix when switching between 2D/3D, works around player bug
-    // see sdk-23421
-    var was3D:Boolean = is3D;
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-
-    flags |= COMPLEX_LAYOUT_MATRIX;
-    _layoutFeatures.layoutScaleZ = value;
-    invalidateTransform();
-    invalidateProperties();
-    invalidateParentSizeAndDisplayList();
-    if (was3D != is3D) {
-      validateMatrix();
-    }
-    dispatchEvent(new Event("scaleZChanged"));
   }
 
   private var _visible:Boolean = true;
@@ -1284,38 +789,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     invalidateParentSizeAndDisplayList();
   }
 
-  /**
-   *  Returns <code>true</code> if the UIComponent has any non-translation (x,y) transform properties.
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 10
-   *  @playerversion AIR 1.5
-   *  @productversion Flex 4
-   */
-  protected function get hasComplexLayoutMatrix():Boolean {
-    // we set _hasComplexLayoutMatrix when any scale or rotation transform gets set
-    // because sometimes when those are set, we don't allocate a layoutFeatures object.
-
-    // if the flag isn't set, we def. don't have a complex layout matrix.
-    // if the flag is set and we don't have an AdvancedLayoutFeatures object, then we'll check the transform and see if it's actually transformed.
-    // otherwise we'll check the layoutMatrix on the AdvancedLayoutFeatures object, to see if we're actually transformed.
-    if ((flags & COMPLEX_LAYOUT_MATRIX) == 0) {
-      return false;
-    }
-    else if (_layoutFeatures == null) {
-      if (MatrixUtil.isDeltaIdentity(super.transform.matrix)) {
-        return false;
-      }
-      else {
-        flags |= COMPLEX_LAYOUT_MATRIX;
-        return true;
-      }
-    }
-    else {
-      return !MatrixUtil.isDeltaIdentity(_layoutFeatures.layoutMatrix);
-    }
-  }
-
   [Bindable("includeInLayoutChanged")]
   public function get includeInLayout():Boolean {
     return (flags & EXCLUDE_FROM_LAYOUT) == 0;
@@ -1346,14 +819,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   public function get baselinePosition():Number {
     throw new Error("abstract");
-  }
-
-  public function get toolTip():String {
-    throw new Error("unsupported prorperty");
-  }
-
-  public function set toolTip(value:String):void {
-    throw new Error("unsupported prorperty");
   }
 
   public function get isPopUp():Boolean {
@@ -1428,8 +893,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     if (p == null) {
       _nestLevel = 0;
     }
-
-    flags |= PARENT_CHANGED;
   }
 
   private function addingChild(child:DisplayObject):void {
@@ -1566,37 +1029,8 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  private function invalidateTransform():void {
-    if (_layoutFeatures && !_layoutFeatures.updatePending) {
-      _layoutFeatures.updatePending = true;
-      if (parent != null && (flags & INVALID_DISPLAY_LIST) == 0) {
-        UIComponentGlobals.layoutManager.invalidateDisplayList(this);
-      }
-    }
-  }
-
   public function invalidateLayoutDirection():void {
-    const parentElt:ILayoutDirectionElement = parent as ILayoutDirectionElement;
-    const thisLayoutDirection:String = layoutDirection;
-
-    // If this element's layoutDirection doesn't match its parent's, then
-    // set the _layoutFeatures.mirror flag.  Similarly, if mirroring isn't
-    // required, then clear the _layoutFeatures.mirror flag.
-
-    const mirror:Boolean = (parentElt) ? (parentElt.layoutDirection != thisLayoutDirection) : (LayoutDirection.LTR != thisLayoutDirection);
-
-    if ((_layoutFeatures) ? (mirror != _layoutFeatures.mirror) : mirror) {
-      if (_layoutFeatures == null) {
-        initAdvancedLayoutFeatures();
-      }
-      _layoutFeatures.mirror = mirror;
-      invalidateTransform();
-    }
     // develar: removed children validation, we don't support layout direction
-  }
-
-  private function transformOffsetsChangedHandler(e:Event):void {
-    invalidateTransform();
   }
 
   public function validateNow():void {
@@ -1690,8 +1124,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
         }
       }
     }
-
-    flags &= ~PARENT_CHANGED;
   }
 
   public function validateSize(recursive:Boolean = false):void {
@@ -1871,12 +1303,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     return !isNaN(_layoutMetrics.height) ? _layoutMetrics.height : measuredHeight;
   }
 
-  protected function validateMatrix():void {
-    if (_layoutFeatures != null && _layoutFeatures.updatePending) {
-      applyComputedMatrix();
-    }
-  }
-
   public function validateDisplayList():void {
     if (flags & INVALID_DISPLAY_LIST) {
       // Check if our parent is the top level system manager
@@ -1887,13 +1313,9 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
       }
 
       // Don't validate transform.matrix until after setting actual size
-      validateMatrix();
       updateDisplayList(width, height);
 
       flags &= ~INVALID_DISPLAY_LIST;
-    }
-    else {
-      validateMatrix();
     }
   }
 
@@ -2036,12 +1458,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     var changed:Boolean = false;
 
     if (x != this.x) {
-      if (_layoutFeatures == null) {
         super.x = x;
-      }
-      else {
-        _layoutFeatures.layoutX = x;
-      }
 
       if (hasEventListener("xChanged")) {
         dispatchEvent(new Event("xChanged"));
@@ -2050,12 +1467,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
 
     if (y != this.y) {
-      if (_layoutFeatures == null) {
         super.y = y;
-      }
-      else {
-        _layoutFeatures.layoutY = y;
-      }
 
       if (hasEventListener("yChanged")) {
         dispatchEvent(new Event("yChanged"));
@@ -2064,7 +1476,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
 
     if (changed) {
-      invalidateTransform();
       if (hasEventListener(MoveEvent.MOVE)) {
         dispatchEvent(new MoveEvent(MoveEvent.MOVE));
       }
@@ -2075,10 +1486,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     var changed:Boolean = false;
     if (_width != w) {
       _width = w;
-      if (_layoutFeatures != null) {
-        _layoutFeatures.layoutWidth = w;  // for the mirror transform
-        invalidateTransform();
-      }
       changed = true;
     }
 
@@ -2244,32 +1651,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   }
 
   /**
-   *  Initializes the implementation and storage of some of the less frequently
-   *  used advanced layout features of a component.
-   *
-   *  Call this function before attempting to use any of the features implemented
-   *  by the AdvancedLayoutFeatures object.
-   */
-  protected function initAdvancedLayoutFeatures():void {
-    var features:AdvancedLayoutFeatures = new AdvancedLayoutFeatures();
-
-    flags |= COMPLEX_LAYOUT_MATRIX;
-
-    features.layoutScaleX = scaleX;
-    features.layoutScaleY = scaleY;
-    features.layoutScaleZ = scaleZ;
-    features.layoutRotationX = rotationX;
-    features.layoutRotationY = rotationY;
-    features.layoutRotationZ = rotation;
-    features.layoutX = x;
-    features.layoutY = y;
-    features.layoutZ = z;
-    features.layoutWidth = width;  // for the mirror transform
-    _layoutFeatures = features;
-    invalidateTransform();
-  }
-
-  /**
    *  Helper function to update the storage vairable _transform.
    *  Also updates the <code>target</code> property of the new and the old
    *  values.
@@ -2297,133 +1678,20 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     return _transform;
   }
 
-  override public function set transform(value:flash.geom.Transform):void {
-    var m:Matrix = value.matrix;
-    var m3:Matrix3D = value.matrix3D;
-    var ct:ColorTransform = value.colorTransform;
-    var pp:PerspectiveProjection = value.perspectiveProjection;
-
-    // validateMatrix when switching between 2D/3D, works around player bug
-    // see sdk-23421
-    var was3D:Boolean = is3D;
-
-    var mxTransform:mx.geom.Transform = value as mx.geom.Transform;
-    if (mxTransform) {
-      if (!mxTransform.applyMatrix) {
-        m = null;
-      }
-
-      if (!mxTransform.applyMatrix3D) {
-        m3 = null;
-      }
-    }
-
-    setTransform(value);
-
-    if (m != null) {
-      setLayoutMatrix(m.clone(), true /*triggerLayoutPass*/);
-    }
-    else {
-      if (m3 != null) {
-        setLayoutMatrix3D(m3.clone(), true /*triggerLayoutPass*/);
-      }
-    }
-
-    super.transform.colorTransform = ct;
-    super.transform.perspectiveProjection = pp;
-    if (was3D != is3D) {
-      validateMatrix();
-    }
-  }
 
   public function get postLayoutTransformOffsets():TransformOffsets {
-    return (_layoutFeatures != null) ? _layoutFeatures.postLayoutTransformOffsets : null;
+    return null;
   }
 
   public function set postLayoutTransformOffsets(value:TransformOffsets):void {
-    // validateMatrix when switching between 2D/3D, works around player bug see sdk-23421
-    var was3D:Boolean = is3D;
-
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-
-    if (_layoutFeatures.postLayoutTransformOffsets != null) {
-      _layoutFeatures.postLayoutTransformOffsets.removeEventListener(Event.CHANGE, transformOffsetsChangedHandler);
-    }
-    _layoutFeatures.postLayoutTransformOffsets = value;
-    if (_layoutFeatures.postLayoutTransformOffsets != null) {
-      _layoutFeatures.postLayoutTransformOffsets.addEventListener(Event.CHANGE, transformOffsetsChangedHandler);
-    }
-    if (was3D != is3D) {
-      validateMatrix();
-    }
   }
 
   public function setLayoutMatrix(value:Matrix, invalidateLayout:Boolean):void {
-    var previousMatrix:Matrix = _layoutFeatures ? _layoutFeatures.layoutMatrix : super.transform.matrix;
-
-    // validateMatrix when switching between 2D/3D, works around player bug
-    // see sdk-23421
-    var was3D:Boolean = is3D;
-    flags |= COMPLEX_LAYOUT_MATRIX;
-
-    if (_layoutFeatures == null) {
-      // flash will make a copy of this on assignment.
-      super.transform.matrix = value;
-    }
-    else {
-      // layout features will internally make a copy of this matrix rather than
-      // holding onto a reference to it.
-      _layoutFeatures.layoutMatrix = value;
-      invalidateTransform();
-    }
-
-    // Early exit if possible. We don't want to invalidate unnecessarily.
-    // We need to do the check here, after our new value has been applied
-    // because our matrix components are rounded upon being applied to a
-    // DisplayObject.
-    if (MatrixUtil.isEqual(previousMatrix, _layoutFeatures ? _layoutFeatures.layoutMatrix : super.transform.matrix)) {
-      return;
-    }
-
-    invalidateProperties();
-
-    if (invalidateLayout) {
-      invalidateParentSizeAndDisplayList();
-    }
-
-    if (was3D != is3D) {
-      validateMatrix();
-    }
+    throw new IllegalOperationError();
   }
 
   public function setLayoutMatrix3D(value:Matrix3D, invalidateLayout:Boolean):void {
-    // Early exit if possible. We don't want to invalidate unnecessarily.
-    if (_layoutFeatures && MatrixUtil.isEqual3D(_layoutFeatures.layoutMatrix3D, value)) {
-      return;
-    }
-
-    // validateMatrix when switching between 2D/3D, works around player bug see sdk-23421
-    var was3D:Boolean = is3D;
-
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    // layout features will internally make a copy of this matrix rather than
-    // holding onto a reference to it.
-    _layoutFeatures.layoutMatrix3D = value;
-    invalidateTransform();
-
-    invalidateProperties();
-
-    if (invalidateLayout) {
-      invalidateParentSizeAndDisplayList();
-    }
-
-    if (was3D != is3D) {
-      validateMatrix();
-    }
+    throw new IllegalOperationError();
   }
 
   public function transformAround(transformCenter:Vector3D, scale:Vector3D = null, rotation:Vector3D = null, translation:Vector3D = null, postLayoutScale:Vector3D = null, postLayoutRotation:Vector3D = null, postLayoutTranslation:Vector3D = null, invalidateLayout:Boolean = true):void {
@@ -2438,127 +1706,76 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     throw new IllegalOperationError("unsupported property");
   }
 
-  /**
-   *  Commits the computed matrix built from the combination of the layout
-   *  matrix and the transform offsets to the flash displayObject's transform.
-   */
-  protected function applyComputedMatrix():void {
-    _layoutFeatures.updatePending = false;
-    if (_layoutFeatures.is3D) {
-      super.transform.matrix3D = _layoutFeatures.computedMatrix3D;
-    }
-    else {
-      super.transform.matrix = _layoutFeatures.computedMatrix;
-    }
-  }
-
   public function getPreferredBoundsWidth(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getPreferredBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getPreferredBoundsWidth(this, null);
   }
 
   public function getPreferredBoundsHeight(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getPreferredBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getPreferredBoundsHeight(this, null);
   }
 
   public function getMinBoundsWidth(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getMinBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getMinBoundsWidth(this, null);
   }
 
   public function getMinBoundsHeight(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getMinBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getMinBoundsHeight(this, null);
   }
 
   public function getMaxBoundsWidth(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getMaxBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getMaxBoundsWidth(this, null);
   }
 
   public function getMaxBoundsHeight(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getMaxBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getMaxBoundsHeight(this, null);
   }
 
   public function getBoundsXAtSize(width:Number, height:Number, postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getBoundsXAtSize(this, width, height, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getBoundsXAtSize(this, width, height, null);
   }
 
   public function getBoundsYAtSize(width:Number, height:Number, postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getBoundsYAtSize(this, width, height, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getBoundsYAtSize(this, width, height, null);
   }
 
   public function getLayoutBoundsWidth(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getLayoutBoundsWidth(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getLayoutBoundsWidth(this, null);
   }
 
   public function getLayoutBoundsHeight(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getLayoutBoundsHeight(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getLayoutBoundsHeight(this, null);
   }
 
   public function getLayoutBoundsX(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getLayoutBoundsX(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getLayoutBoundsX(this, null);
   }
 
   public function getLayoutBoundsY(postLayoutTransform:Boolean = true):Number {
-    return LayoutElementUIComponentUtils.getLayoutBoundsY(this, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    return LayoutElementUIComponentUtils.getLayoutBoundsY(this, null);
   }
 
   public function setLayoutBoundsPosition(x:Number, y:Number, postLayoutTransform:Boolean = true):void {
-    LayoutElementUIComponentUtils.setLayoutBoundsPosition(this, x, y, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    LayoutElementUIComponentUtils.setLayoutBoundsPosition(this, x, y, null);
   }
 
   public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void {
-    LayoutElementUIComponentUtils.setLayoutBoundsSize(this, width, height, postLayoutTransform ? nonDeltaLayoutMatrix() : null);
+    LayoutElementUIComponentUtils.setLayoutBoundsSize(this, width, height, null);
   }
 
   public function getLayoutMatrix():Matrix {
-    if (_layoutFeatures != null || super.transform.matrix == null) {
-      // TODO: this is a workaround for a situation in which the
-      // object is in 2D, but used to be in 3D and the player has not
-      // yet cleaned up the matrices. So the matrix property is null, but
-      // the matrix3D property is non-null. layoutFeatures can deal with
-      // that situation, so we allocate it here and let it handle it for
-      // us. The downside is that we have now allocated layoutFeatures
-      // forever and will continue to use it for future situations that
-      // might not have required it. Eventually, we should recognize
-      // situations when we can de-allocate layoutFeatures and back off
-      // to letting the player handle transforms for us.
-      if (_layoutFeatures == null) {
-        initAdvancedLayoutFeatures();
-      }
-
-      // esg: _layoutFeatures keeps a single internal copy of the layoutMatrix.
-      // since this is an internal class, we don't need to worry about developers
-      // accidentally messing with this matrix, _unless_ we hand it out. Instead,
-      // we hand out a clone.
-      return _layoutFeatures.layoutMatrix.clone();
-    }
-    else {
-      // flash also returns copies.
-      return super.transform.matrix;
-    }
+    return super.transform.matrix;
   }
 
   public function get hasLayoutMatrix3D():Boolean {
-    return _layoutFeatures ? _layoutFeatures.layoutIs3D : false;
+    return false;
   }
 
   public function get is3D():Boolean {
-    return _layoutFeatures ? _layoutFeatures.is3D : false;
+    return false;
   }
 
   public function getLayoutMatrix3D():Matrix3D {
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    // esg: _layoutFeatures keeps a single internal copy of the layoutMatrix.
-    // since this is an internal class, we don't need to worry about developers
-    // accidentally messing with this matrix, _unless_ we hand it out. Instead, we hand out a clone.
-    return _layoutFeatures.layoutMatrix3D.clone();
-  }
-
-  protected function nonDeltaLayoutMatrix():Matrix {
-    if (!hasComplexLayoutMatrix) {
-      return null;
-    }
-    return _layoutFeatures != null ? _layoutFeatures.layoutMatrix : super.transform.matrix;
+    throw new IllegalOperationError();
   }
 }
 }
