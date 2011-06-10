@@ -29,7 +29,7 @@
     <layout>
       <s:VerticalLayout/>
     </layout>
-    <CheckBox/>
+    <CheckBox title="AAA"/>
     <CheckBox lafSubkey="small"/>
     <tableview:TableView id="tableView" width="100%" height="100%" lafSubkey="small"/>
   </Container>

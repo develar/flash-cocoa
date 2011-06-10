@@ -224,7 +224,7 @@ public class Builder {
     FileUtil.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/frameAssets", fdata);
   }
 
-  protected final function writeInsets(output:ByteArray, insets:Insets):void {
+  protected static function writeInsets(output:ByteArray, insets:Insets):void {
     output.writeByte(insets is TextInsets ? TextInsets(insets).truncatedTailMargin : -1);
     output.writeByte(insets.left);
     output.writeByte(insets.top);
@@ -232,7 +232,7 @@ public class Builder {
     output.writeByte(insets.bottom);
   }
 
-  private function wb(output:ByteArray, bitmaps:Vector.<BitmapData>):void {
+  private static function wb(output:ByteArray, bitmaps:Vector.<BitmapData>):void {
     output.writeByte(bitmaps.length);
     for each (var bitmap:BitmapData in bitmaps) {
       if (bitmap == null) {
@@ -246,7 +246,7 @@ public class Builder {
     }
   }
 
-  private function show(displayObject:DisplayObjectContainer, data:ByteArray):void {
+  private static function show(displayObject:DisplayObjectContainer, data:ByteArray):void {
     var x:int = 100;
     var y:int = 100;
 

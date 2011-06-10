@@ -27,9 +27,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
       labelHelper.moveByInsets(h, border.contentInsets);
     }
 
-    var g:Graphics = graphics;
-    g.clear();
-    border.draw(g, border.layoutWidth, h, 0, 0, this);
+    drawBorder2(w, h);
   }
 
   override protected function mouseOverHandler(event:MouseEvent):void {
@@ -44,6 +42,13 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
 
   override protected function mouseUp():void {
     MultipleBorder(border).stateIndex = myComponent.state == CellState.ON ? 2 : 0;
+  }
+
+  override protected function drawBorder2(w:Number, h:Number):void {
+    var g:Graphics = graphics;
+    g.clear();
+    // checkmark вылезает за пределы обычной картинки, а на border у нас только один frameInsers, — дорабатывать концепцию дорого
+    border.draw(g, NaN, NaN, 0, myComponent.state == CellState.ON ? -2 : 0, this);
   }
 }
 }

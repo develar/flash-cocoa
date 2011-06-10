@@ -84,7 +84,7 @@ public class TableBody extends ListBody {
   }
 
   override public function removeChild(child:DisplayObject):DisplayObject {
-    removeDisplayObject(child);
+    child is Skin ? super.removeChild(child) : removeDisplayObject(child);
     return child;
   }
 
@@ -283,7 +283,6 @@ public class TableBody extends ListBody {
     startY += intercellSpacing.y / 2;
     endRowIndex = Math.min(endRowIndex, tableView.dataSource.rowCount);
 
-    const rowHeightWithSpacing:Number = this.rowHeightWithSpacing;
     var columns:Vector.<TableColumn> = tableView.columns;
     var x:Number = 0;
     var y:Number;

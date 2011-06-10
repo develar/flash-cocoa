@@ -19,8 +19,6 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
   protected var myComponent:Cell;
 
   public function PushButtonSkin() {
-    super();
-
     mouseChildren = false;
   }
 

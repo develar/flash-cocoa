@@ -8,6 +8,7 @@ import flash.display.InteractiveObject;
 import flash.display.Loader;
 import flash.display.Sprite;
 import flash.display.Stage;
+import flash.errors.IllegalOperationError;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.IEventDispatcher;
@@ -15,13 +16,11 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
 import flash.geom.PerspectiveProjection;
-import flash.geom.Point;
 import flash.geom.Transform;
 import flash.geom.Vector3D;
 
 import mx.core.AdvancedLayoutFeatures;
 import mx.core.DesignLayer;
-import mx.core.FlexGlobals;
 import mx.core.IInvalidating;
 import mx.core.ILayoutDirectionElement;
 import mx.core.IUIComponent;
@@ -31,7 +30,6 @@ import mx.core.LayoutElementUIComponentUtils;
 import mx.core.UIComponent;
 import mx.core.UIComponentGlobals;
 import mx.core.mx_internal;
-import mx.events.DynamicEvent;
 import mx.events.FlexEvent;
 import mx.events.MoveEvent;
 import mx.events.PropertyChangeEvent;
@@ -57,607 +55,6 @@ import mx.managers.IToolTipManagerClient;
 import mx.utils.MatrixUtil;
 
 use namespace mx_internal;
-
-/**
- *  Dispatched when the component is added to a container as a content child
- *  by using the <code>addChild()</code>, <code>addChildAt()</code>,
- *  <code>addElement()</code>, or <code>addElementAt()</code> method.
- *  If the component is added to the container as a noncontent child by
- *  using the <code>rawChildren.addChild()</code> or
- *  <code>rawChildren.addChildAt()</code> method, the event is not dispatched.
- *
- * <p>This event is only dispatched when there are one or more relevant listeners
- * attached to the dispatching object.</p>
- *
- *  @eventType mx.events.FlexEvent.ADD
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="add", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched when the component has finished its construction,
- *  property processing, measuring, layout, and drawing.
- *
- *  <p>At this point, depending on its <code>visible</code> property,
- *  the component is not visible even though it has been drawn.</p>
- *
- *  @eventType mx.events.FlexEvent.CREATION_COMPLETE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="creationComplete", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched when an object has had its <code>commitProperties()</code>,
- *  <code>measure()</code>, and
- *  <code>updateDisplayList()</code> methods called (if needed).
- *
- *  <p>This is the last opportunity to alter the component before it is
- *  displayed. All properties have been committed and the component has
- *  been measured and layed out.</p>
- *
- *  <p>This event is only dispatched when there are one or more
- *  relevant listeners attached to the dispatching object.</p>
- *
- *  @eventType mx.events.FlexEvent.UPDATE_COMPLETE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="updateComplete", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched when an object's state changes from visible to invisible.
- *
- *  @eventType mx.events.FlexEvent.HIDE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="hide", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched when the component has finished its construction
- *  and has all initialization properties set.
- *
- *  <p>After the initialization phase, properties are processed, the component
- *  is measured, laid out, and drawn, after which the
- *  <code>creationComplete</code> event is dispatched.</p>
- *
- *  @eventType mx.events.FlexEvent.INITIALIZE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="initialize", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched at the beginning of the component initialization sequence.
- *  The component is in a very raw state when this event is dispatched.
- *  Many components, such as the Button control, create internal child
- *  components to implement functionality; for example, the Button control
- *  creates an internal UITextField component to represent its label text.
- *  When Flex dispatches the <code>preinitialize</code> event,
- *  the children, including the internal children, of a component
- *  have not yet been created.
- *
- *  @eventType mx.events.FlexEvent.PREINITIALIZE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="preinitialize", type="mx.events.FlexEvent")]
-
-/**
- *  Dispatched when the component is removed from a container as a content child
- *  by using the <code>removeChild()</code>, <code>removeChildAt()</code>,
- *  <code>removeElement()</code>, or <code>removeElementAt()</code> method.
- *  If the component is removed from the container as a noncontent child by
- *  using the <code>rawChildren.removeChild()</code> or
- *  <code>rawChildren.removeChildAt()</code> method, the event is not dispatched.
- *
- * <p>This event only dispatched when there are one or more relevant listeners
- * attached to the dispatching object.</p>
- *
- *  @eventType mx.events.FlexEvent.REMOVE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="remove", type="mx.events.FlexEvent")]
-
-/**
- *  <p>The <code>resize</code> event is not
- *  dispatched until after the property changes.</p>
- *
- *  <p>This event only dispatched when there are one or more
- *  relevant listeners attached to the dispatching object.</p>
- *
- *  @eventType mx.events.ResizeEvent.RESIZE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="resize", type="mx.events.ResizeEvent")]
-
-/**
- *  Dispatched when an object's state changes from invisible to visible.
- *
- *  @eventType mx.events.FlexEvent.SHOW
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="show", type="mx.events.FlexEvent")]
-
-//-------------------------------------- //  Mouse events //--------------------------------------
-
-/**
- *  Dispatched from a component opened using the PopUpManager
- *  when the user clicks outside it.
- *
- *  @eventType mx.events.FlexMouseEvent.MOUSE_DOWN_OUTSIDE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="mouseDownOutside", type="mx.events.FlexMouseEvent")]
-
-/**
- *  Dispatched from a component opened using the PopUpManager
- *  when the user scrolls the mouse wheel outside it.
- *
- *  @eventType mx.events.FlexMouseEvent.MOUSE_WHEEL_OUTSIDE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="mouseWheelOutside", type="mx.events.FlexMouseEvent")]
-
-//-------------------------------------- //  Validation events //--------------------------------------
-
-[Event(name="valueCommit", type="mx.events.FlexEvent")]
-
-//-------------------------------------- //  Drag-and-drop events //--------------------------------------
-
-[Event(name="dragEnter", type="mx.events.DragEvent")]
-[Event(name="dragOver", type="mx.events.DragEvent")]
-
-/**
- *  Dispatched by the component when the user drags outside the component,
- *  but does not drop the data onto the target.
- *
- *  <p>You use this event to restore the drop target to its normal appearance
- *  if you modified its appearance as part of handling the
- *  <code>dragEnter</code> or <code>dragOver</code> event.</p>
- *
- *  @eventType mx.events.DragEvent.DRAG_EXIT
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="dragExit", type="mx.events.DragEvent")]
-
-/**
- *  Dispatched by the drop target when the user releases the mouse over it.
- *
- *  <p>You use this event handler to add the drag data to the drop target.</p>
- *
- *  <p>If you call <code>Event.preventDefault()</code> in the event handler
- *  for the <code>dragDrop</code> event for
- *  a Tree control when dragging data from one Tree control to another,
- *  it prevents the drop.</p>
- *
- *  @eventType mx.events.DragEvent.DRAG_DROP
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="dragDrop", type="mx.events.DragEvent")]
-
-/**
- *  Dispatched by the drag initiator (the component that is the source
- *  of the data being dragged) when the drag operation completes,
- *  either when you drop the dragged data onto a drop target or when you end
- *  the drag-and-drop operation without performing a drop.
- *
- *  <p>You can use this event to perform any final cleanup
- *  of the drag-and-drop operation.
- *  For example, if you drag a List control item from one list to another,
- *  you can delete the List control item from the source if you no longer
- *  need it.</p>
- *
- *  <p>If you call <code>Event.preventDefault()</code> in the event handler
- *  for the <code>dragComplete</code> event for
- *  a Tree control when dragging data from one Tree control to another,
- *  it prevents the drop.</p>
- *
- *  @eventType mx.events.DragEvent.DRAG_COMPLETE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="dragComplete", type="mx.events.DragEvent")]
-
-/**
- *  Dispatched by the drag initiator when starting a drag operation.
- *  This event is used internally by the list-based controls;
- *  you do not handle it when implementing drag and drop.
- *  If you want to control the start of a drag-and-drop operation,
- *  use the <code>mouseDown</code> or <code>mouseMove</code> event.
- *
- *  @eventType mx.events.DragEvent.DRAG_START
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="dragStart", type="mx.events.DragEvent")]
-
-//-------------------------------------- //  Effect events //--------------------------------------
-
-/**
- *  Dispatched just before an effect starts.
- *
- *  <p>The effect does not start changing any visuals
- *  until after this event is fired.</p>
- *
- *  @eventType mx.events.EffectEvent.EFFECT_START
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="effectStart", type="mx.events.EffectEvent")]
-
-/**
- *  Dispatched after an effect is stopped, which happens
- *  only by a call to <code>stop()</code> on the effect.
- *
- *  <p>The effect then dispatches the EFFECT_END event
- *  as the effect finishes. The purpose of the EFFECT_STOP
- *  event is to let listeners know that the effect came to
- *  a premature end, rather than ending naturally or as a
- *  result of a call to <code>end()</code>.</p>
- *
- *  @eventType mx.events.EffectEvent.EFFECT_STOP
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="effectStop", type="mx.events.EffectEvent")]
-
-/**
- *  Dispatched after an effect ends.
- *
- *  <p>The effect makes the last set of visual changes
- *  before this event is fired, but those changes are not
- *  rendered on the screen.
- *  Thus, you might have to use the <code>callLater()</code> method
- *  to delay any other changes that you want to make until after the
- *  changes have been rendered onscreen.</p>
- *
- *  @eventType mx.events.EffectEvent.EFFECT_END
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="effectEnd", type="mx.events.EffectEvent")]
-
-
-//-------------------------------------- //  Tooltip events //--------------------------------------
-
-/**
- *  Dispatched by the component when it is time to create a ToolTip.
- *
- *  <p>If you create your own IToolTip object and place a reference
- *  to it in the <code>toolTip</code> property of the event object
- *  that is passed to your <code>toolTipCreate</code> handler,
- *  the ToolTipManager displays your custom ToolTip.
- *  Otherwise, the ToolTipManager creates an instance of
- *  <code>ToolTipManager.toolTipClass</code> to display.</p>
- *
- *  <p>The sequence of ToolTip events is <code>toolTipStart</code>,
- *  <code>toolTipCreate</code>, <code>toolTipShow</code>,
- *  <code>toolTipShown</code>, <code>toolTipHide</code>,
- *  and <code>toolTipEnd</code>.</p>
- *
- *  @eventType mx.events.ToolTipEvent.TOOL_TIP_CREATE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="toolTipCreate", type="mx.events.ToolTipEvent")]
-
-/**
- *  Dispatched by the component when its ToolTip has been hidden
- *  and is to be discarded soon.
- *
- *  <p>If you specify an effect using the
- *  <code>ToolTipManager.hideEffect</code> property,
- *  this event is dispatched after the effect stops playing.</p>
- *
- *  <p>The sequence of ToolTip events is <code>toolTipStart</code>,
- *  <code>toolTipCreate</code>, <code>toolTipShow</code>,
- *  <code>toolTipShown</code>, <code>toolTipHide</code>,
- *  and <code>toolTipEnd</code>.</p>
- *
- *  @eventType mx.events.ToolTipEvent.TOOL_TIP_END
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="toolTipEnd", type="mx.events.ToolTipEvent")]
-
-/**
- *  Dispatched by the component when its ToolTip is about to be hidden.
- *
- *  <p>If you specify an effect using the
- *  <code>ToolTipManager.hideEffect</code> property,
- *  this event is dispatched before the effect starts playing.</p>
- *
- *  <p>The sequence of ToolTip events is <code>toolTipStart</code>,
- *  <code>toolTipCreate</code>, <code>toolTipShow</code>,
- *  <code>toolTipShown</code>, <code>toolTipHide</code>,
- *  and <code>toolTipEnd</code>.</p>
- *
- *  @eventType mx.events.ToolTipEvent.TOOL_TIP_HIDE
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="toolTipHide", type="mx.events.ToolTipEvent")]
-
-/**
- *  Dispatched by the component when its ToolTip is about to be shown.
- *
- *  <p>If you specify an effect using the
- *  <code>ToolTipManager.showEffect</code> property,
- *  this event is dispatched before the effect starts playing.
- *  You can use this event to modify the ToolTip before it appears.</p>
- *
- *  <p>The sequence of ToolTip events is <code>toolTipStart</code>,
- *  <code>toolTipCreate</code>, <code>toolTipShow</code>,
- *  <code>toolTipShown</code>, <code>toolTipHide</code>,
- *  and <code>toolTipEnd</code>.</p>
- *
- *  @eventType mx.events.ToolTipEvent.TOOL_TIP_SHOW
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="toolTipShow", type="mx.events.ToolTipEvent")]
-
-/**
- *  Dispatched by the component when its ToolTip has been shown.
- *
- *  <p>If you specify an effect using the
- *  <code>ToolTipManager.showEffect</code> property,
- *  this event is dispatched after the effect stops playing.</p>
- *
- *  <p>The sequence of ToolTip events is <code>toolTipStart</code>,
- *  <code>toolTipCreate</code>, <code>toolTipShow</code>,
- *  <code>toolTipShown</code>, <code>toolTipHide</code>,
- *  and <code>toolTipEnd</code>.</p>
- *
- *  @eventType mx.events.ToolTipEvent.TOOL_TIP_SHOWN
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="toolTipShown", type="mx.events.ToolTipEvent")]
-
-/**
- *  Dispatched by a component whose <code>toolTip</code> property is set,
- *  as soon as the user moves the mouse over it.
- *
- *  <p>The sequence of ToolTip events is <code>toolTipStart</code>,
- *  <code>toolTipCreate</code>, <code>toolTipShow</code>,
- *  <code>toolTipShown</code>, <code>toolTipHide</code>,
- *  and <code>toolTipEnd</code>.</p>
- *
- *  @eventType mx.events.ToolTipEvent.TOOL_TIP_START
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Event(name="toolTipStart", type="mx.events.ToolTipEvent")]
-
-//-------------------------------------- //  Effects //--------------------------------------
-
-/**
- *  Played when the component is created.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="creationCompleteEffect", event="creationComplete")]
-
-/**
- *  Played when the component is moved.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="moveEffect", event="move")]
-
-/**
- *  Played when the component is resized.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="resizeEffect", event="resize")]
-
-/**
- *  Played when the component becomes visible.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="showEffect", event="show")]
-
-/**
- *  Played when the component becomes invisible.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="hideEffect", event="hide")]
-
-/**
- *  Played when the user presses the mouse button while over the component.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="mouseDownEffect", event="mouseDown")]
-
-/**
- *  Played when the user releases the mouse button while over the component.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="mouseUpEffect", event="mouseUp")]
-
-/**
- *  Played when the user rolls the mouse over the component.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="rollOverEffect", event="rollOver")]
-
-/**
- *  Played when the user rolls the mouse so it is no longer over the component.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="rollOutEffect", event="rollOut")]
-
-/**
- *  Played when the component gains keyboard focus.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="focusInEffect", event="focusIn")]
-
-/**
- *  Played when the component loses keyboard focus.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="focusOutEffect", event="focusOut")]
-
-/**
- *  Played when the component is added as a child to a Container.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="addedEffect", event="added")]
-
-/**
- *  Played when the component is removed from a Container.
- *
- *  @langversion 3.0
- *  @playerversion Flash 9
- *  @playerversion AIR 1.1
- *  @productversion Flex 3
- */
-[Effect(name="removedEffect", event="removed")]
-
-/**
- *  The UIComponent class is the base class for all visual components,
- *  both interactive and noninteractive.
- *
- *  <p>An interactive component can participate in tabbing and other kinds of
- *  keyboard focus manipulation, accept low-level events like keyboard and
- *  mouse input, and be disabled so that it does not receive keyboard and
- *  mouse input.
- *  This is in contrast to noninteractive components, like Label and
- *  ProgressBar, which simply display contents and are not manipulated by
- *  the user.</p>
- *  <p>The UIComponent class is not used as an MXML tag, but is used as a base
- *  class for other classes.</p>
- */
 [Abstract]
 public class AbstractView extends Sprite implements View, ILayoutManagerClient, IToolTipManagerClient, IVisualElement {
   public static const LAYOUT_DIRECTION_LTR:String = "ltr";
@@ -667,7 +64,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   private static const INITIALIZED:uint = 1 << 0;
   private static const DISABLED:uint = 1 << 11;
   private static const EXCLUDE_FROM_LAYOUT:uint = 1 << 12;
-  private static const LISTENING_FOR_RENDER:uint = 1 << 1;
   private static const PARENT_CHANGED:uint = 1 << 2;
   private static const PROCESSED_DESCRIPTORS:uint = 1 << 3;
   private static const UPDATE_COMPLETE_PENDING:uint = 1 << 4;
@@ -678,8 +74,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   private static const BLEND_SHADER_CHANGED:uint = 1 << 8;
   private static const BLEND_MODE_CHANGED:uint = 1 << 9;
-
-  private static const MAINTAIN_PROJECTION_CENTER:uint = 1 << 10;
 
   /**
    * if component has been reparented, we need to potentially reassign systemManager, cause we could be in a new Window.
@@ -727,11 +121,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   private static const DEFAULT_MAX_WIDTH:Number = 10000;
   private static const DEFAULT_MAX_HEIGHT:Number = 10000;
-
-  /**
-   *  List of methods used by callLater().
-   */
-  private var methodQueue:Vector.<MethodQueueElement>;
 
   public function AbstractView() {
     super();
@@ -822,12 +211,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
    */
   private var oldExplicitHeight:Number;
 
-  /**
-   * @private
-   *
-   * storage for advanced layout and transform properties.
-   */
-  mx_internal var _layoutFeatures:AdvancedLayoutFeatures;
+  private var _layoutFeatures:AdvancedLayoutFeatures;
 
   /**
    * storage for the modified Transform object that can dispatch change events correctly.
@@ -1186,7 +570,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  mx_internal var _width:Number;
+  private var _width:Number;
 
   [Bindable("widthChanged")]
   [Inspectable(category="General")]
@@ -1223,7 +607,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  mx_internal var _height:Number;
+  private var _height:Number;
 
   /**
    *  Number that specifies the height of the component, in pixels,
@@ -1428,23 +812,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  private var _alpha:Number = 1;
-  //[Bindable("alphaChanged")]
   [Inspectable(defaultValue="1.0", category="General", verbose="1", minValue="0.0", maxValue="1.0")]
-
-  override public function get alpha():Number {
-    // Here we roundtrip alpha in the same manner as the
-    // player (purposely introducing a rounding error).
-    return int(_alpha * 256.0) / 256.0;
-  }
-
-  override public function set alpha(value:Number):void {
-    if (value != _alpha) {
-      _alpha = value;
-      $alpha = value;
-      //dispatchEvent(new Event("alphaChanged"));
-    }
-  }
 
   private var _blendMode:String = BlendMode.NORMAL;
 
@@ -1550,70 +918,11 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   public function set designLayer(value:DesignLayer):void {
   }
 
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'alpha' property, which can be useful since components
-   *  can override 'alpha' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $alpha():Number {
-    return super.alpha;
-  }
-
-  mx_internal final function set $alpha(value:Number):void {
-    super.alpha = value;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'parent' property, which can be useful since components
-   *  can override 'parent' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $parent():DisplayObjectContainer {
-    return super.parent;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'x' property, which can be useful since components
-   *  can override 'x' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $x():Number {
-    return super.x;
-  }
-
-  mx_internal final function set $x(value:Number):void {
-    super.x = value;
-  }
-
-  /**
-   *  This property allows access to the Player's native implementation
-   *  of the 'y' property, which can be useful since components
-   *  can override 'y' and thereby hide the native implementation.
-   *  Note that this "base property" is final and cannot be overridden,
-   *  so you can count on it to reflect what is happening at the player level.
-   */
-  mx_internal final function get $y():Number {
-    return super.y;
-  }
-
-  mx_internal final function set $y(value:Number):void {
-    super.y = value;
-  }
-
-  private var _tweeningProperties:Array;
-
   public function get tweeningProperties():Array {
-    return _tweeningProperties;
+    return null;
   }
 
   public function set tweeningProperties(value:Array):void {
-    _tweeningProperties = value;
   }
 
   private var _focusManager:IFocusManager;
@@ -1694,7 +1003,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   public function set nestLevel(value:int):void {
     // If my parent hasn't been attached to the display list, then its nestLevel
-    // will be zero.  If it tries to set my nestLevel to 1, ignore it.  We'll
+    // will be zero. If it tries to set my nestLevel to 1, ignore it.  We'll
     // update nest levels again after the parent is added to the display list.
     //
     // Also punt if the new value for nestLevel is the same as my current value.
@@ -1713,25 +1022,11 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  private var _document:Object;
   public function get document():Object {
-    return _document;
+    return null;
   }
 
   public function set document(value:Object):void {
-    var n:int = numChildren;
-    for (var i:int = 0; i < n; i++) {
-      var child:IUIComponent = getChildAt(i) as IUIComponent;
-      if (!child) {
-        continue;
-      }
-
-      if (child.document == _document || child.document == FlexGlobals.topLevelApplication) {
-        child.document = value;
-      }
-    }
-
-    _document = value;
   }
 
   private var _id:String;
@@ -1887,36 +1182,8 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     return !isNaN(explicitMaxWidth) ? explicitMaxWidth : DEFAULT_MAX_WIDTH;
   }
 
-  public function set maxWidth(value:Number):void {
-    if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
-      _layoutMetrics = new LayoutMetrics();
-    }
-    else if (_layoutMetrics.maxWidth == value) {
-      return;
-    }
-
-    _layoutMetrics.maxWidth = value;
-
-    invalidateSize();
-    invalidateParentSizeAndDisplayList();
-  }
-
   public function get maxHeight():Number {
     return !isNaN(explicitMaxHeight) ? explicitMaxHeight : DEFAULT_MAX_HEIGHT;
-  }
-
-  public function set maxHeight(value:Number):void {
-    if (_layoutMetrics == EMPTY_LAYOUT_METRICS) {
-      _layoutMetrics = new LayoutMetrics();
-    }
-    else if (_layoutMetrics.maxHeight == value) {
-      return;
-    }
-
-    _layoutMetrics.maxHeight = value;
-
-    invalidateSize();
-    invalidateParentSizeAndDisplayList();
   }
 
   public final function get explicitMinWidth():Number {
@@ -2081,24 +1348,12 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     throw new Error("abstract");
   }
 
-  mx_internal var _toolTip:String;
-
-  [Bindable("toolTipChanged")]
-  [Inspectable(category="General", defaultValue="null")]
-
   public function get toolTip():String {
-    return _toolTip;
+    throw new Error("unsupported prorperty");
   }
 
   public function set toolTip(value:String):void {
-    var oldValue:String = _toolTip;
-    _toolTip = value;
-
-    ToolTipManager.instance.registerToolTip(this, oldValue, value);
-
-    if (hasEventListener("toolTipChanged")) {
-      dispatchEvent(new Event("toolTipChanged"));
-    }
+    throw new Error("unsupported prorperty");
   }
 
   public function get isPopUp():Boolean {
@@ -2165,15 +1420,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     // systemManager getter tries to set the internal _systemManager varaible if it is null. Hence a call to the getter is necessary.
     // Stage can be null when an untrusted application is loaded by an application that isn't on stage yet.
     if (systemManager != null && (_systemManager.stage != null)) {
-      if (methodQueue != null && methodQueue.length > 0 && (flags & LISTENING_FOR_RENDER) == 0) {
-        _systemManager.addEventListener(FlexEvent.RENDER, callLaterDispatcher);
-        _systemManager.addEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-        flags |= LISTENING_FOR_RENDER;
-      }
-
-      if (_systemManager.stage != null) {
-        _systemManager.stage.invalidate();
-      }
+      _systemManager.stage.invalidate();
     }
   }
 
@@ -2186,15 +1433,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   }
 
   private function addingChild(child:DisplayObject):void {
-    if (child is IUIComponent) {
-      // If the document property isn't already set on the child, set it to be the same as this component's document.
-      // The document setter will recursively set it on any descendants of the child that exist.
-      if (IUIComponent(child).document == null) {
-        IUIComponent(child).document = document == null ? FlexGlobals.topLevelApplication : document;
-      }
-      IUIComponent(child).parentChanged(this);
-    }
-
     // Set the nestLevel of the child to be one greater than the nestLevel of this component.
     // The nestLevel setter will recursively set it on any descendants of the child that exist.
     if (child is ILayoutManagerClient) {
@@ -2210,7 +1448,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  private function childAdded(child:DisplayObject):void {
+  private static function childAdded(child:DisplayObject):void {
     if (child is UIComponent && !UIComponent(child).initialized) {
       UIComponent(child).initialize();
     }
@@ -2222,12 +1460,8 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  private function childRemoved(child:DisplayObject):void {
+  private static function childRemoved(child:DisplayObject):void {
     if (child is IUIComponent) {
-      // only reset document if the child isn't a document itself
-      if (IUIComponent(child).document != child) {
-        IUIComponent(child).document = null;
-      }
       IUIComponent(child).parentChanged(null);
     }
   }
@@ -2367,59 +1601,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   public function validateNow():void {
     UIComponentGlobals.layoutManager.validateClient(this);
-  }
-
-  /**
-   *  Queues a function to be called later.
-   *
-   *  <p>Before each update of the screen, Flash Player or AIR calls
-   *  the set of functions that are scheduled for the update.
-   *  Sometimes, a function should be called in the next update
-   *  to allow the rest of the code scheduled for the current
-   *  update to be executed.
-   *  Some features, like effects, can cause queued functions to be
-   *  delayed until the feature completes.</p>
-   *
-   *  @param method Reference to a method to be executed later.
-   *
-   *  @param args Array of Objects that represent the arguments to pass to the method.
-   *
-   *
-   *  @langversion 3.0
-   *  @playerversion Flash 9
-   *  @playerversion AIR 1.1
-   *  @productversion Flex 3
-   */
-  public function callLater(method:Function, args:Array /* of Object */ = null):void {
-    // trace(">>calllater " + this)
-    // Push the method and the arguments onto the method queue.
-    if (methodQueue == null) {
-      methodQueue = new <MethodQueueElement>[new MethodQueueElement(method, args)];
-      methodQueue.fixed = false;
-    }
-    else {
-      methodQueue[methodQueue.length] = new MethodQueueElement(method, args);
-    }
-
-    // Register to get the next "render" event just before the next rasterization.
-    var sm:ISystemManager = systemManager;
-
-    // Stage can be null when an untrusted application is loaded by an application that isn't on stage yet.
-    if (sm != null && (sm.stage != null)) {
-      if ((flags & LISTENING_FOR_RENDER) == 0) {
-        // trace("  added");
-        sm.addEventListener(FlexEvent.RENDER, callLaterDispatcher);
-        sm.addEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-        flags |= LISTENING_FOR_RENDER;
-      }
-
-      // Force a "render" event to happen soon
-      if (sm.stage != null) {
-        sm.stage.invalidate();
-      }
-    }
-
-    // trace("<<calllater " + this)
   }
 
   public function validateProperties():void {
@@ -2586,33 +1767,33 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     if (isNaN(oldMinWidth)) {
       // This branch does the same thing as the else branch, but it is optimized for the first time that
       // measureSizes() is called on this object.
-      oldMinWidth = !isNaN(explicitMinWidth) ? explicitMinWidth : measuredMinWidth;
-      oldMinHeight = !isNaN(explicitMinHeight) ? explicitMinHeight : measuredMinHeight;
-      oldExplicitWidth = !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
-      oldExplicitHeight = !isNaN(_layoutMetrics.height) ? explicitHeight : measuredHeight;
+      oldMinWidth = _layoutMetrics.minWidth == _layoutMetrics.minWidth ? _layoutMetrics.minWidth : measuredMinWidth;
+      oldMinHeight = _layoutMetrics.minHeight == _layoutMetrics.minHeight ? _layoutMetrics.minHeight : measuredMinHeight;
+      oldExplicitWidth = _layoutMetrics.width == _layoutMetrics.width && !_layoutMetrics.widthIsPercent ? _layoutMetrics.width : measuredWidth;
+      oldExplicitHeight = _layoutMetrics.height == _layoutMetrics.height && !_layoutMetrics.heightIsPercent ? _layoutMetrics.height : measuredHeight;
 
       return true;
     }
     else {
-      var newValue:Number = !isNaN(explicitMinWidth) ? explicitMinWidth : measuredMinWidth;
+      var newValue:Number = _layoutMetrics.minWidth == _layoutMetrics.minWidth ? _layoutMetrics.minWidth : measuredMinWidth;
       if (newValue != oldMinWidth) {
         oldMinWidth = newValue;
         return true;
       }
 
-      newValue = !isNaN(explicitMinHeight) ? explicitMinHeight : measuredMinHeight;
+      newValue = _layoutMetrics.minHeight == _layoutMetrics.minHeight ? _layoutMetrics.minHeight : measuredMinHeight;
       if (newValue != oldMinHeight) {
         oldMinHeight = newValue;
         return true;
       }
 
-      newValue = !isNaN(_layoutMetrics.width) ? _layoutMetrics.width : measuredWidth;
+      newValue = _layoutMetrics.width == _layoutMetrics.width && !_layoutMetrics.widthIsPercent ? _layoutMetrics.width : measuredWidth;
       if (newValue != oldExplicitWidth) {
         oldExplicitWidth = newValue;
         return true;
       }
 
-      newValue = !isNaN(explicitHeight) ? explicitHeight : measuredHeight;
+      newValue = _layoutMetrics.height == _layoutMetrics.height && !_layoutMetrics.heightIsPercent ? _layoutMetrics.height : measuredHeight;
       if (newValue != oldExplicitHeight) {
         oldExplicitHeight = newValue;
         return true;
@@ -2693,13 +1874,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   protected function validateMatrix():void {
     if (_layoutFeatures != null && _layoutFeatures.updatePending) {
       applyComputedMatrix();
-    }
-
-    if (flags & MAINTAIN_PROJECTION_CENTER) {
-      var pmatrix:PerspectiveProjection = super.transform.perspectiveProjection;
-      if (pmatrix != null) {
-        pmatrix.projectionCenter = new Point(width / 2, height / 2);
-      }
     }
   }
 
@@ -2967,7 +2141,7 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
     else {
       UIComponentGlobals.nextFocusObject = this;
-      callLater(setFocusLater);
+      //callLater(setFocusLater);
     }
   }
 
@@ -2984,72 +2158,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
     oldWidth = width;
     oldHeight = height;
-  }
-
-  /**
-   *  Callback that then calls queued functions.
-   */
-  private function callLaterDispatcher(event:Event):void {
-    // trace(">>calllaterdispatcher " + this);
-    UIComponentGlobals.callLaterDispatcherCount++;
-
-    // At run-time, callLaterDispatcher2() is called
-    // without a surrounding try-catch.
-    if (!UIComponentGlobals.catchCallLaterExceptions) {
-      callLaterDispatcher2(event);
-    }
-
-    // At design-time, callLaterDispatcher2() is called
-    // with a surrounding try-catch.
-    else {
-      try {
-        callLaterDispatcher2(event);
-      }
-      catch(e:Error) {
-        // Dispatch a callLaterError dynamic event for Design View.
-        var callLaterErrorEvent:DynamicEvent = new DynamicEvent("callLaterError");
-        callLaterErrorEvent.error = e;
-        callLaterErrorEvent.source = this;
-        systemManager.dispatchEvent(callLaterErrorEvent);
-      }
-    }
-    // trace("<<calllaterdispatcher");
-    UIComponentGlobals.callLaterDispatcherCount--;
-  }
-
-  /**
-   *  Callback that then calls queued functions.
-   */
-  private function callLaterDispatcher2(event:Event):void {
-    if (UIComponentGlobals.callLaterSuspendCount > 0) {
-      return;
-    }
-
-    // trace("  >>calllaterdispatcher2");
-    var sm:ISystemManager = systemManager;
-
-    // Stage can be null when an untrusted application is loaded by an application
-    // that isn't on stage yet.
-    if (sm && (sm.stage) && (flags & LISTENING_FOR_RENDER) != 0) {
-      // trace("  removed");
-      sm.removeEventListener(FlexEvent.RENDER, callLaterDispatcher);
-      sm.removeEventListener(FlexEvent.ENTER_FRAME, callLaterDispatcher);
-      flags &= ~LISTENING_FOR_RENDER;
-    }
-
-    // Move the method queue off to the side, so that subsequent calls to callLater get added to a new queue that'll get handled next time.
-    var queue:Vector.<MethodQueueElement> = methodQueue;
-    methodQueue = null;
-
-    // Call each method currently in the method queue.
-    // These methods can call callLater(), causing additional methods to be queued, but these will get called the next time around.
-    var n:int = queue.length;
-    //  trace("  queue length " + n);
-    for (var i:int = 0; i < n; i++) {
-      queue[i].apply();
-    }
-
-    // trace("  <<calllaterdispatcher2 " + this);
   }
 
   /**
@@ -3133,23 +2241,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
 
     return child == this;
-  }
-
-  private static const fakeMouseX:QName = new QName(mx_internal, "_mouseX");
-  private static const fakeMouseY:QName = new QName(mx_internal, "_mouseY");
-
-  override public function get mouseX():Number {
-    if (!root || root is Stage || root[fakeMouseX] === undefined) {
-      return super.mouseX;
-    }
-    return globalToLocal(new Point(root[fakeMouseX], 0)).x;
-  }
-
-  override public function get mouseY():Number {
-    if (!root || root is Stage || root[fakeMouseY] === undefined) {
-      return super.mouseY;
-    }
-    return globalToLocal(new Point(0, root[fakeMouseY])).y;
   }
 
   /**
@@ -3240,9 +2331,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
     super.transform.colorTransform = ct;
     super.transform.perspectiveProjection = pp;
-    if (flags & MAINTAIN_PROJECTION_CENTER) {
-      invalidateDisplayList();
-    }
     if (was3D != is3D) {
       validateMatrix();
     }
@@ -3270,18 +2358,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     if (was3D != is3D) {
       validateMatrix();
     }
-  }
-
-  /**
-   * When true, the component keeps its projection matrix centered on the middle of its bounding box.
-   * If no projection matrix is defined on the component, one is added automatically.
-   */
-  public function set maintainProjectionCenter(value:Boolean):void {
-    value ? flags |= MAINTAIN_PROJECTION_CENTER : flags &= ~MAINTAIN_PROJECTION_CENTER;
-    if (value && super.transform.perspectiveProjection == null) {
-      super.transform.perspectiveProjection = new PerspectiveProjection();
-    }
-    invalidateDisplayList();
   }
 
   public function setLayoutMatrix(value:Matrix, invalidateLayout:Boolean):void {
@@ -3350,177 +2426,16 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
   }
 
-  private static var xformPt:Point;
-
   public function transformAround(transformCenter:Vector3D, scale:Vector3D = null, rotation:Vector3D = null, translation:Vector3D = null, postLayoutScale:Vector3D = null, postLayoutRotation:Vector3D = null, postLayoutTranslation:Vector3D = null, invalidateLayout:Boolean = true):void {
-    // Make sure that no transform setters will trigger parent invalidation.
-    // Reset the flag at the end of the method.
-    var oldIncludeInLayout:Boolean;
-    if (!invalidateLayout) {
-      oldIncludeInLayout = (flags & EXCLUDE_FROM_LAYOUT) == 0;
-      flags |= EXCLUDE_FROM_LAYOUT;
-    }
-
-    // TODO (chaase): Would be nice to put this function in a central place
-    // to be used by UIComponent, SpriteVisualElement, UIMovieClip, and
-    // GraphicElement, since they all have similar or identical functions
-    if (_layoutFeatures == null) {
-      // TODO (chaase): should provide a way to return to having no
-      // layoutFeatures if we call this later with a more trivial
-      // situation
-      var needAdvancedLayout:Boolean = (scale != null && ((!isNaN(scale.x) && scale.x != 1) || (!isNaN(scale.y) && scale.y != 1) || (!isNaN(scale.z) && scale.z != 1))) || (rotation != null && ((!isNaN(rotation.x) && rotation.x != 0) || (!isNaN(rotation.y) && rotation.y != 0) || (!isNaN(rotation.z) && rotation.z != 0))) || (translation != null && translation.z != 0 && !isNaN(translation.z)) || postLayoutScale != null || postLayoutRotation != null || (postLayoutTranslation != null && (translation == null || postLayoutTranslation.x != translation.x || postLayoutTranslation.y != translation.y || postLayoutTranslation.z != translation.z));
-      if (needAdvancedLayout) {
-        initAdvancedLayoutFeatures();
-      }
-    }
-    if (_layoutFeatures != null) {
-      var prevX:Number = _layoutFeatures.layoutX;
-      var prevY:Number = _layoutFeatures.layoutY;
-      var prevZ:Number = _layoutFeatures.layoutZ;
-      _layoutFeatures.transformAround(transformCenter, scale, rotation, translation, postLayoutScale, postLayoutRotation, postLayoutTranslation);
-      invalidateTransform();
-
-      // Will not invalidate parent if we have set _includeInLayout to false
-      // in the beginning of the method
-      invalidateParentSizeAndDisplayList();
-
-      if (prevX != _layoutFeatures.layoutX) {
-        dispatchEvent(new Event("xChanged"));
-      }
-      if (prevY != _layoutFeatures.layoutY) {
-        dispatchEvent(new Event("yChanged"));
-      }
-      if (prevZ != _layoutFeatures.layoutZ) {
-        dispatchEvent(new Event("zChanged"));
-      }
-    }
-    else {
-      if (translation == null && transformCenter != null) {
-        if (xformPt == null) {
-          xformPt = new Point();
-        }
-        xformPt.x = transformCenter.x;
-        xformPt.y = transformCenter.y;
-        var xformedPt:Point = transform.matrix.transformPoint(xformPt);
-      }
-      if (rotation != null && !isNaN(rotation.z)) {
-        this.rotation = rotation.z;
-      }
-      if (scale != null) {
-        scaleX = scale.x;
-        scaleY = scale.y;
-      }
-      if (transformCenter == null) {
-        if (translation != null) {
-          x = translation.x;
-          y = translation.y;
-        }
-      }
-      else {
-        if (xformPt == null) {
-          xformPt = new Point();
-        }
-        xformPt.x = transformCenter.x;
-        xformPt.y = transformCenter.y;
-        var postXFormPoint:Point = transform.matrix.transformPoint(xformPt);
-        if (translation != null) {
-          x += translation.x - postXFormPoint.x;
-          y += translation.y - postXFormPoint.y;
-        }
-        else {
-          x += xformedPt.x - postXFormPoint.x;
-          y += xformedPt.y - postXFormPoint.y;
-        }
-      }
-    }
-
-    if (!invalidateLayout && oldIncludeInLayout) {
-      flags &= ~EXCLUDE_FROM_LAYOUT;
-    }
-  }
-
-  /**
-   * A utility method to transform a point specified in the local
-   * coordinates of this object to its location in the object's parent's
-   * coordinates. The pre-layout and post-layout result is set on
-   * the <code>position</code> and <code>postLayoutPosition</code>
-   * parameters, if they are non-null.
-   *
-   * @param localPosition The point to be transformed, specified in the
-   * local coordinates of the object.
-   * @position A Vector3D point that holds the pre-layout
-   * result. If null, the parameter is ignored.
-   * @postLayoutPosition A Vector3D point that holds the post-layout
-   * result. If null, the parameter is ignored.
-   */
-  public function transformPointToParent(localPosition:Vector3D, position:Vector3D, postLayoutPosition:Vector3D):void {
-    if (_layoutFeatures != null) {
-      _layoutFeatures.transformPointToParent(true, localPosition, position, postLayoutPosition);
-    }
-    else {
-      if (xformPt == null) {
-        xformPt = new Point();
-      }
-      if (localPosition) {
-        xformPt.x = localPosition.x;
-        xformPt.y = localPosition.y;
-      }
-      else {
-        xformPt.x = 0;
-        xformPt.y = 0;
-      }
-      var tmp:Point = (transform.matrix != null) ? transform.matrix.transformPoint(xformPt) : xformPt;
-      if (position != null) {
-        position.x = tmp.x;
-        position.y = tmp.y;
-        position.z = 0;
-      }
-      if (postLayoutPosition != null) {
-        postLayoutPosition.x = tmp.x;
-        postLayoutPosition.y = tmp.y;
-        postLayoutPosition.z = 0;
-      }
-    }
-  }
-
-  /**
-   *  The transform matrix that is used to calculate a component's layout
-   *  relative to its siblings. This matrix is defined by the component's
-   *  3D properties (which include the 2D properties such as <code>x</code>,
-   *  <code>y</code>, <code>rotation</code>, <code>scaleX</code>,
-   *  <code>scaleY</code>, <code>transformX</code>, and
-   *  <code>transformY</code>, as well as <code>rotationX</code>,
-   *  <code>rotationY</code>, <code>scaleZ</code>, <code>z</code>, and
-   *  <code>transformZ</code>.
-   *
-   *  <p>Most components do not have any 3D transform properties set on them.</p>
-   *
-   *  <p>This layout matrix is combined with the values of the
-   *  <code>postLayoutTransformOffsets</code> property to determine the
-   *  component's final, computed matrix.</p>
-   *
-   *  @see #postLayoutTransformOffsets
-   */
-  public function set layoutMatrix3D(value:Matrix3D):void {
-    setLayoutMatrix3D(value, true /*invalidateLayout*/);
+    throw new IllegalOperationError("unsupported method");
   }
 
   public function get depth():Number {
-    return _layoutFeatures == null ? 0 : _layoutFeatures.depth;
+    return 0;
   }
 
   public function set depth(value:Number):void {
-    if (value == depth) {
-      return;
-    }
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-
-    _layoutFeatures.depth = value;
-    if (parent is UIComponent) {
-      UIComponent(parent).invalidateLayering();
-    }
+    throw new IllegalOperationError("unsupported property");
   }
 
   /**
@@ -3534,23 +2449,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     }
     else {
       super.transform.matrix = _layoutFeatures.computedMatrix;
-    }
-  }
-
-  /**
-   *  Specifies a transform stretch factor in the horizontal and vertical direction.
-   *  The stretch factor is applied to the computed matrix before any other transformation.
-   *  @param stretchX The horizontal component of the stretch factor.
-   *  @param stretchY The vertical component of the stretch factor.
-   */
-  protected function setStretchXY(stretchX:Number, stretchY:Number):void {
-    if (_layoutFeatures == null) {
-      initAdvancedLayoutFeatures();
-    }
-    if (stretchX != _layoutFeatures.stretchX || stretchY != _layoutFeatures.stretchY) {
-      _layoutFeatures.stretchX = stretchX;
-      _layoutFeatures.stretchY = stretchY;
-      invalidateTransform();
     }
   }
 
@@ -3663,27 +2561,4 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     return _layoutFeatures != null ? _layoutFeatures.layoutMatrix : super.transform.matrix;
   }
 }
-}
-
-final class MethodQueueElement {
-   /**
-   *  A reference to the method to be called.
-   */
-  private var method:Function;
-
-  /**
-   *  The arguments to be passed to the method.
-   */
-  private var args:Array /* of Object */;
-
-  public function MethodQueueElement(method:Function, args:Array /* of Object */ = null) {
-    super();
-
-    this.method = method;
-    this.args = args;
-  }
-
-  public function apply():void {
-    method.apply(null, args);
-  }
 }

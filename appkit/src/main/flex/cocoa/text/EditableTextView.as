@@ -835,7 +835,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function addedToStageHandler(event:Event):void {
     if (event.target == this) {
       removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-      callLater(addActivateHandlers);
+      //callLater(addActivateHandlers);
     }
   }
 

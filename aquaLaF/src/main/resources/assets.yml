@@ -8,9 +8,9 @@ borders:
 - key: CheckBox
   type: Scale1
   frameInsets: {left: -1, right: -1, bottom: -2}
-  contentInsets: {left: 22, bottom: 2}
+  contentInsets: {left: 19, bottom: 2}
 - key: CheckBox
   subkey: small
   type: Scale1
-  frameInsets: {left: -1, right: -1, bottom: -2}
+  frameInsets: {left: -1, right: -1, bottom: -2}  
   contentInsets: {left: 18, bottom: 2}

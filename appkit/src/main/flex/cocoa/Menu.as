@@ -72,7 +72,7 @@ public class Menu extends AbstractComponent {
   }
 
   private function itemsChangeHandler(event:CollectionEvent = null):void {
-    AbstractView(skin).callLater(dispatchChangeEvent);
+    //AbstractView(skin).callLater(dispatchChangeEvent);
   }
 
   private function dispatchChangeEvent():void {
