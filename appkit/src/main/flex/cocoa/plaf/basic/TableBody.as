@@ -1,5 +1,6 @@
 package cocoa.plaf.basic {
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
@@ -78,7 +79,7 @@ public class TableBody extends ListBody {
   }
 
   override public function addChild(child:DisplayObject):DisplayObject {
-    addDisplayObject(child);
+    child is Skin ? super.addChild(child) : addDisplayObject(child);
     return child;
   }
 

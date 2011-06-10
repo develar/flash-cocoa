@@ -31,13 +31,16 @@
         <MavenRunnerParameters>
           <option name="goals">
             <list>
-              <option value="org.flyti:asset-builder-maven-plugin:generate" />
+              <option value="install" />
+              <option value="-o" />
+              <option value="-e" />
+              <option value="-Dmaven.test.skip" />
             </list>
           </option>
           <option name="profiles">
             <set />
           </option>
-          <option name="workingDirPath" value="$PROJECT_DIR$/aquaLaF" />
+          <option name="workingDirPath" value="$PROJECT_DIR$" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

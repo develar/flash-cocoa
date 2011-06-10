@@ -251,7 +251,7 @@ public class AssetBuilderMojo extends AbstractMojo {
         }
         else {
           out.writeByte(border.type.ordinal());
-          out.write(sourceImages);
+          out.trimAndWrite(sourceImages);
         }
       }
 

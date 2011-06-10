@@ -30,9 +30,13 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
     if (skin != null) {
       skin.invalidateDisplayList();
 
-      if (_alternateToolTip != null) {
-        skin.toolTip = value == CellState.ON ? _alternateToolTip : _toolTip;
-      }
+      updateToolTip();
+    }
+  }
+
+  protected function updateToolTip():void {
+    if (_alternateToolTip != null) {
+      skin.toolTip = _state == CellState.ON ? _alternateToolTip : _toolTip;
     }
   }
 

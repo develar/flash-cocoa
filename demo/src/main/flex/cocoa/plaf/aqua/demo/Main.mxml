@@ -25,10 +25,12 @@
     <aqua:AquaLookAndFeel/>
   </ac:laf>
 
-  <Container>
+  <Container width="100%">
     <layout>
-      <s:HorizontalLayout/>
+      <s:VerticalLayout/>
     </layout>
+    <CheckBox/>
+    <CheckBox lafSubkey="small"/>
     <tableview:TableView id="tableView" width="100%" height="100%" lafSubkey="small"/>
   </Container>
 </ac:WindowedApplication>

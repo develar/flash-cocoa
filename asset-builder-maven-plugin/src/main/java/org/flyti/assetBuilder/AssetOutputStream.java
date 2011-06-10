@@ -1,5 +1,6 @@
 package org.flyti.assetBuilder;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,6 +23,23 @@ public class AssetOutputStream extends DataOutputStream {
     writeByte(images.length);
     for (BufferedImage image : images) {
       write(image);
+    }
+  }
+
+  public void trimAndWrite(BufferedImage[] images) throws IOException {
+    writeByte(images.length);
+    for (BufferedImage image : images) {
+      Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(image);
+      if (frameRectangle == null) {
+        write(image);
+        continue;
+      }
+
+      writeByte(frameRectangle.width);
+      writeByte(frameRectangle.height);
+      for (int pixel : image.getRGB(frameRectangle.x, frameRectangle.y, frameRectangle.width, frameRectangle.height, null, 0, frameRectangle.width)) {
+        writeInt(pixel);
+      }
     }
   }
 }

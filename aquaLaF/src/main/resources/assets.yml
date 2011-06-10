@@ -4,3 +4,13 @@ borders:
   type: Scale9Edge
   frameInsets: {top: 10}
   contentInsets: {left: 16, top: 26, right: 16, bottom: 16}
+
+- key: CheckBox
+  type: Scale1
+  frameInsets: {left: -1, right: -1, bottom: -2}
+  contentInsets: {left: 22, bottom: 2}
+- key: CheckBox
+  subkey: small
+  type: Scale1
+  frameInsets: {left: -1, right: -1, bottom: -2}
+  contentInsets: {left: 18, bottom: 2}

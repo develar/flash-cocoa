@@ -59,6 +59,10 @@ public class ImageRetriever {
 
   private BufferedImage[] getImages(final String name, AssetNameComparator assetNameComparator) throws MojoExecutionException, IOException {
     for (File sourceDirectory : sources) {
+      if (sourceDirectory.isFile()) {
+        continue;
+      }
+
       String[] files = directoryContentCache.get(sourceDirectory);
       if (files == null) {
         files = sourceDirectory.list();
@@ -107,7 +111,7 @@ public class ImageRetriever {
         Arrays.sort(imageFiles, assetNameComparator);
         
         BufferedImage[] images = new BufferedImage[imageFilesLength];
-//        System.out.print(Arrays.toString(imageFiles) + "\n");
+        System.out.print(Arrays.toString(imageFiles) + "\n");
         for (int i = 0; i < imageFilesLength; i++) {
           images[i] = JAI.create("fileload", rootDir + imageFiles[i]).getAsBufferedImage();
         }

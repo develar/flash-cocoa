@@ -1,4 +1,3 @@
-
 screencapture -wi /Users/develar/workspace/cocoa/aquaLaF/src/main/resources/assets.png
 
 screencapture -i ~/workspace/cocoa/testToolApp/src/main/resources/popUpMenu.png
@@ -29,3 +28,6 @@ mogrify -format png  *.tiff
 
 
 HUD-SliderKnob_round-P — N это off (Normal), P это on (Pressed).
+
+Для получения ассетов мы используем ArtFile (java программа для него пока не в source).
+checkbox — предпочтение отдаем clear, а не просто в корне regular.png

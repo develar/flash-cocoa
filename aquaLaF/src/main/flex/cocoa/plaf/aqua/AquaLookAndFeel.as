@@ -115,8 +115,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["VSeparator"] = data["HSeparator"] = SeparatorSkin;
 
     data["NumericStepper"] = NumericStepperSkin;
-    data["CheckBox"] = CheckBoxSkin;
-    data["CheckBox.b"] = data["PushButton.b"];
+    data["CheckBox"] = data["small.CheckBox"] = CheckBoxSkin;
     data["HSlider"] = HSliderSkin;
 
     data["TextInput"] = TextInputSkin;

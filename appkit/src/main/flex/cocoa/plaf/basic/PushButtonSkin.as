@@ -1,4 +1,5 @@
 package cocoa.plaf.basic {
+import cocoa.AbstractButton;
 import cocoa.Border;
 import cocoa.Cell;
 import cocoa.CellState;
@@ -8,6 +9,8 @@ import cocoa.TextInsets;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.Graphics;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
 import mx.managers.IFocusManagerComponent;
 
@@ -29,6 +32,8 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
     super.attach(component, laf);
 
     myComponent = Cell(component);
+
+    addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
   }
 
   override public function get baselinePosition():Number {
@@ -83,9 +88,17 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
       }
     }
 
+    drawBorder2(w, h);
+  }
+
+  protected function drawBorder2(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
     border.draw(g, w, h, 0, 0, this);
+  }
+
+  protected function drawBorder():void {
+    drawBorder2(width, height);
   }
 
   override public function set enabled(value:Boolean):void {
@@ -95,6 +108,62 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
   }
 
   public function drawFocus(isFocused:Boolean):void {
+  }
+
+  private function mouseDownHandler(event:MouseEvent):void {
+    stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+
+    addHoverHandlers();
+    mouseOverHandler(event);
+  }
+
+  private function stageMouseUpHandler(event:MouseEvent):void {
+    stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+
+    removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+    removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+
+    if (event.target != this) {
+      return;
+    }
+
+    var state:int = CellState.OFF;
+    if (toggled) {
+      state = myComponent.state == CellState.OFF ? CellState.ON : CellState.OFF;
+    }
+
+    if (component.hasEventListener("selectedChanged")) {
+      component.dispatchEvent(new Event("selectedChanged"));
+    }
+
+    AbstractButton(component).setStateAndCallUserInitiatedActionHandler(state);
+
+    mouseUp();
+    drawBorder();
+    event.updateAfterEvent();
+  }
+
+  protected function mouseUp():void {
+
+  }
+
+  protected function mouseOverHandler(event:MouseEvent):void {
+    drawBorder();
+    event.updateAfterEvent();
+  }
+
+  protected function mouseOutHandler(event:MouseEvent):void {
+    drawBorder();
+    event.updateAfterEvent();
+  }
+
+  protected function get toggled():Boolean {
+    return false;
+  }
+
+  private function addHoverHandlers():void {
+    addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+    addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
   }
 }
 }

@@ -45,7 +45,7 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
     }
   }
 
-  protected function drawBorder(g:Graphics, w:Number, h:Number):void {
+  protected function drawBorder4(g:Graphics, w:Number, h:Number):void {
     // for mouse events
     g.beginFill(0, 0);
     g.drawRect(0, 0, w, h);
@@ -56,7 +56,7 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
     var g:Graphics = graphics;
     g.clear();
 
-    drawBorder(g, w, h);
+    drawBorder4(g, w, h);
     if (_icon != null) {
       _icon.draw(this, g, Math.round((w - _icon.iconWidth) * 0.5), labelHelper == null ? Math.round((h - _icon.iconHeight) * 0.5) : iconInsets.top);
     }

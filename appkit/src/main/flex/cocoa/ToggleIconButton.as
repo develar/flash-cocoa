@@ -3,14 +3,21 @@ import cocoa.plaf.IconButtonSkin;
 import cocoa.plaf.LookAndFeel;
 
 public class ToggleIconButton extends IconButton implements ToggleButton {
-  override protected function get toggled():Boolean {
-    return true;
-  }
-
   private var _alternateIconId:String;
   public function set alternateIconId(value:String):void {
     if (value != _alternateIconId) {
       _alternateIconId = value;
+    }
+  }
+
+  [Bindable(event="selectedChanged")]
+  public function get selected():Boolean {
+    return _state == CellState.ON;
+  }
+
+  public function set selected(value:Boolean):void {
+    if (value != selected) {
+      state = value ? CellState.ON : CellState.OFF;
     }
   }
 
