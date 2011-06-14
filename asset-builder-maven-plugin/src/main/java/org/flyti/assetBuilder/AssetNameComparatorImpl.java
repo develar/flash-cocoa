@@ -39,11 +39,14 @@ class AssetNameComparatorImpl implements AssetNameComparator {
       case '.':
         return weight;
 
-      case 'H':
+      case 'H': // Highlighted
         return weight + 10;
 
-      case 'O':
+      case 'O': // Over
         return weight + 20;
+
+      case 'D': // Disabled
+        return weight + 30;
 
       default:
         throw new IllegalArgumentException("unknown " + s);

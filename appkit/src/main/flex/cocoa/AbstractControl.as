@@ -1,4 +1,6 @@
 package cocoa {
+import mx.managers.IToolTipManagerClient;
+
 public class AbstractControl extends AbstractComponent implements Control, Cell {
   protected var _action:Function;
   public function set action(value:Function):void {
@@ -10,7 +12,7 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
     if (value != _toolTip) {
       _toolTip = value;
       if (skin != null) {
-        skin.toolTip = _toolTip;
+        IToolTipManagerClient(skin).toolTip = _toolTip;
       }
     }
   }
@@ -36,7 +38,7 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
 
   protected function updateToolTip():void {
     if (_alternateToolTip != null) {
-      skin.toolTip = _state == CellState.ON ? _alternateToolTip : _toolTip;
+      IToolTipManagerClient(skin).toolTip = _state == CellState.ON ? _alternateToolTip : _toolTip;
     }
   }
 
@@ -52,7 +54,7 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
     super.skinAttached();
 
     if (_toolTip != null) {
-      skin.toolTip = _toolTip;
+      IToolTipManagerClient(skin).toolTip = _toolTip;
     }
   }
 
@@ -61,7 +63,7 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
     if (value != _alternateToolTip) {
       _alternateToolTip = value;
       if (skin != null && _state == CellState.ON) {
-        skin.toolTip = _alternateToolTip;
+        IToolTipManagerClient(skin).toolTip = _alternateToolTip;
       }
     }
   }

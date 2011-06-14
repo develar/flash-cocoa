@@ -25,9 +25,19 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
     this.textInsets = textInsets;
   }
 
+  protected function createTextLine(rowIndex:int):TextLine {
+    return textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex), actualWidth);
+  }
+
+  protected function createEntry(rowIndex:int, x:Number, y:Number):TextLineLinkedListEntry {
+    var line:TextLine = createTextLine(rowIndex);
+    line.x = x + textInsets.left;
+    line.y = y + tableView.rowHeight - textInsets.bottom;
+    return TextLineLinkedListEntry.create(line);
+  }
+
   public function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject {
-    var line:TextLine = textLineRendererFactory.create(tableView.dataSource.getStringValue(this, rowIndex), actualWidth);
-    var newEntry:TextLineLinkedListEntry = TextLineLinkedListEntry.create(line);
+    var newEntry:TextLineLinkedListEntry = createEntry(rowIndex, x, y);
     if (previousEntry == null) {
       cells.addFirst(newEntry);
     }
@@ -36,10 +46,7 @@ public class TextTableColumn extends AbstractTableColumn implements TableColumn 
     }
 
     previousEntry = newEntry;
-
-    line.x = x + textInsets.left;
-    line.y = y + tableView.rowHeight - textInsets.bottom;
-    return line;
+    return null;
   }
 
   public function reuse(rowCountDelta:int, finalPass:Boolean):void {

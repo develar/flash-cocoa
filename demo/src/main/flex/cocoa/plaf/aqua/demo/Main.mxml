@@ -30,6 +30,8 @@
       <s:VerticalLayout/>
     </layout>
     <CheckBox title="AAA"/>
+    <CheckBox title="AAA Disabled" enabled="false"/>
+    <CheckBox title="AAA selected Disabled" enabled="false" selected="true"/>
     <CheckBox lafSubkey="small"/>
     <tableview:TableView id="tableView" width="100%" height="100%" lafSubkey="small"/>
   </Container>

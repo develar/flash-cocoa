@@ -80,7 +80,7 @@ public class Builder {
     new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1), new Insets(4, NaN, 16, 7)))
   ];
 
-  private function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void {
+  private static function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void {
     for each (var rowInfo:RowInfo in rowsInfo) {
       rowInfo.top = top;
       top += rowInfo.height;
@@ -122,7 +122,7 @@ public class Builder {
 //		show(testContainer, data);
   }
 
-  private function writeBorders(borders:Vector.<Border>, icons:ByteArray):void {
+  private static function writeBorders(borders:Vector.<Border>, icons:ByteArray):void {
     var data:ByteArray = new bordersClass();
     var oldBordersCount:int = data.readUnsignedByte();
     data.position = 0;

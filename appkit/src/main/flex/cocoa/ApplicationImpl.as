@@ -85,7 +85,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application 
     }
   }
 
-  private function injectHandler(event:InjectorEvent):void {
+  private static function injectHandler(event:InjectorEvent):void {
     event.stopImmediatePropagation();
     PlexusManager.instance.container.checkInjectors(event);
   }
@@ -140,9 +140,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application 
   }
 
   override public function set tabIndex(value:int):void {
-  }
-
-  override public function set toolTip(value:String):void {
   }
 
   mx_internal var _parameters:Object;
@@ -222,7 +219,7 @@ public class ApplicationImpl extends LayoutlessContainer implements Application 
   /**
    *  This is here so we get the this pointer set to Application.
    */
-  private function debugTickler():void {
+  private static function debugTickler():void {
     // We need some bytes of code in order to have a place to break.
     //noinspection JSUnusedLocalSymbols
     var i:int = 0;

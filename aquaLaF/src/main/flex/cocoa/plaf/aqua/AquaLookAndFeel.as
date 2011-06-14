@@ -259,7 +259,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     data["TitleBar.PushButton"] = _parent.getClass("PushButton");
   }
 
-  private function createDefaultTextFormat():SimpleTextLayoutFormat {
+  private static function createDefaultTextFormat():SimpleTextLayoutFormat {
     var textInputTextFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT_HUD, new Insets(0, 2));
     textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
     return textInputTextFormat;
