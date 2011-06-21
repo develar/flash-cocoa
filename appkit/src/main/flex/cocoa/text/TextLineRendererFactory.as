@@ -1,5 +1,4 @@
 package cocoa.text {
-import cocoa.tableView.ListViewItemRendererFactory;
 import cocoa.tableView.TextLineLinkedList;
 
 import flash.display.DisplayObjectContainer;
@@ -9,14 +8,11 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TextLineCreationResult;
 
-public class TextLineRendererFactory implements ListViewItemRendererFactory {
+public class TextLineRendererFactory {
   private static const textElement:TextElement = new TextElement();
   private static const textBlock:TextBlock = new TextBlock(textElement);
 
-  public var numberOfUsers:int;
-
   private var textFormat:TextFormat;
-  private var postLayoutCallCount:int;
 
   private const youngOrphanLines:Vector.<TextLine> = new Vector.<TextLine>();
   private var youngOrphanCount:int;
@@ -29,19 +25,16 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
   }
 
   private var _container:DisplayObjectContainer;
-  public function get container():DisplayObjectContainer {
-    return _container;
-  }
   public function set container(value:DisplayObjectContainer):void {
     _container = value;
   }
 
-  public function reuse(list:TextLineLinkedList, rowCountDelta:int, finalPass:Boolean):void {
+  public function reuse(list:TextLineLinkedList, itemCountDelta:int, finalPass:Boolean):void {
     var line:TextLine;
     if (finalPass) {
-      if (rowCountDelta > 0) {
-        orphanLines.length = orphanCount + rowCountDelta;
-        while (rowCountDelta-- > 0) {
+      if (itemCountDelta > 0) {
+        orphanLines.length = orphanCount + itemCountDelta;
+        while (itemCountDelta-- > 0) {
           if ((line = list.removeFirst().line) != null) {
             _container.removeChild(line);
             orphanLines[orphanCount++] = line;
@@ -49,8 +42,8 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
         }
       }
       else {
-        orphanLines.length = orphanCount - rowCountDelta;
-        while (rowCountDelta++ < 0) {
+        orphanLines.length = orphanCount - itemCountDelta;
+        while (itemCountDelta++ < 0) {
           if ((line = list.removeLast().line) != null) {
             _container.removeChild(line);
             orphanLines[orphanCount++] = line;
@@ -59,17 +52,17 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
       }
     }
     else {
-      if (rowCountDelta > 0) {
-        youngOrphanLines.length = youngOrphanCount + rowCountDelta;
-        while (rowCountDelta-- > 0) {
+      if (itemCountDelta > 0) {
+        youngOrphanLines.length = youngOrphanCount + itemCountDelta;
+        while (itemCountDelta-- > 0) {
           if ((line = list.removeFirst().line) != null) {
             youngOrphanLines[youngOrphanCount++] = line;
           }
         }
       }
       else {
-        youngOrphanLines.length = youngOrphanCount - rowCountDelta;
-        while (rowCountDelta++ < 0) {
+        youngOrphanLines.length = youngOrphanCount - itemCountDelta;
+        while (itemCountDelta++ < 0) {
           if ((line = list.removeLast().line) != null) {
             youngOrphanLines[youngOrphanCount++] = line;
           }
@@ -114,24 +107,20 @@ public class TextLineRendererFactory implements ListViewItemRendererFactory {
   }
 
   public function postLayout():void {
-    if (++postLayoutCallCount == numberOfUsers) {
-      postLayoutCallCount = 0;
-
-      if (youngOrphanCount == 0) {
-        orphanLines.length = orphanCount;
-        youngOrphanLines.length = 0;
-        return;
-      }
-
-      orphanLines.length = orphanCount + youngOrphanCount;
-      while (youngOrphanCount > 0) {
-        var line:TextLine = youngOrphanLines[--youngOrphanCount];
-        _container.removeChild(line);
-        orphanLines[orphanCount++] = line;
-      }
-
+    if (youngOrphanCount == 0) {
+      orphanLines.length = orphanCount;
       youngOrphanLines.length = 0;
+      return;
     }
+
+    orphanLines.length = orphanCount + youngOrphanCount;
+    while (youngOrphanCount > 0) {
+      var line:TextLine = youngOrphanLines[--youngOrphanCount];
+      _container.removeChild(line);
+      orphanLines[orphanCount++] = line;
+    }
+
+    youngOrphanLines.length = 0;
   }
 }
 }

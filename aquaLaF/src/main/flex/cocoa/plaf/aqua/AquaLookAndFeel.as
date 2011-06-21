@@ -9,6 +9,7 @@ import cocoa.plaf.Placement;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BoxSkin;
+import cocoa.plaf.basic.CollectionViewSkin;
 import cocoa.plaf.basic.ColorPickerMenuController;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
@@ -17,7 +18,7 @@ import cocoa.plaf.basic.PaneLabelRenderer;
 import cocoa.plaf.basic.SegmentedControlController;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
-import cocoa.plaf.basic.TableViewSkin;
+import cocoa.plaf.basic.BasicTableViewSkin;
 import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
 import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.SimpleTextLayoutFormat;
@@ -65,8 +66,10 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
     data["Box"] = BoxSkin;
+
+    data["CollectionView"] = data["small.CollectionView"] = CollectionViewSkin;
     
-    data["TableView"] = data["small.TableView"] = TableViewSkin;
+    data["TableView"] = data["small.TableView"] = BasicTableViewSkin;
     data["TableView.rowHeight"] = 17;
     data["small.TableView.rowHeight"] = 14;
     data["TableView.intercellSpacing"] = data["small.TableView.intercellSpacing"] = new Point(3, 2); // height (y) must be even

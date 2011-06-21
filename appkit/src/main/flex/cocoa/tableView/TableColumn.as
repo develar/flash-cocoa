@@ -1,7 +1,4 @@
 package cocoa.tableView {
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-
 public interface TableColumn {
   function get dataField():String;
 
@@ -23,18 +20,6 @@ public interface TableColumn {
 
   function set actualWidth(value:Number):void;
 
-  function createAndLayoutRenderer(rowIndex:int, x:Number, y:Number):DisplayObject;
-
-  /**
-   * @param rowCountDelta delta, greater than 0 if removed from top, less than 0 if removed from bottom
-   * @param finalPass will be createAndLayoutRenderer called (false) after or not (true)
-   */
-  function reuse(rowCountDelta:int, finalPass:Boolean):void;
-
-  function postLayout():void;
-
-  function set container(container:DisplayObjectContainer):void;
-
-  function preLayout(head:Boolean):void;
+  function get rendererManager():RendererManager;
 }
 }

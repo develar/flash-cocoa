@@ -1,13 +1,11 @@
 package cocoa.plaf.aqua.demo {
+import cocoa.tableView.AbstractCollectionViewDataSource;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableViewDataSource;
 
 import flash.errors.IllegalOperationError;
 
-import org.osflash.signals.ISignal;
-import org.osflash.signals.Signal;
-
-public class DemoTableViewDataSource implements TableViewDataSource {
+public class DemoTableViewDataSource extends AbstractCollectionViewDataSource implements TableViewDataSource {
   private var data:XML = <records>	<record>
 		<a>Pico Rivera</a>
 		<b>Elaine</b>
@@ -811,7 +809,7 @@ public class DemoTableViewDataSource implements TableViewDataSource {
 </records>
     ;
 
-  public function get rowCount():int {
+  override public function get itemCount():int {
     return data.record.length();
   }
 
@@ -822,20 +820,5 @@ public class DemoTableViewDataSource implements TableViewDataSource {
   public function getStringValue(column:TableColumn, rowIndex:int):String {
     return data.record[rowIndex][column.dataField];
   }
-
-  private var resetSignal:ISignal = new Signal();
-  public function get reset():ISignal {
-    return resetSignal;
-  }
 }
-}
-
-class TestItem {
-  public var a:String;
-  public var b:String;
-
-  public function TestItem(a:String, b:String) {
-    this.a = a;
-    this.b = b;
-  }
 }

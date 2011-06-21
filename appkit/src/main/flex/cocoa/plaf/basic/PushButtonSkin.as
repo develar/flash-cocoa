@@ -14,12 +14,17 @@ import flash.events.MouseEvent;
 
 import mx.managers.IFocusManagerComponent;
 
-public class PushButtonSkin extends TitledComponentSkin implements IFocusManagerComponent {
+public class PushButtonSkin extends TitledComponentSkin implements IFocusManagerComponent, ButtonSkinInteraction {
   protected var border:Border;
   protected var myComponent:Cell;
 
   public function PushButtonSkin() {
     mouseChildren = false;
+  }
+
+  private var responsibleForInteraction:Boolean = true;
+  public function deletegateInteraction():void {
+    responsibleForInteraction = false;
   }
 
   protected function get bordered():Boolean {
@@ -30,8 +35,6 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
     super.attach(component, laf);
 
     myComponent = Cell(component);
-
-    addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
   }
 
   override public function get baselinePosition():Number {
@@ -44,6 +47,13 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
 
   override protected function createChildren():void {
     super.createChildren();
+
+    if (responsibleForInteraction) {
+      addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+    }
+    else {
+      mouseEnabled = false;
+    }
 
     if (bordered) {
       border = getBorder();
@@ -102,16 +112,20 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
   override public function set enabled(value:Boolean):void {
     super.enabled = value;
 
-    mouseEnabled = value;
+    if (responsibleForInteraction) {
+      mouseEnabled = value;
+    }
   }
 
   public function drawFocus(isFocused:Boolean):void {
   }
 
-  private function mouseDownHandler(event:MouseEvent):void {
-    stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-
-    addHoverHandlers();
+  public function mouseDownHandler(event:MouseEvent):void {
+    if (responsibleForInteraction) {
+      stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+      addHoverHandlers();
+    }
+    
     mouseOverHandler(event);
   }
 
@@ -121,10 +135,12 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
     removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
     removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 
-    if (event.target != this) {
-      return;
+    if (event.target == this) {
+      mouseUpHandler(event);
     }
+  }
 
+  public function mouseUpHandler(event:MouseEvent):void {
     var state:int = CellState.OFF;
     if (toggled) {
       state = myComponent.state == CellState.OFF ? CellState.ON : CellState.OFF;
@@ -145,12 +161,12 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
 
   }
 
-  protected function mouseOverHandler(event:MouseEvent):void {
+  public function mouseOverHandler(event:MouseEvent):void {
     drawBorder();
     event.updateAfterEvent();
   }
 
-  protected function mouseOutHandler(event:MouseEvent):void {
+  public function mouseOutHandler(event:MouseEvent):void {
     drawBorder();
     event.updateAfterEvent();
   }

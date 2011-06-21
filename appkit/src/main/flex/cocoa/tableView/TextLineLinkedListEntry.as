@@ -5,6 +5,8 @@ public class TextLineLinkedListEntry {
   private static const pool:Vector.<TextLineLinkedListEntry> = new Vector.<TextLineLinkedListEntry>(32, true);
   private static var poolSize:int;
 
+  public var rowIndex:int;
+
   public var next:TextLineLinkedListEntry;
   public var previous:TextLineLinkedListEntry;
 

@@ -15,6 +15,7 @@ import spark.core.IViewport;
 internal class AbstractCollectionViewSkin extends AbstractSkin {
   protected var contentView:IUIComponent;
   protected var border:Border;
+  protected var documentView:IViewport;
 
   protected function createDocumentView():IViewport {
     throw new IllegalOperationError("abstract");
@@ -26,7 +27,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin {
     border = getNullableBorder();
 
     var component:AbstractCollectionView = AbstractCollectionView(this.component);
-    var documentView:IViewport = createDocumentView();
+    documentView = createDocumentView();
     if (component.horizontalScrollPolicy == ScrollPolicy.OFF && component.verticalScrollPolicy == ScrollPolicy.OFF) {
       contentView = IUIComponent(documentView);
     }

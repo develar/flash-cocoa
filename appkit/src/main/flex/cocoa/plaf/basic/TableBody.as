@@ -4,16 +4,12 @@ import cocoa.plaf.Skin;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
-import cocoa.tableView.TextTableColumn;
 
 import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Shape;
-import flash.errors.IllegalOperationError;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.text.engine.TextLine;
-import flash.utils.Dictionary
 
 public class TableBody extends ListBody {
   private var tableView:TableView;
@@ -39,7 +35,7 @@ public class TableBody extends ListBody {
     dataSource = tableView.dataSource;
 
     for each (var column:TableColumn in tableView.columns) {
-      column.container = this;
+      column.rendererManager.container = this;
     }
   }
 
@@ -65,7 +61,7 @@ public class TableBody extends ListBody {
 
   override protected function measure():void {
     measuredMinHeight = tableView.minRowCount * rowHeightWithSpacing;
-    _contentHeight = Math.max(dataSource.rowCount, tableView.minRowCount) * rowHeightWithSpacing;
+    _contentHeight = Math.max(dataSource.itemCount, tableView.minRowCount) * rowHeightWithSpacing;
     dispatchPropertyChangeEvent("contentHeight", -1, _contentHeight);
     measuredHeight = _contentHeight;
 
@@ -126,7 +122,7 @@ public class TableBody extends ListBody {
     var columnIndex:int;
     if (removedRowCountDelta != 0) {
       for (columnIndex = 0; columnIndex < columns.length; columnIndex++) {
-        columns[columnIndex].reuse(removedRowCountDelta, false);
+        columns[columnIndex].rendererManager.reuse(removedRowCountDelta, false);
       }
     }
 
@@ -147,41 +143,7 @@ public class TableBody extends ListBody {
     }
     else if (removedRowCountDelta != 0) {
       for (columnIndex = 0; columnIndex < columns.length; columnIndex++) {
-        columns[columnIndex].postLayout();
-      }
-    }
-
-    //cc();
-  }
-
-  //noinspection JSUnusedLocalSymbols
-  private function cc():void {
-    if (numChildren != (1 + (visibleRowCount * tableView.columns.length))) {
-      throw new IllegalOperationError();
-    }
-    for each (var column:TextTableColumn in tableView.columns) {
-      column.cc(visibleRowCount);
-    }
-
-    var i:int = numChildren - 1;
-    var map:Dictionary = new Dictionary();
-    while (i > 0) {
-      var line:TextLine = getChildAt(i--) as TextLine;
-      if (line == null) {
-        continue;
-      }
-
-      var xx:Vector.<Number> = map[line.y];
-      if (xx == null) {
-        xx = new Vector.<Number>(1);
-        xx[0] = line.x;
-        map[line.y] = xx;
-      }
-      else if (xx.length > 1) {
-        throw new IllegalOperationError();
-      }
-      else {
-        xx[1] = line.x;
+        columns[columnIndex].rendererManager.postLayout(false);
       }
     }
   }
@@ -233,7 +195,7 @@ public class TableBody extends ListBody {
       // то мы должны добавить строки как в конец (должны проверить остаток неотображенных строк в конце), так и в начало
       if ((h - oldHeight) > 0 && h == (contentHeight - verticalScrollPosition)) {
         const startRowIndex:int = oldVerticalScrollPosition / rowHeightWithSpacing + (visibleRowCount - visibleRowCountDelta);
-        const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
+        const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.itemCount);
         const addedToTailRowCount:int = endRowIndex - startRowIndex;
         if (addedToTailRowCount != 0) {
           var relativeRowIndex:int = visibleRowCount - addedToTailRowCount;
@@ -260,12 +222,12 @@ public class TableBody extends ListBody {
     if (visibleRowCount != -1) {
       var columns:Vector.<TableColumn> = tableView.columns;
       for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
-        columns[columnIndex].reuse(visibleRowCount + 1, false);
+        columns[columnIndex].rendererManager.reuse(visibleRowCount + 1, false);
       }
     }
 
     const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
-    const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.rowCount);
+    const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.itemCount);
     visibleRowCount = endRowIndex - startRowIndex;
     if (visibleRowCount != 0) {
       drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
@@ -281,23 +243,24 @@ public class TableBody extends ListBody {
 
   private function drawCells(startY:Number, startRowIndex:int, endRowIndex:int, head:Boolean):void {
     startY += intercellSpacing.y / 2;
-    endRowIndex = Math.min(endRowIndex, tableView.dataSource.rowCount);
+    endRowIndex = Math.min(endRowIndex, tableView.dataSource.itemCount);
 
     var columns:Vector.<TableColumn> = tableView.columns;
     var x:Number = 0;
     var y:Number;
+    const lastColumnIndex:int = columns.length - 1;
     for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
       var column:TableColumn = columns[columnIndex];
-      column.preLayout(head);
+      column.rendererManager.preLayout(head);
 
       y = startY;
       for (var rowIndex:int = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
-        column.createAndLayoutRenderer(rowIndex, x, y);
+        column.rendererManager.createAndLayoutRenderer(rowIndex, x, y, column.actualWidth, tableView.rowHeight);
         y += rowHeightWithSpacing;
       }
 
       x += column.actualWidth + intercellSpacing.x;
-      column.postLayout();
+      column.rendererManager.postLayout(columnIndex == lastColumnIndex);
     }
   }
 
@@ -330,6 +293,25 @@ public class TableBody extends ListBody {
         column.actualWidth = calculatedWidth;
       }
     }
+  }
+
+  public function getColumnIndexAt(x:Number):int {
+    var sx:Number = x;
+    var columns:Vector.<TableColumn> = tableView.columns;
+    for (var i:int = 0; i < columns.length; i++) {
+      var column:TableColumn = columns[i];
+      if (sx <= column.actualWidth) {
+        return i;
+      }
+
+      sx -= column.actualWidth + intercellSpacing.x;
+    }
+
+    return -1;
+  }
+
+  public function getRowIndexAt(y:Number):int {
+    return Math.ceil(y / rowHeightWithSpacing) - 1;
   }
 }
 }

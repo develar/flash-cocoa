@@ -1,6 +1,8 @@
 package cocoa {
+import org.flyti.plexus.Injectable;
+
 [Abstract]
-public class AbstractCollectionView extends AbstractComponent {
+public class AbstractCollectionView extends AbstractComponent implements Injectable {
   private var _verticalScrollPolicy:int = ScrollPolicy.AUTO;
   public function get verticalScrollPolicy():int {
     return _verticalScrollPolicy;
