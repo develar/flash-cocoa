@@ -54,7 +54,9 @@ public class TableBody extends ListBody {
     background.y = 0;
     dispatchPropertyChangeEvent("verticalScrollPosition", -1, 0);
     dispatchPropertyChangeEvent("horizontalScrollPosition", -1, 0);
-    visibleRowCount = -visibleRowCount - 1;
+    if (visibleRowCount != -1) {
+      visibleRowCount = -visibleRowCount - 1;
+    }
     invalidateSize();
     invalidateDisplayList();
   }
@@ -219,17 +221,19 @@ public class TableBody extends ListBody {
   }
 
   private function initialDrawCells(h:Number):void {
+    const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
+    const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.itemCount);
+    var newVisibleRowCount:int = endRowIndex - startRowIndex;
+
     if (visibleRowCount != -1) {
       var columns:Vector.<TableColumn> = tableView.columns;
       for (var columnIndex:int = 0; columnIndex < columns.length; columnIndex++) {
-        columns[columnIndex].rendererManager.reuse(visibleRowCount + 1, false);
+        columns[columnIndex].rendererManager.reuse(visibleRowCount + 1, newVisibleRowCount == 0);
       }
     }
 
-    const startRowIndex:int = _verticalScrollPosition / rowHeightWithSpacing;
-    const endRowIndex:int = Math.min(computeEndIndex(h, _verticalScrollPosition), tableView.dataSource.itemCount);
-    visibleRowCount = endRowIndex - startRowIndex;
-    if (visibleRowCount != 0) {
+    if (newVisibleRowCount != 0) {
+      visibleRowCount = newVisibleRowCount;
       drawCells(_verticalScrollPosition, startRowIndex, endRowIndex, true);
     }
     else {

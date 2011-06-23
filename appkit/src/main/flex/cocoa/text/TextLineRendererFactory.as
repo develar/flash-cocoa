@@ -12,31 +12,28 @@ public class TextLineRendererFactory {
   private static const textElement:TextElement = new TextElement();
   private static const textBlock:TextBlock = new TextBlock(textElement);
 
-  private var textFormat:TextFormat;
-
   private const youngOrphanLines:Vector.<TextLine> = new Vector.<TextLine>();
   private var youngOrphanCount:int;
 
   private const orphanLines:Vector.<TextLine> = new Vector.<TextLine>();
   private var orphanCount:int;
 
-  public function TextLineRendererFactory(textFormat:TextFormat) {
-    this.textFormat = textFormat;
+  private static var _instance:TextLineRendererFactory;
+  public static function get instance():TextLineRendererFactory {
+    if (_instance == null) {
+      _instance = new TextLineRendererFactory();
+    }
+    return _instance;
   }
 
-  private var _container:DisplayObjectContainer;
-  public function set container(value:DisplayObjectContainer):void {
-    _container = value;
-  }
-
-  public function reuse(list:TextLineLinkedList, itemCountDelta:int, finalPass:Boolean):void {
+  public function reuse(container:DisplayObjectContainer, list:TextLineLinkedList, itemCountDelta:int, finalPass:Boolean):void {
     var line:TextLine;
     if (finalPass) {
       if (itemCountDelta > 0) {
         orphanLines.length = orphanCount + itemCountDelta;
         while (itemCountDelta-- > 0) {
           if ((line = list.removeFirst().line) != null) {
-            _container.removeChild(line);
+            container.removeChild(line);
             orphanLines[orphanCount++] = line;
           }
         }
@@ -45,7 +42,7 @@ public class TextLineRendererFactory {
         orphanLines.length = orphanCount - itemCountDelta;
         while (itemCountDelta++ < 0) {
           if ((line = list.removeLast().line) != null) {
-            _container.removeChild(line);
+            container.removeChild(line);
             orphanLines[orphanCount++] = line;
           }
         }
@@ -71,16 +68,8 @@ public class TextLineRendererFactory {
     }
   }
 
-  public function create(text:String, availableWidth:Number, customElementFormat:ElementFormat = null, useTruncationIndicator:Boolean = true):TextLine {
-    var swfContext:SwfContext;
-    if (customElementFormat == null) {
-      textElement.elementFormat = textFormat.format;
-      swfContext = textFormat.swfContext;
-    }
-    else {
-      textElement.elementFormat = customElementFormat;
-    }
-
+  public function create(container:DisplayObjectContainer, text:String, availableWidth:Number, elementFormat:ElementFormat, swfContext:SwfContext = null, useTruncationIndicator:Boolean = true):TextLine {
+    textElement.elementFormat = elementFormat;
     textElement.text = text;
 
     var line:TextLine;
@@ -96,7 +85,7 @@ public class TextLineRendererFactory {
       else {
         line = TextLineUtil.create(textBlock, swfContext, availableWidth);
       }
-      _container.addChild(line);
+      container.addChild(line);
     }
 
     if (useTruncationIndicator && textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY) {
@@ -106,7 +95,7 @@ public class TextLineRendererFactory {
     return line;
   }
 
-  public function postLayout():void {
+  public function postLayout(container:DisplayObjectContainer):void {
     if (youngOrphanCount == 0) {
       orphanLines.length = orphanCount;
       youngOrphanLines.length = 0;
@@ -116,7 +105,7 @@ public class TextLineRendererFactory {
     orphanLines.length = orphanCount + youngOrphanCount;
     while (youngOrphanCount > 0) {
       var line:TextLine = youngOrphanLines[--youngOrphanCount];
-      _container.removeChild(line);
+      container.removeChild(line);
       orphanLines[orphanCount++] = line;
     }
 

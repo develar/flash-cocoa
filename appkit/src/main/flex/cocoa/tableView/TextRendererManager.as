@@ -1,6 +1,7 @@
 package cocoa.tableView {
 import cocoa.CollectionViewDataSource;
 import cocoa.Insets;
+import cocoa.text.TextFormat;
 import cocoa.text.TextLineRendererFactory;
 
 import flash.display.DisplayObjectContainer;
@@ -13,12 +14,14 @@ public class TextRendererManager implements RendererManager {
   protected var previousEntry:TextLineLinkedListEntry;
 
   protected var textInsets:Insets;
+  protected var textFormat:TextFormat;
 
   private var _lastCreatedRendererWidth:Number;
 
-  public function TextRendererManager(rendererFactory:TextLineRendererFactory, textInsets:Insets) {
-    textLineRendererFactory = rendererFactory;
+  public function TextRendererManager(textFormat:TextFormat, textInsets:Insets) {
+    textLineRendererFactory = TextLineRendererFactory.instance;
     this.textInsets = textInsets;
+    this.textFormat = textFormat;
   }
 
   protected var _dataSource:CollectionViewDataSource;
@@ -32,7 +35,7 @@ public class TextRendererManager implements RendererManager {
   }
 
   protected function createTextLine(itemIndex:int, w:Number):TextLine {
-    return textLineRendererFactory.create(_dataSource.getStringValue(itemIndex), w);
+    return textLineRendererFactory.create(_container, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext);
   }
 
   protected function createEntry(rowIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineLinkedListEntry {
@@ -58,20 +61,18 @@ public class TextRendererManager implements RendererManager {
   }
 
   public function reuse(itemCountDelta:int, finalPass:Boolean):void {
-    textLineRendererFactory.reuse(cells, itemCountDelta, finalPass);
+    textLineRendererFactory.reuse(_container, cells, itemCountDelta, finalPass);
   }
 
   public function preLayout(head:Boolean):void {
     if (!head) {
       previousEntry = cells.tail;
     }
-
-    textLineRendererFactory.container = _container;
   }
 
   public function postLayout(finalPass:Boolean):void {
     if (finalPass) {
-      textLineRendererFactory.postLayout();
+      textLineRendererFactory.postLayout(_container);
     }
 
     previousEntry = null;

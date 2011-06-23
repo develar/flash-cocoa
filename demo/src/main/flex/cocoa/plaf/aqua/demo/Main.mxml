@@ -9,20 +9,27 @@
     import cocoa.util.FileUtil;
 
     override protected function preInitialize():void {
-      var textLineRendererFactory:TextLineRendererFactory = new TextLineRendererFactory(laf.getTextFormat(TextFormatId.SMALL_SYSTEM));
       tableView.dataSource = new DemoTableViewDataSource();
       var insets:Insets = new Insets(2, NaN, NaN, 3);
-      var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a', new TextRendererManager(textLineRendererFactory, insets));
+      var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
       firstColumn.width = 120;
       tableView.columns =
-      new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(textLineRendererFactory, insets))];
+      new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
 
       elementTreeBar.dataSource = new DemoCollectionViewDataSource();
-      chl.rendererManager = new TextRendererManager(textLineRendererFactory, insets);
+      chl.rendererManager = new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets);
     }
 
     public static function dd(s:String, v:ByteArray):void {
       FileUtil.writeBytes("/Users/develar/f/" + s + ".png", v);
+    }
+
+    private function changeS():void {
+      DemoCollectionViewDataSource(elementTreeBar.dataSource).changeData();
+    }
+
+    private function changerf():void {
+      DemoCollectionViewDataSource(elementTreeBar.dataSource).changeDataToNull();
     }
     ]]></fx:Script>
   <ac:laf>
@@ -33,6 +40,8 @@
     <layout>
       <s:VerticalLayout/>
     </layout>
+    <PushButton title="Change segmented control data" action="changeS"/>
+    <PushButton title="Set segmented control data to empty" action="changerf"/>
     <CheckBox title="AAA"/>
     <CheckBox title="AAA Disabled" enabled="false"/>
     <CheckBox title="AAA selected Disabled" enabled="false" selected="true"/>

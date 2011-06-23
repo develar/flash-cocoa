@@ -15,6 +15,11 @@ public class CollectionHorizontalLayout implements Layout {
     _rendererManager = value;
   }
 
+  private var _gap:Number = 0;
+  public function set gap(value:Number):void {
+    _gap = value;
+  }
+
   private var _height:Number;
   public function get height():Number {
     return _height;
@@ -33,7 +38,10 @@ public class CollectionHorizontalLayout implements Layout {
   }
 
   private function dataSourceResetHandler():void {
-    visibleItemCount = -visibleItemCount - 1;
+    if (visibleItemCount != -1) {
+      visibleItemCount = -visibleItemCount - 1;
+    }
+
     target.invalidateSize();
     target.invalidateDisplayList();
   }
@@ -53,14 +61,16 @@ public class CollectionHorizontalLayout implements Layout {
   }
 
   private function initialDrawCells(w:Number, collectionView:CollectionView):void {
-    if (visibleItemCount != -1) {
-      _rendererManager.reuse(visibleItemCount + 1, false);
-    }
-
     const startItemIndex:int = 0;
     const endItemIndex:int = collectionView.dataSource.itemCount;
-    visibleItemCount = endItemIndex - startItemIndex;
-    if (visibleItemCount != 0) {
+    var newVisibleItemCount:int = endItemIndex - startItemIndex;
+
+    if (visibleItemCount != -1) {
+      _rendererManager.reuse(visibleItemCount + 1, newVisibleItemCount == 0);
+    }
+
+    if (newVisibleItemCount != 0) {
+      visibleItemCount = newVisibleItemCount;
       drawCells(0, startItemIndex, endItemIndex, true, w);
     }
     else {
@@ -77,7 +87,7 @@ public class CollectionHorizontalLayout implements Layout {
     var itemIndex:int = startItemIndex;
     while (x < w && itemIndex < collectionView.dataSource.itemCount) {
       _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, w - x, _height);
-      x += _rendererManager.lastCreatedRendererWidth;
+      x += _rendererManager.lastCreatedRendererWidth + _gap;
     }
     _rendererManager.postLayout(true);
   }

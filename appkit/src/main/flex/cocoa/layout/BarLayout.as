@@ -7,6 +7,8 @@ import spark.layouts.supportClasses.LayoutBase;
 /**
  * воспринимает left, right и horizontal center как указание центровки – то есть кнопка с left=0 будет у левого края (но не будет наезжать на другие кнопки у этого края)
  * значение constraint имеет смысл при > 0 — добавляется gap * constraintValue
+ *
+ * percentWidth — значит занимаем все оставшееся пространство после остальных элементов
  */
 public class BarLayout extends LayoutBase {
   private var _gap:Number = 0;
@@ -43,7 +45,13 @@ public class BarLayout extends LayoutBase {
 
       r = layoutElement.right;
       if (r === null || r != r) {
-        layoutElement.setLayoutBoundsSize(NaN, NaN);
+        var percentWidth:Number = layoutElement.percentWidth;
+        if (percentWidth == percentWidth) {
+          layoutElement.setLayoutBoundsSize(w - left, NaN);
+        }
+        else {
+          layoutElement.setLayoutBoundsSize(NaN, NaN);
+        }
 
         var leftConstraint:Number = Number(layoutElement.left);
         if (!isNaN(leftConstraint) && leftConstraint > 0) {

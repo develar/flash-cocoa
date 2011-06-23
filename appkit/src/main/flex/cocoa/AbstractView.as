@@ -14,7 +14,6 @@ import flash.events.FocusEvent;
 import flash.events.IEventDispatcher;
 import flash.geom.Matrix;
 import flash.geom.Matrix3D;
-import flash.geom.Transform;
 import flash.geom.Vector3D;
 
 import mx.core.DesignLayer;
@@ -31,7 +30,6 @@ import mx.events.PropertyChangeEvent;
 import mx.events.ResizeEvent;
 import mx.filters.BaseFilter;
 import mx.filters.IBitmapFilter;
-import mx.geom.Transform;
 import mx.geom.TransformOffsets;
 import mx.graphics.shaderClasses.ColorBurnShader;
 import mx.graphics.shaderClasses.ColorDodgeShader;
@@ -197,11 +195,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
    *  Holds the last recorded value of the explicitHeight property.
    */
   private var oldExplicitHeight:Number;
-
-  /**
-   * storage for the modified Transform object that can dispatch change events correctly.
-   */
-  private var _transform:flash.geom.Transform;
 
   private var _owner:DisplayObjectContainer;
   public function get owner():DisplayObjectContainer {
@@ -1312,7 +1305,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
         setActualSize(getExplicitOrMeasuredWidth(), getExplicitOrMeasuredHeight());
       }
 
-      // Don't validate transform.matrix until after setting actual size
       updateDisplayList(width, height);
 
       flags &= ~INVALID_DISPLAY_LIST;
@@ -1649,35 +1641,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
     return child == this;
   }
-
-  /**
-   *  Helper function to update the storage vairable _transform.
-   *  Also updates the <code>target</code> property of the new and the old
-   *  values.
-   */
-  private function setTransform(value:flash.geom.Transform):void {
-    // Clean up the old transform
-    var oldTransform:mx.geom.Transform = _transform as mx.geom.Transform;
-    if (oldTransform) {
-      oldTransform.target = null;
-    }
-
-    var newTransform:mx.geom.Transform = value as mx.geom.Transform;
-
-    if (newTransform) {
-      newTransform.target = this;
-    }
-
-    _transform = value;
-  }
-
-  override public function get transform():flash.geom.Transform {
-    if (_transform == null) {
-      setTransform(new mx.geom.Transform(this));
-    }
-    return _transform;
-  }
-
 
   public function get postLayoutTransformOffsets():TransformOffsets {
     return null;

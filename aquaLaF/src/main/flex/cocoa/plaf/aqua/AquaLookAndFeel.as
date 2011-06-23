@@ -164,7 +164,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     return hudLookAndFeel;
   }
 
-  private function createDefaultTextFormat():SimpleTextLayoutFormat {
+  private static function createDefaultTextFormat():SimpleTextLayoutFormat {
     var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT, new Insets(0, 2));
     textFormat.$lineBreak = LineBreak.EXPLICIT;
     return textFormat;
