@@ -27,7 +27,7 @@ public class KeyboardManager extends AbstractComponent {
     for each (var item:KeymapItem in keymap) {
       var shortcutLabelRegistered:Boolean = false;
       for each (var shortcut:Shortcut in item.shortcuts) {
-        if (shortcut.profile == Shortcut.ANY_PROFILE || activeProfiles.indexOf(shortcut.profile) != -1) {
+        if (shortcut.keymap == Shortcut.ANY_PROFILE || activeProfiles.indexOf(shortcut.keymap) != -1) {
           if (!shortcutLabelRegistered) {
             shortcutLabelRegistered = true;
             clientBinder.eventShortcutMap[item.event.type] = shortcut;

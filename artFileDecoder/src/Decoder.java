@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Decoder {
-  private String fp;
+  private final String fp;
   private RandomAccessFile artFile;
   public int numOfImages = 0;
 
@@ -27,7 +29,6 @@ public class Decoder {
   public int[] subimageOffsets;
   public short[] subimageWidths;
   public short[] subimageHeights;
-  private int globalctr = 0;
   public String[] names = new String[183];
   public int[] tags = new int[8];
   private int numOfTags = 0;
@@ -206,18 +207,45 @@ public class Decoder {
       BufferedImage image = new BufferedImage(subimageWidths[j], subimageHeights[j], 2);
       image.setRGB(0, 0, subimageWidths[j], subimageHeights[j], imageArray, 0, subimageWidths[j]);
 
-      File dir = new File(outputDir, names[tags[0]]);
-      dir.mkdir();
+      File dir = new File(outputDir, names[tags[0]] + "/" + names[tags[1]]);
+      dir.mkdirs();
       StringBuilder filenameBuilder = new StringBuilder();
-      for (int i = 1; i <= numOfTags; i++) {
+      for (int i = 2; i <= numOfTags; i++) {
         filenameBuilder.append(names[tags[i]]).append(".");
       }
+      final String subLocalPath = filenameBuilder.toString();
+      final String key = dir.getPath() + "/" + subLocalPath;
       filenameBuilder.append("png");
-      ImageIO.write(image, "png", new File(dir, filenameBuilder.toString()));
+      final String localPath = filenameBuilder.toString();
+
+      Integer counter = pathCounter.get(key);
+      File file;
+      if (counter == null) {
+        file = new File(dir, localPath);
+        if (file.exists()) {
+          counter = 0;
+
+          file.renameTo(new File(dir, subLocalPath + counter++ + ".png"));
+          file = new File(dir, subLocalPath + counter++ + ".png");
+          pathCounter.put(key, counter);
+        }
+      }
+      else {
+        file = new File(dir, subLocalPath + counter++ + ".png");
+        if (file.exists()) {
+          throw new IOException();
+        }
+
+        pathCounter.put(key, counter);
+      }
+
+      ImageIO.write(image, "png", file);
     }
 
-    System.out.print("duplicated: " + duplicateCount + "\n");
+    //System.out.print("duplicated: " + duplicateCount + "\n");
   }
+
+  private final Map<String,Integer> pathCounter = new HashMap<String, Integer>();
 
   private static String convertToHex(byte[] data) {
     StringBuilder buf = new StringBuilder();

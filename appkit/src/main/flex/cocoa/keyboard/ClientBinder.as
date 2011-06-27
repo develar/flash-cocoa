@@ -77,7 +77,7 @@ public class ClientBinder {
     return false;
   }
 
-  private function isAlreadyBinded(bindabilityInfoList:Vector.<ClientBindabilityInfo>, eventMetadata:EventMetadata, states:Vector.<String>):Boolean {
+  private static function isAlreadyBinded(bindabilityInfoList:Vector.<ClientBindabilityInfo>, eventMetadata:EventMetadata, states:Vector.<String>):Boolean {
     for each (var bindabilityInfo:ClientBindabilityInfo in bindabilityInfoList) {
       if (bindabilityInfo.eventMetadata == eventMetadata && bindabilityInfo.states == states) {
         return true;

@@ -14,4 +14,6 @@ public class Border {
   public int minTop = 0;
 
   public Source source;
+
+  public boolean trim = true;
 }

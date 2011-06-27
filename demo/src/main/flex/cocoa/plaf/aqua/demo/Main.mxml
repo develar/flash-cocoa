@@ -36,10 +36,26 @@
     <aqua:AquaLookAndFeel/>
   </ac:laf>
 
-  <Container width="100%">
+  <Container width="100%" left="5" right="5">
     <layout>
-      <s:VerticalLayout/>
+      <s:VerticalLayout paddingTop="5" paddingRight="5"/>
     </layout>
+
+    <Container>
+      <layout>
+        <s:VerticalLayout paddingTop="5" paddingLeft="5"/>
+      </layout>
+
+      <SegmentedControl>
+        <dataProvider>
+          <s:ArrayList>
+            <fx:String>Lysandra</fx:String>
+            <fx:String>Mallory</fx:String>
+            <fx:String>Garth</fx:String>
+          </s:ArrayList>
+        </dataProvider>
+      </SegmentedControl>
+    </Container>
     <PushButton title="Change segmented control data" action="changeS"/>
     <PushButton title="Set segmented control data to empty" action="changerf"/>
     <CheckBox title="AAA"/>

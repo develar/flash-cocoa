@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/acocoa/acocoa.iml" filepath="$PROJECT_DIR$/acocoa/acocoa.iml" />
       <module fileurl="file://$PROJECT_DIR$/aquaLaF/aquaLaF.iml" filepath="$PROJECT_DIR$/aquaLaF/aquaLaF.iml" />
       <module fileurl="file://$PROJECT_DIR$/aquaLaFAssetBuilder/aquaLaFAssetBuilder.iml" filepath="$PROJECT_DIR$/aquaLaFAssetBuilder/aquaLaFAssetBuilder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/artFileDecoder/artFileDecoder.iml" filepath="$PROJECT_DIR$/artFileDecoder/artFileDecoder.iml" />
       <module fileurl="file://$PROJECT_DIR$/asset-builder-maven-plugin/asset-builder-maven-plugin.iml" filepath="$PROJECT_DIR$/asset-builder-maven-plugin/asset-builder-maven-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/appkit/cocoa.iml" filepath="$PROJECT_DIR$/appkit/cocoa.iml" />
       <module fileurl="file://$PROJECT_DIR$/cocoa-mx/cocoa-mx.iml" filepath="$PROJECT_DIR$/cocoa-mx/cocoa-mx.iml" />
