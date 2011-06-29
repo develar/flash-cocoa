@@ -15,7 +15,7 @@ import mx.managers.SystemManagerGlobals;
 
 use namespace mx_internal;
 
-internal class WindowInitUtil {
+internal final class WindowInitUtil {
   public static function initMainSystemManager(systemManager:ISystemManager):void {
     Singleton.registerClass("mx.managers::ILayoutManager", LayoutManager);
     Singleton.registerClass("mx.resources::IResourceManager", ResourceManager);

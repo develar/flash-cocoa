@@ -21,7 +21,6 @@ import mx.events.FlexEvent;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
 import mx.managers.PopUpManagerImpl;
-import mx.managers.systemClasses.ActiveWindowManager;
 
 use namespace mx_internal;
 
@@ -41,7 +40,6 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
 
   public function init(contentView:IUIComponent):void {
     Singleton.registerClass("mx.managers::IPopUpManager", PopUpManagerImpl);
-    registerImplementation("mx.managers::IActiveWindowManager", new ActiveWindowManager(this));
 
     if (contentView != null) {
       IFlexDisplayObject(contentView).setActualSize(stage.stageWidth, stage.stageHeight);
@@ -165,7 +163,7 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
     toolTipIndex += delta;
   }
 
-  private var _noTopMostIndex:int = OFFSET; // fucked flex sdk preloader set it as 1 for mouse catcher (missed in our case) and 2 as app (we add app directly)
+  private var _noTopMostIndex:int = OFFSET; // flex sdk preloader set it as 1 for mouse catcher (missed in our case) and 2 as app (we add app directly)
   public function get noTopMostIndex():int {
     return _noTopMostIndex;
   }

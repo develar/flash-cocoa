@@ -10,6 +10,9 @@ import cocoa.ui;
 
 import flash.events.Event;
 
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
+
 import spark.events.IndexChangeEvent;
 
 use namespace ui;
@@ -26,8 +29,8 @@ public class TabView extends SingleSelectionBar {
     }
     var newItem:PaneItem = event.newIndex == -1 ? null : PaneItem(items.getItemAt(event.newIndex));
 
-    if (oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */ && _currentPaneChangeHandler != null) {
-      _currentPaneChangeHandler(oldItem, newItem, true);
+    if (oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */ && _selectionChanging != null) {
+      _selectionChanging.dispatch(oldItem, newItem);
     }
 
     if (newItem == null) {
@@ -37,8 +40,8 @@ public class TabView extends SingleSelectionBar {
       showPane(newItem);
     }
 
-    if (oldItem != null && _currentPaneChangeHandler != null) {
-      _currentPaneChangeHandler(oldItem, newItem, false);
+    if (oldItem != null && _selectionChanged != null) {
+      _selectionChanged.dispatch(oldItem, newItem);
     }
     
     if (hasEventListener("selectedItemChanged")) {
@@ -46,9 +49,20 @@ public class TabView extends SingleSelectionBar {
     }
   }
 
-  private var _currentPaneChangeHandler:Function;
-  public function set currentPaneChangeHandler(value:Function):void {
-    _currentPaneChangeHandler = value;
+  protected var _selectionChanging:ISignal;
+  public function get selectionChanging():ISignal {
+    if (_selectionChanging == null) {
+      _selectionChanging = new Signal();
+    }
+    return _selectionChanging;
+  }
+
+  protected var _selectionChanged:ISignal;
+  public function get selectionChanged():ISignal {
+    if (_selectionChanged == null) {
+      _selectionChanged = new Signal();
+    }
+    return _selectionChanged;
   }
 
   protected function showPane(paneItem:PaneItem):void {
@@ -59,6 +73,7 @@ public class TabView extends SingleSelectionBar {
     TabViewSkin(skin).show(paneItem.view);
   }
 
+  //noinspection JSMethodCanBeStatic
   protected function createPaneView(paneItem:PaneItem):void {
     assert(paneItem.view == null);
 
