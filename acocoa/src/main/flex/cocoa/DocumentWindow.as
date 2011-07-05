@@ -19,7 +19,7 @@ public class DocumentWindow extends NativeWindow {
   public function DocumentWindow(contentView:Component, map:LocalEventMap, initOptions:NativeWindowInitOptions = null, bounds:Rectangle = null) {
     super(initOptions || DEFAULT_INIT_OPTIONS);
     
-    init(contentView, map, bounds || Screen.mainScreen.visibleBounds);
+    init(contentView, map, bounds);
   }
 
   // keep link
@@ -32,6 +32,10 @@ public class DocumentWindow extends NativeWindow {
   }
 
   private function init(contentView:Component, map:LocalEventMap, bounds:Rectangle):void {
+    if (bounds == null || Screen.getScreensForRectangle(bounds).length == 0) {
+      bounds = Screen.mainScreen.visibleBounds;
+    }
+
     _contentView = contentView.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
 
     if (map != null) {

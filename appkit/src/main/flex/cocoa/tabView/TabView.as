@@ -28,8 +28,8 @@ public class TabView extends SingleSelectionBar {
       oldItem = PaneItem(items.getItemAt(event.oldIndex));
     }
     var newItem:PaneItem = event.newIndex == -1 ? null : PaneItem(items.getItemAt(event.newIndex));
-
-    if (oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */ && _selectionChanging != null) {
+    // oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */
+    if (_selectionChanging != null) {
       _selectionChanging.dispatch(oldItem, newItem);
     }
 
@@ -40,7 +40,7 @@ public class TabView extends SingleSelectionBar {
       showPane(newItem);
     }
 
-    if (oldItem != null && _selectionChanged != null) {
+    if (_selectionChanged != null) {
       _selectionChanged.dispatch(oldItem, newItem);
     }
     
