@@ -1,5 +1,4 @@
 package cocoa.tabView {
-import cocoa.ListSelection;
 import cocoa.SingleSelectionBar;
 import cocoa.Viewable;
 import cocoa.pane.PaneItem;
@@ -13,21 +12,19 @@ import flash.events.Event;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
-import spark.events.IndexChangeEvent;
-
 use namespace ui;
 
 public class TabView extends SingleSelectionBar {
   public static const DEFAULT:int = 0;
   public static const BORDERLESS:int = 1;
 
-  override protected function itemGroupSelectionChangeHandler(event:IndexChangeEvent):void {
+  override protected function segmentedControlSelectionChanged(oldIndex:int, newIndex:int):void {
     var oldItem:PaneItem;
     //  при удалении элемента, придет событие с его старым индексом, если он был ранее выделен
-    if (event.oldIndex != ListSelection.NO_SELECTION && event.oldIndex < items.size) {
-      oldItem = PaneItem(items.getItemAt(event.oldIndex));
+    if (oldIndex != -1 && oldIndex < dataSource.itemCount) {
+      oldItem = PaneItem(dataSource.getObjectValue(oldIndex));
     }
-    var newItem:PaneItem = event.newIndex == -1 ? null : PaneItem(items.getItemAt(event.newIndex));
+    var newItem:PaneItem = newIndex == -1 ? null : PaneItem(dataSource.getObjectValue(newIndex));
     // oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */
     if (_selectionChanging != null) {
       _selectionChanging.dispatch(oldItem, newItem);

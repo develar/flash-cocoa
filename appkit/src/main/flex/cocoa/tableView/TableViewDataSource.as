@@ -1,12 +1,8 @@
 package cocoa.tableView {
-import org.osflash.signals.ISignal;
+import cocoa.CollectionViewDataSource;
 
-public interface TableViewDataSource {
-  function get itemCount():int;
-
+public interface TableViewDataSource extends CollectionViewDataSource {
   function getObjectValue(column:TableColumn, rowIndex:int):Object;
   function getStringValue(column:TableColumn, rowIndex:int):String;
-
-  function get reset():ISignal;
 }
 }

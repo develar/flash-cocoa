@@ -1,7 +1,4 @@
-package cocoa.tableView {
-import cocoa.ListViewDataSource;
-import cocoa.Insets;
-import cocoa.RendererManager;
+package cocoa {
 import cocoa.text.TextFormat;
 import cocoa.text.TextLineRendererFactory;
 
@@ -17,7 +14,7 @@ public class TextRendererManager implements RendererManager {
   protected var textInsets:Insets;
   protected var textFormat:TextFormat;
 
-  private var _lastCreatedRendererWidth:Number;
+  protected var _lastCreatedRendererWidth:Number;
 
   public function TextRendererManager(textFormat:TextFormat, textInsets:Insets) {
     textLineRendererFactory = TextLineRendererFactory.instance;
@@ -35,17 +32,17 @@ public class TextRendererManager implements RendererManager {
     _container = value;
   }
 
-  protected function createTextLine(itemIndex:int, w:Number):TextLine {
-    return textLineRendererFactory.create(_container, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext);
+  protected function createTextLine(textLineContainer:DisplayObjectContainer, itemIndex:int, w:Number):TextLine {
+    return textLineRendererFactory.create(textLineContainer, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext);
   }
 
-  protected function createEntry(rowIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineLinkedListEntry {
-    var line:TextLine = createTextLine(rowIndex, w);
-    _lastCreatedRendererWidth = line.textWidth;
+  protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineLinkedListEntry {
+    var line:TextLine = createTextLine(_container, itemIndex, w);
+    _lastCreatedRendererWidth = Math.ceil(line.textWidth);
     line.x = x + textInsets.left;
     line.y = y + h - textInsets.bottom;
     var entry:TextLineLinkedListEntry = TextLineLinkedListEntry.create(line);
-    entry.rowIndex = rowIndex;
+    entry.itemIndex = itemIndex;
     return entry;
   }
 

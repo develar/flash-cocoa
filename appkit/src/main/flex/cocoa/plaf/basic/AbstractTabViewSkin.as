@@ -1,26 +1,24 @@
 package cocoa.plaf.basic {
 import cocoa.Component;
 import cocoa.Insets;
-import cocoa.ItemMouseSelectionMode;
-import cocoa.SingleSelectionDataGroup;
+import cocoa.SegmentedControl;
 import cocoa.Viewable;
 import cocoa.layout.AdvancedLayout;
-import cocoa.layout.SegmentedControlHorizontalLayout;
+import cocoa.layout.ListHorizontalLayout;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
 
 import flash.display.DisplayObject;
 
-import mx.core.IFactory;
 import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 
 [Abstract]
 public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout, TabViewSkin {
-  protected var segmentedControl:SingleSelectionDataGroup;
+  protected var tabBar:SegmentedControl;
   protected var contentView:IUIComponent;
 
-  protected var segmentedControlPlacement:int;
+  protected var tabBarPlacement:int;
 
   public function childCanSkipMeasurement(element:ILayoutElement):Boolean {
     // если у окна установлена фиксированный размер, то content pane устанавливается в размер невзирая на его preferred
@@ -34,25 +32,17 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
   override protected function createChildren():void {
     super.createChildren();
 
-    if (segmentedControl == null) {
-      segmentedControl = new SingleSelectionDataGroup();
-      var layout:SegmentedControlHorizontalLayout = new SegmentedControlHorizontalLayout();
-      layout.useGapForEdge = true;
-      segmentedControl.layout = layout;
-      segmentedControl.laf = laf;
-      segmentedControl.lafSubkey = component.lafKey + ".segmentedControl";
-      var controllerFactory:IFactory = laf.getFactory(component.lafKey + ".segmentedControlController", true);
-      if (controllerFactory == null) {
-        segmentedControl.mouseSelectionMode = ItemMouseSelectionMode.DOWN;
-      }
-      else {
-        SegmentedControlController(controllerFactory.newInstance()).register(segmentedControl);
-      }
+    if (tabBar == null) {
+      tabBar = new SegmentedControl();
+      const tabBarLafKey:String = component.lafKey + ".tabBar";
+      tabBar.lafKey = tabBarLafKey;
+      var layout:ListHorizontalLayout = new ListHorizontalLayout();
+      layout.gap = laf.getInt(tabBarLafKey + ".gap");
+      tabBar.layout = layout;
 
-      layout.gap = laf.getInt(segmentedControl.lafSubkey + ".gap");
-      segmentedControlPlacement = laf.getInt(segmentedControl.lafSubkey + ".placement");
-      addChild(segmentedControl);
-      component.uiPartAdded("segmentedControl", segmentedControl);
+      tabBarPlacement = laf.getInt(tabBarLafKey + ".placement");
+      addChild(tabBar);
+      component.uiPartAdded("tabBar", tabBar);
     }
   }
 
@@ -94,9 +84,9 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    segmentedControl.setLayoutBoundsSize(NaN, NaN);
-    if (segmentedControlPlacement == Placement.PAGE_START_LINE_CENTER) {
-      segmentedControl.x = Math.round((w - segmentedControl.getExplicitOrMeasuredWidth()) / 2);
+    tabBar.setLayoutBoundsSize(NaN, NaN);
+    if (tabBarPlacement == Placement.PAGE_START_LINE_CENTER) {
+      tabBar.x = Math.round((w - tabBar.getExplicitOrMeasuredWidth()) / 2);
     }
 
     if (contentView != null) {

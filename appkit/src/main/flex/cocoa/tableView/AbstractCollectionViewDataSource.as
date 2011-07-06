@@ -9,6 +9,10 @@ public class AbstractCollectionViewDataSource {
     return sourceItemCounter;
   }
 
+  public function get empty():Boolean {
+    return itemCount == 0;
+  }
+
   protected var _reset:ISignal;
   public function get reset():ISignal {
     if (_reset == null) {

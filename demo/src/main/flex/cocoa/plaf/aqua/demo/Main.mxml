@@ -1,23 +1,26 @@
-<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*">
+<ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" xmlns:s="library://ns.adobe.com/flex/spark"
+                        xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*" xmlns:layout="cocoa.layout.*">
   <fx:Script><![CDATA[
     import cocoa.Insets;
+    import cocoa.InteractiveTextRendererManager;
     import cocoa.plaf.TextFormatId;
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TableColumnImpl;
-    import cocoa.tableView.TextRendererManager;
-    import cocoa.text.TextLineRendererFactory;
+    import cocoa.TextRendererManager;
     import cocoa.util.FileUtil;
 
     override protected function preInitialize():void {
       tableView.dataSource = new DemoTableViewDataSource();
       var insets:Insets = new Insets(2, NaN, NaN, 3);
-      var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
+      var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a',
+                                                            new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
       firstColumn.width = 120;
       tableView.columns =
-      new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
+      new <TableColumn>[firstColumn,
+        new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
 
       elementTreeBar.dataSource = new DemoCollectionViewDataSource();
-      chl.rendererManager = new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets);
+      //elementTreeBar.rendererManager = new InteractiveTextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets);
     }
 
     public static function dd(s:String, v:ByteArray):void {
@@ -45,16 +48,6 @@
       <layout>
         <s:VerticalLayout paddingTop="5" paddingLeft="5"/>
       </layout>
-
-      <SegmentedControl>
-        <dataProvider>
-          <s:ArrayList>
-            <fx:String>Lysandra</fx:String>
-            <fx:String>Mallory</fx:String>
-            <fx:String>Garth</fx:String>
-          </s:ArrayList>
-        </dataProvider>
-      </SegmentedControl>
     </Container>
     <PushButton title="Change segmented control data" action="changeS"/>
     <PushButton title="Set segmented control data to empty" action="changerf"/>
@@ -64,10 +57,16 @@
     <CheckBox lafSubkey="small"/>
     <tableview:TableView id="tableView" width="100%" height="100%" lafSubkey="small"/>
 
-    <CollectionView id="elementTreeBar" width="100%">
+    <!--<SegmentedControl id="elementTreeBar" width="100%">-->
+      <!--<layout>-->
+        <!--<layout:ListHorizontalLayout id="chl" height="20"/>-->
+      <!--</layout>-->
+    <!--</SegmentedControl>-->
+
+    <SegmentedControl id="elementTreeBar" width="100%">
       <layout>
-        <CollectionHorizontalLayout id="chl" height="20"/>
+        <layout:ListHorizontalLayout id="chl" height="20"/>
       </layout>
-    </CollectionView>
+    </SegmentedControl>
   </Container>
 </ac:WindowedApplication>

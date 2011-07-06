@@ -1,19 +1,12 @@
 package cocoa.bar {
 import cocoa.AbstractComponent;
-import cocoa.SelectableDataGroup;
-import cocoa.pane.LabeledItem;
-import cocoa.pane.PaneItem;
-import cocoa.pane.TitledPane;
+import cocoa.ListViewDataSource;
+import cocoa.SegmentedControl;
 import cocoa.ui;
 
 import flash.utils.Dictionary;
 
-import mx.core.IVisualElement;
-
 import org.flyti.plexus.Injectable;
-import org.flyti.util.List;
-
-import spark.components.IItemRenderer;
 
 use namespace ui;
 
@@ -25,25 +18,25 @@ public class Bar extends AbstractComponent implements Injectable {
     return _skinParts;
   }
 
-  ui var segmentedControl:SelectableDataGroup;
+  ui var segmentedControl:SegmentedControl;
 
   public function Bar() {
     listenResourceChange();
   }
 
-  private var itemsChanged:Boolean;
-  private var _items:List/*<PaneMetadata>*/;
-  public function get items():List {
-    return _items;
+  private var dataSourceChanged:Boolean;
+  private var _dataSource:ListViewDataSource;
+  public function get dataSource():ListViewDataSource {
+    return _dataSource;
   }
 
-  public function set items(value:List):void {
-    if (value == items) {
+  public function set dataSource(value:ListViewDataSource):void {
+    if (_dataSource == value) {
       return;
     }
 
-    _items = value;
-    itemsChanged = true;
+    _dataSource = value;
+    dataSourceChanged = true;
     invalidateProperties();
   }
 
@@ -52,8 +45,8 @@ public class Bar extends AbstractComponent implements Injectable {
   }
 
   override public function commitProperties():void {
-    if (itemsChanged) {
-      itemsChanged = false;
+    if (dataSourceChanged) {
+      dataSourceChanged = false;
       validateItems();
     }
 
@@ -61,48 +54,46 @@ public class Bar extends AbstractComponent implements Injectable {
   }
 
   protected function validateItems():void {
-    itemsChanged = false;
+    //for each (var item:LabeledItem in items.iterator) {
+    //  if (item.title != null) {
+    //    item.localizedTitle = itemToLabel(item);
+    //  }
+    //}
 
-    for each (var item:LabeledItem in items.iterator) {
-      if (item.title != null) {
-        item.localizedTitle = itemToLabel(item);
-      }
-    }
-
-    segmentedControl.dataProvider = items;
+    segmentedControl.dataSource = dataSource;
   }
 
   override protected function resourcesChanged():void {
-    if (items == null || segmentedControl == null) {
-      return;
-    }
-
-    var i:int;
-    var n:int = items.size;
-    for (i = 0; i < n; i++) {
-      var item:LabeledItem = LabeledItem(items.getItemAt(i));
-      if (item.title == null) {
-        continue;
-      }
-      
-      var localizedLabel:String = itemToLabel(item);
-      item.localizedTitle = localizedLabel;
-      if (item is PaneItem) {
-        var paneItem:PaneItem = PaneItem(item);
-        if (paneItem.view != null && paneItem.view is TitledPane) {
-          TitledPane(paneItem.view).title = localizedLabel;
-        }
-      }
-
-      var labelRenderer:IVisualElement = segmentedControl.getElementAt(i);
-      if (labelRenderer is IItemRenderer) {
-        IItemRenderer(labelRenderer).label = localizedLabel;
-      }
-    }
+    //if (items == null || segmentedControl == null) {
+    //  return;
+    //}
+    //
+    //var i:int;
+    //var n:int = items.size;
+    //for (i = 0; i < n; i++) {
+    //  var item:LabeledItem = LabeledItem(items.getItemAt(i));
+    //  if (item.title == null) {
+    //    continue;
+    //  }
+    //
+    //  var localizedLabel:String = itemToLabel(item);
+    //  item.localizedTitle = localizedLabel;
+    //  if (item is PaneItem) {
+    //    var paneItem:PaneItem = PaneItem(item);
+    //    if (paneItem.view != null && paneItem.view is TitledPane) {
+    //      TitledPane(paneItem.view).title = localizedLabel;
+    //    }
+    //  }
+    //
+    //  var labelRenderer:IVisualElement = segmentedControl.getElementAt(i);
+    //  if (labelRenderer is IItemRenderer) {
+    //    IItemRenderer(labelRenderer).label = localizedLabel;
+    //  }
+    //}
   }
 
-  protected function itemToLabel(paneMetadata:LabeledItem):String {
-    return resourceManager.getString(paneMetadata.title.bundleName, paneMetadata.title.resourceName);
-  }
+  //protected function itemToLabel(paneMetadata:LabeledItem):String {
+  //  return resourceManager.getString(paneMetadata.title.bundleName, paneMetadata.title.resourceName);
+  //}
 }
 }

@@ -82,5 +82,9 @@ public class TableColumnImpl implements TableColumn, ListViewDataSource {
   public function get reset():ISignal {
     throw new IllegalOperationError();
   }
+
+  public function get empty():Boolean {
+    return tableView.dataSource.empty;
+  }
 }
 }

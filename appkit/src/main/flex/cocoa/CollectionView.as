@@ -1,5 +1,5 @@
 package cocoa {
-import cocoa.layout.Layout;
+import cocoa.layout.CollectionLayout;
 
 public class CollectionView extends AbstractCollectionView {
   private var _dataSource:ListViewDataSource;
@@ -14,11 +14,11 @@ public class CollectionView extends AbstractCollectionView {
     return "CollectionView";
   }
 
-  private var _layout:Layout;
-  public function get layout():Layout {
+  private var _layout:CollectionLayout;
+  public function get layout():CollectionLayout {
     return _layout;
   }
-  public function set layout(value:Layout):void {
+  public function set layout(value:CollectionLayout):void {
     _layout = value;
   }
 }

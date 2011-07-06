@@ -1,4 +1,6 @@
-package cocoa.tableView {
+package cocoa {
+import cocoa.tableView.*;
+
 import flash.errors.IllegalOperationError;
 
 public class TextLineLinkedList {

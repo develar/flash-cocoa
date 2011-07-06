@@ -11,9 +11,9 @@ public class BorderlessTabViewSkin extends AbstractTabViewSkin {
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    segmentedControl.setLayoutBoundsSize(w, NaN);
-    var segmentCount:int = segmentedControl.dataProvider.length;
-    SegmentedControlHorizontalLayout(segmentedControl.layout).itemWidth = Math.round((w - (segmentCount + 1 /* gap */)) / segmentCount);
+    tabBar.setLayoutBoundsSize(w, NaN);
+    var segmentCount:int = tabBar.dataSource.itemCount;
+    SegmentedControlHorizontalLayout(tabBar.layout).itemWidth = Math.round((w - (segmentCount + 1 /* gap */)) / segmentCount);
 
     if (contentView != null) {
       contentView.setActualSize(w - contentInsets.width, h - contentInsets.height);

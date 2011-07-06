@@ -1,5 +1,6 @@
 package cocoa.plaf.basic {
 import cocoa.CollectionView;
+import cocoa.layout.ListHorizontalLayout;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObject;
@@ -8,7 +9,7 @@ public class CollectionViewSkin extends AbstractSkin {
   override protected function createChildren():void {
     super.createChildren();
 
-    CollectionHorizontalLayout(CollectionView(component).layout).init(CollectionView(component), this);
+    //ListHorizontalLayout(CollectionView(component).layout).init(CollectionView(component), this);
   }
 
   override public function addChild(child:DisplayObject):DisplayObject {
@@ -27,7 +28,7 @@ public class CollectionViewSkin extends AbstractSkin {
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     var collectionView:CollectionView = CollectionView(component);
-    collectionView.layout.updateDisplayList(this, w, h);
+    //collectionView.layout.updateDisplayList(this, w, h);
   }
 }
 }

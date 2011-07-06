@@ -3,7 +3,6 @@ import cocoa.Panel;
 import cocoa.ViewContainer;
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
-import cocoa.sidebar.events.MultipleSelectionChangeEvent;
 import cocoa.ui;
 
 import flash.utils.Dictionary;
@@ -21,7 +20,6 @@ public class Sidebar extends Bar {
   ui var paneGroup:ViewContainer;
 
   private var collapsed:Boolean = true;
-  private var typedPaneLabelBar:SidebarPaneLabelBar;
 
   private var pendingSelectedIndices:Vector.<int>;
 
@@ -30,31 +28,30 @@ public class Sidebar extends Bar {
       pendingSelectedIndices = value;
     }
     else {
-      typedPaneLabelBar.selectedIndices = value;
+      segmentedControl.selectedIndices = value;
     }
   }
 
   override ui function segmentedControlAdded():void {
-    typedPaneLabelBar = SidebarPaneLabelBar(segmentedControl);
-    typedPaneLabelBar.selectedIndices = pendingSelectedIndices;
+    segmentedControl.selectedIndices = pendingSelectedIndices;
     pendingSelectedIndices = null;
 
-    segmentedControl.addEventListener(MultipleSelectionChangeEvent.CHANGED, paneLabelBarSelectionChangeHandler);
+    segmentedControl.selectionChanged.add(paneLabelBarSelectionChanged);
   }
 
   ui function paneGroupAdded():void {
     paneGroup.includeInLayout = !collapsed;
   }
 
-  private function paneLabelBarSelectionChangeHandler(event:MultipleSelectionChangeEvent):void {
-    if (event.removed != null) {
-      showPanes(event.removed, false);
+  private function paneLabelBarSelectionChanged(added:Vector.<int>, removed:Vector.<int>):void {
+    if (removed != null) {
+      showPanes(removed, false);
     }
-    if (event.added != null) {
-      showPanes(event.added, true);
+    if (added != null) {
+      showPanes(added, true);
     }
 
-    if (collapsed != isEmpty(typedPaneLabelBar.selectedIndices)) {
+    if (collapsed != isEmpty(segmentedControl.selectedIndices)) {
       collapsed = !collapsed;
 
       skin.invalidateSize();
@@ -69,7 +66,7 @@ public class Sidebar extends Bar {
 
   private function showPanes(indices:Vector.<int>, show:Boolean):void {
     for each (var index:int in indices) {
-      showPane(PaneItem(items.getItemAt(index)), show);
+      showPane(PaneItem(dataSource.getObjectValue(index)), show);
     }
   }
 
@@ -98,7 +95,7 @@ public class Sidebar extends Bar {
 
   private function hidePaneHandler(pane:Panel):void {
     assert(!pane.hidden);
-    typedPaneLabelBar.adjustSelectionIndices(paneGroup.getSubviewIndex(pane), false);
+    segmentedControl.setSelected(paneGroup.getSubviewIndex(pane), false);
   }
 
   private function hideSideHandler():void {

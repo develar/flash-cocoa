@@ -8,6 +8,7 @@ import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
+import cocoa.plaf.basic.BasicTableViewSkin;
 import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.CollectionViewSkin;
 import cocoa.plaf.basic.ColorPickerMenuController;
@@ -15,10 +16,9 @@ import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.PaneLabelRenderer;
-import cocoa.plaf.basic.SegmentedControlController;
+import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.plaf.basic.SeparatorSkin;
 import cocoa.plaf.basic.SliderNumericStepperSkin;
-import cocoa.plaf.basic.BasicTableViewSkin;
 import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
 import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
 import cocoa.text.SimpleTextLayoutFormat;
@@ -85,13 +85,15 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["ListView"] = ListViewSkin;
     data["SwatchGrid.b"] = data["ListView.b"] = data["TextArea.b"] = data["TableView.b"] = data["small.TableView.b"] = new BezelBorder();
 
+    data["SegmentedControl.rendererManager"] = new RendererManagerFactory(this, SegmentRendererManager);
+
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
     data["TabView.segmentedControl.iR"] = data["SegmentedControl.iR"] = new ClassFactory(SegmentItemRenderer);
-    data["Sidebar.segmentedControlController"] = data["TabView.segmentedControlController"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlController);
+    data["Sidebar.segmentedControlController"] = data["SegmentedControl.interactor"] = data["TabView.tabBar.interactor"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlInteractor);
     data["Sidebar.iR"] = new ClassFactory(PaneLabelRenderer);
-    data["TabView.segmentedControl.gap"] = 1;
-    data["TabView.segmentedControl.placement"] = Placement.PAGE_START_LINE_CENTER;
+    data["TabView.tabBar.gap"] = 1;
+    data["TabView.tabBar.placement"] = Placement.PAGE_START_LINE_CENTER;
 
     data["PushButton"] = PushButtonSkin;
     data["IconButton"] = IconButtonSkin;
@@ -172,7 +174,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 }
 }
 
+import cocoa.ClassFactory;
 import cocoa.Insets;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -194,6 +198,20 @@ import flash.text.engine.FontWeight;
 import flashx.textLayout.edit.SelectionFormat;
 import flashx.textLayout.formats.LineBreak;
 import flashx.textLayout.formats.TextAlign;
+
+final class RendererManagerFactory extends ClassFactory {
+  private var laf:LookAndFeel;
+
+  function RendererManagerFactory(laf:AquaLookAndFeel, clazz:Class) {
+    super(clazz);
+
+    this.laf = laf;
+  }
+
+  override public function newInstance():* {
+    return new clazz(laf.getTextFormat(TextFormatId.SYSTEM), laf.getBorder("SegmentItem.b"));
+  }
+}
 
 final class PanelLookAndFeel extends AbstractLookAndFeel {
   public function PanelLookAndFeel(parent:AquaLookAndFeel) {
