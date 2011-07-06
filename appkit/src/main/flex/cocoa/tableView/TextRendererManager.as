@@ -1,6 +1,7 @@
 package cocoa.tableView {
-import cocoa.CollectionViewDataSource;
+import cocoa.ListViewDataSource;
 import cocoa.Insets;
+import cocoa.RendererManager;
 import cocoa.text.TextFormat;
 import cocoa.text.TextLineRendererFactory;
 
@@ -24,8 +25,8 @@ public class TextRendererManager implements RendererManager {
     this.textFormat = textFormat;
   }
 
-  protected var _dataSource:CollectionViewDataSource;
-  public function set dataSource(value:CollectionViewDataSource):void {
+  protected var _dataSource:ListViewDataSource;
+  public function set dataSource(value:ListViewDataSource):void {
     _dataSource = value;
   }
 

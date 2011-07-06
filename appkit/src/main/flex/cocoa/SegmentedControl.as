@@ -5,7 +5,7 @@ import cocoa.plaf.basic.SegmentedControlController;
 
 import org.flyti.util.List;
 
-public class SegmentedControl extends SingleSelectionDataGroup implements DataControl {
+public class SegmentedControl extends AbstractView {
    public function get items():List {
     return List(dataProvider);
   }

@@ -1,7 +1,7 @@
 package cocoa {
 import org.osflash.signals.ISignal;
 
-public interface CollectionViewDataSource {
+public interface ListViewDataSource {
   function get itemCount():int;
 
   function getObjectValue(itemIndex:int):Object;

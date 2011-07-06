@@ -2,11 +2,11 @@ package cocoa {
 import cocoa.layout.Layout;
 
 public class CollectionView extends AbstractCollectionView {
-  private var _dataSource:CollectionViewDataSource;
-  public function get dataSource():CollectionViewDataSource {
+  private var _dataSource:ListViewDataSource;
+  public function get dataSource():ListViewDataSource {
     return _dataSource;
   }
-  public function set dataSource(value:CollectionViewDataSource):void {
+  public function set dataSource(value:ListViewDataSource):void {
     _dataSource = value;
   }
 

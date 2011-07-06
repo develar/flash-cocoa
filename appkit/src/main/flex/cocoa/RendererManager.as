@@ -1,6 +1,4 @@
-package cocoa.tableView {
-import cocoa.CollectionViewDataSource;
-
+package cocoa {
 import flash.display.DisplayObjectContainer;
 
 public interface RendererManager {
@@ -20,6 +18,6 @@ public interface RendererManager {
 
   function get lastCreatedRendererWidth():Number;
 
-  function set dataSource(value:CollectionViewDataSource):void;
+  function set dataSource(value:ListViewDataSource):void;
 }
 }

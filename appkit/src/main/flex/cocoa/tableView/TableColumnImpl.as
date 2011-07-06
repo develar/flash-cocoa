@@ -1,12 +1,13 @@
 package cocoa.tableView {
-import cocoa.CollectionViewDataSource;
+import cocoa.ListViewDataSource;
+import cocoa.RendererManager;
 
 import flash.errors.IllegalOperationError;
 
 import org.osflash.signals.ISignal;
 
 [Abstract]
-public class TableColumnImpl implements TableColumn, CollectionViewDataSource {
+public class TableColumnImpl implements TableColumn, ListViewDataSource {
   protected var tableView:TableView;
 
   public function TableColumnImpl(tableView:TableView, dataField:String, rendererManager:RendererManager) {

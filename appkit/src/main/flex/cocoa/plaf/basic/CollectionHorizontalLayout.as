@@ -2,7 +2,7 @@ package cocoa.plaf.basic {
 import cocoa.AbstractView;
 import cocoa.CollectionView;
 import cocoa.layout.Layout;
-import cocoa.tableView.RendererManager;
+import cocoa.RendererManager;
 
 public class CollectionHorizontalLayout implements Layout {
   private var collectionView:CollectionView;

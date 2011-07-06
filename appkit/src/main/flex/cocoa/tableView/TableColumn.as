@@ -1,4 +1,6 @@
 package cocoa.tableView {
+import cocoa.RendererManager;
+
 public interface TableColumn {
   function get dataField():String;
 

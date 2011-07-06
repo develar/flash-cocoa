@@ -1,8 +1,8 @@
 package cocoa.plaf.aqua.demo {
-import cocoa.CollectionViewDataSource;
+import cocoa.ListViewDataSource;
 import cocoa.tableView.AbstractCollectionViewDataSource;
 
-public class DemoCollectionViewDataSource extends AbstractCollectionViewDataSource implements CollectionViewDataSource {
+public class DemoCollectionViewDataSource extends AbstractCollectionViewDataSource implements ListViewDataSource {
   private var source:Vector.<String> = new <String>["First", "Second", "Third"];
   private var source2:Vector.<String> = new <String>["Lysandra", "Mallory", "Garth"];
 
