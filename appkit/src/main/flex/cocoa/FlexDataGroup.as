@@ -757,23 +757,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
       const item:Object = dataProvider.getItemAt(index);
       if (renderer == null) {
         if (freeRenderers.length > 0) {
-          if (itemRendererFunction == null) {
-            renderer = freeRenderers.pop();
-          }
-          else {
-            var i:int = freeRenderers.length - 1;
-            var factory:IFactory = itemRendererFunction(item);
-            for (; i > -1; i--) {
-              renderer = freeRenderers[i];
-              if (renderer != null && itemRendererFunction(IDataRenderer(renderer).data) == factory) {
-                freeRenderers[i] = null;
-                if (i == (freeRenderers.length - 1)) {
-                  freeRenderers.length = i;
-                }
-                break;
-              }
-            }
-          }
+          renderer = itemRendererFunction == null ? freeRenderers.pop() : findSutableFreeRenderer(item);
         }
 
         if (renderer == null) {
@@ -814,6 +798,23 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     }
 
     return renderer;
+  }
+
+  private function findSutableFreeRenderer(item:Object):IVisualElement {
+    var factory:IFactory = itemRendererFunction(item);
+    var renderer:IVisualElement;
+    for (var i:int = freeRenderers.length - 1; i > -1; i--) {
+      renderer = freeRenderers[i];
+      if (renderer != null && itemRendererFunction(IDataRenderer(renderer).data) == factory) {
+        freeRenderers[i] = null;
+        if (i == (freeRenderers.length - 1)) {
+          freeRenderers.length = i;
+        }
+        return renderer;
+      }
+    }
+
+    return null;
   }
 
   /**
