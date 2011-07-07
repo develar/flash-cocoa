@@ -1,6 +1,6 @@
-package cocoa {
-import cocoa.bar.Bar;
+package cocoa.bar {
 import cocoa.pane.PaneItem;
+import cocoa.ui;
 
 import spark.events.IndexChangeEvent;
 

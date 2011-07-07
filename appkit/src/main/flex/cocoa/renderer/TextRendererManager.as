@@ -1,4 +1,6 @@
-package cocoa {
+package cocoa.renderer {
+import cocoa.Insets;
+import cocoa.ListViewDataSource;
 import cocoa.text.TextFormat;
 import cocoa.text.TextLineRendererFactory;
 
@@ -9,17 +11,22 @@ public class TextRendererManager implements RendererManager {
   protected var textLineRendererFactory:TextLineRendererFactory;
   protected const cells:TextLineLinkedList = new TextLineLinkedList();
 
-  protected var previousEntry:TextLineLinkedListEntry;
+  protected var previousEntry:TextLineEntry;
 
   protected var textInsets:Insets;
   protected var textFormat:TextFormat;
 
-  protected var _lastCreatedRendererWidth:Number;
+  private var entryFactories:Vector.<EntryFactory>;
 
   public function TextRendererManager(textFormat:TextFormat, textInsets:Insets) {
     textLineRendererFactory = TextLineRendererFactory.instance;
     this.textInsets = textInsets;
     this.textFormat = textFormat;
+  }
+
+  protected var _lastCreatedRendererWidth:Number;
+  public function get lastCreatedRendererWidth():Number {
+    return _lastCreatedRendererWidth;
   }
 
   protected var _dataSource:ListViewDataSource;
@@ -32,22 +39,30 @@ public class TextRendererManager implements RendererManager {
     _container = value;
   }
 
+  protected function registerEntryFactory(entryFactory:EntryFactory):void {
+    if (entryFactories == null) {
+      entryFactories = new Vector.<EntryFactory>(1);
+    }
+
+    entryFactories[entryFactories.length] = entryFactory;
+  }
+
   protected function createTextLine(textLineContainer:DisplayObjectContainer, itemIndex:int, w:Number):TextLine {
     return textLineRendererFactory.create(textLineContainer, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext);
   }
 
-  protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineLinkedListEntry {
+  protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
     var line:TextLine = createTextLine(_container, itemIndex, w);
     _lastCreatedRendererWidth = Math.ceil(line.textWidth);
     line.x = x + textInsets.left;
     line.y = y + h - textInsets.bottom;
-    var entry:TextLineLinkedListEntry = TextLineLinkedListEntry.create(line);
+    var entry:TextLineEntry = TextLineEntry.create(line);
     entry.itemIndex = itemIndex;
     return entry;
   }
 
   public function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void {
-    var newEntry:TextLineLinkedListEntry = createEntry(itemIndex, x, y, w, h);
+    var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
     if (previousEntry == null) {
       cells.addFirst(newEntry);
     }
@@ -59,7 +74,17 @@ public class TextRendererManager implements RendererManager {
   }
 
   public function reuse(itemCountDelta:int, finalPass:Boolean):void {
+    if (entryFactories != null) {
+      for each (var entryFactory:EntryFactory in entryFactories) {
+        entryFactory.preReuse();
+      }
+    }
+
     textLineRendererFactory.reuse(_container, cells, itemCountDelta, finalPass);
+
+    if (finalPass && entryFactories != null) {
+      clearOurPools();
+    }
   }
 
   public function preLayout(head:Boolean):void {
@@ -74,10 +99,16 @@ public class TextRendererManager implements RendererManager {
     }
 
     previousEntry = null;
+
+    if (entryFactories != null) {
+      clearOurPools();
+    }
   }
 
-  public function get lastCreatedRendererWidth():Number {
-    return _lastCreatedRendererWidth;
+  private function clearOurPools():void {
+    for each (var entryFactory:EntryFactory in entryFactories) {
+      entryFactory.finalizeReused(_container);
+    }
   }
 }
 }

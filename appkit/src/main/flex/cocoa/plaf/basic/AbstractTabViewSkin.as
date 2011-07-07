@@ -42,7 +42,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
 
       tabBarPlacement = laf.getInt(tabBarLafKey + ".placement");
       addChild(tabBar);
-      component.uiPartAdded("tabBar", tabBar);
+      component.uiPartAdded("segmentedControl", tabBar);
     }
   }
 

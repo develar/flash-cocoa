@@ -1,5 +1,5 @@
 package cocoa.text {
-import cocoa.TextLineLinkedList;
+import cocoa.renderer.TextLineLinkedList;
 
 import flash.display.DisplayObjectContainer;
 import flash.text.engine.ElementFormat;

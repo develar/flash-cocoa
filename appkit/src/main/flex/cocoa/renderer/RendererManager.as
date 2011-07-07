@@ -1,4 +1,6 @@
-package cocoa {
+package cocoa.renderer {
+import cocoa.ListViewDataSource;
+
 import flash.display.DisplayObjectContainer;
 
 public interface RendererManager {

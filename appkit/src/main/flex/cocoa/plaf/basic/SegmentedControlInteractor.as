@@ -1,5 +1,5 @@
 package cocoa.plaf.basic {
-import cocoa.InteractiveRendererManager;
+import cocoa.renderer.InteractiveRendererManager;
 import cocoa.ItemMouseSelectionMode;
 import cocoa.SegmentedControl;
 import cocoa.SelectionMode;

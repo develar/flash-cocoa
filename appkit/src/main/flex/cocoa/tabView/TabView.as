@@ -1,6 +1,6 @@
 package cocoa.tabView {
-import cocoa.SingleSelectionBar;
 import cocoa.Viewable;
+import cocoa.bar.SingleSelectionBar;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
 import cocoa.plaf.LookAndFeel;

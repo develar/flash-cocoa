@@ -1,4 +1,4 @@
-package cocoa.plaf.basic {
+package cocoa.plaf {
 import flash.events.MouseEvent;
 
 public interface ButtonSkinInteraction {

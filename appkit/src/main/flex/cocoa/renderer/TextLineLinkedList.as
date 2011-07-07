@@ -1,16 +1,14 @@
-package cocoa {
-import cocoa.tableView.*;
-
+package cocoa.renderer {
 import flash.errors.IllegalOperationError;
 
 public class TextLineLinkedList {
-  public var head:TextLineLinkedListEntry;
-  public var tail:TextLineLinkedListEntry;
+  public var head:TextLineEntry;
+  public var tail:TextLineEntry;
   public var size:int;
 
-  public function removeFirst():TextLineLinkedListEntry {
-    var o:TextLineLinkedListEntry = head;
-    var n:TextLineLinkedListEntry = o.next;
+  public function removeFirst():TextLineEntry {
+    var o:TextLineEntry = head;
+    var n:TextLineEntry = o.next;
     o.next = null;
     if (n != null) {
       n.previous = null;
@@ -26,9 +24,9 @@ public class TextLineLinkedList {
     return o;
   }
 
-  public function removeLast():TextLineLinkedListEntry {
-    var o:TextLineLinkedListEntry = tail;
-    var p:TextLineLinkedListEntry = o.previous;
+  public function removeLast():TextLineEntry {
+    var o:TextLineEntry = tail;
+    var p:TextLineEntry = o.previous;
     o.previous = null;
     if (p != null) {
       p.next = null;
@@ -44,15 +42,15 @@ public class TextLineLinkedList {
     return o;
   }
 
-  public function addLast(entry:TextLineLinkedListEntry):void {
+  public function addLast(entry:TextLineEntry):void {
     insert(size, entry);
   }
 
-  public function addFirst(entry:TextLineLinkedListEntry):void {
+  public function addFirst(entry:TextLineEntry):void {
     insert(0, entry);
   }
 
-  private function insert(index:int, entry:TextLineLinkedListEntry):void {
+  private function insert(index:int, entry:TextLineEntry):void {
     if (size == 0) {
       head = tail = entry;
     }
@@ -73,7 +71,7 @@ public class TextLineLinkedList {
     size++;
   }
 
-  public function addAfter(current:TextLineLinkedListEntry, entry:TextLineLinkedListEntry):void {
+  public function addAfter(current:TextLineEntry, entry:TextLineEntry):void {
     if (current == tail) {
       addLast(entry);
     }
@@ -82,7 +80,7 @@ public class TextLineLinkedList {
     }
   }
 
-  public function addBefore(current:TextLineLinkedListEntry, entry:TextLineLinkedListEntry):void {
+  public function addBefore(current:TextLineEntry, entry:TextLineEntry):void {
     if (current == head) {
       addFirst(entry);
     }
@@ -90,7 +88,7 @@ public class TextLineLinkedList {
       addLast(entry);
     }
     else {
-      var p:TextLineLinkedListEntry = current.previous;
+      var p:TextLineEntry = current.previous;
       entry.next = current;
       p.next = entry;
       entry.previous = p;

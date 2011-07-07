@@ -13,11 +13,11 @@ public final class ResourceMetadata {
     this.bundleName = bundleName;
     this.parameters = parameters;
 
-    instances[resourceName + bundleName] = this;
+    instances[resourceName + "." + bundleName] = this;
   }
 
   public static function create(resourceName:String, bundleName:String):ResourceMetadata {
-    var resource:ResourceMetadata = instances[resourceName + bundleName];
+    var resource:ResourceMetadata = instances[resourceName + "." + bundleName];
     return resource != null ? resource : new ResourceMetadata(resourceName, bundleName);
   }
 

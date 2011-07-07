@@ -8,8 +8,8 @@ public class PaneItem extends LabeledItem {
   public var viewFactory:IFactory;
   public var view:Viewable;
 
-  public function PaneItem(label:ResourceMetadata, viewFactory:IFactory) {
-    super(label);
+  public function PaneItem(title:ResourceMetadata, viewFactory:IFactory) {
+    super(title);
 
     this.viewFactory = viewFactory;
   }

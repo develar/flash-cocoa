@@ -2,11 +2,11 @@
                         xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*" xmlns:layout="cocoa.layout.*">
   <fx:Script><![CDATA[
     import cocoa.Insets;
-    import cocoa.InteractiveTextRendererManager;
+    import cocoa.renderer.InteractiveTextRendererManager;
     import cocoa.plaf.TextFormatId;
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TableColumnImpl;
-    import cocoa.TextRendererManager;
+    import cocoa.renderer.TextRendererManager;
     import cocoa.util.FileUtil;
 
     override protected function preInitialize():void {

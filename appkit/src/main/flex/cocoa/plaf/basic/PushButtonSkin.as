@@ -6,6 +6,7 @@ import cocoa.CellState;
 import cocoa.Component;
 import cocoa.Insets;
 import cocoa.TextInsets;
+import cocoa.plaf.ButtonSkinInteraction;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.Graphics;

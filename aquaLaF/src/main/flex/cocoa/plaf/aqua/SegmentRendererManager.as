@@ -1,9 +1,9 @@
 package cocoa.plaf.aqua {
 import cocoa.FrameInsets;
-import cocoa.InteractiveTextRendererManager;
-import cocoa.TextLineAndDisplayObjectLinkedListEntry;
-import cocoa.TextLineAndDisplayObjectLinkedListEntryFactory;
-import cocoa.TextLineLinkedListEntry;
+import cocoa.renderer.InteractiveTextRendererManager;
+import cocoa.renderer.TextLineAndDisplayObjectEntry;
+import cocoa.renderer.TextLineAndDisplayObjectEntryFactory;
+import cocoa.renderer.TextLineEntry;
 import cocoa.border.BitmapBorderStateIndex;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.text.TextFormat;
@@ -22,7 +22,7 @@ public class SegmentRendererManager extends InteractiveTextRendererManager {
   private static const separatorIndex:int = rightIndex + 4;
   private static const shadowIndex:int = separatorIndex + 2;
 
-  private var factory:TextLineAndDisplayObjectLinkedListEntryFactory;
+  private var factory:TextLineAndDisplayObjectEntryFactory;
   protected var border:Scale1BitmapBorder;
 
   private var textLineContainer:Sprite;
@@ -31,7 +31,9 @@ public class SegmentRendererManager extends InteractiveTextRendererManager {
     super(textFormat, border.contentInsets);
 
     this.border = border;
-    factory = new TextLineAndDisplayObjectLinkedListEntryFactory(Shape);
+    factory = new TextLineAndDisplayObjectEntryFactory(Shape, true);
+
+    registerEntryFactory(factory);
   }
 
   override public function set container(value:DisplayObjectContainer):void {
@@ -54,12 +56,12 @@ public class SegmentRendererManager extends InteractiveTextRendererManager {
     super.setSelecting(itemIndex, value);
   }
 
-  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineLinkedListEntry {
+  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
     var line:TextLine = createTextLine(textLineContainer, itemIndex, w);
     _lastCreatedRendererWidth = Math.ceil(line.textWidth) + textInsets.width;
     line.x = x + textInsets.left;
     line.y = y + h - textInsets.bottom;
-    var entry:TextLineAndDisplayObjectLinkedListEntry = factory.create(line);
+    var entry:TextLineAndDisplayObjectEntry = factory.create(line);
     entry.itemIndex = itemIndex;
 
     var shape:Shape = Shape(entry.displayObject);
@@ -95,13 +97,13 @@ public class SegmentRendererManager extends InteractiveTextRendererManager {
       return -1;
     }
 
-    var entry:TextLineAndDisplayObjectLinkedListEntry = TextLineAndDisplayObjectLinkedListEntry(cells.head);
+    var entry:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.head);
     do {
       if (x >= entry.displayObject.x && x <= (entry.displayObject.x + entry.displayObject.width)) {
         return entry.itemIndex;
       }
     }
-    while ((entry = TextLineAndDisplayObjectLinkedListEntry(entry.next)) != null);
+    while ((entry = TextLineAndDisplayObjectEntry(entry.next)) != null);
 
     return -1;
   }

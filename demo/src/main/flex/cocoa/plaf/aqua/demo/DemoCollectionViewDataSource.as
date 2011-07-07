@@ -1,6 +1,6 @@
 package cocoa.plaf.aqua.demo {
 import cocoa.ListViewDataSource;
-import cocoa.tableView.AbstractCollectionViewDataSource;
+import cocoa.AbstractCollectionViewDataSource;
 
 public class DemoCollectionViewDataSource extends AbstractCollectionViewDataSource implements ListViewDataSource {
   private var source:Vector.<String> = new <String>["First", "Second", "Third"];
@@ -10,18 +10,18 @@ public class DemoCollectionViewDataSource extends AbstractCollectionViewDataSour
 
   public function changeData():void {
     data = data == source ? source2 : source;
-    sourceItemCounter = data.length;
+    _itemCount = data.length;
     reset.dispatch();
   }
 
   public function changeDataToNull():void {
     data = new <String>[];
-    sourceItemCounter = 0;
+    _itemCount = 0;
     reset.dispatch();
   }
 
   public function DemoCollectionViewDataSource() {
-    sourceItemCounter = data.length;
+    _itemCount = data.length;
   }
 
   public function getObjectValue(itemIndex:int):Object {

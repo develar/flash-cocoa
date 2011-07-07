@@ -1,7 +1,7 @@
 package cocoa.layout {
 import cocoa.AbstractView;
 import cocoa.ListViewDataSource;
-import cocoa.RendererManager;
+import cocoa.renderer.RendererManager;
 
 public class ListHorizontalLayout implements CollectionLayout {
   private var visibleItemCount:int = -1;

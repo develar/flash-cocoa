@@ -1,4 +1,4 @@
-package cocoa {
+package cocoa.renderer {
 import flash.display.InteractiveObject;
 
 public interface InteractiveRendererManager extends RendererManager {

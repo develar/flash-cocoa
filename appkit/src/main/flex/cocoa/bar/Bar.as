@@ -2,6 +2,7 @@ package cocoa.bar {
 import cocoa.AbstractComponent;
 import cocoa.ListViewDataSource;
 import cocoa.SegmentedControl;
+import cocoa.pane.PaneViewDataSource;
 import cocoa.ui;
 
 import flash.utils.Dictionary;
@@ -54,11 +55,9 @@ public class Bar extends AbstractComponent implements Injectable {
   }
 
   protected function validateItems():void {
-    //for each (var item:LabeledItem in items.iterator) {
-    //  if (item.title != null) {
-    //    item.localizedTitle = itemToLabel(item);
-    //  }
-    //}
+    if (dataSource is PaneViewDataSource) {
+      PaneViewDataSource(dataSource).localize(resourceManager);
+    }
 
     segmentedControl.dataSource = dataSource;
   }
@@ -91,9 +90,5 @@ public class Bar extends AbstractComponent implements Injectable {
     //  }
     //}
   }
-
-  //protected function itemToLabel(paneMetadata:LabeledItem):String {
-  //  return resourceManager.getString(paneMetadata.title.bundleName, paneMetadata.title.resourceName);
-  //}
 }
 }

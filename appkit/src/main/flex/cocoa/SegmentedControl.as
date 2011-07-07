@@ -5,6 +5,7 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Skin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
+import cocoa.renderer.InteractiveRendererManager;
 
 import flash.display.DisplayObject;
 

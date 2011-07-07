@@ -1,7 +1,7 @@
 package cocoa.layout {
 import cocoa.AbstractView;
 import cocoa.ListViewDataSource;
-import cocoa.RendererManager;
+import cocoa.renderer.RendererManager;
 
 public interface CollectionLayout {
   function measure(target:AbstractView):void;

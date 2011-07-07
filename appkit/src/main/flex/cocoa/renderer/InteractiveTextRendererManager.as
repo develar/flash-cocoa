@@ -1,4 +1,6 @@
-package cocoa {
+package cocoa.renderer {
+import cocoa.Insets;
+import cocoa.ItemMouseSelectionMode;
 import cocoa.text.TextFormat;
 
 import flash.display.InteractiveObject;

@@ -1,5 +1,5 @@
 package cocoa.plaf.aqua.demo {
-import cocoa.tableView.AbstractCollectionViewDataSource;
+import cocoa.AbstractCollectionViewDataSource;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableViewDataSource;
 

@@ -1,6 +1,6 @@
 package cocoa.tableView {
 import cocoa.ListViewDataSource;
-import cocoa.RendererManager;
+import cocoa.renderer.RendererManager;
 
 import flash.errors.IllegalOperationError;
 
