@@ -7,6 +7,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TextLineCreationResult;
+import flash.text.engine.TextRotation;
 
 public class TextLineRendererFactory {
   private static const textElement:TextElement = new TextElement();
@@ -68,9 +69,13 @@ public class TextLineRendererFactory {
     }
   }
 
-  public function create(container:DisplayObjectContainer, text:String, availableWidth:Number, elementFormat:ElementFormat, swfContext:SwfContext = null, useTruncationIndicator:Boolean = true):TextLine {
+  public function create(container:DisplayObjectContainer, text:String, availableWidth:Number, elementFormat:ElementFormat, swfContext:SwfContext = null, useTruncationIndicator:Boolean = true, rotation:String = null):TextLine {
     textElement.elementFormat = elementFormat;
     textElement.text = text;
+
+    if (rotation != null) {
+      textBlock.lineRotation = rotation;
+    }
 
     var line:TextLine;
     if (youngOrphanCount != 0) {
@@ -90,6 +95,10 @@ public class TextLineRendererFactory {
 
     if (useTruncationIndicator && textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY) {
       TextLineUtil.truncate(text, textElement, line, swfContext, availableWidth);
+    }
+
+    if (rotation != null) {
+      textBlock.lineRotation = TextRotation.ROTATE_0;
     }
 
     return line;

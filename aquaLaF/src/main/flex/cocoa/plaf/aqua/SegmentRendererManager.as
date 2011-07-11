@@ -1,77 +1,35 @@
 package cocoa.plaf.aqua {
 import cocoa.FrameInsets;
-import cocoa.renderer.InteractiveTextRendererManager;
-import cocoa.renderer.TextLineAndDisplayObjectEntry;
-import cocoa.renderer.TextLineAndDisplayObjectEntryFactory;
-import cocoa.renderer.TextLineEntry;
-import cocoa.border.BitmapBorderStateIndex;
+import cocoa.border.BorderStateIndex;
 import cocoa.border.Scale1BitmapBorder;
-import cocoa.text.TextFormat;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.TextFormatId;
+import cocoa.renderer.InteractiveGraphicsRendererManager;
+import cocoa.renderer.TextLineAndDisplayObjectEntry;
 
 import flash.display.BitmapData;
-import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 import flash.display.Shape;
-import flash.display.Sprite;
-import flash.text.engine.TextLine;
 
-public class SegmentRendererManager extends InteractiveTextRendererManager {
+public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
   private static const leftIndex:int = 0;
   private static const middleIndex:int = leftIndex + 4;
   private static const rightIndex:int = middleIndex + 4;
   private static const separatorIndex:int = rightIndex + 4;
   private static const shadowIndex:int = separatorIndex + 2;
 
-  private var factory:TextLineAndDisplayObjectEntryFactory;
   protected var border:Scale1BitmapBorder;
 
-  private var textLineContainer:Sprite;
-
-  public function SegmentRendererManager(textFormat:TextFormat, border:Scale1BitmapBorder) {
-    super(textFormat, border.contentInsets);
-
-    this.border = border;
-    factory = new TextLineAndDisplayObjectEntryFactory(Shape, true);
-
-    registerEntryFactory(factory);
-  }
-
-  override public function set container(value:DisplayObjectContainer):void {
-    super.container = value;
-
-    if (textLineContainer == null) {
-      textLineContainer = new Sprite();
-      textLineContainer.mouseEnabled = false;
-      textLineContainer.mouseChildren = false;
-    }
-
-    value.addChild(textLineContainer);
-  }
-
-  protected function isLast(itemIndex:int):Boolean {
-    return itemIndex == (_dataSource.itemCount - 1);
+  public function SegmentRendererManager(laf:LookAndFeel, lafKey:String) {
+    border = Scale1BitmapBorder(laf.getBorder(lafKey + ".b"));
+    super(laf.getTextFormat(TextFormatId.SYSTEM), border.contentInsets);
   }
 
   override public function setSelecting(itemIndex:int, value:Boolean):void {
     super.setSelecting(itemIndex, value);
   }
 
-  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(textLineContainer, itemIndex, w);
-    _lastCreatedRendererWidth = Math.ceil(line.textWidth) + textInsets.width;
-    line.x = x + textInsets.left;
-    line.y = y + h - textInsets.bottom;
-    var entry:TextLineAndDisplayObjectEntry = factory.create(line);
-    entry.itemIndex = itemIndex;
-
-    var shape:Shape = Shape(entry.displayObject);
-    if (shape.parent != _container) {
-      _container.addChildAt(shape, _container.numChildren - 1);
-    }
-
-    shape.x = x;
-    shape.y = y;
-
+  override protected function drawEntry(itemIndex:int, shape:Shape, w:Number, h:Number):void {
     var frameInsets:FrameInsets = border.frameInsets;
 
     var isLast:Boolean = false;
@@ -88,8 +46,6 @@ public class SegmentRendererManager extends InteractiveTextRendererManager {
 
     var g:Graphics = shape.graphics;
     draw(itemIndex, g, _lastCreatedRendererWidth, h, false, false);
-
-    return entry;
   }
 
   override public function getItemIndexAt(x:Number):int {
@@ -109,7 +65,7 @@ public class SegmentRendererManager extends InteractiveTextRendererManager {
   }
 
   private function draw(itemIndex:int, g:Graphics, w:Number, h:Number, selecting:Boolean, selected:Boolean):void {
-    const offset:int = selecting ? (selected ? BitmapBorderStateIndex.ON_HIGHLIGHT : BitmapBorderStateIndex.OFF_HIGHLIGHT) : (selected ? BitmapBorderStateIndex.ON : BitmapBorderStateIndex.OFF);
+    const offset:int = selecting ? (selected ? BorderStateIndex.ON_HIGHLIGHT : BorderStateIndex.OFF_HIGHLIGHT) : (selected ? BorderStateIndex.ON : BorderStateIndex.OFF);
     const computedSepatatorIndex:int = separatorIndex + (offset % 2);
 
     var frameInsets:FrameInsets = border.frameInsets;

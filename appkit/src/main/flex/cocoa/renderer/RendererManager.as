@@ -21,5 +21,7 @@ public interface RendererManager {
   function get lastCreatedRendererWidth():Number;
 
   function set dataSource(value:ListViewDataSource):void;
+
+  function get lastCreatedRendererHeigth():Number;
 }
 }

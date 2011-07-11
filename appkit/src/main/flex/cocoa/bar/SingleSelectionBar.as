@@ -24,6 +24,8 @@ public class SingleSelectionBar extends Bar {
   }
 
   override ui function segmentedControlAdded():void {
+    super.segmentedControlAdded();
+
     segmentedControl.selectionChanged.add(segmentedControlSelectionChanged);
   }
 

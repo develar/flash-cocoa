@@ -33,14 +33,12 @@ public class Sidebar extends Bar {
   }
 
   override ui function segmentedControlAdded():void {
+    super.segmentedControlAdded();
+
     segmentedControl.selectedIndices = pendingSelectedIndices;
     pendingSelectedIndices = null;
 
     segmentedControl.selectionChanged.add(paneLabelBarSelectionChanged);
-  }
-
-  ui function paneGroupAdded():void {
-    paneGroup.includeInLayout = !collapsed;
   }
 
   private function paneLabelBarSelectionChanged(added:Vector.<int>, removed:Vector.<int>):void {

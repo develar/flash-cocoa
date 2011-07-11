@@ -2,8 +2,8 @@ package cocoa.tree
 {
 import cocoa.AbstractView;
 import cocoa.LabelHelper;
-import cocoa.border.BitmapBorderStateIndex;
-import cocoa.border.MultipleBorder;
+import cocoa.border.BorderStateIndex;
+import cocoa.border.StatefulBorder;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
@@ -138,14 +138,14 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	protected function drawDisclosureIcon(laf:LookAndFeel, selected:Boolean):void
 	{
 		var g:Graphics = graphics;
-		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "close" : "open"), false));
-		if (selected && disclosureBorder.hasState(BitmapBorderStateIndex.ON))
+		var disclosureBorder:StatefulBorder = StatefulBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "close" : "open"), false));
+		if (selected && disclosureBorder.hasState(BorderStateIndex.ON))
 		{
-			disclosureBorder.stateIndex = BitmapBorderStateIndex.ON;
+			disclosureBorder.stateIndex = BorderStateIndex.ON;
 		}
 		else
 		{
-			disclosureBorder.stateIndex = BitmapBorderStateIndex.OFF;
+			disclosureBorder.stateIndex = BorderStateIndex.OFF;
 		}
 
 		var oldFrameX:Number = disclosureBorder.frameInsets.left;
@@ -173,7 +173,7 @@ public class TreeItemRenderer extends AbstractView implements IListItemRenderer,
 	private function isDisclosureIconClicked(event:MouseEvent):Boolean
 	{
 		var laf:LookAndFeel = LookAndFeelProvider(owner.parent).laf;
-		var disclosureBorder:MultipleBorder = MultipleBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close"), false));
+		var disclosureBorder:StatefulBorder = StatefulBorder(laf.getBorder("Tree.disclosureIcon." + (_listData.open ? "open" : "close"), false));
 		// 3 чтобы при щелчке не надо было быть снайпером
 		var localX:Number = event.localX  - _listData.indent;
 		return event.localY >= (disclosureBorder.frameInsets.top - 3) && event.localY <= (disclosureBorder.layoutHeight + 3) &&

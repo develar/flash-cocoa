@@ -9,10 +9,11 @@ import cocoa.renderer.InteractiveRendererManager;
 
 import flash.display.DisplayObject;
 
+import org.flyti.plexus.Injectable;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
-public class SegmentedControl extends AbstractView {
+public class SegmentedControl extends AbstractView implements Injectable {
   public static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
   }
@@ -30,7 +31,17 @@ public class SegmentedControl extends AbstractView {
     return _dataSource;
   }
   public function set dataSource(value:ListViewDataSource):void {
+    if (_dataSource == value) {
+      return;
+    }
+
     _dataSource = value;
+    if (layout != null) {
+      layout.dataSource = value;
+    }
+    if (rendererManager != null) {
+      rendererManager.dataSource = value;
+    }
   }
 
   private var _selectedIndices:Vector.<int>;
@@ -153,6 +164,10 @@ public class SegmentedControl extends AbstractView {
     SegmentedControlInteractor(laf.getFactory(_lafKey + ".interactor").newInstance()).register(this);
 
     super.createChildren();
+  }
+
+  override protected function commitProperties():void {
+    super.commitProperties();
   }
 
   override public function addChild(child:DisplayObject):DisplayObject {

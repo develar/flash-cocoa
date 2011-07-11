@@ -34,7 +34,7 @@ public interface LookAndFeel {
 
   function getColors(key:String):Vector.<uint>;
 
-  function getObject(key:String):Object;
+  function getObject(key:String, nullable:Boolean = false):Object;
 
   function getPoint(key:String):Point;
 

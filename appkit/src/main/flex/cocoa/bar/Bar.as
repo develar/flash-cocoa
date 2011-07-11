@@ -42,7 +42,9 @@ public class Bar extends AbstractComponent implements Injectable {
   }
 
   ui function segmentedControlAdded():void {
-
+    if (_dataSource != null) {
+      segmentedControl.dataSource = dataSource;
+    }
   }
 
   override public function commitProperties():void {
@@ -58,8 +60,6 @@ public class Bar extends AbstractComponent implements Injectable {
     if (dataSource is PaneViewDataSource) {
       PaneViewDataSource(dataSource).localize(resourceManager);
     }
-
-    segmentedControl.dataSource = dataSource;
   }
 
   override protected function resourcesChanged():void {

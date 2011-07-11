@@ -2,7 +2,7 @@ package cocoa.border {
 import flash.display.BitmapData;
 import flash.utils.ByteArray;
 
-public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implements MultipleBorder {
+public class AbstractMultipleBitmapBorder extends AbstractBitmapBorder implements StatefulBorder {
   protected var bitmaps:Vector.<BitmapData>;
 
   protected var _bitmapIndex:int = 0;

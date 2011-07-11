@@ -2,7 +2,7 @@ package cocoa.plaf.aqua {
 import cocoa.CellState;
 import cocoa.Insets;
 import cocoa.TextInsets;
-import cocoa.border.MultipleBorder;
+import cocoa.border.StatefulBorder;
 import cocoa.plaf.basic.PushButtonSkin;
 
 import flash.display.Graphics;
@@ -14,7 +14,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    MultipleBorder(border).stateIndex = (myComponent.state * 3) + (enabled ? 0 : 2);
+    StatefulBorder(border).stateIndex = (myComponent.state * 3) + (enabled ? 0 : 2);
 
     if (labelHelper != null && labelHelper.hasText) {
       if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth))) {
@@ -32,19 +32,19 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
   }
 
   override public function mouseOverHandler(event:MouseEvent):void {
-    MultipleBorder(border).stateIndex = myComponent.state == CellState.ON ? 4 : 1;
+    StatefulBorder(border).stateIndex = myComponent.state == CellState.ON ? 4 : 1;
     super.mouseOverHandler(event);
   }
 
   override public function mouseOutHandler(event:MouseEvent):void {
-    MultipleBorder(border).stateIndex = myComponent.state == CellState.ON ? 3 : 0;
+    StatefulBorder(border).stateIndex = myComponent.state == CellState.ON ? 3 : 0;
     super.mouseOverHandler(event);
   }
 
   override protected function mouseUp():void {
     super.mouseUp();
 
-    MultipleBorder(border).stateIndex = myComponent.state == CellState.ON ? 3 : 0;
+    StatefulBorder(border).stateIndex = myComponent.state == CellState.ON ? 3 : 0;
   }
 
   override protected function drawBorder2(w:Number, h:Number):void {

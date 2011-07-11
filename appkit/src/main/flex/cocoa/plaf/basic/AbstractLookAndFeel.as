@@ -52,16 +52,21 @@ public class AbstractLookAndFeel implements LookAndFeel {
     }
   }
 
-  public function getObject(key:String):Object {
+  public function getObject(key:String, nullable:Boolean = false):Object {
     var value:Object = data[key];
     if (value != null) {
       return value;
     }
     else if (_parent == null) {
-      throw new ArgumentError("Unknown " + key);
+      if (nullable) {
+        return null;
+      }
+      else {
+        throw new ArgumentError("Unknown " + key);
+      }
     }
     else {
-      return _parent.getObject(key);
+      return _parent.getObject(key, false);
     }
   }
 
@@ -184,6 +189,7 @@ public class AbstractLookAndFeel implements LookAndFeel {
         return null;
       }
       else {
+
         throw new ArgumentError("Unknown " + key);
       }
     }
