@@ -34,10 +34,6 @@ public class Sidebar extends Bar {
 
   override ui function segmentedControlAdded():void {
     super.segmentedControlAdded();
-
-    segmentedControl.selectedIndices = pendingSelectedIndices;
-    pendingSelectedIndices = null;
-
     segmentedControl.selectionChanged.add(paneLabelBarSelectionChanged);
   }
 
@@ -55,6 +51,15 @@ public class Sidebar extends Bar {
       skin.invalidateSize();
 
       paneGroup.includeInLayout = !collapsed;
+    }
+  }
+
+  override public function commitProperties():void {
+    super.commitProperties();
+
+    if (pendingSelectedIndices != null) {
+      segmentedControl.selectedIndices = pendingSelectedIndices;
+      pendingSelectedIndices = null;
     }
   }
 

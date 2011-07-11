@@ -25,7 +25,7 @@ public class SegmentedControlInteractor {
     segmentedControl = SegmentedControl(event.currentTarget);
 
     rendererManager = segmentedControl.rendererManager;
-    const itemIndex:int = rendererManager.getItemIndexAt(event.localX);
+    const itemIndex:int = rendererManager.getItemIndexAt(event.localX, event.localY);
     if (rendererManager.mouseSelectionMode == ItemMouseSelectionMode.DOWN) {
       segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex));
       
@@ -55,6 +55,8 @@ public class SegmentedControlInteractor {
     IEventDispatcher(event.currentTarget).removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
     if (itemInteractiveObject == null) {
+      var itemIndex:int = rendererManager.getItemIndexAt(event.localX, event.localY);
+      isOver = itemIndex == selectingItemIndex;
       segmentedControl.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
     }
     else {
@@ -100,7 +102,7 @@ public class SegmentedControlInteractor {
   }
 
   private function mouseMoveHandler(event:MouseEvent):void {
-    var itemIndex:int = rendererManager.getItemIndexAt(event.localX);
+    var itemIndex:int = rendererManager.getItemIndexAt(event.localX, event.localY);
     if (itemIndex == selectingItemIndex) {
       if (!isOver) {
         isOver = true;

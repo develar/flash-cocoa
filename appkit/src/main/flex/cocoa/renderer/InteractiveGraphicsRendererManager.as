@@ -60,5 +60,22 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   protected function drawEntry(itemIndex:int, shape:Shape, w:Number, h:Number):void {
 
   }
+
+  override public function getItemIndexAt(x:Number, y:Number):int {
+    if (x < 0 || x > _container.width) {
+      return -1;
+    }
+
+    var entry:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.head);
+    do {
+      if (x >= entry.displayObject.x && x <= (entry.displayObject.x + entry.displayObject.width) &&
+          y >= entry.displayObject.y && y <= (entry.displayObject.y + entry.displayObject.height)) {
+        return entry.itemIndex;
+      }
+    }
+    while ((entry = TextLineAndDisplayObjectEntry(entry.next)) != null);
+
+    return -1;
+  }
 }
 }

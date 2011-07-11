@@ -5,7 +5,6 @@ import cocoa.border.Scale1BitmapBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.TextFormatId;
 import cocoa.renderer.InteractiveGraphicsRendererManager;
-import cocoa.renderer.TextLineAndDisplayObjectEntry;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
@@ -44,24 +43,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
       frameInsets.right = isLast ? -2 : 0;
     }
 
-    var g:Graphics = shape.graphics;
-    draw(itemIndex, g, _lastCreatedRendererWidth, h, false, false);
-  }
-
-  override public function getItemIndexAt(x:Number):int {
-    if (x < 0 || x > _container.width) {
-      return -1;
-    }
-
-    var entry:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.head);
-    do {
-      if (x >= entry.displayObject.x && x <= (entry.displayObject.x + entry.displayObject.width)) {
-        return entry.itemIndex;
-      }
-    }
-    while ((entry = TextLineAndDisplayObjectEntry(entry.next)) != null);
-
-    return -1;
+    draw(itemIndex, shape.graphics, _lastCreatedRendererWidth, h, false, false);
   }
 
   private function draw(itemIndex:int, g:Graphics, w:Number, h:Number, selecting:Boolean, selected:Boolean):void {

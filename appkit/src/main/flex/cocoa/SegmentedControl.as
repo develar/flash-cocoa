@@ -14,7 +14,7 @@ import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
 public class SegmentedControl extends AbstractView implements Injectable {
-  public static function isEmpty(v:Vector.<int>):Boolean {
+  private static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
   }
 
@@ -218,7 +218,7 @@ public class SegmentedControl extends AbstractView implements Injectable {
       }
 
       if (_selectionChanged != null) {
-        _selectionChanged.dispatch(value ? null : new <int>[index], value ? new <int>[index] : null);
+        _selectionChanged.dispatch(value ? new <int>[index] : null, value ? null : new <int>[index]);
       }
     }
   }

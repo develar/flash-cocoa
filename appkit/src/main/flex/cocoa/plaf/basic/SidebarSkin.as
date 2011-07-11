@@ -1,6 +1,7 @@
 package cocoa.plaf.basic {
 import cocoa.Container;
 import cocoa.SegmentedControl;
+import cocoa.SelectionMode;
 import cocoa.layout.ListVerticalLayout;
 import cocoa.sidebar.SidebarLayout;
 
@@ -13,6 +14,7 @@ public class SidebarSkin extends AbstractSkin {
 
     if (tabBar == null) {
       tabBar = new SegmentedControl();
+      tabBar.mode = SelectionMode.ANY;
       tabBar.lafKey = component.lafKey +  ".tabBar";
 
       var tabBarLayout:ListVerticalLayout = new ListVerticalLayout();
@@ -46,7 +48,7 @@ public class SidebarSkin extends AbstractSkin {
     tabBar.x = w - 2 - 20;
 
     if (paneGroup.includeInLayout) {
-      paneGroup.setActualSize(w - 25, h);
+      paneGroup.setLayoutBoundsSize(w - 25, h);
     }
   }
 }
