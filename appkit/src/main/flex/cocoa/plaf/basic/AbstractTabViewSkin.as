@@ -84,7 +84,7 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    tabBar.setLayoutBoundsSize(NaN, NaN);
+    tabBar.setActualSize(w, tabBar.getExplicitOrMeasuredHeight());
     if (tabBarPlacement == Placement.PAGE_START_LINE_CENTER) {
       tabBar.x = Math.round((w - tabBar.getExplicitOrMeasuredWidth()) / 2);
     }

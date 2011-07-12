@@ -27,7 +27,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     super.setSelecting(itemIndex, value);
   }
 
-  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number):void {
+  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
     var frameInsets:FrameInsets = border.frameInsets;
 
     var isLast:Boolean = false;

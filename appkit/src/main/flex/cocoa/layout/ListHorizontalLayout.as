@@ -2,6 +2,8 @@ package cocoa.layout {
 import cocoa.AbstractView;
 
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
+  private var endX:Number;
+
   private var _height:Number;
   public function get height():Number {
     return _height;
@@ -21,8 +23,13 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
 
     }
     else if (_dataSource != null) {
+      endX = 0;
       initialDrawCells(w);
     }
+  }
+
+  override protected function itemAdded(item:Object, index:int):void {
+    drawCells(endX, index, index + 1, false, 10000);
   }
 
   private function initialDrawCells(w:Number):void {
@@ -43,18 +50,20 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     }
   }
 
-  private function drawCells(startX:Number, startItemIndex:int, endRowIndex:int, head:Boolean, w:Number):void {
-    endRowIndex = Math.min(endRowIndex, _dataSource.itemCount);
+  private function drawCells(startX:Number, startItemIndex:int, endItemIndex:int, head:Boolean, w:Number):void {
+    endItemIndex = Math.min(endItemIndex, _dataSource.itemCount);
 
     var x:Number = startX;
     var y:Number = 0;
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
-    while (x < w && itemIndex < _dataSource.itemCount) {
+    while (x < w && itemIndex < endItemIndex) {
       _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, NaN, _height);
       x += _rendererManager.lastCreatedRendererWidth + _gap;
     }
     _rendererManager.postLayout(true);
+
+    endX = x;
   }
 }
 }

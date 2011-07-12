@@ -20,7 +20,7 @@ public class TabView extends SingleSelectionBar {
 
   override protected function segmentedControlSelectionChanged(oldIndex:int, newIndex:int):void {
     var oldItem:PaneItem;
-    //  при удалении элемента, придет событие с его старым индексом, если он был ранее выделен
+    // при удалении элемента, придет событие с его старым индексом, если он был ранее выделен
     if (oldIndex != -1 && oldIndex < dataSource.itemCount) {
       oldItem = PaneItem(dataSource.getObjectValue(oldIndex));
     }

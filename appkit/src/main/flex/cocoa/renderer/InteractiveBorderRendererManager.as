@@ -61,7 +61,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
     }
   }
 
-  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number):void {
+  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
     if (border is StatefulBorder) {
       StatefulBorder(border).stateIndex = _selectionModel.isItemSelected(itemIndex) ? BorderStateIndex.ON : BorderStateIndex.OFF;
     }
@@ -91,7 +91,9 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
 
   private function drawOnInteract(itemIndex:int):void {
     var shape:Shape = Shape(TextLineAndDisplayObjectEntry(findEntry(itemIndex)).displayObject);
-    border.draw(shape.graphics, shape.width, shape.height);
+    var g:Graphics = shape.graphics;
+    g.clear();
+    border.draw(g, shape.width, shape.height);
   }
 
   override public function setSelected(itemIndex:int, value:Boolean):void {

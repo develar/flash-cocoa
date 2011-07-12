@@ -1,6 +1,7 @@
 package cocoa.layout {
 import cocoa.AbstractView;
 import cocoa.ListViewDataSource;
+import cocoa.ListViewModifiableDataSource;
 import cocoa.renderer.RendererManager;
 
 [Abstract]
@@ -23,15 +24,28 @@ internal class ListLayout {
       return;
     }
 
+    var modifiableDataSource:ListViewModifiableDataSource;
     if (_dataSource != null) {
       _dataSource.reset.remove(dataSourceResetHandler);
+
+      modifiableDataSource = _dataSource as ListViewModifiableDataSource;
+      if (modifiableDataSource != null) {
+        modifiableDataSource.itemAdded.remove(itemAdded);
+      }
     }
 
     _dataSource = value;
 
     if (_dataSource != null) {
       _dataSource.reset.add(dataSourceResetHandler);
+      modifiableDataSource = _dataSource as ListViewModifiableDataSource;
+      if (modifiableDataSource != null) {
+        modifiableDataSource.itemAdded.add(itemAdded);
+      }
     }
+  }
+
+  protected function itemAdded(item:Object, index:int):void {
   }
 
   protected var _gap:Number = 0;

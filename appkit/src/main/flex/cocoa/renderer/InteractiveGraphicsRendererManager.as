@@ -53,12 +53,12 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     shape.x = x;
     shape.y = y;
 
-    drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererWidth, h == h ? h : _lastCreatedRendererHeigth);
+    drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererWidth, h == h ? h : _lastCreatedRendererHeigth, x, y);
 
     return entry;
   }
 
-  protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number):void {
+  protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
 
   }
 

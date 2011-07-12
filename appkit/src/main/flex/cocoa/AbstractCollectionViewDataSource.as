@@ -39,7 +39,7 @@ public class AbstractCollectionViewDataSource {
   }
 
   public function addItem(item:Object):void {
-    addItemAt(item, length);
+    addItemAt(item, itemCount);
   }
 
   public function addItemAt(item:Object, index:int):void {
