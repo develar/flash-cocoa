@@ -13,7 +13,7 @@ import org.flyti.plexus.Injectable;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
-public class SegmentedControl extends AbstractView implements Injectable {
+public class SegmentedControl extends AbstractView implements Injectable, ListSelectionModel {
   private static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
   }
@@ -42,6 +42,10 @@ public class SegmentedControl extends AbstractView implements Injectable {
     if (rendererManager != null) {
       rendererManager.dataSource = value;
     }
+  }
+
+  public function get isSelectionEmpty():Boolean {
+    return mode == SelectionMode.ONE ? _selectedIndex == -1 : isEmpty(selectedIndices);
   }
 
   private var _selectedIndices:Vector.<int>;
@@ -86,12 +90,12 @@ public class SegmentedControl extends AbstractView implements Injectable {
       addedItems = value;
     }
 
-    for (i = 0, n = addedItems.length; i < n; i++) {
-      rendererManager.setSelected(addedItems[i], true);
-    }
-    for (i = 0, n = removedItems.length; i < n; i++) {
-      rendererManager.setSelected(removedItems[i], false);
-    }
+    //for (i = 0, n = addedItems.length; i < n; i++) {
+    //  rendererManager.setSelected(addedItems[i], true);
+    //}
+    //for (i = 0, n = removedItems.length; i < n; i++) {
+    //  rendererManager.setSelected(removedItems[i], false);
+    //}
 
     _selectedIndices = value;
 
@@ -156,6 +160,7 @@ public class SegmentedControl extends AbstractView implements Injectable {
 
     rendererManager.dataSource = dataSource;
     rendererManager.container = this;
+    rendererManager.selectionModel = this;
 
     layout.dataSource = dataSource;
     layout.rendererManager = rendererManager;
@@ -164,10 +169,6 @@ public class SegmentedControl extends AbstractView implements Injectable {
     SegmentedControlInteractor(laf.getFactory(_lafKey + ".interactor").newInstance()).register(this);
 
     super.createChildren();
-  }
-
-  override protected function commitProperties():void {
-    super.commitProperties();
   }
 
   override public function addChild(child:DisplayObject):DisplayObject {
@@ -188,20 +189,20 @@ public class SegmentedControl extends AbstractView implements Injectable {
     layout.updateDisplayList(w, h);
   }
 
-  public function setSelected(index:int, value:Boolean):void {
+  public function setSelected(index:int, value:Boolean, userInteraction:Boolean = false):void {
     if (mode == SelectionMode.ONE) {
       if (index == _selectedIndex) {
         return;
       }
 
-      if (_selectedIndex != -1) {
+      if (_selectedIndex != -1 && userInteraction) {
         rendererManager.setSelected(_selectedIndex, false);
       }
 
       var oldSelectedIndex:int = _selectedIndex;
       _selectedIndex = index;
 
-      if (_selectedIndex != -1) {
+      if (_selectedIndex != -1 && userInteraction) {
         rendererManager.setSelected(_selectedIndex, true);
       }
 
@@ -215,6 +216,10 @@ public class SegmentedControl extends AbstractView implements Injectable {
       }
       else {
         selectedIndices.splice(selectedIndices.indexOf(index), 1);
+      }
+
+      if (userInteraction) {
+        rendererManager.setSelected(index, value);
       }
 
       if (_selectionChanged != null) {

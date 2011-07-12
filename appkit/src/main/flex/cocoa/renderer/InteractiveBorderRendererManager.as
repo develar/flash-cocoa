@@ -1,9 +1,12 @@
 package cocoa.renderer {
 import cocoa.Border;
 import cocoa.TextLineInsets;
+import cocoa.border.BorderStateIndex;
+import cocoa.border.StatefulBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.TextFormatId;
 
+import flash.display.Graphics;
 import flash.display.Shape;
 import flash.text.engine.TextLine;
 import flash.text.engine.TextRotation;
@@ -11,9 +14,9 @@ import flash.text.engine.TextRotation;
 public class InteractiveBorderRendererManager extends InteractiveGraphicsRendererManager {
   private var border:Border;
   private var textLineInsets:TextLineInsets;
+  private var selectingItemIndex:int;
 
   public function InteractiveBorderRendererManager(laf:LookAndFeel, lafKey:String) {
-
     super(laf.getTextFormat(TextFormatId.SYSTEM), null);
 
     border = laf.getBorder(lafKey + ".b");
@@ -58,8 +61,51 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
     }
   }
 
-  override protected function drawEntry(itemIndex:int, shape:Shape, w:Number, h:Number):void {
-    border.draw(shape.graphics, w != w ? _lastCreatedRendererWidth : w, h != h ? _lastCreatedRendererHeigth : h);
+  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number):void {
+    if (border is StatefulBorder) {
+      StatefulBorder(border).stateIndex = _selectionModel.isItemSelected(itemIndex) ? BorderStateIndex.ON : BorderStateIndex.OFF;
+    }
+
+    border.draw(g, w != w ? _lastCreatedRendererWidth : w, h != h ? _lastCreatedRendererHeigth : h);
+  }
+
+  override public function setSelecting(itemIndex:int, value:Boolean):void {
+    if (!(border is StatefulBorder)) {
+      return;
+    }
+
+    if (selectingItemIndex == itemIndex && value) {
+      return;
+    }
+
+    selectingItemIndex = value ? itemIndex : -1;
+
+    if (_selectionModel.isItemSelected(itemIndex) && !value) {
+      return;
+    }
+
+    StatefulBorder(border).stateIndex = value ? BorderStateIndex.ON : BorderStateIndex.OFF;
+
+    drawOnInteract(itemIndex);
+  }
+
+  private function drawOnInteract(itemIndex:int):void {
+    var shape:Shape = Shape(TextLineAndDisplayObjectEntry(findEntry(itemIndex)).displayObject);
+    border.draw(shape.graphics, shape.width, shape.height);
+  }
+
+  override public function setSelected(itemIndex:int, value:Boolean):void {
+    if (!(border is StatefulBorder)) {
+      return;
+    }
+
+    if (selectingItemIndex == itemIndex && value) {
+      return;
+    }
+
+    selectingItemIndex = -1;
+    StatefulBorder(border).stateIndex = value ? BorderStateIndex.ON : BorderStateIndex.OFF;
+    drawOnInteract(itemIndex);
   }
 }
 }

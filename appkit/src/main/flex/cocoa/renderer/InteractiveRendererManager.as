@@ -1,4 +1,6 @@
 package cocoa.renderer {
+import cocoa.ListSelectionModel;
+
 import flash.display.InteractiveObject;
 
 public interface InteractiveRendererManager extends RendererManager {
@@ -10,5 +12,7 @@ public interface InteractiveRendererManager extends RendererManager {
   function getItemIndexAt(x:Number, y:Number):int;
 
   function getItemInteractiveObject(itemIndex:int):InteractiveObject;
+
+  function set selectionModel(selectionModel:ListSelectionModel):void;
 }
 }

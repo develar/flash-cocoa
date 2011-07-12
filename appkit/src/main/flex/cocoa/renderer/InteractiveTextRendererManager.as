@@ -1,6 +1,7 @@
 package cocoa.renderer {
 import cocoa.Insets;
 import cocoa.ItemMouseSelectionMode;
+import cocoa.ListSelectionModel;
 import cocoa.text.TextFormat;
 
 import flash.display.InteractiveObject;
@@ -32,6 +33,11 @@ public class InteractiveTextRendererManager extends TextRendererManager implemen
 
   public function getItemInteractiveObject(itemIndex:int):InteractiveObject {
     return null;
+  }
+
+  protected var _selectionModel:ListSelectionModel;
+  public function set selectionModel(value:ListSelectionModel):void {
+    _selectionModel = value;
   }
 }
 }

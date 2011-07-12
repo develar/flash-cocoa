@@ -55,6 +55,38 @@ public class TextRendererManager implements RendererManager {
     entryFactories[entryFactories.length] = entryFactory;
   }
 
+  public function findEntry(itemIndex:int):TextLineEntry {
+    var entry:TextLineEntry;
+    if (itemIndex < (_dataSource.itemCount >> 1)) {
+      entry = cells.head;
+      if (entry == null) {
+        return null;
+      }
+
+      do {
+        if (entry.itemIndex == itemIndex) {
+          return entry;
+        }
+      }
+      while ((entry = entry.next) != null);
+    }
+    else {
+      entry = cells.tail;
+      if (entry == null) {
+        return null;
+      }
+      
+      do {
+        if (entry.itemIndex == itemIndex) {
+          return entry;
+        }
+      }
+      while ((entry = entry.previous) != null);
+    }
+
+    return null;
+  }
+
   protected function createTextLine(textLineContainer:DisplayObjectContainer, itemIndex:int, w:Number):TextLine {
     return textLineRendererFactory.create(textLineContainer, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext, true, textRotation);
   }

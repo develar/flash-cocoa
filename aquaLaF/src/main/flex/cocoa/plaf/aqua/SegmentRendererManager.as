@@ -8,7 +8,6 @@ import cocoa.renderer.InteractiveGraphicsRendererManager;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
-import flash.display.Shape;
 
 public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
   private static const leftIndex:int = 0;
@@ -28,7 +27,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     super.setSelecting(itemIndex, value);
   }
 
-  override protected function drawEntry(itemIndex:int, shape:Shape, w:Number, h:Number):void {
+  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number):void {
     var frameInsets:FrameInsets = border.frameInsets;
 
     var isLast:Boolean = false;
@@ -43,7 +42,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
       frameInsets.right = isLast ? -2 : 0;
     }
 
-    draw(itemIndex, shape.graphics, _lastCreatedRendererWidth, h, false, false);
+    draw(itemIndex, g, _lastCreatedRendererWidth, h, false, false);
   }
 
   private function draw(itemIndex:int, g:Graphics, w:Number, h:Number, selecting:Boolean, selected:Boolean):void {

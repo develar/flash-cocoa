@@ -3,6 +3,7 @@ import cocoa.Insets;
 import cocoa.text.TextFormat;
 
 import flash.display.DisplayObjectContainer;
+import flash.display.Graphics;
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.text.engine.TextLine;
@@ -52,12 +53,12 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     shape.x = x;
     shape.y = y;
 
-    drawEntry(itemIndex, shape, w == w ? w : _lastCreatedRendererWidth, h == h ? h : _lastCreatedRendererHeigth);
+    drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererWidth, h == h ? h : _lastCreatedRendererHeigth);
 
     return entry;
   }
 
-  protected function drawEntry(itemIndex:int, shape:Shape, w:Number, h:Number):void {
+  protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number):void {
 
   }
 

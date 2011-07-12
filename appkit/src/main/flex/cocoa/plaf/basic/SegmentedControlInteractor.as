@@ -11,7 +11,7 @@ import flash.events.MouseEvent;
 public class SegmentedControlInteractor {
   private var rendererManager:InteractiveRendererManager;
   private var itemInteractiveObject:InteractiveObject;
-  private var selectingItemIndex:int;
+  private var selectingItemIndex:int = -1;
 
   private var isOver:Boolean;
 
@@ -27,7 +27,7 @@ public class SegmentedControlInteractor {
     rendererManager = segmentedControl.rendererManager;
     const itemIndex:int = rendererManager.getItemIndexAt(event.localX, event.localY);
     if (rendererManager.mouseSelectionMode == ItemMouseSelectionMode.DOWN) {
-      segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex));
+      segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex), true);
       
       segmentedControl = null;
       rendererManager = null;
@@ -40,11 +40,12 @@ public class SegmentedControlInteractor {
 
       itemInteractiveObject = rendererManager.getItemInteractiveObject(itemIndex);
       if (itemInteractiveObject != null) {
-        itemInteractiveObject.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-        itemInteractiveObject.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+        itemInteractiveObject.addEventListener(MouseEvent.MOUSE_OVER, itemMouseOverHandler);
+        itemInteractiveObject.addEventListener(MouseEvent.MOUSE_OUT, itemMouseOutHandler);
       }
       else {
         segmentedControl.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+        segmentedControl.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
       }
     }
 
@@ -58,10 +59,11 @@ public class SegmentedControlInteractor {
       var itemIndex:int = rendererManager.getItemIndexAt(event.localX, event.localY);
       isOver = itemIndex == selectingItemIndex;
       segmentedControl.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+      segmentedControl.removeEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
     }
     else {
-      itemInteractiveObject.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-      itemInteractiveObject.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+      itemInteractiveObject.removeEventListener(MouseEvent.MOUSE_OVER, itemMouseOverHandler);
+      itemInteractiveObject.removeEventListener(MouseEvent.MOUSE_OUT, itemMouseOutHandler);
       isOver = itemInteractiveObject == event.target;
     }
 
@@ -72,14 +74,11 @@ public class SegmentedControlInteractor {
           rendererManager.setSelecting(selectingItemIndex, false);
         }
         else {
-          segmentedControl.setSelected(selectingItemIndex, false);
+          segmentedControl.setSelected(selectingItemIndex, false, true);
         }
       }
-      else if (segmentedControl.mode == SelectionMode.ONE) {
-        segmentedControl.selectedIndex = selectingItemIndex;
-      }
       else {
-        segmentedControl.setSelected(selectingItemIndex, true);
+        segmentedControl.setSelected(selectingItemIndex, segmentedControl.mode == SelectionMode.ONE ? true : !wasSelected, true);
       }
 
       event.updateAfterEvent();
@@ -91,14 +90,21 @@ public class SegmentedControlInteractor {
     selectingItemIndex = -1;
   }
 
-  private function mouseOverHandler(event:MouseEvent):void {
+  private function itemMouseOverHandler(event:MouseEvent):void {
     rendererManager.setSelecting(selectingItemIndex, true);
     event.updateAfterEvent();
   }
 
-  private function mouseOutHandler(event:MouseEvent):void {
+  private function itemMouseOutHandler(event:MouseEvent):void {
     rendererManager.setSelecting(selectingItemIndex, false);
     event.updateAfterEvent();
+  }
+
+  private function rollOutHandler(event:MouseEvent):void {
+    if (isOver) {
+      isOver = false;
+      itemMouseOutHandler(event);
+    }
   }
 
   private function mouseMoveHandler(event:MouseEvent):void {
@@ -106,12 +112,12 @@ public class SegmentedControlInteractor {
     if (itemIndex == selectingItemIndex) {
       if (!isOver) {
         isOver = true;
-        mouseOverHandler(event);
+        itemMouseOverHandler(event);
       }
     }
     else if (isOver) {
       isOver = false;
-      mouseOutHandler(event);
+      itemMouseOutHandler(event);
     }
   }
 }

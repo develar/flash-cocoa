@@ -45,7 +45,7 @@ public class Sidebar extends Bar {
       showPanes(added, true);
     }
 
-    if (collapsed != isEmpty(segmentedControl.selectedIndices)) {
+    if (collapsed != segmentedControl.isSelectionEmpty) {
       collapsed = !collapsed;
 
       skin.invalidateSize();
@@ -61,10 +61,6 @@ public class Sidebar extends Bar {
       segmentedControl.selectedIndices = pendingSelectedIndices;
       pendingSelectedIndices = null;
     }
-  }
-
-  public static function isEmpty(v:Vector.<int>):Boolean {
-    return v == null || v.length == 0;
   }
 
   private function showPanes(indices:Vector.<int>, show:Boolean):void {
