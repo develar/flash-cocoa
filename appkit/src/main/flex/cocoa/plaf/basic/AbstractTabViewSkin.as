@@ -4,7 +4,6 @@ import cocoa.Insets;
 import cocoa.SegmentedControl;
 import cocoa.Viewable;
 import cocoa.layout.AdvancedLayout;
-import cocoa.layout.ListHorizontalLayout;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
 
@@ -36,9 +35,6 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
       tabBar = new SegmentedControl();
       const tabBarLafKey:String = component.lafKey + ".tabBar";
       tabBar.lafKey = tabBarLafKey;
-      var layout:ListHorizontalLayout = new ListHorizontalLayout();
-      layout.gap = laf.getInt(tabBarLafKey + ".gap");
-      tabBar.layout = layout;
 
       tabBarPlacement = laf.getInt(tabBarLafKey + ".placement");
       addChild(tabBar);

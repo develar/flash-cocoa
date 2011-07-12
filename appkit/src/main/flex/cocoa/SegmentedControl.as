@@ -14,8 +14,19 @@ import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
 public class SegmentedControl extends AbstractView implements Injectable, ListSelectionModel {
+  public var stupidMxmlId:String;
+
   private static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
+  }
+
+  public function get hidden():Boolean {
+    return !visible && !includeInLayout;
+  }
+
+  public function set hidden(value:Boolean):void {
+    visible = !value;
+    includeInLayout = !value;
   }
 
   private var _mode:int = SelectionMode.ONE;
@@ -147,11 +158,12 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
   }
 
   override protected function createChildren():void {
+    var laf:LookAndFeel = LookAndFeelUtil.find(parent);
     if (layout == null) {
       layout = new ListHorizontalLayout();
+      layout.gap = laf.getInt(_lafKey + ".gap");
     }
 
-    var laf:LookAndFeel = LookAndFeelUtil.find(parent);
     var rendererManager:InteractiveRendererManager = this.rendererManager;
     if (rendererManager == null) {
       rendererManager = laf.getFactory(_lafKey + ".rendererManager").newInstance();

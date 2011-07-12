@@ -17,8 +17,6 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
   private var selectingItemIndex:int;
 
   public function InteractiveBorderRendererManager(laf:LookAndFeel, lafKey:String) {
-    super(laf.getTextFormat(TextFormatId.SYSTEM), null);
-
     border = laf.getBorder(lafKey + ".b");
     textLineInsets = TextLineInsets(laf.getObject(lafKey + ".textLineInsets"));
     if (textLineInsets != null) {

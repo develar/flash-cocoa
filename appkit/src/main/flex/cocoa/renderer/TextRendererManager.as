@@ -1,6 +1,9 @@
 package cocoa.renderer {
 import cocoa.Insets;
 import cocoa.ListViewDataSource;
+import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelUtil;
+import cocoa.plaf.TextFormatId;
 import cocoa.text.TextFormat;
 import cocoa.text.TextLineRendererFactory;
 
@@ -21,7 +24,7 @@ public class TextRendererManager implements RendererManager {
 
   protected var textRotation:String;
 
-  public function TextRendererManager(textFormat:TextFormat, textInsets:Insets) {
+  public function TextRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     textLineRendererFactory = TextLineRendererFactory.instance;
     this.textInsets = textInsets;
     this.textFormat = textFormat;
@@ -45,6 +48,11 @@ public class TextRendererManager implements RendererManager {
   protected var _container:DisplayObjectContainer;
   public function set container(value:DisplayObjectContainer):void {
     _container = value;
+
+    if (textFormat == null) {
+      var laf:LookAndFeel = LookAndFeelUtil.find(_container);
+      textFormat = laf.getTextFormat(laf.controlSize == "small" ? TextFormatId.SMALL_SYSTEM : TextFormatId.SYSTEM);
+    }
   }
 
   protected function registerEntryFactory(entryFactory:EntryFactory):void {
@@ -92,7 +100,7 @@ public class TextRendererManager implements RendererManager {
   }
 
   protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(_container, itemIndex, w);
+    var line:TextLine = createTextLine(_container, itemIndex, w == w ? w : 1000000);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 

@@ -24,7 +24,7 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     }
     else if (_dataSource != null) {
       endX = 0;
-      initialDrawCells(w);
+      initialDrawCells(w == 0 ? 100000 : w);
     }
   }
 
@@ -64,6 +64,8 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     _rendererManager.postLayout(true);
 
     endX = x;
+
+    _container.measuredWidth = x - _gap;
   }
 }
 }

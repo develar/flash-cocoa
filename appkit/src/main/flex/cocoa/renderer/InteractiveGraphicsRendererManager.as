@@ -13,7 +13,7 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   protected var textLineContainer:Sprite;
   protected var factory:TextLineAndDisplayObjectEntryFactory;
 
-  public function InteractiveGraphicsRendererManager(textFormat:TextFormat, textInsets:Insets) {
+  public function InteractiveGraphicsRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);
 
     factory = new TextLineAndDisplayObjectEntryFactory(Shape, true);

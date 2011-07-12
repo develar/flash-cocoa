@@ -103,6 +103,9 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
       var component:Component = Component(view);
       view = component.skin == null ? component.createView(_laf) : component.skin;
     }
+    else if (view is SegmentedControl) {
+      dispatchEvent(new InjectorEvent(view, SegmentedControl(view).stupidMxmlId));
+    }
     else if (view is Injectable || (view is GroupBase && GroupBase(view).id != null)) {
       dispatchEvent(new InjectorEvent(view));
     }

@@ -91,7 +91,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TabView"] = TabViewSkin;
     data["TabView.borderless"] = BorderlessTabViewSkin;
     data["Sidebar.tabBar.interactor"] = data["SegmentedControl.interactor"] = data["TabView.tabBar.interactor"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlInteractor);
-    data["TabView.tabBar.gap"] = 1;
+    data["TabView.tabBar.gap"] = data["SegmentedControl.gap"] = 1;
     data["TabView.tabBar.placement"] = Placement.PAGE_START_LINE_CENTER;
 
     data["Sidebar"] = SidebarSkin;

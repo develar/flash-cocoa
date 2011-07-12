@@ -7,7 +7,7 @@ import cocoa.text.TextFormat;
 import flash.display.InteractiveObject;
 
 public class InteractiveTextRendererManager extends TextRendererManager implements InteractiveRendererManager {
-  public function InteractiveTextRendererManager(textFormat:TextFormat, textInsets:Insets) {
+  public function InteractiveTextRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);
   }
 
