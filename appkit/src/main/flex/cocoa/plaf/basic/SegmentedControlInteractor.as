@@ -24,8 +24,14 @@ public class SegmentedControlInteractor {
   private function mouseDownHandler(event:MouseEvent):void {
     segmentedControl = SegmentedControl(event.currentTarget);
 
+    const itemIndex:int = segmentedControl.rendererManager.getItemIndexAt(event.localX, event.localY);
+    if (itemIndex == -1) {
+      segmentedControl = null;
+      return;
+    }
+
     rendererManager = segmentedControl.rendererManager;
-    const itemIndex:int = rendererManager.getItemIndexAt(event.localX, event.localY);
+
     if (rendererManager.mouseSelectionMode == ItemMouseSelectionMode.DOWN) {
       segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex), true);
       

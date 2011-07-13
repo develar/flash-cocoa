@@ -4,6 +4,7 @@ import cocoa.FrameInsets;
 import cocoa.Insets;
 import cocoa.SingletonClassFactory;
 import cocoa.border.LinearGradientBorder;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
 import cocoa.plaf.RendererManagerFactory;
@@ -34,6 +35,10 @@ import flashx.textLayout.formats.LineBreak;
 public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
+
+  private var windowFrameLookAndFeel:WindowFrameLookAndFeel;
+  private var windowFrameSmalLookAndFeel:WindowFrameSmallLookAndFeel;
+  private var panelLookAndFeel:PanelLookAndFeel;
 
   public function AquaLookAndFeel() {
     initialize();
@@ -140,16 +145,20 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
   }
 
-  private var windowFrameLookAndFeel:WindowFrameLookAndFeel;
-
-  public function createWindowFrameLookAndFeel():WindowFrameLookAndFeel {
+  public function createWindowFrameLookAndFeel(small:Boolean = false):LookAndFeel {
     if (windowFrameLookAndFeel == null) {
-      windowFrameLookAndFeel = new WindowFrameLookAndFeel(this);
+      windowFrameLookAndFeel = new WindowFrameLookAndFeel(this, small);
     }
+
+    if (small) {
+      if (windowFrameSmalLookAndFeel == null) {
+        windowFrameSmalLookAndFeel = new WindowFrameSmallLookAndFeel(windowFrameLookAndFeel);
+      }
+      return windowFrameSmalLookAndFeel;
+    }
+
     return windowFrameLookAndFeel;
   }
-
-  private var panelLookAndFeel:PanelLookAndFeel;
   
   public function createPanelLookAndFeel():PanelLookAndFeel {
     if (panelLookAndFeel == null) {
@@ -176,6 +185,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 }
 
 import cocoa.Insets;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -213,7 +223,10 @@ final class WindowFrameLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/frameAssets", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
 
-  public function WindowFrameLookAndFeel(parent:AquaLookAndFeel) {
+  private var small:Boolean;
+
+  public function WindowFrameLookAndFeel(parent:AquaLookAndFeel, small:Boolean) {
+    this.small = small;
     initialize();
     this.parent = parent;
   }
@@ -222,7 +235,22 @@ final class WindowFrameLookAndFeel extends AbstractLookAndFeel {
     LookAndFeelUtil.initAssets(data, assetsDataClass);
     assetsDataClass = null;
   }
+
+  override public function get controlSize():String {
+    return small ? "small" : null;
+  }
 }
+
+final class WindowFrameSmallLookAndFeel extends AbstractLookAndFeel {
+  public function WindowFrameSmallLookAndFeel(parent:LookAndFeel) {
+    this.parent = parent;
+  }
+
+  override public function get controlSize():String {
+    return "small";
+  }
+}
+
 
 final class HUDLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="../../../../../../target/hudAssets", mimeType="application/octet-stream")]

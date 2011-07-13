@@ -1,5 +1,6 @@
 package cocoa.plaf.aqua {
 import cocoa.BorderedContainer;
+import cocoa.Toolbar;
 import cocoa.layout.BarLayout;
 import cocoa.plaf.basic.BoxSkin;
 
@@ -17,7 +18,7 @@ public class ToolbarSkin extends BoxSkin {
 
     BorderedContainer(contentGroup).border = getNullableBorder();
     contentGroup.mouseEnabled = false;
-    contentGroup.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel();
+    contentGroup.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(component).small);
     component.uiPartAdded("contentGroup", contentGroup);
 
     if (contentGroup.layout == null) {

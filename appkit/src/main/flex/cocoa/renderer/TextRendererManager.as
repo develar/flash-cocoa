@@ -30,6 +30,10 @@ public class TextRendererManager implements RendererManager {
     this.textFormat = textFormat;
   }
 
+  protected function get textLineContainer():DisplayObjectContainer {
+    return _container;
+  }
+
   protected var _lastCreatedRendererWidth:Number;
   public function get lastCreatedRendererWidth():Number {
     return _lastCreatedRendererWidth;
@@ -95,12 +99,12 @@ public class TextRendererManager implements RendererManager {
     return null;
   }
 
-  protected function createTextLine(textLineContainer:DisplayObjectContainer, itemIndex:int, w:Number):TextLine {
+  protected function createTextLine(itemIndex:int, w:Number):TextLine {
     return textLineRendererFactory.create(textLineContainer, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext, true, textRotation);
   }
 
   protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(_container, itemIndex, w == w ? w : 1000000);
+    var line:TextLine = createTextLine(itemIndex, w == w ? w : 1000000);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -145,7 +149,7 @@ public class TextRendererManager implements RendererManager {
       }
     }
 
-    textLineRendererFactory.reuse(_container, cells, itemCountDelta, finalPass);
+    textLineRendererFactory.reuse(textLineContainer, cells, itemCountDelta, finalPass);
 
     if (finalPass && entryFactories != null) {
       clearOurPools();
@@ -160,7 +164,7 @@ public class TextRendererManager implements RendererManager {
 
   public function postLayout(finalPass:Boolean):void {
     if (finalPass) {
-      textLineRendererFactory.postLayout(_container);
+      textLineRendererFactory.postLayout(textLineContainer);
     }
 
     previousEntry = null;

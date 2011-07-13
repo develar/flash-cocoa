@@ -10,7 +10,6 @@ import flash.text.engine.TextLine;
 
 [Abstract]
 public class InteractiveGraphicsRendererManager extends InteractiveTextRendererManager {
-  protected var textLineContainer:Sprite;
   protected var factory:TextLineAndDisplayObjectEntryFactory;
 
   public function InteractiveGraphicsRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
@@ -21,13 +20,18 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     registerEntryFactory(factory);
   }
 
+  protected var _textLineContainer:Sprite;
+  override protected function get textLineContainer():DisplayObjectContainer {
+    return _textLineContainer;
+  }
+
   override public function set container(value:DisplayObjectContainer):void {
     super.container = value;
 
     if (textLineContainer == null) {
-      textLineContainer = new Sprite();
-      textLineContainer.mouseEnabled = false;
-      textLineContainer.mouseChildren = false;
+      _textLineContainer = new Sprite();
+      _textLineContainer.mouseEnabled = false;
+      _textLineContainer.mouseChildren = false;
     }
 
     value.addChild(textLineContainer);
@@ -38,7 +42,7 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   }
 
   override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(textLineContainer, itemIndex, 1000000 /* this renderer manager is not bounded */);
+    var line:TextLine = createTextLine(itemIndex, 1000000 /* this renderer manager is not bounded */);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -63,18 +67,32 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   }
 
   override public function getItemIndexAt(x:Number, y:Number):int {
-    if (x < 0 || x > _container.width) {
+    var entry:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.head);
+    var tail:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.tail);
+    const totalWidth:Number = tail.displayObject.x + tail.displayObject.width;
+    if (x < entry.displayObject.x || x > totalWidth) {
       return -1;
     }
 
-    var entry:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.head);
-    do {
-      if (x >= entry.displayObject.x && x <= (entry.displayObject.x + entry.displayObject.width) &&
-          y >= entry.displayObject.y && y <= (entry.displayObject.y + entry.displayObject.height)) {
-        return entry.itemIndex;
+    if (x < (totalWidth >> 1)) {
+      do {
+        if (x >= entry.displayObject.x && x <= (entry.displayObject.x + entry.displayObject.width) &&
+            y >= entry.displayObject.y && y <= (entry.displayObject.y + entry.displayObject.height)) {
+          return entry.itemIndex;
+        }
       }
+      while ((entry = TextLineAndDisplayObjectEntry(entry.next)) != null);
     }
-    while ((entry = TextLineAndDisplayObjectEntry(entry.next)) != null);
+    else {
+      entry = tail;
+      do {
+        if (x >= entry.displayObject.x && x <= (entry.displayObject.x + entry.displayObject.width) &&
+            y >= entry.displayObject.y && y <= (entry.displayObject.y + entry.displayObject.height)) {
+          return entry.itemIndex;
+        }
+      }
+      while ((entry = TextLineAndDisplayObjectEntry(entry.previous)) != null);
+    }
 
     return -1;
   }

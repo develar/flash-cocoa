@@ -1,5 +1,4 @@
-package cocoa
-{
+package cocoa {
 import flash.events.Event;
 import flash.utils.Dictionary;
 
@@ -8,72 +7,54 @@ import spark.layouts.supportClasses.LayoutBase;
 use namespace ui;
 
 [DefaultProperty("mxmlContent")]
-public class Box extends AbstractComponent implements ViewContainerProvider
-{
-	protected static const _skinParts:Dictionary = new Dictionary();
-	_skinParts.contentGroup = 0;
-	override protected function get skinParts():Dictionary
-	{
-		return _skinParts;
-	}
+public class Box extends AbstractComponent implements ViewContainerProvider {
+  protected static const _skinParts:Dictionary = new Dictionary();
+  _skinParts.contentGroup = 0;
+  override protected function get skinParts():Dictionary {
+    return _skinParts;
+  }
 
-	ui var contentGroup:Container;
+  ui var contentGroup:Container;
 
-	public function Box()
-	{
-		super();
+  private var _elements:Array;
 
-		listenResourceChange();
-	}
+  override protected function get primaryLaFKey():String {
+    return "Box";
+  }
 
-	private var _elements:Array;
+  public function set mxmlContent(value:Array):void {
+    _elements = value;
+  }
 
-	override protected function get primaryLaFKey():String
-	{
-		return "Box";
-	}
+  private var _layout:LayoutBase;
+  public function set layout(value:LayoutBase):void {
+    _layout = value;
+  }
 
-	public function set mxmlContent(value:Array):void
-	{
-		_elements = value;
-	}
+  ui function contentGroupAdded():void {
+    if (_layout != null) {
+      contentGroup.layout = _layout;
+    }
 
-	private var _layout:LayoutBase;
-	public function set layout(value:LayoutBase):void
-    {
-		_layout = value;
-	}
+    contentGroup.subviews = _elements;
+  }
 
-	ui function contentGroupAdded():void
-	{
-		if (_layout != null)
-		{
-			contentGroup.layout = _layout;
-		}
+  protected var _resourceBundle:String;
+  public function set resourceBundle(value:String):void {
+    _resourceBundle = value;
+  }
 
-		contentGroup.subviews = _elements;
-	}
+  [Bindable(event="lChanged")]
+  public function l(key:String):String {
+    return _resourceBundle == null ? null : resourceManager.getString(_resourceBundle, key);
+  }
 
-	protected var _resourceBundle:String;
-	public function set resourceBundle(value:String):void
-	{
-		_resourceBundle = value;
-	}
+  override protected function resourcesChanged():void {
+    dispatchEvent(new Event("lChanged"));
+  }
 
-	[Bindable(event="lChanged")]
-	public function l(key:String):String
-	{
-		return _resourceBundle == null ? null : resourceManager.getString(_resourceBundle, key);
-	}
-
-	override protected function resourcesChanged():void
-    {
-    	dispatchEvent(new Event("lChanged"));
-	}
-
-	public function get viewContainer():ViewContainer
-	{
-		return contentGroup;
-	}
+  public function get viewContainer():ViewContainer {
+    return contentGroup;
+  }
 }
 }
