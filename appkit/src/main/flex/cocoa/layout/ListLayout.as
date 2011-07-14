@@ -31,6 +31,7 @@ internal class ListLayout {
       modifiableDataSource = _dataSource as ListViewModifiableDataSource;
       if (modifiableDataSource != null) {
         modifiableDataSource.itemAdded.remove(itemAdded);
+        modifiableDataSource.itemRemoved.remove(itemRemoved);
       }
     }
 
@@ -41,8 +42,14 @@ internal class ListLayout {
       modifiableDataSource = _dataSource as ListViewModifiableDataSource;
       if (modifiableDataSource != null) {
         modifiableDataSource.itemAdded.add(itemAdded);
+        // currently, just reset
+        modifiableDataSource.itemRemoved.add(itemRemoved);
       }
     }
+  }
+
+  protected function itemRemoved(item:Object, index:int):void {
+    dataSourceResetHandler();
   }
 
   protected function itemAdded(item:Object, index:int):void {

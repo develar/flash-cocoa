@@ -46,12 +46,35 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
       return;
     }
 
+    var modifiableDataSource:ListViewModifiableDataSource = _dataSource as ListViewModifiableDataSource;
+    if (modifiableDataSource != null) {
+      modifiableDataSource.itemRemoved.remove(itemRemoved);
+    }
+
     _dataSource = value;
+
+    if ((modifiableDataSource = _dataSource as ListViewModifiableDataSource) != null) {
+      modifiableDataSource.itemRemoved.add(itemRemoved);
+    }
+
     if (layout != null) {
       layout.dataSource = value;
     }
     if (rendererManager != null) {
       rendererManager.dataSource = value;
+    }
+  }
+
+  private function itemRemoved(item:Object, index:int):void {
+    if (!isItemSelected(index)) {
+      return;
+    }
+    
+    if (mode == SelectionMode.ONE) {
+      selectedIndex = -1;
+    }
+    else if (isItemSelected(index)) {
+      setSelected(index, false);
     }
   }
 
