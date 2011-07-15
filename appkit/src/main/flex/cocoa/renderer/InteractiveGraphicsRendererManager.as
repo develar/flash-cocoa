@@ -10,12 +10,14 @@ import flash.text.engine.TextLine;
 
 [Abstract]
 public class InteractiveGraphicsRendererManager extends InteractiveTextRendererManager {
-  protected var factory:TextLineAndDisplayObjectEntryFactory;
+  protected static var factory:TextLineAndDisplayObjectEntryFactory;
 
   public function InteractiveGraphicsRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);
 
-    factory = new TextLineAndDisplayObjectEntryFactory(Shape, true);
+    if (factory == null) {
+      factory = new TextLineAndDisplayObjectEntryFactory(Shape, true);
+    }
 
     registerEntryFactory(factory);
   }
@@ -42,7 +44,7 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   }
 
   override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(itemIndex, 1000000 /* this renderer manager is not bounded */);
+    var line:TextLine = createTextLine(itemIndex, w == w ? w : 10000);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -56,9 +58,7 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
 
     shape.x = x;
     shape.y = y;
-
     drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererWidth, h == h ? h : _lastCreatedRendererHeigth, x, y);
-
     return entry;
   }
 

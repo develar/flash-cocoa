@@ -4,7 +4,7 @@ import cocoa.ListViewDataSource;
 import cocoa.renderer.RendererManager;
 
 public interface CollectionLayout {
-  function measure(target:AbstractView):void;
+  function measure():void;
 
   function updateDisplayList(w:Number, h:Number):void;
 

@@ -4,7 +4,6 @@ import cocoa.TextLineInsets;
 import cocoa.border.BorderStateIndex;
 import cocoa.border.StatefulBorder;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.TextFormatId;
 
 import flash.display.Graphics;
 import flash.display.Shape;

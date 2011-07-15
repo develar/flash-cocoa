@@ -104,7 +104,7 @@ public class TextRendererManager implements RendererManager {
   }
 
   protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(itemIndex, w == w ? w : 1000000);
+    var line:TextLine = createTextLine(itemIndex, w == w ? w : 10000);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -162,7 +162,7 @@ public class TextRendererManager implements RendererManager {
     }
   }
 
-  public function postLayout(finalPass:Boolean):void {
+  public function postLayout(finalPass:Boolean = true):void {
     if (finalPass) {
       textLineRendererFactory.postLayout(textLineContainer);
     }

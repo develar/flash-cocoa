@@ -12,7 +12,7 @@ public interface RendererManager {
    */
   function reuse(itemCountDelta:int, finalPass:Boolean):void;
 
-  function postLayout(finalPass:Boolean):void;
+  function postLayout(finalPass:Boolean = true):void;
 
   function set container(container:DisplayObjectContainer):void;
 

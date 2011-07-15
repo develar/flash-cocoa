@@ -217,7 +217,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
   }
 
   override protected function measure():void {
-    layout.measure(this);
+    layout.measure();
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {

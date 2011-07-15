@@ -23,7 +23,7 @@ public class CollectionViewSkin extends AbstractSkin {
   }
 
   override protected function measure():void {
-    CollectionView(component).layout.measure(this);
+    CollectionView(component).layout.measure();
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {

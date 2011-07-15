@@ -1121,9 +1121,9 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
   public function validateSize(recursive:Boolean = false):void {
     if (recursive) {
+      var child:ILayoutManagerClient;
       for (var i:int = 0, n:int = numChildren; i < n; i++) {
-        var child:ILayoutManagerClient = getChildAt(i) as ILayoutManagerClient;
-        if (child != null) {
+        if ((child = getChildAt(i) as ILayoutManagerClient) != null) {
           child.validateSize(true);
         }
       }

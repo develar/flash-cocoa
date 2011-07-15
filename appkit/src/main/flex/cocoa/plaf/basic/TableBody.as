@@ -145,7 +145,7 @@ public class TableBody extends ListBody {
     }
     else if (removedRowCountDelta != 0) {
       for (columnIndex = 0; columnIndex < columns.length; columnIndex++) {
-        columns[columnIndex].rendererManager.postLayout(false);
+        columns[columnIndex].rendererManager.postLayout();
       }
     }
   }
