@@ -1,12 +1,11 @@
 <ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" xmlns:s="library://ns.adobe.com/flex/spark"
-                        xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*" xmlns:layout="cocoa.layout.*">
+                        xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*">
   <fx:Script><![CDATA[
     import cocoa.Insets;
-    import cocoa.renderer.InteractiveTextRendererManager;
     import cocoa.plaf.TextFormatId;
+    import cocoa.renderer.TextRendererManager;
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TableColumnImpl;
-    import cocoa.renderer.TextRendererManager;
     import cocoa.util.FileUtil;
 
     override protected function preInitialize():void {
@@ -63,10 +62,6 @@
       <!--</layout>-->
     <!--</SegmentedControl>-->
 
-    <SegmentedControl id="elementTreeBar" width="100%">
-      <layout>
-        <layout:ListHorizontalLayout id="chl" height="20"/>
-      </layout>
-    </SegmentedControl>
+    <SegmentedControl id="elementTreeBar" width="100%"/>
   </Container>
 </ac:WindowedApplication>

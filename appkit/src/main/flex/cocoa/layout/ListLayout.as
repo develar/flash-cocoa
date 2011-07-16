@@ -2,20 +2,33 @@ package cocoa.layout {
 import cocoa.AbstractView;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
+import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
 
 [Abstract]
 internal class ListLayout {
   protected var visibleItemCount:int = -1;
+  protected var pendingAddedIndices:Vector.<int>;
 
   protected var _container:AbstractView;
   public function set container(value:AbstractView):void {
     _container = value;
   }
 
+  protected var _dimension:Number;
+  public function get dimension():Number {
+    return _dimension;
+  }
+  public function set dimension(value:Number):void {
+    _dimension = value;
+  }
+
   protected var _rendererManager:RendererManager;
   public function set rendererManager(value:RendererManager):void {
     _rendererManager = value;
+    if (_rendererManager is InteractiveRendererManager) {
+      InteractiveRendererManager(_rendererManager).fixedRendererDimension = _dimension;
+    }
   }
 
   protected var _dataSource:ListViewDataSource;
@@ -53,6 +66,16 @@ internal class ListLayout {
   }
 
   protected function itemAdded(item:Object, index:int):void {
+    // not yet drawn
+    if (visibleItemCount > -1) {
+      if (pendingAddedIndices == null) {
+        pendingAddedIndices = new Vector.<int>();
+      }
+
+      pendingAddedIndices.push(index);
+    }
+
+    _container.invalidateSize();
   }
 
   protected var _gap:Number = 0;
@@ -60,9 +83,19 @@ internal class ListLayout {
     _gap = value;
   }
 
+  public function setSelected(itemIndex:int, value:Boolean):void {
+    if (visibleItemCount > 0 && itemIndex < visibleItemCount) {
+      InteractiveRendererManager(_rendererManager).setSelected(itemIndex, value);
+    }
+  }
+
   private function dataSourceReset():void {
-    if (visibleItemCount != -1) {
+    if (visibleItemCount > -1) {
       visibleItemCount = -visibleItemCount - 1;
+    }
+
+    if (pendingAddedIndices != null) {
+      pendingAddedIndices.length = 0;
     }
 
     _container.invalidateSize();

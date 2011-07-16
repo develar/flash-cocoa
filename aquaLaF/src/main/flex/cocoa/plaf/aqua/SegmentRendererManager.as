@@ -5,9 +5,11 @@ import cocoa.border.Scale1BitmapBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.TextFormatId;
 import cocoa.renderer.InteractiveGraphicsRendererManager;
+import cocoa.renderer.TextLineAndDisplayObjectEntry;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
+import flash.display.Shape;
 
 public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
   private static const leftIndex:int = 0;
@@ -23,38 +25,31 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     super(laf.getTextFormat(TextFormatId.SYSTEM), border.contentInsets);
   }
 
-  override public function setSelecting(itemIndex:int, value:Boolean):void {
-    super.setSelecting(itemIndex, value);
+  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
+    draw(itemIndex, g, _lastCreatedRendererDimension, h, false, _selectionModel.isItemSelected(itemIndex));
   }
 
-  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
-    var frameInsets:FrameInsets = border.frameInsets;
+  private function draw(itemIndex:int, g:Graphics, w:Number, h:Number, selecting:Boolean, selected:Boolean):void {
+    const offset:int = selecting ? (selected ? BorderStateIndex.ON_SELECTING : BorderStateIndex.OFF_SELECTING) : (selected ? BorderStateIndex.ON : BorderStateIndex.OFF);
+    const computedSepatatorIndex:int = separatorIndex + (offset % 2);
 
-    var isLast:Boolean = false;
-    const isFirst:Boolean = itemIndex == 0;
-    if (isFirst) {
+    var frameInsets:FrameInsets = border.frameInsets;
+    var last:Boolean = false;
+    const first:Boolean = isFirst(itemIndex);
+    if (first) {
       frameInsets.left = -2;
       frameInsets.right = 0;
     }
     else {
       frameInsets.left = 0;
-      isLast = this.isLast(itemIndex);
-      frameInsets.right = isLast ? -2 : 0;
+      last = isLast(itemIndex);
+      frameInsets.right = last ? -2 : 0;
     }
 
-    draw(itemIndex, g, _lastCreatedRendererWidth, h, false, false);
-  }
-
-  private function draw(itemIndex:int, g:Graphics, w:Number, h:Number, selecting:Boolean, selected:Boolean):void {
-    const offset:int = selecting ? (selected ? BorderStateIndex.ON_HIGHLIGHT : BorderStateIndex.OFF_HIGHLIGHT) : (selected ? BorderStateIndex.ON : BorderStateIndex.OFF);
-    const computedSepatatorIndex:int = separatorIndex + (offset % 2);
-
-    var frameInsets:FrameInsets = border.frameInsets;
     var bitmaps:Vector.<BitmapData> = border.getBitmaps();
     var backgroundWidth:Number;
     var rightWidth:Number;
-    const isFirst:Boolean = itemIndex == 0;
-    if (isFirst) {
+    if (first) {
       border.bitmapIndex = leftIndex + offset;
       var leftFrameWidth:Number = bitmaps[leftIndex + offset].width;
       border.draw(g, leftFrameWidth + frameInsets.left + frameInsets.right, h);
@@ -70,7 +65,6 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
         frameInsets.left = 0;
       }
 
-      const last:Boolean = isLast(itemIndex);
       if (last) {
         rightWidth = bitmaps[rightIndex + offset].width;
         backgroundWidth = w - rightWidth - frameInsets.right;
@@ -98,6 +92,27 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
       border.bitmapIndex = computedSepatatorIndex;
       border.draw(g, 1 + frameInsets.left + frameInsets.right, h - 3);
     }
+  }
+
+  private function drawOnInteract(itemIndex:int, selecting:Boolean, selected:Boolean):void {
+    var entry:TextLineAndDisplayObjectEntry = findEntry2(itemIndex);
+    var shape:Shape = Shape(entry.displayObject);
+    var g:Graphics = shape.graphics;
+    g.clear();
+    draw(itemIndex, g, entry.line.userData, _fixedRendererDimension, selecting, selected);
+  }
+
+  override public function setSelecting(itemIndex:int, value:Boolean):void {
+    super.setSelecting(itemIndex, value);
+
+    drawOnInteract(itemIndex, value, _selectionModel.isItemSelected(itemIndex));
+  }
+
+  override public function setSelected(itemIndex:int, value:Boolean):void {
+    super.setSelected(itemIndex, value);
+
+    drawOnInteract(itemIndex, false, value);
+    selectingItemIndex = -1;
   }
 }
 }

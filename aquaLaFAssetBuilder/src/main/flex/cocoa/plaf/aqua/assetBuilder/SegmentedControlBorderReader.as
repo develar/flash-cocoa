@@ -85,8 +85,8 @@ public class SegmentedControlBorderReader
 		sliceSize = sliceCalculator.calculate(compoundBitmapData, frameRectangle, 0, false, false);
 		segmentBitmaps[rightIndex + BorderStateIndex.ON] = readRightSegment(frameRectangle, sliceSize);
 
-		readHighlightedSegments(canvasBitmapData, BitmapAsset(new bitmapData2Class()).bitmapData, 3, 5, BorderStateIndex.OFF_HIGHLIGHT);
-		readHighlightedSegments(BitmapAsset(new bitmapData3Class()).bitmapData, BitmapAsset(new bitmapData4Class()).bitmapData, 6, 7, BorderStateIndex.ON_HIGHLIGHT);
+		readHighlightedSegments(canvasBitmapData, BitmapAsset(new bitmapData2Class()).bitmapData, 3, 5, BorderStateIndex.OFF_SELECTING);
+		readHighlightedSegments(BitmapAsset(new bitmapData3Class()).bitmapData, BitmapAsset(new bitmapData4Class()).bitmapData, 6, 7, BorderStateIndex.ON_SELECTING);
 
 		return Scale1BitmapBorder.create(segmentBitmaps, new Insets(10, NaN, 10, 4));
 	}

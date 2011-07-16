@@ -1,6 +1,5 @@
 package cocoa {
 import cocoa.layout.CollectionLayout;
-import cocoa.layout.ListHorizontalLayout;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Skin;
@@ -124,13 +123,6 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
       addedItems = value;
     }
 
-    //for (i = 0, n = addedItems.length; i < n; i++) {
-    //  rendererManager.setSelected(addedItems[i], true);
-    //}
-    //for (i = 0, n = removedItems.length; i < n; i++) {
-    //  rendererManager.setSelected(removedItems[i], false);
-    //}
-
     _selectedIndices = value;
 
     if (_selectionChanged != null) {
@@ -183,8 +175,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
   override protected function createChildren():void {
     var laf:LookAndFeel = LookAndFeelUtil.find(parent);
     if (layout == null) {
-      layout = new ListHorizontalLayout();
-      layout.gap = laf.getInt(_lafKey + ".gap");
+      layout = laf.getFactory(_lafKey + ".layout").newInstance();
     }
 
     var rendererManager:InteractiveRendererManager = this.rendererManager;
@@ -224,21 +215,21 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
     layout.updateDisplayList(w, h);
   }
 
-  public function setSelected(index:int, value:Boolean, userInteraction:Boolean = false):void {
+  public function setSelected(index:int, value:Boolean):void {
     if (mode == SelectionMode.ONE) {
       if (index == _selectedIndex) {
         return;
       }
 
-      if (_selectedIndex != -1 && userInteraction) {
-        rendererManager.setSelected(_selectedIndex, false);
+      if (_selectedIndex != -1) {
+        layout.setSelected(_selectedIndex, false);
       }
 
       var oldSelectedIndex:int = _selectedIndex;
       _selectedIndex = index;
 
-      if (_selectedIndex != -1 && userInteraction) {
-        rendererManager.setSelected(_selectedIndex, true);
+      if (_selectedIndex != -1 ) {
+        layout.setSelected(_selectedIndex, true);
       }
 
       if (_selectionChanged != null) {
@@ -253,9 +244,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
         selectedIndices.splice(selectedIndices.indexOf(index), 1);
       }
 
-      if (userInteraction) {
-        rendererManager.setSelected(index, value);
-      }
+      layout.setSelected(index, value);
 
       if (_selectionChanged != null) {
         _selectionChanged.dispatch(value ? new <int>[index] : null, value ? null : new <int>[index]);

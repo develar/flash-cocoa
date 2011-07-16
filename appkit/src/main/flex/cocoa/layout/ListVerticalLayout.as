@@ -1,16 +1,7 @@
 package cocoa.layout {
 public class ListVerticalLayout extends ListLayout implements CollectionLayout {
-  private var _width:Number;
-  public function get width():Number {
-    return _width;
-  }
-
-  public function set width(value:Number):void {
-    _width = value;
-  }
-
   public function measure():void {
-    _container.measuredWidth = _width;
+    _container.measuredWidth = _dimension;
     _container.measuredHeight = 0;
   }
 
@@ -31,8 +22,8 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
     while (x < h && itemIndex < _dataSource.itemCount) {
-      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, _width, NaN);
-      y += _rendererManager.lastCreatedRendererHeigth + _gap;
+      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, _dimension, NaN);
+      y += _rendererManager.lastCreatedRendererDimension + _gap;
     }
     _rendererManager.postLayout();
 

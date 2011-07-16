@@ -6,9 +6,15 @@ import cocoa.text.TextFormat;
 
 import flash.display.InteractiveObject;
 
+[Abstract]
 public class InteractiveTextRendererManager extends TextRendererManager implements InteractiveRendererManager {
   public function InteractiveTextRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);
+  }
+
+  protected var _fixedRendererDimension:Number;
+  public function set fixedRendererDimension(value:Number):void {
+    _fixedRendererDimension = value;
   }
 
   private var _mouseSelectionMode:int = ItemMouseSelectionMode.CLICK;
@@ -28,7 +34,7 @@ public class InteractiveTextRendererManager extends TextRendererManager implemen
   }
 
   public function getItemIndexAt(x:Number, y:Number):int {
-    return 0;
+    throw new Error("abstract");
   }
 
   public function getItemInteractiveObject(itemIndex:int):InteractiveObject {

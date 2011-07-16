@@ -12,6 +12,8 @@ import flash.text.engine.TextLine;
 public class InteractiveGraphicsRendererManager extends InteractiveTextRendererManager {
   protected static var factory:TextLineAndDisplayObjectEntryFactory;
 
+  protected var selectingItemIndex:int = -1;
+
   public function InteractiveGraphicsRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);
 
@@ -39,12 +41,21 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     value.addChild(textLineContainer);
   }
 
-  protected function isLast(itemIndex:int):Boolean {
+  protected final function isLast(itemIndex:int):Boolean {
     return itemIndex == (_dataSource.itemCount - 1);
   }
 
+  protected static function isFirst(itemIndex:int):Boolean {
+    return itemIndex == 0;
+  }
+
+  protected final function findEntry2(itemIndex:int):TextLineAndDisplayObjectEntry {
+    return TextLineAndDisplayObjectEntry(findEntry(itemIndex));
+  }
+
   override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(itemIndex, w == w ? w : 10000);
+    // http://juick.com/develar/1452091
+    var line:TextLine = createTextLine(itemIndex, w == w && textRotation == null ? w : 10000);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -58,7 +69,8 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
 
     shape.x = x;
     shape.y = y;
-    drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererWidth, h == h ? h : _lastCreatedRendererHeigth, x, y);
+    line.userData = _lastCreatedRendererDimension;
+    drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererDimension, h == h ? h : _lastCreatedRendererDimension, x, y);
     return entry;
   }
 
@@ -95,6 +107,11 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     }
 
     return -1;
+  }
+
+  override public function setSelecting(itemIndex:int, value:Boolean):void {
+    assert(!(selectingItemIndex == itemIndex && value));
+    selectingItemIndex = value ? itemIndex : -1;
   }
 }
 }

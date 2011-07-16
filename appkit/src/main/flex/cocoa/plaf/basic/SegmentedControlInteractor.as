@@ -33,7 +33,7 @@ public class SegmentedControlInteractor {
     rendererManager = segmentedControl.rendererManager;
 
     if (rendererManager.mouseSelectionMode == ItemMouseSelectionMode.DOWN) {
-      segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex), true);
+      segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex));
       
       segmentedControl = null;
       rendererManager = null;
@@ -80,11 +80,11 @@ public class SegmentedControlInteractor {
           rendererManager.setSelecting(selectingItemIndex, false);
         }
         else {
-          segmentedControl.setSelected(selectingItemIndex, false, true);
+          segmentedControl.setSelected(selectingItemIndex, false);
         }
       }
       else {
-        segmentedControl.setSelected(selectingItemIndex, segmentedControl.mode == SelectionMode.ONE ? true : !wasSelected, true);
+        segmentedControl.setSelected(selectingItemIndex, segmentedControl.mode == SelectionMode.ONE ? true : !wasSelected);
       }
 
       event.updateAfterEvent();

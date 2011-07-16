@@ -2,18 +2,18 @@ package cocoa.layout {
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
   private var endX:Number;
 
-  private var _height:Number;
-  public function get height():Number {
-    return _height;
-  }
-
-  public function set height(value:Number):void {
-    _height = value;
-  }
-
   public function measure():void {
-    _container.measuredWidth = initialDrawItems(100000);
-    _container.measuredHeight = _height;
+    if (pendingAddedIndices != null && pendingAddedIndices.length > 0) {
+      assert(pendingAddedIndices.length == 1);
+      _container.measuredWidth = drawItems(endX, pendingAddedIndices[0], pendingAddedIndices[0] + 1, false, 10000);
+      visibleItemCount++;
+      pendingAddedIndices.length = 0;
+    }
+    else {
+      _container.measuredWidth = initialDrawItems(100000);
+    }
+
+    _container.measuredHeight = _dimension;
   }
 
   public function updateDisplayList(w:Number, h:Number):void {
@@ -30,19 +30,14 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     }
   }
 
-  override protected function itemAdded(item:Object, index:int):void {
-    drawItems(endX, index, index + 1, false, 10000);
-    visibleItemCount++;
-  }
-
   override protected function drawItems(startX:Number, startItemIndex:int, endItemIndex:int, head:Boolean, w:Number):Number {
     var x:Number = startX;
     var y:Number = 0;
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
     while (itemIndex < endItemIndex) {
-      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, NaN, _height);
-      x += _rendererManager.lastCreatedRendererWidth + _gap;
+      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, NaN, _dimension);
+      x += _rendererManager.lastCreatedRendererDimension + _gap;
     }
     _rendererManager.postLayout();
 

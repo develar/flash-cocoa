@@ -14,5 +14,7 @@ public interface InteractiveRendererManager extends RendererManager {
   function getItemInteractiveObject(itemIndex:int):InteractiveObject;
 
   function set selectionModel(selectionModel:ListSelectionModel):void;
+
+  function set fixedRendererDimension(value:Number):void;
 }
 }

@@ -324,7 +324,7 @@ internal final class CompoundImageReader {
     var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
     var offset:int = expanded ? 6 : 0;
     bitmaps[BorderStateIndex.OFF] = input[offset];
-    bitmaps[BorderStateIndex.OFF_HIGHLIGHT] = input[expanded ? 14 : 12];
+    bitmaps[BorderStateIndex.OFF_SELECTING] = input[expanded ? 14 : 12];
     bitmaps[BorderStateIndex.ON] = input[offset + 2];
     return bitmaps;
   }

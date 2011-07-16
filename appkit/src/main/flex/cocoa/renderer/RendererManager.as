@@ -18,10 +18,8 @@ public interface RendererManager {
 
   function preLayout(head:Boolean):void;
 
-  function get lastCreatedRendererWidth():Number;
+  function get lastCreatedRendererDimension():Number;
 
   function set dataSource(value:ListViewDataSource):void;
-
-  function get lastCreatedRendererHeigth():Number;
 }
 }

@@ -13,7 +13,6 @@ import flash.text.engine.TextRotation;
 public class InteractiveBorderRendererManager extends InteractiveGraphicsRendererManager {
   private var border:Border;
   private var textLineInsets:TextLineInsets;
-  private var selectingItemIndex:int;
 
   public function InteractiveBorderRendererManager(laf:LookAndFeel, lafKey:String) {
     border = laf.getBorder(lafKey + ".b");
@@ -48,12 +47,12 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
 
   override protected function computeCreatingRendererSize(w:Number, h:Number, line:TextLine):void {
     if (w != w) {
-      _lastCreatedRendererWidth = Math.round(line.textWidth) + textLineInsets.lineStartPadding + textLineInsets.lineEndPadding;
+      _lastCreatedRendererDimension = Math.round(line.textWidth) + textLineInsets.lineStartPadding + textLineInsets.lineEndPadding;
     }
     else {
-      _lastCreatedRendererHeigth = Math.round(line.height);
+      _lastCreatedRendererDimension = Math.round(line.height);
       if (textRotation == TextRotation.ROTATE_90) {
-        _lastCreatedRendererHeigth += textLineInsets.lineStartPadding + textLineInsets.lineEndPadding;
+        _lastCreatedRendererDimension += textLineInsets.lineStartPadding + textLineInsets.lineEndPadding;
       }
     }
   }
@@ -63,34 +62,33 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
       StatefulBorder(border).stateIndex = _selectionModel.isItemSelected(itemIndex) ? BorderStateIndex.ON : BorderStateIndex.OFF;
     }
 
-    border.draw(g, w != w ? _lastCreatedRendererWidth : w, h != h ? _lastCreatedRendererHeigth : h);
+    border.draw(g, w != w ? _lastCreatedRendererDimension : w, h != h ? _lastCreatedRendererDimension : h);
+  }
+
+  private function drawOnInteract(itemIndex:int):void {
+    var shape:Shape = Shape(findEntry2(itemIndex).displayObject);
+    var g:Graphics = shape.graphics;
+    var w:Number = shape.width;
+    var h:Number = shape.height;
+    // because g.clear() set shape width/height to 0
+    g.clear();
+    border.draw(g, w, h);
   }
 
   override public function setSelecting(itemIndex:int, value:Boolean):void {
+    super.setSelecting(itemIndex, value);
+
     if (!(border is StatefulBorder)) {
       return;
     }
 
-    if (selectingItemIndex == itemIndex && value) {
-      return;
-    }
-
-    selectingItemIndex = value ? itemIndex : -1;
-
+    // idea side bar tab: doesn't have selecting state — selecting state equals selected state. OFF_SELECTING == ON and ON_SELECTING = ON
     if (_selectionModel.isItemSelected(itemIndex) && !value) {
       return;
     }
 
     StatefulBorder(border).stateIndex = value ? BorderStateIndex.ON : BorderStateIndex.OFF;
-
     drawOnInteract(itemIndex);
-  }
-
-  private function drawOnInteract(itemIndex:int):void {
-    var shape:Shape = Shape(TextLineAndDisplayObjectEntry(findEntry(itemIndex)).displayObject);
-    var g:Graphics = shape.graphics;
-    g.clear();
-    border.draw(g, shape.width, shape.height);
   }
 
   override public function setSelected(itemIndex:int, value:Boolean):void {
@@ -98,7 +96,9 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
       return;
     }
 
+    // see comment in setSelecting check
     if (selectingItemIndex == itemIndex && value) {
+      selectingItemIndex = -1;
       return;
     }
 

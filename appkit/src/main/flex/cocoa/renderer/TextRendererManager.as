@@ -34,14 +34,9 @@ public class TextRendererManager implements RendererManager {
     return _container;
   }
 
-  protected var _lastCreatedRendererWidth:Number;
-  public function get lastCreatedRendererWidth():Number {
-    return _lastCreatedRendererWidth;
-  }
-
-  protected var _lastCreatedRendererHeigth:Number;
-  public function get lastCreatedRendererHeigth():Number {
-    return _lastCreatedRendererHeigth;
+  protected var _lastCreatedRendererDimension:Number;
+  public function get lastCreatedRendererDimension():Number {
+    return _lastCreatedRendererDimension;
   }
 
   protected var _dataSource:ListViewDataSource;
@@ -115,12 +110,12 @@ public class TextRendererManager implements RendererManager {
 
   protected function computeCreatingRendererSize(w:Number, h:Number, line:TextLine):void {
     if (w != w) {
-      _lastCreatedRendererWidth = Math.round(line.textWidth) + textInsets.width;
+      _lastCreatedRendererDimension = Math.round(line.textWidth) + textInsets.width;
     }
     else {
-      _lastCreatedRendererHeigth = Math.round(line.height);
+      _lastCreatedRendererDimension = Math.round(line.height);
       if (textRotation == TextRotation.ROTATE_90) {
-        _lastCreatedRendererHeigth += textInsets.width;
+        _lastCreatedRendererDimension += textInsets.width;
       }
     }
   }
