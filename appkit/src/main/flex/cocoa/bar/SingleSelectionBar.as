@@ -20,7 +20,7 @@ public class SingleSelectionBar extends Bar {
   }
 
   public function get selectedItem():PaneItem {
-    return dataSource == null || dataSource.itemCount == 0 ? null : PaneItem(dataSource.getObjectValue(segmentedControl == null ? pendingSelectedIndex : segmentedControl.selectedIndex));
+    return dataSource == null || dataSource.itemCount == 0 || segmentedControl.selectedIndex == -1 ? null : PaneItem(dataSource.getObjectValue(segmentedControl == null ? pendingSelectedIndex : segmentedControl.selectedIndex));
   }
 
   override ui function segmentedControlAdded():void {

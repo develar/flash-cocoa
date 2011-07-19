@@ -2,9 +2,16 @@ package cocoa {
 import mx.managers.IToolTipManagerClient;
 
 public class AbstractControl extends AbstractComponent implements Control, Cell {
+  protected var actionParameters:Array;
+
   protected var _action:Function;
   public function set action(value:Function):void {
     _action = value;
+  }
+
+  public function setAction(value:Function, ...parameters):void {
+    _action = value;
+    actionParameters = parameters;
   }
 
   protected var _toolTip:String;
@@ -15,11 +22,6 @@ public class AbstractControl extends AbstractComponent implements Control, Cell 
         IToolTipManagerClient(skin).toolTip = _toolTip;
       }
     }
-  }
-
-  protected var _actionRequireTarget:Boolean;
-  public function set actionRequireTarget(value:Boolean):void {
-    _actionRequireTarget = value;
   }
 
   protected var _state:int = CellState.OFF;

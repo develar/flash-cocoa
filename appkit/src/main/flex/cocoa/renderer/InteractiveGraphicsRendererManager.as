@@ -6,6 +6,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 import flash.display.Shape;
 import flash.display.Sprite;
+import flash.errors.IllegalOperationError;
 import flash.text.engine.TextLine;
 
 [Abstract]
@@ -17,11 +18,21 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   public function InteractiveGraphicsRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);
 
+    registerEntryFactory(createFactory());
+  }
+
+  //noinspection JSMethodCanBeStatic
+  protected function createFactory():TextLineAndDisplayObjectEntryFactory {
     if (factory == null) {
       factory = new TextLineAndDisplayObjectEntryFactory(Shape, true);
     }
 
-    registerEntryFactory(factory);
+    return factory;
+  }
+
+  //noinspection JSMethodCanBeStatic
+  protected function get layeringMode():int {
+    return LayeringMode.UNORDERED;
   }
 
   protected var _textLineContainer:Sprite;
@@ -59,22 +70,56 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
-    var entry:TextLineAndDisplayObjectEntry = factory.create(line);
+    var entry:TextLineAndDisplayObjectEntry = doCreateEntry(line, itemIndex);
     entry.itemIndex = itemIndex;
 
     var shape:Shape = Shape(entry.displayObject);
     if (shape.parent != _container) {
-      _container.addChildAt(shape, _container.numChildren - 1);
+      addToDisplayList(entry, computeDisplayIndex(itemIndex));
+    }
+    else if (layeringMode != LayeringMode.UNORDERED) {
+      setDisplayListIndex(entry, computeDisplayIndex(itemIndex));
     }
 
     shape.x = x;
     shape.y = y;
     line.userData = _lastCreatedRendererDimension;
-    drawEntry(itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererDimension, h == h ? h : _lastCreatedRendererDimension, x, y);
+    drawEntry(entry, itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererDimension, h == h ? h : _lastCreatedRendererDimension, x, y);
     return entry;
   }
 
-  protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
+  protected function addToDisplayList(entry:TextLineAndDisplayObjectEntry, displayIndex:int):void {
+    _container.addChildAt(entry.displayObject, displayIndex);
+  }
+
+  protected function setDisplayListIndex(entry:TextLineAndDisplayObjectEntry, displayIndex:int):void {
+    _container.setChildIndex(entry.displayObject, displayIndex);
+  }
+
+  //noinspection JSMethodCanBeStatic
+  protected function doCreateEntry(line:TextLine, itemIndex:int):TextLineAndDisplayObjectEntry {
+    return factory.create(line);
+  }
+
+  protected function computeDisplayIndex(itemIndex:int):int {
+    switch (layeringMode) {
+      case LayeringMode.UNORDERED:
+        return _container.numChildren - 1;
+
+      case LayeringMode.ASCENDING_ORDER:
+        return itemIndex;
+
+      case LayeringMode.DESCENDING_ORDER:
+        var index:int = cells.size - itemIndex;
+        return index < 0 ? 0 : index;
+
+      default:
+        throw new IllegalOperationError("Unknown layering mode: " + layeringMode);
+    }
+  }
+
+  protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:Number,
+                               h:Number, x:Number, y:Number):void {
 
   }
 

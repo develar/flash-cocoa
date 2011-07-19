@@ -25,7 +25,7 @@ public class AbstractButton extends AbstractControl {
     updateToolTip();
 
     if (_action != null) {
-      _actionRequireTarget ? _action(this) : _action();
+      actionParameters == null ? _action() : _action.apply(null, actionParameters);
     }
   }
 

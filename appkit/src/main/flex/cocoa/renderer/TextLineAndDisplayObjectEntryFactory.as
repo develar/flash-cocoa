@@ -5,9 +5,9 @@ import flash.display.Sprite;
 import flash.text.engine.TextLine;
 
 public class TextLineAndDisplayObjectEntryFactory implements EntryFactory {
-  private const pool:Vector.<TextLineAndDisplayObjectEntry> = new Vector.<TextLineAndDisplayObjectEntry>(16, true);
-  private var poolSize:int;
-  private var oldPoolSize:int;
+  protected const pool:Vector.<TextLineAndDisplayObjectEntry> = new Vector.<TextLineAndDisplayObjectEntry>(16, true);
+  protected var poolSize:int;
+  protected var oldPoolSize:int;
 
   private var displayObjectClass:Class;
   private var clearGraphics:Boolean;

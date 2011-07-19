@@ -23,6 +23,11 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
     mouseChildren = false;
   }
 
+  //noinspection JSMethodCanBeStatic
+  protected function get hoverable():Boolean {
+    return false;
+  }
+
   private var responsibleForInteraction:Boolean = true;
   public function deletegateInteraction():void {
     responsibleForInteraction = false;
@@ -51,6 +56,9 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
 
     if (responsibleForInteraction) {
       addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+      if (hoverable) {
+        addHoverHandlers();
+      }
     }
     else {
       mouseEnabled = false;
@@ -124,17 +132,23 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
   public function mouseDownHandler(event:MouseEvent):void {
     if (responsibleForInteraction) {
       stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-      addHoverHandlers();
+      if (!hoverable) {
+        addHoverHandlers();
+      }
     }
-    
-    mouseOverHandler(event);
+
+    if (!hoverable) {
+      mouseOverHandler(event);
+    }
   }
 
   private function stageMouseUpHandler(event:MouseEvent):void {
     stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
 
-    removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-    removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+    if (!hoverable) {
+      removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+      removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+    }
 
     if (event.target == this) {
       mouseUpHandler(event);

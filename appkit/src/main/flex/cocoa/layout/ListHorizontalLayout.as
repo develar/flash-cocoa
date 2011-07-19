@@ -2,7 +2,7 @@ package cocoa.layout {
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
   private var endX:Number;
 
-  public function measure():void {
+  override public function measure():void {
     if (pendingAddedIndices != null && pendingAddedIndices.length > 0) {
       assert(pendingAddedIndices.length == 1);
       _container.measuredWidth = drawItems(endX, pendingAddedIndices[0], pendingAddedIndices[0] + 1, false, 10000);
@@ -10,13 +10,17 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
       pendingAddedIndices.length = 0;
     }
     else {
+      if (visibleItemCount > 0) {
+        trace("skip, who called us?" + _container.measuredWidth);
+        return;
+      }
       _container.measuredWidth = initialDrawItems(100000);
     }
 
     _container.measuredHeight = _dimension;
   }
 
-  public function updateDisplayList(w:Number, h:Number):void {
+  override public function updateDisplayList(w:Number, h:Number):void {
     if (_container.measuredWidth == w) {
       return;
     }

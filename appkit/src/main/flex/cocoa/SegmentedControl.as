@@ -70,9 +70,9 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
     }
     
     if (mode == SelectionMode.ONE) {
-      selectedIndex = -1;
+      selectedIndex = dataSource.itemCount == 0 ? -1 : 0;
     }
-    else if (isItemSelected(index)) {
+    else {
       setSelected(index, false);
     }
   }
@@ -221,17 +221,16 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
         return;
       }
 
-      if (_selectedIndex != -1) {
-        layout.setSelected(_selectedIndex, false);
-      }
-
       var oldSelectedIndex:int = _selectedIndex;
       _selectedIndex = index;
 
-      if (_selectedIndex != -1 ) {
-        layout.setSelected(_selectedIndex, true);
+      if (oldSelectedIndex != -1) {
+        layout.setSelected(oldSelectedIndex, _selectedIndex, false);
       }
-
+      if (_selectedIndex != -1) {
+        layout.setSelected(_selectedIndex, oldSelectedIndex, true);
+      }
+      
       if (_selectionChanged != null) {
         _selectionChanged.dispatch(oldSelectedIndex, _selectedIndex);
       }
@@ -244,7 +243,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
         selectedIndices.splice(selectedIndices.indexOf(index), 1);
       }
 
-      layout.setSelected(index, value);
+      layout.setSelected(index, -1, value);
 
       if (_selectionChanged != null) {
         _selectionChanged.dispatch(value ? new <int>[index] : null, value ? null : new <int>[index]);

@@ -536,27 +536,11 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
     _id = value;
   }
 
-  private var _focusPane:Sprite;
   public function get focusPane():Sprite {
-    return _focusPane;
+    return null;
   }
 
   public function set focusPane(value:Sprite):void {
-    if (value) {
-      addChild(value);
-
-      value.x = 0;
-      value.y = 0;
-      value.scrollRect = null;
-
-      _focusPane = value;
-    }
-    else {
-      removeChild(_focusPane);
-
-      _focusPane.mask = null;
-      _focusPane = null;
-    }
   }
 
   public function get focusEnabled():Boolean {

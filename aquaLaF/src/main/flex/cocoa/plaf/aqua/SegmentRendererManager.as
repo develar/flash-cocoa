@@ -25,7 +25,8 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     super(laf.getTextFormat(TextFormatId.SYSTEM), border.contentInsets);
   }
 
-  override protected function drawEntry(itemIndex:int, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
+  override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics,
+                                        w:Number, h:Number, x:Number, y:Number):void {
     draw(itemIndex, g, _lastCreatedRendererDimension, h, false, _selectionModel.isItemSelected(itemIndex));
   }
 
@@ -108,8 +109,8 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     drawOnInteract(itemIndex, value, _selectionModel.isItemSelected(itemIndex));
   }
 
-  override public function setSelected(itemIndex:int, value:Boolean):void {
-    super.setSelected(itemIndex, value);
+  override public function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void {
+    super.setSelected(itemIndex, relatedIndex, value);
 
     drawOnInteract(itemIndex, false, value);
     selectingItemIndex = -1;

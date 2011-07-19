@@ -1,11 +1,11 @@
 package cocoa.layout {
 public class ListVerticalLayout extends ListLayout implements CollectionLayout {
-  public function measure():void {
+  override public function measure():void {
     _container.measuredWidth = _dimension;
     _container.measuredHeight = 0;
   }
 
-  public function updateDisplayList(w:Number, h:Number):void {
+  override public function updateDisplayList(w:Number, h:Number):void {
     if (visibleItemCount > -1) {
 
     }

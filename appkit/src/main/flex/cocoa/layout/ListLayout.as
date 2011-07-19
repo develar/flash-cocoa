@@ -5,8 +5,10 @@ import cocoa.ListViewModifiableDataSource;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
 
+import flash.errors.IllegalOperationError;
+
 [Abstract]
-internal class ListLayout {
+internal class ListLayout implements CollectionLayout {
   protected var visibleItemCount:int = -1;
   protected var pendingAddedIndices:Vector.<int>;
 
@@ -83,9 +85,9 @@ internal class ListLayout {
     _gap = value;
   }
 
-  public function setSelected(itemIndex:int, value:Boolean):void {
+  public function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void {
     if (visibleItemCount > 0 && itemIndex < visibleItemCount) {
-      InteractiveRendererManager(_rendererManager).setSelected(itemIndex, value);
+      InteractiveRendererManager(_rendererManager).setSelected(itemIndex, relatedIndex, value);
     }
   }
 
@@ -122,6 +124,14 @@ internal class ListLayout {
 
   protected function drawItems(startPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean, dimension:Number):Number {
     throw new Error();
+  }
+
+  public function measure():void {
+    throw new IllegalOperationError("Burn in hell, Adobe");
+  }
+
+  public function updateDisplayList(w:Number, h:Number):void {
+    throw new IllegalOperationError("Burn in hell, Adobe");
   }
 }
 }

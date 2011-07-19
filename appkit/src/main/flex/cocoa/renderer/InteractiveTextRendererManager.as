@@ -30,7 +30,7 @@ public class InteractiveTextRendererManager extends TextRendererManager implemen
   public function setSelecting(itemIndex:int, value:Boolean):void {
   }
 
-  public function setSelected(itemIndex:int, value:Boolean):void {
+  public function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void {
   }
 
   public function getItemIndexAt(x:Number, y:Number):int {

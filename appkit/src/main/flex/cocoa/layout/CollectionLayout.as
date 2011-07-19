@@ -16,6 +16,6 @@ public interface CollectionLayout {
 
   function set gap(gap:Number):void;
 
-  function setSelected(itemIndex:int, value:Boolean):void;
+  function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void;
 }
 }

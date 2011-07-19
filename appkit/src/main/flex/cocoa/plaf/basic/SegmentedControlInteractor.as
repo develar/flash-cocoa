@@ -17,6 +17,7 @@ public class SegmentedControlInteractor {
 
   public function register(segmentedControl:SegmentedControl):void {
     segmentedControl.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+    segmentedControl.mouseChildren = false;
   }
 
   private var segmentedControl:SegmentedControl;
