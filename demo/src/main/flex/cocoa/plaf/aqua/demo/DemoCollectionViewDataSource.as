@@ -31,5 +31,9 @@ public class DemoCollectionViewDataSource extends AbstractCollectionViewDataSour
   public function getStringValue(itemIndex:int):String {
     return data[itemIndex];
   }
+
+  public function getItemIndex(object:Object):int {
+    return data.indexOf(object);
+  }
 }
 }

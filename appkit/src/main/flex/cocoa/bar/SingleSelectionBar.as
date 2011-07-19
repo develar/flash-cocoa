@@ -2,8 +2,6 @@ package cocoa.bar {
 import cocoa.pane.PaneItem;
 import cocoa.ui;
 
-import spark.events.IndexChangeEvent;
-
 use namespace ui;
 
 [Abstract]
@@ -22,6 +20,10 @@ public class SingleSelectionBar extends Bar {
   public function get selectedItem():PaneItem {
     return dataSource == null || dataSource.itemCount == 0 || segmentedControl.selectedIndex == -1 ? null : PaneItem(dataSource.getObjectValue(segmentedControl == null ? pendingSelectedIndex : segmentedControl.selectedIndex));
   }
+  
+  public function set selectedItem(value:PaneItem):void {
+    selectedIndex = value == null ? -1 : dataSource.getItemIndex(value);
+  }
 
   override ui function segmentedControlAdded():void {
     super.segmentedControlAdded();
@@ -30,10 +32,10 @@ public class SingleSelectionBar extends Bar {
   }
 
   ui function itemGroupRemoved():void {
-    segmentedControl.removeEventListener(IndexChangeEvent.CHANGE, segmentedControlSelectionChanged);
+    segmentedControl.selectionChanged.remove(segmentedControlSelectionChanged);
   }
 
-  protected function segmentedControlSelectionChanged(oldIndex:int, newIndex:int):void {
+  protected function segmentedControlSelectionChanged(oldItem:PaneItem, newItem:PaneItem, oldIndex:int, newIndex:int):void {
     throw new Error("abstract");
   }
 

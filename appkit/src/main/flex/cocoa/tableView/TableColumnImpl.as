@@ -86,5 +86,9 @@ public class TableColumnImpl implements TableColumn, ListViewDataSource {
   public function get empty():Boolean {
     return tableView.dataSource.empty;
   }
+
+  public function getItemIndex(object:Object):int {
+    throw new IllegalOperationError();
+  }
 }
 }

@@ -1,4 +1,5 @@
 package cocoa.plaf.basic {
+import cocoa.plaf.Skin;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.ItemMouseSelectionMode;
 import cocoa.SegmentedControl;
@@ -7,6 +8,7 @@ import cocoa.SelectionMode;
 import flash.display.InteractiveObject;
 import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
+import flash.geom.Point;
 
 public class SegmentedControlInteractor {
   private var rendererManager:InteractiveRendererManager;
@@ -14,6 +16,8 @@ public class SegmentedControlInteractor {
   private var selectingItemIndex:int = -1;
 
   private var isOver:Boolean;
+
+  protected static var sharedPoint:Point;
 
   public function register(segmentedControl:SegmentedControl):void {
     segmentedControl.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
@@ -25,7 +29,26 @@ public class SegmentedControlInteractor {
   private function mouseDownHandler(event:MouseEvent):void {
     segmentedControl = SegmentedControl(event.currentTarget);
 
-    const itemIndex:int = segmentedControl.rendererManager.getItemIndexAt(event.localX, event.localY);
+    var x:Number = event.localX;
+    var y:Number = event.localY;
+    if (event.target != segmentedControl) {
+      if (event.target is Skin) {
+        // interaction delegated to component
+        return;
+      }
+      else {
+        if (sharedPoint == null) {
+          sharedPoint = new Point();
+        }
+        sharedPoint.x = event.stageX;
+        sharedPoint.y = event.stageY;
+        sharedPoint = segmentedControl.globalToLocal(sharedPoint);
+        x = sharedPoint.x;
+        y = sharedPoint.y;
+      }
+    }
+
+    const itemIndex:int = segmentedControl.rendererManager.getItemIndexAt(x, y);
     if (itemIndex == -1) {
       segmentedControl = null;
       return;

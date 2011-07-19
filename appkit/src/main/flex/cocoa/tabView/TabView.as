@@ -18,13 +18,7 @@ public class TabView extends SingleSelectionBar {
   public static const DEFAULT:int = 0;
   public static const BORDERLESS:int = 1;
 
-  override protected function segmentedControlSelectionChanged(oldIndex:int, newIndex:int):void {
-    var oldItem:PaneItem;
-    // при удалении элемента, придет событие с его старым индексом, если он был ранее выделен
-    if (oldIndex != -1 && oldIndex < dataSource.itemCount) {
-      oldItem = PaneItem(dataSource.getObjectValue(oldIndex));
-    }
-    var newItem:PaneItem = newIndex == -1 ? null : PaneItem(dataSource.getObjectValue(newIndex));
+  override protected function segmentedControlSelectionChanged(oldItem:PaneItem, newItem:PaneItem, oldIndex:int, newIndex:int):void {
     // oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */
     if (_selectionChanging != null) {
       _selectionChanging.dispatch(oldItem, newItem);

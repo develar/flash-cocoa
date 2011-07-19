@@ -50,5 +50,9 @@ public class PaneViewDataSource extends AbstractCollectionViewDataSource impleme
     }
     return removedItem;
   }
+
+  public function getItemIndex(object:Object):int {
+    return source.indexOf(object);
+  }
 }
 }

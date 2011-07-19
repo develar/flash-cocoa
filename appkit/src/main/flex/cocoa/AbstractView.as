@@ -1,7 +1,6 @@
 package cocoa {
 import cocoa.layout.LayoutMetrics;
 
-import flash.display.BlendMode;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.InteractiveObject;
@@ -31,14 +30,6 @@ import mx.events.ResizeEvent;
 import mx.filters.BaseFilter;
 import mx.filters.IBitmapFilter;
 import mx.geom.TransformOffsets;
-import mx.graphics.shaderClasses.ColorBurnShader;
-import mx.graphics.shaderClasses.ColorDodgeShader;
-import mx.graphics.shaderClasses.ColorShader;
-import mx.graphics.shaderClasses.ExclusionShader;
-import mx.graphics.shaderClasses.HueShader;
-import mx.graphics.shaderClasses.LuminosityShader;
-import mx.graphics.shaderClasses.SaturationShader;
-import mx.graphics.shaderClasses.SoftLightShader;
 import mx.managers.IFocusManager;
 import mx.managers.IFocusManagerComponent;
 import mx.managers.IFocusManagerContainer;
@@ -61,9 +52,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   private static const INVALID_PROPERTIES:uint = 1 << 5;
   private static const INVALID_SIZE:uint = 1 << 6;
   private static const INVALID_DISPLAY_LIST:uint = 1 << 7;
-
-  private static const BLEND_SHADER_CHANGED:uint = 1 << 8;
-  private static const BLEND_MODE_CHANGED:uint = 1 << 9;
 
   /**
    * if component has been reparented, we need to potentially reassign systemManager, cause we could be in a new Window.
@@ -307,49 +295,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
 
     if (!noEvent) {
       dispatchEvent(new FlexEvent(value ? FlexEvent.SHOW : FlexEvent.HIDE));
-    }
-  }
-
-  [Inspectable(defaultValue="1.0", category="General", verbose="1", minValue="0.0", maxValue="1.0")]
-
-  private var _blendMode:String = BlendMode.NORMAL;
-
-  [Inspectable(category="General", enumeration="add,alpha,darken,difference,erase,hardlight,invert,layer,lighten,multiply,normal,subtract,screen,overlay,colordodge,colorburn,exclusion,softlight,hue,saturation,color,luminosity", defaultValue="normal")]
-  override public function get blendMode():String {
-    return _blendMode;
-  }
-
-  override public function set blendMode(value:String):void {
-    if (_blendMode != value) {
-      _blendMode = value;
-      flags |= BLEND_MODE_CHANGED;
-
-      // If one of the non-native Flash blendModes is set, record the new value and set the appropriate blendShader on the display object.
-      if (value == "colordodge" || value == "colorburn" || value == "exclusion" || value == "softlight" || value == "hue" || value == "saturation" || value == "color" || value == "luminosity") {
-        flags |= BLEND_SHADER_CHANGED;
-      }
-      invalidateProperties();
-    }
-  }
-
-  /**
-   *  Specifies whether the UIComponent object receives <code>doubleClick</code> events.
-   *  The default value is <code>false</code>, which means that the UIComponent object
-   *  does not receive <code>doubleClick</code> events.
-   *
-   *  <p>The <code>mouseEnabled</code> property must also be set to <code>true</code>,
-   *  its default value, for the object to receive <code>doubleClick</code> events.</p>
-   *
-   *  @default false
-   */
-  override public function set doubleClickEnabled(value:Boolean):void {
-    super.doubleClickEnabled = value;
-
-    for (var i:int = 0; i < this.numChildren; i++) {
-      var child:InteractiveObject = getChildAt(i) as InteractiveObject;
-      if (child) {
-        child.doubleClickEnabled = value;
-      }
     }
   }
 
@@ -1049,57 +994,6 @@ public class AbstractView extends Sprite implements View, ILayoutManagerClient, 
   protected function commitProperties():void {
     if (width != oldWidth || height != oldHeight) {
       dispatchResizeEvent();
-    }
-
-    if (flags & BLEND_MODE_CHANGED) {
-      flags &= ~BLEND_MODE_CHANGED;
-
-      if ((flags & BLEND_SHADER_CHANGED) == 0) {
-        super.blendMode = _blendMode;
-      }
-      else {
-        // The graphic element's blendMode was set to a non-Flash
-        // blendMode. We mimic the look by instantiating the
-        // appropriate shader class and setting the blendShader
-        // property on the displayObject.
-        flags &= ~BLEND_SHADER_CHANGED;
-
-        super.blendMode = BlendMode.NORMAL;
-
-        switch (_blendMode) {
-          case "color":
-            super.blendShader = new ColorShader();
-            break;
-
-          case "colordodge":
-            super.blendShader = new ColorDodgeShader();
-            break;
-
-          case "colorburn":
-            super.blendShader = new ColorBurnShader();
-            break;
-
-          case "exclusion":
-            super.blendShader = new ExclusionShader();
-            break;
-
-          case "hue":
-            super.blendShader = new HueShader();
-            break;
-
-          case "luminosity":
-            super.blendShader = new LuminosityShader();
-            break;
-
-          case "saturation":
-            super.blendShader = new SaturationShader();
-            break;
-
-          case "softlight":
-            super.blendShader = new SoftLightShader();
-            break;
-        }
-      }
     }
   }
 

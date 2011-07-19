@@ -66,11 +66,17 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
 
   private function itemRemoved(item:Object, index:int):void {
     if (!isItemSelected(index)) {
+      if (_selectedIndex > index) {
+        _selectedIndex--;
+      }
       return;
     }
-    
+
     if (mode == SelectionMode.ONE) {
-      selectedIndex = dataSource.itemCount == 0 ? -1 : 0;
+      _selectedIndex = dataSource.itemCount > index ? index : (dataSource.itemCount - 1);
+      if (_selectionChanged != null) {
+        _selectionChanged.dispatch(item, _selectedIndex == -1 ? null : dataSource.getObjectValue(_selectedIndex), index, _selectedIndex);
+      }
     }
     else {
       setSelected(index, false);
@@ -232,7 +238,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
       }
       
       if (_selectionChanged != null) {
-        _selectionChanged.dispatch(oldSelectedIndex, _selectedIndex);
+        _selectionChanged.dispatch(oldSelectedIndex == -1 ? null : dataSource.getObjectValue(oldSelectedIndex), _selectedIndex == -1 ? null : dataSource.getObjectValue(_selectedIndex), oldSelectedIndex, _selectedIndex);
       }
     }
     else {
