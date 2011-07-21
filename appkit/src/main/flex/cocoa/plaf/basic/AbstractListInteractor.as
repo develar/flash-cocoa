@@ -6,8 +6,8 @@ import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 
-public class AbstractListController {
-  protected static const HIGHLIGHTABLE:uint = 1 << 0;
+public class AbstractListInteractor {
+  protected static const MOUSE_HIGHLIGHTABLE:uint = 1 << 0;
 
   protected var itemGroup:FlexDataGroup;
 
@@ -16,11 +16,10 @@ public class AbstractListController {
   protected var highlightedRenderer:HighlightableItemRenderer;
 
   protected function addHandlers():void {
-    if (flags & HIGHLIGHTABLE) {
-      // мы не можем использовать mouse over/mouse out в силу того,
-      // что если мы изменили highlighted item с клавиатуры и при этом мышь по прежнему над некоторым item — то малейшее движение мыши вновь устанавливает highlighted на item под мышью
+    if (flags & MOUSE_HIGHLIGHTABLE) {
+      // we cannot use mouse over/mouse out due to:
+      // if we change highlighted item via keyboard и при этом мышь по прежнему над некоторым item — то малейшее движение мыши вновь устанавливает highlighted на item под мышью
       itemGroup.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-      itemGroup.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler2);
       itemGroup.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
     }
   }
@@ -31,9 +30,6 @@ public class AbstractListController {
       highlightedRenderer = null;
       event.updateAfterEvent();
     }
-  }
-  protected function mouseMoveHandler2(event:MouseEvent):void {
-
   }
 
   protected function mouseMoveHandler(event:MouseEvent):void {
@@ -50,7 +46,7 @@ public class AbstractListController {
         highlightedRenderer.highlighted = true;
       }
 
-       event.updateAfterEvent();
+      event.updateAfterEvent();
     }
     else if (highlightedRenderer != null) {
       highlightedRenderer.highlighted = false;
@@ -60,34 +56,30 @@ public class AbstractListController {
     }
   }
 
-  // todo virtual layout
   protected function keyDownHandler(event:KeyboardEvent):void {
     var newHighlightedIndex:int = -1;
 
     switch (event.keyCode) {
       case Keyboard.UP:
-      {
         if (highlightedRenderer == null) {
           newHighlightedIndex = itemGroup.dataProvider.length - 1;
         }
         else if (highlightedRenderer.itemIndex > 0) {
           newHighlightedIndex = highlightedRenderer.itemIndex - 1;
         }
-      }
         break;
 
       case Keyboard.DOWN:
-      {
         if (highlightedRenderer == null) {
           newHighlightedIndex = 0;
         }
         else if (highlightedRenderer.itemIndex < (itemGroup.dataProvider.length - 1)) {
           newHighlightedIndex = highlightedRenderer.itemIndex + 1;
         }
-      }
         break;
 
-      default: return;
+      default:
+        return;
     }
 
     if (newHighlightedIndex != -1) {

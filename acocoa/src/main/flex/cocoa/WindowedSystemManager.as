@@ -15,12 +15,10 @@ import mx.core.IFlexDisplayObject;
 import mx.core.IFlexModule;
 import mx.core.IUIComponent;
 import mx.core.RSLData;
-import mx.core.Singleton;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
 import mx.managers.ILayoutManagerClient;
 import mx.managers.ISystemManager;
-import mx.managers.PopUpManagerImpl;
 
 use namespace mx_internal;
 
@@ -39,8 +37,6 @@ public class WindowedSystemManager extends Sprite implements ISystemManager {
   }
 
   public function init(contentView:IUIComponent):void {
-    Singleton.registerClass("mx.managers::IPopUpManager", PopUpManagerImpl);
-
     if (contentView != null) {
       IFlexDisplayObject(contentView).setActualSize(stage.stageWidth, stage.stageHeight);
       this.contentView = DisplayObject(contentView);

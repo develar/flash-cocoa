@@ -1,5 +1,8 @@
 package cocoa.plaf.basic {
 import cocoa.AbstractView;
+import cocoa.Focusable;
+
+import flash.display.InteractiveObject;
 
 import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
@@ -7,7 +10,7 @@ import flash.geom.Rectangle;
 import spark.core.IViewport;
 import spark.core.NavigationUnit;
 
-public class ListBody extends AbstractView implements IViewport {
+public class ListBody extends AbstractView implements IViewport, Focusable {
   protected var rowHeightWithSpacing:Number;
   protected var oldHeight:Number = 0;
 
@@ -94,6 +97,10 @@ public class ListBody extends AbstractView implements IViewport {
       default:
         return 0;
     }
+  }
+
+  public function get focusObject():InteractiveObject {
+    return this;
   }
 }
 }

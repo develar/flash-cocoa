@@ -2,7 +2,7 @@ package cocoa.plaf.basic {
 import cocoa.colorPicker.ColorEvent;
 import cocoa.colorPicker.ColorPicker;
 
-public class ColorPickerMenuController extends PullDownMenuController {
+public class ColorPickerMenuController extends PullDownMenuInteractor {
   private var proposedColor:Number;
 
   override protected function addHandlers():void {

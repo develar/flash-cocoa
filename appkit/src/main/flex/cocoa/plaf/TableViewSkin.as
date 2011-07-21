@@ -1,7 +1,7 @@
 package cocoa.plaf {
 import flash.display.Sprite;
 
-public interface TableViewSkin {
+public interface TableViewSkin extends Skin {
   function get bodyHitArea():Sprite;
 
   function getColumnIndexAt(x:Number):int;

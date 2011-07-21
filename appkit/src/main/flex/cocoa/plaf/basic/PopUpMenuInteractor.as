@@ -23,7 +23,7 @@ import spark.components.IItemRenderer;
 use namespace ui;
 
 [Abstract]
-public class PopUpMenuController extends AbstractListController {
+public class PopUpMenuInteractor extends AbstractListInteractor {
   private static const MOUSE_CLICK_INTERVAL:int = 400;
   protected static const sharedPoint:Point = new Point();
 
@@ -32,10 +32,10 @@ public class PopUpMenuController extends AbstractListController {
 
   private var mouseDownTime:int = -1;
 
-  public function PopUpMenuController() {
+  public function PopUpMenuInteractor() {
     super();
 
-    flags |= HIGHLIGHTABLE;
+    flags |= MOUSE_HIGHLIGHTABLE;
   }
 
   public function register(popUpButton:PopUpButton):void {

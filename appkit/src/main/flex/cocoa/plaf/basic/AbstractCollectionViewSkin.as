@@ -1,18 +1,20 @@
 package cocoa.plaf.basic {
 import cocoa.AbstractCollectionView;
 import cocoa.Border;
+import cocoa.Focusable;
 import cocoa.Insets;
 import cocoa.ScrollPolicy;
 import cocoa.ScrollView;
 
 import flash.display.DisplayObject;
+import flash.display.InteractiveObject;
 import flash.errors.IllegalOperationError;
 
 import mx.core.IUIComponent;
 
 import spark.core.IViewport;
 
-internal class AbstractCollectionViewSkin extends AbstractSkin {
+internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusable {
   protected var contentView:IUIComponent;
   protected var border:Border;
   protected var documentView:IViewport;
@@ -67,6 +69,10 @@ internal class AbstractCollectionViewSkin extends AbstractSkin {
 
     measuredMinHeight = contentView.minHeight + insets.height;
     measuredHeight = contentView.getExplicitOrMeasuredHeight() + insets.height;
+  }
+
+  public function get focusObject():InteractiveObject {
+    return InteractiveObject(documentView);
   }
 }
 }

@@ -1,15 +1,17 @@
 package cocoa.plaf.aqua {
 import cocoa.Border;
+import cocoa.Focusable;
 import cocoa.View;
 import cocoa.plaf.basic.AbstractSkin;
 import cocoa.text.EditableTextView;
 
 import flash.display.Graphics;
+import flash.display.InteractiveObject;
 
 /**
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF225
  */
-public class  TextInputSkin extends AbstractSkin {
+public class TextInputSkin extends AbstractSkin implements Focusable {
   protected var textDisplay:EditableTextView;
 
   protected var border:Border;
@@ -60,6 +62,10 @@ public class  TextInputSkin extends AbstractSkin {
         documentView.enabled = value;
       }
     }
+  }
+
+  public function get focusObject():InteractiveObject {
+    return textDisplay;
   }
 }
 }

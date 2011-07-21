@@ -99,7 +99,7 @@ public class Decoder {
 
   public void MakeNameArray()
     throws IOException {
-    for (int l = 0; l < 182; l++) {
+    for (int l = 0; l < 150; l++) {
       int numOfChars = 0;
       artFile.seek(tagDescOffset + 8 * l);
       int offset = Integer.reverseBytes(artFile.readInt());

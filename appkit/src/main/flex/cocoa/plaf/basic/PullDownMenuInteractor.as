@@ -3,7 +3,7 @@ import cocoa.plaf.Skin;
 
 import flash.geom.Point;
 
-public class PullDownMenuController extends PopUpMenuController {
+public class PullDownMenuInteractor extends PopUpMenuInteractor {
   override protected function setPopUpPosition():void {
     var popUpButtonSkin:Skin = popUpButton.skin;
     sharedPoint.x = 0;

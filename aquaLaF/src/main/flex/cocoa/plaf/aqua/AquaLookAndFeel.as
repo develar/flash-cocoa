@@ -107,7 +107,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["IconButton"] = IconButtonSkin;
 
     data["PopUpButton"] = PushButtonSkin;
-    data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuController);
+    data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuInteractor);
 
     data["ColorPicker"] = PushButtonSkin;
     data["ColorPicker.b"] = data["PopUpButton.b"];
@@ -132,7 +132,11 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["HSlider"] = HSliderSkin;
 
     data["TextInput"] = TextInputSkin;
-    data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
+    data["TextInput.SystemTextFormat"] = createDefaultTextFormat(false);
+
+    data["small.TextInput"] = data["TextInput"];
+    data["small.TextInput.b"] = data["TextInput.b"];
+    data["small.TextInput.SystemTextFormat"] = createDefaultTextFormat(true);
 
     data["TextArea"] = TextAreaSkin;
 
@@ -178,8 +182,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     return hudLookAndFeel;
   }
 
-  private static function createDefaultTextFormat():SimpleTextLayoutFormat {
-    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT, new Insets(0, 2));
+  private static function createDefaultTextFormat(small:Boolean):SimpleTextLayoutFormat {
+    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(small ? AquaFonts.SMALL_SYSTEM_FONT : AquaFonts.SYSTEM_FONT, new Insets(0, 2));
     textFormat.$lineBreak = LineBreak.EXPLICIT;
     return textFormat;
   }
