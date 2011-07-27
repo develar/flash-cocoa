@@ -2,7 +2,7 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="flex" name="Flex">
-      <configuration>
+      <configuration flex_sdk="compiler-4.5.0.20968.pom">
         <option name="DO_BUILD" value="true" />
         <option name="OUTPUT_TYPE" value="Library" />
         <option name="USE_DEFAULT_SDK_CONFIG_FILE" value="false" />
@@ -53,6 +53,8 @@
     <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
     <orderEntry type="library" name="Maven: org.osflash:as3-signals:swc:0.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="collections" />
+    <orderEntry type="module" module-name="foundation" />
   </component>
 </module>
 

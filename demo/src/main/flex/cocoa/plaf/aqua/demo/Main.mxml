@@ -48,7 +48,7 @@
         <s:VerticalLayout paddingTop="5" paddingLeft="5"/>
       </layout>
     </Container>
-    <PushButton title="Change segmented control data" action="changeS"/>
+    <PushButton title="Change segmented control data 0" action="changeS"/>
     <PushButton title="Set segmented control data to empty" action="changerf"/>
     <CheckBox title="AAA"/>
     <CheckBox title="AAA Disabled" enabled="false"/>

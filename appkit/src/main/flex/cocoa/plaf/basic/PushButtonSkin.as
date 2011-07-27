@@ -4,18 +4,18 @@ import cocoa.Border;
 import cocoa.Cell;
 import cocoa.CellState;
 import cocoa.Component;
+import cocoa.Focusable;
 import cocoa.Insets;
 import cocoa.TextInsets;
 import cocoa.plaf.ButtonSkinInteraction;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.Graphics;
+import flash.display.InteractiveObject;
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-import mx.managers.IFocusManagerComponent;
-
-public class PushButtonSkin extends TitledComponentSkin implements IFocusManagerComponent, ButtonSkinInteraction {
+public class PushButtonSkin extends TitledComponentSkin implements Focusable, ButtonSkinInteraction {
   protected var border:Border;
   protected var myComponent:Cell;
 
@@ -126,9 +126,6 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
     }
   }
 
-  public function drawFocus(isFocused:Boolean):void {
-  }
-
   public function mouseDownHandler(event:MouseEvent):void {
     if (responsibleForInteraction) {
       stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
@@ -193,6 +190,10 @@ public class PushButtonSkin extends TitledComponentSkin implements IFocusManager
   private function addHoverHandlers():void {
     addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
     addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+  }
+
+  public function get focusObject():InteractiveObject {
+    return this;
   }
 }
 }
