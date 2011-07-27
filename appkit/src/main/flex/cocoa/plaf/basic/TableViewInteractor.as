@@ -47,7 +47,7 @@ public class TableViewInteractor {
   }
 
   protected function closeEditor(commit:Boolean):void {
-
+    openedEditor.removeEventListener(FocusEvent.FOCUS_OUT, editorFocusOutHandler);
   }
 
   protected function openEditor():void {
@@ -59,7 +59,6 @@ public class TableViewInteractor {
   }
 
   private function editorFocusOutHandler(event:FocusEvent):void {
-    InteractiveObject(event.currentTarget).removeEventListener(FocusEvent.FOCUS_OUT, editorFocusOutHandler);
     closeEditor(true);
   }
 }

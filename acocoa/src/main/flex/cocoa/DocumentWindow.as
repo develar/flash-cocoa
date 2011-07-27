@@ -16,8 +16,9 @@ import org.flyti.plexus.LocalEventMap;
 public class DocumentWindow extends NativeWindow {
   private static const DEFAULT_INIT_OPTIONS:NativeWindowInitOptions = new NativeWindowInitOptions();
 
-  public function DocumentWindow(contentView:Component, map:LocalEventMap, initOptions:NativeWindowInitOptions = null, bounds:Rectangle = null) {
+  public function DocumentWindow(contentView:Component, map:LocalEventMap, bounds:Rectangle = null, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
     super(initOptions || DEFAULT_INIT_OPTIONS);
+    _focusManager = focusManager;
     
     init(contentView, map, bounds);
   }
@@ -25,6 +26,11 @@ public class DocumentWindow extends NativeWindow {
   // keep link
   //noinspection JSFieldCanBeLocal
   private var map:LocalEventMap;
+
+  private var _focusManager:FocusManager;
+  public function get focusManager():FocusManager {
+    return _focusManager;
+  }
 
   private var _contentView:Skin;
   public function get contentView():Component {
@@ -44,6 +50,9 @@ public class DocumentWindow extends NativeWindow {
     }
 
     WindowInitUtil.initStage(stage);
+    if (focusManager is AbstractFocusManager) {
+      AbstractFocusManager(focusManager).init(stage);
+    }
 
     addEventListener(NativeWindowBoundsEvent.RESIZE, resizeHandler);
     this.bounds = bounds;

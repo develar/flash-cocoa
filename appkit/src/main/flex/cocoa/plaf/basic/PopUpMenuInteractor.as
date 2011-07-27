@@ -11,7 +11,6 @@ import flash.display.DisplayObject;
 import flash.display.Stage;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
-import flash.geom.Point;
 import flash.ui.Keyboard;
 import flash.utils.getTimer;
 
@@ -25,7 +24,6 @@ use namespace ui;
 [Abstract]
 public class PopUpMenuInteractor extends AbstractListInteractor {
   private static const MOUSE_CLICK_INTERVAL:int = 400;
-  protected static const sharedPoint:Point = new Point();
 
   protected var popUpButton:PopUpButton;
   protected var menu:Menu;

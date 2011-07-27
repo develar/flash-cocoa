@@ -4,6 +4,7 @@ import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.PopUpMenuInteractor;
 import cocoa.plaf.basic.PushButtonSkin;
 import cocoa.ui;
+import cocoa.util.SharedPoint;
 
 import flash.display.Stage;
 import flash.geom.Point;
@@ -25,11 +26,12 @@ public class PopUpMenuInteractor extends cocoa.plaf.basic.PopUpMenuInteractor {
     var stage:Stage = popUpButtonSkin.stage;
     var menuSkin:MenuSkin = MenuSkin(menu.skin);
     var menuBorderContentInsets:Insets = menuSkin.border.contentInsets;
-    sharedPoint.x = - (menuBorderContentInsets.left + selectedItemRenderer.labelLeftMargin) + popUpButtonSkin.labelLeftMargin;
-    sharedPoint.y = - menuBorderContentInsets.top - selectedItemRenderer.baselinePosition + popUpButtonSkin.baselinePosition - selectedItemRenderer.y;
+    var point:Point = SharedPoint.point;
+    point.x = - (menuBorderContentInsets.left + selectedItemRenderer.labelLeftMargin) + popUpButtonSkin.labelLeftMargin;
+    point.y = - menuBorderContentInsets.top - selectedItemRenderer.baselinePosition + popUpButtonSkin.baselinePosition - selectedItemRenderer.y;
     //		sharedPoint.x = 250;
 //    		sharedPoint.y = 20;
-    var globalPosition:Point = popUpButtonSkin.localToGlobal(sharedPoint);
+    var globalPosition:Point = popUpButtonSkin.localToGlobal(point);
 
     var x:Number = globalPosition.x;
     if (x < STAGE_MARGIN) {
@@ -41,7 +43,7 @@ public class PopUpMenuInteractor extends cocoa.plaf.basic.PopUpMenuInteractor {
         x = maxX;
       }
       else {
-        var widthAdjustment:Number = popUpButtonSkin.width - menuSkin.width - sharedPoint.x - MIN_RIGHT_MARGIN_FROM_OPEN_BUTTON;
+        var widthAdjustment:Number = popUpButtonSkin.width - menuSkin.width - point.x - MIN_RIGHT_MARGIN_FROM_OPEN_BUTTON;
         if (widthAdjustment > 0) {
           menuSkin.width = menuSkin.width + widthAdjustment;
         }

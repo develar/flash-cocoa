@@ -9,6 +9,7 @@ import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9EdgeBitmapBorder;
+import cocoa.util.SharedPoint;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -19,8 +20,6 @@ import flash.utils.ByteArray;
 import mx.core.BitmapAsset;
 
 internal final class CompoundImageReader {
-  private static const sharedPoint:Point = new Point(0, 0);
-
   private var rowsInfo:Vector.<RowInfo>;
   private var compoundBitmapData:BitmapData;
 
@@ -59,12 +58,12 @@ internal final class CompoundImageReader {
     for (var i:int = 0, bitmapIndex:int = 0; i < n; i += 3) {
       var left:BitmapData = Bitmap(new additionalBitmaps[i]).bitmapData;
       var bitmapData:BitmapData = new BitmapData(left.width + 1, left.height, true, 0);
-      bitmapData.copyPixels(left, left.rect, sharedPoint, null, null, true);
+      bitmapData.copyPixels(left, left.rect, SharedPoint.point, null, null, true);
 
-      sharedPoint.x += left.width;
+      SharedPoint.point.x += left.width;
       var right:BitmapData = Bitmap(new additionalBitmaps[i + 1]).bitmapData;
-      bitmapData.copyPixels(right, right.rect, sharedPoint, null, null, true);
-      sharedPoint.x = 0;
+      bitmapData.copyPixels(right, right.rect, SharedPoint.point, null, null, true);
+      SharedPoint.point.x = 0;
 
       bitmaps[bitmapIndex++] = bitmapData;
       bitmaps[bitmapIndex++] = Bitmap(new additionalBitmaps[i + 2]).bitmapData;
@@ -295,7 +294,7 @@ internal final class CompoundImageReader {
 
   private function createBitmapData(sourceRectangle:Rectangle):BitmapData {
     var bitmapData:BitmapData = new BitmapData(sourceRectangle.width, sourceRectangle.height, true, 0);
-    bitmapData.copyPixels(compoundBitmapData, sourceRectangle, sharedPoint, null, null, true);
+    bitmapData.copyPixels(compoundBitmapData, sourceRectangle, new Point(), null, null, true);
     return bitmapData;
   }
 
@@ -320,7 +319,7 @@ internal final class CompoundImageReader {
 
   // off, off h, on, on h
   // skip open/close on h
-  private function createTreeDisclosureIcon(input:Vector.<BitmapData>, expanded:Boolean):Vector.<BitmapData> {
+  private static function createTreeDisclosureIcon(input:Vector.<BitmapData>, expanded:Boolean):Vector.<BitmapData> {
     var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(4, true);
     var offset:int = expanded ? 6 : 0;
     bitmaps[BorderStateIndex.OFF] = input[offset];
@@ -363,7 +362,7 @@ internal final class CompoundImageReader {
   private function getSliceBitmapData(row:int, column:int):BitmapData {
     var rowInfo:RowInfo = rowsInfo[row];
     var sliceBitmapData:BitmapData = new BitmapData(rowInfo.width, rowInfo.height, true, 0);
-    sliceBitmapData.copyPixels(compoundBitmapData, new Rectangle(column * rowInfo.width, rowInfo.top, rowInfo.width, rowInfo.height), sharedPoint, null, null, true);
+    sliceBitmapData.copyPixels(compoundBitmapData, new Rectangle(column * rowInfo.width, rowInfo.top, rowInfo.width, rowInfo.height), new Point(), null, null, true);
     return sliceBitmapData;
   }
 

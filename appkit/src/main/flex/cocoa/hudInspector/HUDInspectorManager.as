@@ -5,6 +5,7 @@ import cocoa.Viewable;
 import cocoa.dialog.DialogManager;
 import cocoa.pane.PaneItem;
 import cocoa.resources.ResourceManager;
+import cocoa.util.SharedPoint;
 
 import flash.events.Event;
 import flash.geom.Point;
@@ -15,8 +16,6 @@ import mx.core.IVisualElement;
 
 public class HUDInspectorManager {
   private static const WINDOW_PADDING:Number = 10;
-
-  private static var sharedPoint:Point = new Point();
 
   private var inspectorSetMap:Dictionary/*<Class, PaneItem>*/ = new Dictionary();
   private var currentInspector:HUDWindow;
@@ -78,18 +77,19 @@ public class HUDInspectorManager {
 
     dialogManager.open(currentInspector, false, false);
 
-    sharedPoint.x = elementView.x;
-    sharedPoint.y = elementView.y;
-    sharedPoint = elementView.parent.localToGlobal(sharedPoint);
+    var point:Point = SharedPoint.point;
+    point.x = elementView.x;
+    point.y = elementView.y;
+    point = elementView.parent.localToGlobal(point);
 
     var inspectorView:IUIComponent = currentInspector.skin;
     var windowHeightWithPadding:Number = inspectorView.height + WINDOW_PADDING;
-    var y:Number = sharedPoint.y - windowHeightWithPadding;
+    var y:Number = point.y - windowHeightWithPadding;
     if (y < 0) {
-      y = sharedPoint.y + elementView.height + windowHeightWithPadding;
+      y = point.y + elementView.height + windowHeightWithPadding;
     }
 
-    inspectorView.move(Math.round(sharedPoint.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
+    inspectorView.move(Math.round(point.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
   }
 
   private function userCloseHandler(event:Event):void {

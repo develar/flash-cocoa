@@ -1,4 +1,6 @@
 package cocoa {
+import cocoa.util.SharedPoint;
+
 import flash.display.DisplayObject;
 import flash.geom.Point;
 
@@ -13,8 +15,6 @@ use namespace mx_internal;
  * в результате чего начинает мерцать (так как раз он под мышей, он тут же пропадает, а потом тут же появляется) — он должен позиционировать при нехватке места над bounds мыши/края контрола
  */
 public class ToolTipManager extends ToolTipManagerImpl {
-  private static const sharedPoint:Point = new Point();
-
   private static var _instance:ToolTipManager;
   public static function get instance():ToolTipManager {
     if (_instance == null) {
@@ -46,11 +46,12 @@ public class ToolTipManager extends ToolTipManagerImpl {
       y += heightAdjustment - 22;
     }
 
-    sharedPoint.x = x;
-    sharedPoint.y = y;
-    var position:Point = DisplayObject(sm.getSandboxRoot()).globalToLocal(DisplayObject(sm).localToGlobal(sharedPoint));
-    x = position.x;
-    y = position.y;
+    var point:Point = SharedPoint.point;
+    point.x = x;
+    point.y = y;
+    point = DisplayObject(sm.getSandboxRoot()).globalToLocal(DisplayObject(sm).localToGlobal(point));
+    x = point.x;
+    y = point.y;
 
     currentToolTip.move(x, y);
   }

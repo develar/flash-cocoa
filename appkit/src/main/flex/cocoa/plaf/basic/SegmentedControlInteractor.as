@@ -4,6 +4,7 @@ import cocoa.renderer.InteractiveRendererManager;
 import cocoa.ItemMouseSelectionMode;
 import cocoa.SegmentedControl;
 import cocoa.SelectionMode;
+import cocoa.util.SharedPoint;
 
 import flash.display.InteractiveObject;
 import flash.events.IEventDispatcher;
@@ -16,8 +17,6 @@ public class SegmentedControlInteractor {
   private var selectingItemIndex:int = -1;
 
   private var isOver:Boolean;
-
-  protected static var sharedPoint:Point;
 
   public function register(segmentedControl:SegmentedControl):void {
     segmentedControl.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
@@ -37,14 +36,12 @@ public class SegmentedControlInteractor {
         return;
       }
       else {
-        if (sharedPoint == null) {
-          sharedPoint = new Point();
-        }
-        sharedPoint.x = event.stageX;
-        sharedPoint.y = event.stageY;
-        sharedPoint = segmentedControl.globalToLocal(sharedPoint);
-        x = sharedPoint.x;
-        y = sharedPoint.y;
+        var point:Point = SharedPoint.point;
+        point.x = event.stageX;
+        point.y = event.stageY;
+        point = segmentedControl.globalToLocal(point);
+        x = point.x;
+        y = point.y;
       }
     }
 
