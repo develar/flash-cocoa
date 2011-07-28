@@ -104,6 +104,18 @@ public class TextLineRendererFactory {
     return line;
   }
 
+  //noinspection JSMethodCanBeStatic
+  public function recreate(line:TextLine, container:DisplayObjectContainer, text:String, availableWidth:Number, elementFormat:ElementFormat, swfContext:SwfContext = null, useTruncationIndicator:Boolean = true):void {
+    textElement.elementFormat = elementFormat;
+    textElement.text = text;
+
+    TextLineUtil.recreate(textBlock, swfContext, line, availableWidth);
+
+    if (useTruncationIndicator && textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY) {
+      TextLineUtil.truncate(text, textElement, line, swfContext, availableWidth);
+    }
+  }
+
   public function postLayout(container:DisplayObjectContainer):void {
     if (youngOrphanCount == 0) {
       orphanLines.length = orphanCount;
