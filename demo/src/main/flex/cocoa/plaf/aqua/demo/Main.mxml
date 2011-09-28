@@ -1,12 +1,26 @@
 <ac:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns="cocoa" xmlns:ac="acocoa" xmlns:s="library://ns.adobe.com/flex/spark"
                         xmlns:aqua="cocoa.plaf.aqua.*" xmlns:tableview="cocoa.tableView.*">
   <fx:Script><![CDATA[
+    import avmplus.HIDE_OBJECT;
+    import avmplus.INCLUDE_BASES;
+    import avmplus.INCLUDE_TRAITS;
+    import avmplus.USE_ITRAITS;
+    import avmplus.describe;
+
     import cocoa.Insets;
     import cocoa.plaf.TextFormatId;
     import cocoa.renderer.TextRendererManager;
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TableColumnImpl;
     import cocoa.util.FileUtil;
+
+    use namespace INCLUDE_TRAITS;
+
+    use namespace USE_ITRAITS;
+
+    use namespace HIDE_OBJECT;
+
+    use namespace INCLUDE_BASES;
 
     override protected function preInitialize():void {
       tableView.dataSource = new DemoTableViewDataSource();
@@ -20,6 +34,8 @@
 
       elementTreeBar.dataSource = new DemoCollectionViewDataSource();
       //elementTreeBar.rendererManager = new InteractiveTextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets);
+
+      var t:Object = describe(this, INCLUDE_BASES | HIDE_OBJECT | INCLUDE_TRAITS).traits.bases;
     }
 
     public static function dd(s:String, v:ByteArray):void {
