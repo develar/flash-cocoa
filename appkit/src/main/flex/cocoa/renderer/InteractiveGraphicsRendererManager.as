@@ -13,7 +13,7 @@ import flash.text.engine.TextLine;
 public class InteractiveGraphicsRendererManager extends InteractiveTextRendererManager {
   protected static var factory:TextLineAndDisplayObjectEntryFactory;
 
-  protected var selectingItemIndex:int = -1;
+  public var selectingItemIndex:int = -1;
 
   public function InteractiveGraphicsRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     super(textFormat, textInsets);

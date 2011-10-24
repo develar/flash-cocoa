@@ -16,7 +16,6 @@ import cocoa.plaf.basic.BoxSkin;
 import cocoa.plaf.basic.CollectionViewSkin;
 import cocoa.plaf.basic.ColorPickerMenuController;
 import cocoa.plaf.basic.IconButtonSkin;
-import cocoa.plaf.basic.ListViewSkin;
 import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.plaf.basic.SeparatorSkin;
@@ -89,7 +88,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["HUDWindow"] = HUDWindowSkin;
 
     data["SourceListView"] = SourceListViewSkin;
-    data["ListView"] = ListViewSkin;
     data["SwatchGrid.b"] = data["ListView.b"] = data["TextArea.b"] = data["TableView.b"] = data["small.TableView.b"] = new BezelBorder();
 
     data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, this, "SegmentItem");

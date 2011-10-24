@@ -1,12 +1,13 @@
 package cocoa.layout {
 import cocoa.AbstractView;
+import cocoa.Insets;
 import cocoa.ListViewDataSource;
 import cocoa.renderer.RendererManager;
 
 public interface CollectionLayout {
   function measure():void;
 
-  function updateDisplayList(w:Number, h:Number):void;
+  function layout(w:Number, h:Number):void;
 
   function set rendererManager(rendererManager:RendererManager):void;
 
@@ -17,5 +18,7 @@ public interface CollectionLayout {
   function set gap(gap:Number):void;
 
   function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void;
+
+  function set insets(value:Insets):void;
 }
 }

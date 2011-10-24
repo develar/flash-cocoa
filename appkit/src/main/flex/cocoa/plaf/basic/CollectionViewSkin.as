@@ -1,6 +1,5 @@
 package cocoa.plaf.basic {
 import cocoa.CollectionView;
-import cocoa.layout.ListHorizontalLayout;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObject;

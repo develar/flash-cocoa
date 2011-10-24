@@ -12,7 +12,7 @@ import org.flyti.plexus.Injectable;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
-public class SegmentedControl extends AbstractView implements Injectable, ListSelectionModel {
+public class SegmentedControl extends CollectionBody implements Injectable, ListSelectionModel {
   public var stupidMxmlId:String;
 
   private static function isEmpty(v:Vector.<int>):Boolean {
@@ -169,7 +169,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
     return _selectionChanged;
   }
 
-  private var _lafKey:String = "SegmentedControl";
+  protected var _lafKey:String = "SegmentedControl";
   public function set lafKey(value:String):void {
     _lafKey = value;
   }
@@ -198,7 +198,9 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
     layout.rendererManager = rendererManager;
     layout.container = this;
 
-    SegmentedControlInteractor(laf.getFactory(_lafKey + ".interactor").newInstance()).register(this);
+    if (mode != SelectionMode.NONE) {
+      SegmentedControlInteractor(laf.getFactory(_lafKey + ".interactor").newInstance()).register(this);
+    }
 
     super.createChildren();
   }
@@ -218,7 +220,7 @@ public class SegmentedControl extends AbstractView implements Injectable, ListSe
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    layout.updateDisplayList(w, h);
+    layout.layout(w, h);
   }
 
   public function setSelected(index:int, value:Boolean):void {

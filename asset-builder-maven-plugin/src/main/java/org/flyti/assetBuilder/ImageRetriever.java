@@ -7,11 +7,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // если для key найдено изображение для какого-либо состояния, то мы считаем, что и все остальные изображения в этой же source directory
 public class ImageRetriever {
-  private List<File> sources;
+  private final List<File> sources;
 
   private final Map<File, String[]> directoryContentCache;
 
@@ -86,7 +89,7 @@ public class ImageRetriever {
           imageFilesLength = imageFiles.length;
 
           assetNameComparator.setPrefixLength(0);
-          rootDir.append(name).append(File.separator);
+          rootDir.append(name).append(File.separatorChar);
         }
         else {
           if (index > 0) {
@@ -111,9 +114,11 @@ public class ImageRetriever {
         Arrays.sort(imageFiles, assetNameComparator);
         
         BufferedImage[] images = new BufferedImage[imageFilesLength];
-        System.out.print(Arrays.toString(imageFiles) + "\n");
+        //System.out.print(Arrays.toString(imageFiles) + "\n");
+        final int rootDirPathLength = rootDir.length();
         for (int i = 0; i < imageFilesLength; i++) {
-          images[i] = JAI.create("fileload", rootDir + imageFiles[i]).getAsBufferedImage();
+          images[i] = JAI.create("fileload", rootDir.append(imageFiles[i]).toString()).getAsBufferedImage();
+          rootDir.setLength(rootDirPathLength);
         }
 
         return images;

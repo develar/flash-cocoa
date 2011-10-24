@@ -1,26 +1,28 @@
 package cocoa.layout {
+import flash.errors.IllegalOperationError;
+
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
   private var endX:Number;
 
   override public function measure():void {
     if (pendingAddedIndices != null && pendingAddedIndices.length > 0) {
       assert(pendingAddedIndices.length == 1);
-      _container.measuredWidth = drawItems(endX, pendingAddedIndices[0], pendingAddedIndices[0] + 1, false, 10000);
+      _container.measuredWidth = drawItems(endX, 10000, pendingAddedIndices[0], pendingAddedIndices[0] + 1, false);
       visibleItemCount++;
       pendingAddedIndices.length = 0;
     }
     else {
       if (visibleItemCount > 0) {
-        trace("skip, who called us?" + _container.measuredWidth);
-        return;
+        throw new IllegalOperationError("skip, who called us?" + _container.measuredWidth);
       }
+
       _container.measuredWidth = initialDrawItems(100000);
     }
 
     _container.measuredHeight = _dimension;
   }
 
-  override public function updateDisplayList(w:Number, h:Number):void {
+  override public function layout(w:Number, h:Number):void {
     if (_container.measuredWidth == w) {
       return;
     }
@@ -34,12 +36,14 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     }
   }
 
-  override protected function drawItems(startX:Number, startItemIndex:int, endItemIndex:int, head:Boolean, w:Number):Number {
-    var x:Number = startX;
-    var y:Number = 0;
+  override protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {
+    endPosition -= _insets.right;
+
+    var x:Number = startPosition == 0 ? _insets.left : startPosition;
+    const y:Number = _insets.top;
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
-    while (itemIndex < endItemIndex) {
+    while (x < endPosition && itemIndex < endItemIndex) {
       _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, NaN, _dimension);
       x += _rendererManager.lastCreatedRendererDimension + _gap;
     }

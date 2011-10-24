@@ -1,5 +1,6 @@
 package cocoa.layout {
 import cocoa.AbstractView;
+import cocoa.Insets;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
 import cocoa.renderer.InteractiveRendererManager;
@@ -15,6 +16,11 @@ internal class ListLayout implements CollectionLayout {
   protected var _container:AbstractView;
   public function set container(value:AbstractView):void {
     _container = value;
+  }
+
+  protected var _insets:Insets = Insets.EMPTY;
+  public function set insets(value:Insets):void {
+    _insets = value;
   }
 
   protected var _dimension:Number;
@@ -103,7 +109,7 @@ internal class ListLayout implements CollectionLayout {
     _container.invalidateSize();
   }
 
-  protected function initialDrawItems(dimension:Number):Number {
+  protected function initialDrawItems(endPosition:Number):Number {
     const startItemIndex:int = 0;
     const endItemIndex:int = _dataSource.itemCount;
     const newVisibleItemCount:int = endItemIndex - startItemIndex;
@@ -114,7 +120,7 @@ internal class ListLayout implements CollectionLayout {
 
     if (newVisibleItemCount != 0) {
       visibleItemCount = newVisibleItemCount;
-      return drawItems(0, startItemIndex, endItemIndex, true, dimension);
+      return drawItems(0, endPosition, startItemIndex, endItemIndex, true);
     }
     else {
       visibleItemCount = -1;
@@ -122,7 +128,9 @@ internal class ListLayout implements CollectionLayout {
     }
   }
 
-  protected function drawItems(startPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean, dimension:Number):Number {
+  // startPosition and endPosition include insets, i.e. drawItems must respect insets —
+  // as example, if startPosition == 0, ListHorizontalLayout must use startX = insets.left
+  protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {
     throw new Error();
   }
 
@@ -130,7 +138,7 @@ internal class ListLayout implements CollectionLayout {
     throw new IllegalOperationError("Burn in hell, Adobe");
   }
 
-  public function updateDisplayList(w:Number, h:Number):void {
+  public function layout(w:Number, h:Number):void {
     throw new IllegalOperationError("Burn in hell, Adobe");
   }
 }

@@ -5,7 +5,11 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
     _container.measuredHeight = 0;
   }
 
-  override public function updateDisplayList(w:Number, h:Number):void {
+  override public function layout(w:Number, h:Number):void {
+    if (_container.measuredHeight == h) {
+      return;
+    }
+
     if (visibleItemCount > -1) {
 
     }
@@ -14,14 +18,14 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
     }
   }
 
-  override protected function drawItems(startY:Number, startItemIndex:int, endRowIndex:int, head:Boolean, h:Number):Number {
-    endRowIndex = Math.min(endRowIndex, _dataSource.itemCount);
+  override protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {
+    endPosition -= _insets.bottom;
 
-    var x:Number = 0;
-    var y:Number = startY;
+    const x:Number = _insets.left;
+    var y:Number = startPosition == 0 ? _insets.top : startPosition;
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
-    while (x < h && itemIndex < _dataSource.itemCount) {
+    while (y < endPosition && itemIndex < endItemIndex) {
       _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, _dimension, NaN);
       y += _rendererManager.lastCreatedRendererDimension + _gap;
     }

@@ -83,7 +83,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
       return;
     }
 
-    // idea side bar tab: doesn't have selecting state — selecting state equals selected state. OFF_SELECTING == ON and ON_SELECTING = ON
+    // idea sidebar tab: doesn't have selecting state — selecting state equals selected state. OFF_SELECTING == ON and ON_SELECTING = ON
     if (_selectionModel.isItemSelected(itemIndex) && !value) {
       return;
     }

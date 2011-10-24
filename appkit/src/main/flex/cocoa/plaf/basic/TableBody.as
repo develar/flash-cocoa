@@ -1,4 +1,5 @@
 package cocoa.plaf.basic {
+import cocoa.CollectionBody;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 import cocoa.tableView.TableColumn;
@@ -11,7 +12,7 @@ import flash.display.Shape;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-public class TableBody extends ListBody {
+public class TableBody extends CollectionBody {
   private var tableView:TableView;
   private var dataSource:TableViewDataSource;
   //noinspection JSFieldCanBeLocal

@@ -1,16 +1,13 @@
-package cocoa.plaf.basic {
-import cocoa.AbstractView;
-import cocoa.Focusable;
-
+package cocoa {
 import flash.display.InteractiveObject;
-
 import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 
 import spark.core.IViewport;
 import spark.core.NavigationUnit;
 
-public class ListBody extends AbstractView implements IViewport, Focusable {
+[Abstract]
+public class CollectionBody extends AbstractView implements IViewport, Focusable {
   protected var rowHeightWithSpacing:Number;
   protected var oldHeight:Number = 0;
 
