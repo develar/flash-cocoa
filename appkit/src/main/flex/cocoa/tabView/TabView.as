@@ -19,7 +19,6 @@ public class TabView extends SingleSelectionBar {
   public static const BORDERLESS:int = 1;
 
   override protected function segmentedControlSelectionChanged(oldItem:PaneItem, newItem:PaneItem, oldIndex:int, newIndex:int):void {
-    // oldItem != null /* такое только в самом начале — нам не нужно при этом кидать событие */
     if (_selectionChanging != null) {
       _selectionChanging.dispatch(oldItem, newItem);
     }

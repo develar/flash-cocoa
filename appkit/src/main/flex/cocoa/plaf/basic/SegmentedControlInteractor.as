@@ -3,7 +3,6 @@ import cocoa.ItemMouseSelectionMode;
 import cocoa.SegmentedControl;
 import cocoa.SelectionMode;
 import cocoa.plaf.Skin;
-import cocoa.renderer.InteractiveGraphicsRendererManager;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.util.SharedPoint;
 
