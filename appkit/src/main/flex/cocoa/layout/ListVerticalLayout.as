@@ -10,12 +10,7 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
       return;
     }
 
-    if (visibleItemCount > -1) {
-
-    }
-    else {
-      initialDrawItems(h);
-    }
+    doLayout(h);
   }
 
   override protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {

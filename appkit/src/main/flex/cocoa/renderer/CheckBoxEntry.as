@@ -2,6 +2,8 @@ package cocoa.renderer {
 import cocoa.CheckBox;
 import cocoa.plaf.ButtonSkinInteraction;
 
+import mx.core.IVisualElement;
+
 public class CheckBoxEntry extends TextLineEntry {
   private var factory:CheckBoxEntryFactory;
 
@@ -21,6 +23,10 @@ public class CheckBoxEntry extends TextLineEntry {
 
   override public function addToPool():void {
     factory.addToPool(this);
+  }
+
+  override public function getY(textLineYAdjustment:Number):Number {
+    return IVisualElement(checkbox.skin).y;
   }
 }
 }

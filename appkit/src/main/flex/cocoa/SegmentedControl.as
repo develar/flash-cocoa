@@ -59,9 +59,6 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     if (layout != null) {
       layout.dataSource = value;
     }
-    if (rendererManager != null) {
-      rendererManager.dataSource = value;
-    }
   }
 
   private function itemRemoved(item:Object, index:int):void {
@@ -190,12 +187,11 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
       this.rendererManager = rendererManager;
     }
 
-    rendererManager.dataSource = dataSource;
     rendererManager.container = this;
     rendererManager.selectionModel = this;
 
-    layout.dataSource = dataSource;
     layout.rendererManager = rendererManager;
+    layout.dataSource = dataSource;
     layout.container = this;
 
     if (mode != SelectionMode.NONE) {

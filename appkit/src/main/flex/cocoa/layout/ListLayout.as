@@ -10,8 +10,8 @@ import flash.errors.IllegalOperationError;
 
 [Abstract]
 internal class ListLayout implements CollectionLayout {
-  protected var visibleItemCount:int = -1;
   protected var pendingAddedIndices:Vector.<int>;
+  protected var pendingRemovedIndices:Vector.<int>;
 
   protected var _container:AbstractView;
   public function set container(value:AbstractView):void {
@@ -37,6 +37,10 @@ internal class ListLayout implements CollectionLayout {
     if (_rendererManager is InteractiveRendererManager) {
       InteractiveRendererManager(_rendererManager).fixedRendererDimension = _dimension;
     }
+
+    if (_dataSource != null) {
+      _rendererManager.dataSource = _dataSource;
+    }
   }
 
   protected var _dataSource:ListViewDataSource;
@@ -57,6 +61,9 @@ internal class ListLayout implements CollectionLayout {
     }
 
     _dataSource = value;
+    if (_rendererManager != null) {
+      _rendererManager.dataSource = _dataSource;
+    }
 
     if (_dataSource != null) {
       _dataSource.reset.add(dataSourceReset);
@@ -70,12 +77,19 @@ internal class ListLayout implements CollectionLayout {
   }
 
   protected function itemRemoved(item:Object, index:int):void {
-    dataSourceReset();
+    if (_rendererManager.renderedItemCount > 0) {
+      if (pendingRemovedIndices == null) {
+        pendingRemovedIndices = new Vector.<int>();
+      }
+
+      pendingRemovedIndices.push(index);
+    }
+
+    _container.invalidateSize();
   }
 
   protected function itemAdded(item:Object, index:int):void {
-    // not yet drawn
-    if (visibleItemCount > -1) {
+    if (_rendererManager.renderedItemCount > 0) {
       if (pendingAddedIndices == null) {
         pendingAddedIndices = new Vector.<int>();
       }
@@ -92,16 +106,12 @@ internal class ListLayout implements CollectionLayout {
   }
 
   public function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void {
-    if (visibleItemCount > 0 && itemIndex < visibleItemCount) {
+    if (itemIndex < _rendererManager.renderedItemCount) {
       InteractiveRendererManager(_rendererManager).setSelected(itemIndex, relatedIndex, value);
     }
   }
 
   private function dataSourceReset():void {
-    if (visibleItemCount > -1) {
-      visibleItemCount = -visibleItemCount - 1;
-    }
-
     if (pendingAddedIndices != null) {
       pendingAddedIndices.length = 0;
     }
@@ -109,23 +119,23 @@ internal class ListLayout implements CollectionLayout {
     _container.invalidateSize();
   }
 
+  protected function doLayout(endPosition:Number):void {
+    if (_rendererManager.renderedItemCount > 0) {
+
+    }
+    else if (_dataSource != null) {
+      initialDrawItems(endPosition);
+    }
+  }
+
   protected function initialDrawItems(endPosition:Number):Number {
     const startItemIndex:int = 0;
     const endItemIndex:int = _dataSource.itemCount;
     const newVisibleItemCount:int = endItemIndex - startItemIndex;
-
-    if (visibleItemCount != -1) {
-      _rendererManager.reuse(visibleItemCount + 1, newVisibleItemCount == 0);
+    if (_rendererManager.renderedItemCount > 0) {
+      _rendererManager.reuse(-_rendererManager.renderedItemCount, newVisibleItemCount == 0);
     }
-
-    if (newVisibleItemCount != 0) {
-      visibleItemCount = newVisibleItemCount;
-      return drawItems(0, endPosition, startItemIndex, endItemIndex, true);
-    }
-    else {
-      visibleItemCount = -1;
-      return 0;
-    }
+    return newVisibleItemCount == 0 ? 0 : drawItems(0, endPosition, startItemIndex, endItemIndex, true);
   }
 
   // startPosition and endPosition include insets, i.e. drawItems must respect insets —

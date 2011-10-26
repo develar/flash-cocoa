@@ -21,5 +21,11 @@ public interface RendererManager {
   function get lastCreatedRendererDimension():Number;
 
   function set dataSource(value:ListViewDataSource):void;
+
+  function get renderedItemCount():int;
+
+  function createAndLayoutRendererAt(itemIndex:int, x:Number, y:Number, w:Number, h:Number, startInset:Number, gap:Number):void;
+
+  function removeRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void;
 }
 }

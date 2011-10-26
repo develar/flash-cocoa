@@ -1,4 +1,6 @@
 package cocoa.renderer {
+import cocoa.renderer.TextLineEntry;
+
 import flash.errors.IllegalOperationError;
 
 public class TextLineLinkedList {
@@ -40,6 +42,33 @@ public class TextLineLinkedList {
 
     o.addToPool();
     return o;
+  }
+
+  public function remove(o:TextLineEntry):void {
+    var p:TextLineEntry = o.previous;
+    var n:TextLineEntry = o.next;
+    if (n == null && p == null) {
+      head = tail = null;
+    }
+    else if (n == null) {
+      o.previous = null;
+      p.next = null;
+      tail = p;
+    }
+    else if (p == null) {
+      o.next = null;
+      n.previous = null;
+      head = n;
+    }
+    else {
+      p.next = n;
+      n.previous = p;
+      o.previous = null;
+      o.next = null;
+    }
+
+    size--;
+    o.addToPool();
   }
 
   public function addLast(entry:TextLineEntry):void {

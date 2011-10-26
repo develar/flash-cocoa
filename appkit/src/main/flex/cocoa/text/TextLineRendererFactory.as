@@ -1,4 +1,5 @@
 package cocoa.text {
+import cocoa.renderer.TextLineEntry;
 import cocoa.renderer.TextLineLinkedList;
 
 import flash.display.DisplayObjectContainer;
@@ -25,6 +26,12 @@ public class TextLineRendererFactory {
       _instance = new TextLineRendererFactory();
     }
     return _instance;
+  }
+
+  public function reuseRemoved(container:DisplayObjectContainer, list:TextLineLinkedList, entry:TextLineEntry):void {
+    list.remove(entry);
+    container.removeChild(entry.line);
+    orphanLines[orphanCount++] = entry.line;
   }
 
   public function reuse(container:DisplayObjectContainer, list:TextLineLinkedList, itemCountDelta:int, finalPass:Boolean):void {

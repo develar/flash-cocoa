@@ -5,12 +5,14 @@ public class TextLineEntry {
   private static const pool:Vector.<TextLineEntry> = new Vector.<TextLineEntry>(32, true);
   private static var poolSize:int;
 
-  public var itemIndex:int;
+  public var itemIndex:int = -1;
 
   public var next:TextLineEntry;
   public var previous:TextLineEntry;
 
   public var line:TextLine;
+  
+  public var dimension:Number;
 
   public function TextLineEntry(line:TextLine):void {
     this.line = line;
@@ -27,6 +29,10 @@ public class TextLineEntry {
     }
   }
 
+  public function getY(textLineYAdjustment:Number):Number {
+    return line.y + textLineYAdjustment;
+  }
+
   public function addToPool():void {
     if (poolSize == pool.length) {
       pool.fixed = false;
@@ -34,6 +40,17 @@ public class TextLineEntry {
       pool.fixed = true;
     }
     pool[poolSize++] = this;
+
+    dimension = NaN;
+    itemIndex = -1;
+  }
+
+  public function moveX(increment:Number):void {
+    line.x += increment;
+  }
+
+  public function moveY(increment:Number):void {
+    line.y += increment;
   }
 }
 }

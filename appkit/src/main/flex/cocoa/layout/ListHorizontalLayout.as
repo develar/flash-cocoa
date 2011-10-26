@@ -1,21 +1,31 @@
 package cocoa.layout {
-import flash.errors.IllegalOperationError;
+import cocoa.util.Vectors;
 
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
-  private var endX:Number;
-
   override public function measure():void {
-    if (pendingAddedIndices != null && pendingAddedIndices.length > 0) {
-      assert(pendingAddedIndices.length == 1);
-      _container.measuredWidth = drawItems(endX, 10000, pendingAddedIndices[0], pendingAddedIndices[0] + 1, false);
-      visibleItemCount++;
-      pendingAddedIndices.length = 0;
-    }
-    else {
-      if (visibleItemCount > 0) {
-        throw new IllegalOperationError("skip, who called us?" + _container.measuredWidth);
+    var itemIndex:int;
+    var isInitialDrawItems:Boolean = true;
+    if (pendingRemovedIndices != null && pendingRemovedIndices.length > 0) {
+      for each (itemIndex in pendingRemovedIndices.sort(Vectors.sortDecreasing)) {
+        _rendererManager.removeRenderer(itemIndex, itemIndex == 0 ? _insets.left : NaN, _insets.top, NaN, _dimension);
+        _container.measuredWidth -= _rendererManager.lastCreatedRendererDimension;
       }
 
+      pendingRemovedIndices.length = 0;
+      isInitialDrawItems = false;
+    }
+
+    if (pendingAddedIndices != null && pendingAddedIndices.length > 0) {
+      for each (itemIndex in pendingAddedIndices.sort(Vectors.sortAscending)) {
+        _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, NaN, _dimension, 0, 0);
+        _container.measuredWidth += _rendererManager.lastCreatedRendererDimension;
+      }
+
+      pendingAddedIndices.length = 0;
+      isInitialDrawItems = false;
+    }
+
+    if (isInitialDrawItems) {
       _container.measuredWidth = initialDrawItems(100000);
     }
 
@@ -26,14 +36,8 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     if (_container.measuredWidth == w) {
       return;
     }
-    
-    if (visibleItemCount > -1) {
 
-    }
-    else if (_dataSource != null) {
-      endX = 0;
-      initialDrawItems(w);
-    }
+    doLayout(w);
   }
 
   override protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {
@@ -49,7 +53,6 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     }
     _rendererManager.postLayout();
 
-    endX = x;
     return x - _gap;
   }
 }

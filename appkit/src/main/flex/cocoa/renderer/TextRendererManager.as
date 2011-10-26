@@ -8,6 +8,7 @@ import cocoa.text.TextFormat;
 import cocoa.text.TextLineRendererFactory;
 
 import flash.display.DisplayObjectContainer;
+import flash.errors.IllegalOperationError;
 import flash.text.engine.TextLine;
 import flash.text.engine.TextRotation;
 
@@ -122,11 +123,12 @@ public class TextRendererManager implements RendererManager {
 
   protected function layoutTextLine(line:TextLine, x:Number, y:Number, h:Number):void {
     line.x = x + textInsets.left;
-    line.y = y + h - textInsets.bottom;
+    line.y = y + (h - textInsets.bottom);
   }
 
   public function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void {
     var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
+    newEntry.dimension = _lastCreatedRendererDimension;
     if (previousEntry == null) {
       cells.addFirst(newEntry);
     }
@@ -135,6 +137,84 @@ public class TextRendererManager implements RendererManager {
     }
 
     previousEntry = newEntry;
+  }
+
+  public function createAndLayoutRendererAt(itemIndex:int, x:Number, y:Number, w:Number, h:Number, startInset:Number, gap:Number):void {
+    var prevEntry:TextLineEntry;
+    const isChangeWidth:Boolean = w != w;
+    var e:TextLineEntry;
+    if (isChangeWidth) {
+      x = startInset;
+      if (itemIndex != 0) {
+        e = cells.head;
+        do {
+          x += e.dimension + gap;
+          if (e.itemIndex == itemIndex) {
+            break;
+          }
+        }
+        while ((e = e.next) != null);
+
+        prevEntry = e == null ? cells.tail : e;
+      }
+    }
+    else{
+      throw new IllegalOperationError("not implemented");
+    }
+    
+    var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
+    if (prevEntry == null) {
+      cells.addFirst(newEntry);
+    }
+    else {
+      cells.addAfter(prevEntry, newEntry);
+    }
+
+    e = newEntry;
+    while ((e = e.next) != null) {
+      e.itemIndex++;
+      if (isChangeWidth) {
+        e.moveX(_lastCreatedRendererDimension);
+      }
+      else {
+        e.moveY(_lastCreatedRendererDimension);
+      }
+    }
+  }
+
+  public function removeRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void {
+    var removedEntry:TextLineEntry = findEntry(itemIndex);
+    var nextEntry:TextLineEntry = removedEntry.next;
+
+    if (entryFactories != null) {
+      for each (var entryFactory:EntryFactory in entryFactories) {
+        entryFactory.preReuse();
+      }
+    }
+
+    textLineRendererFactory.reuseRemoved(textLineContainer, cells, removedEntry);
+
+    if (entryFactories != null) {
+      clearOurPools();
+    }
+
+    _lastCreatedRendererDimension = removedEntry.dimension;
+    if (nextEntry == null) {
+      return;
+    }
+
+    var e:TextLineEntry = nextEntry;
+    const isChangeWidth:Boolean = w != w;
+    do {
+      e.itemIndex--;
+      if (isChangeWidth) {
+        e.moveX(-_lastCreatedRendererDimension);
+      }
+      else {
+        e.moveY(-_lastCreatedRendererDimension);
+      }
+    }
+    while ((e = e.next) != null);
   }
 
   public function reuse(itemCountDelta:int, finalPass:Boolean):void {
@@ -173,6 +253,10 @@ public class TextRendererManager implements RendererManager {
     for each (var entryFactory:EntryFactory in entryFactories) {
       entryFactory.finalizeReused(_container);
     }
+  }
+
+  public function get renderedItemCount():int {
+    return cells.size;
   }
 }
 }

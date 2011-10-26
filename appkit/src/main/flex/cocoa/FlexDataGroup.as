@@ -2,6 +2,7 @@ package cocoa {
 import cocoa.layout.VirtualVerticalDataGroupLayout;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
+import cocoa.util.Vectors;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
@@ -283,13 +284,6 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
   }
 
   /**
-   * Used below for sorting the virtualRendererIndices Vector.
-   */
-  private static function sortDecreasing(x:int, y:int):Number {
-    return y - x;
-  }
-
-  /**
    *  Apply itemRemoved() to the renderer and dataProvider item at index.
    */
   private function removeRendererAt(index:int):void {
@@ -322,7 +316,7 @@ public class FlexDataGroup extends GroupBase implements IItemRendererOwner, View
     }
 
     if (virtualRendererIndices != null && virtualRendererIndices.length > 0) {
-      for each (var index:int in virtualRendererIndices.concat().sort(sortDecreasing)) {
+      for each (var index:int in virtualRendererIndices.concat().sort(Vectors.sortDecreasing)) {
         removeRendererAt(index);
       }
 
