@@ -4,7 +4,6 @@ import cocoa.resources.ResourceMetadata;
 [Abstract]
 public class LabeledItem {
   public var title:ResourceMetadata;
-  [Transient]
   public var localizedTitle:String;
 
   public function LabeledItem(title:ResourceMetadata) {

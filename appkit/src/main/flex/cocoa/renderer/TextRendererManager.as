@@ -21,7 +21,7 @@ public class TextRendererManager implements RendererManager {
   protected var textInsets:Insets;
   protected var textFormat:TextFormat;
 
-  private var entryFactories:Vector.<EntryFactory>;
+  protected var entryFactories:Vector.<EntryFactory>;
 
   protected var textRotation:String;
 
