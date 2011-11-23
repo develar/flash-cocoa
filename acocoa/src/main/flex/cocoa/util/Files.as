@@ -4,7 +4,7 @@ import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
 
-public final class FileUtil {
+public final class Files {
   public static const SEPARATOR:String = "/";
 
   private static const OPEN_MACRO:String = "{";

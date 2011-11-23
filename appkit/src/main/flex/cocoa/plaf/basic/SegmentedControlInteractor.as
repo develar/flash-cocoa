@@ -45,13 +45,13 @@ public class SegmentedControlInteractor {
       }
     }
 
-    const itemIndex:int = segmentedControl.rendererManager.getItemIndexAt(x, y);
+    const itemIndex:int = InteractiveRendererManager(segmentedControl.rendererManager).getItemIndexAt(x, y);
     if (itemIndex == -1) {
       segmentedControl = null;
       return;
     }
 
-    rendererManager = segmentedControl.rendererManager;
+    rendererManager = InteractiveRendererManager(segmentedControl.rendererManager);
 
     if (rendererManager.mouseSelectionMode == ItemMouseSelectionMode.DOWN) {
       segmentedControl.setSelected(itemIndex, segmentedControl.isItemSelected(itemIndex));

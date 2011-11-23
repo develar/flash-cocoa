@@ -15,7 +15,7 @@ import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9EdgeBitmapBorder;
 import cocoa.plaf.basic.BitmapIcon;
-import cocoa.util.FileUtil;
+import cocoa.util.Files;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -220,8 +220,8 @@ public class Builder {
 
     data.writeBytes(icons);
 
-    FileUtil.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/borders", data);
-    FileUtil.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/frameAssets", fdata);
+    Files.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/borders", data);
+    Files.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/frameAssets", fdata);
   }
 
   protected static function writeInsets(output:ByteArray, insets:Insets):void {

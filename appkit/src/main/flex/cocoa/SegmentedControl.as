@@ -5,6 +5,7 @@ import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Skin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.renderer.InteractiveRendererManager;
+import cocoa.renderer.RendererManager;
 
 import flash.display.DisplayObject;
 
@@ -150,11 +151,11 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     _layout = value;
   }
 
-  private var _rendererManager:InteractiveRendererManager;
-  public function get rendererManager():InteractiveRendererManager {
+  private var _rendererManager:RendererManager;
+  public function get rendererManager():RendererManager {
     return _rendererManager;
   }
-  public function set rendererManager(value:InteractiveRendererManager):void {
+  public function set rendererManager(value:RendererManager):void {
     _rendererManager = value;
   }
 
@@ -181,14 +182,16 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
       layout = laf.getFactory(_lafKey + ".layout").newInstance();
     }
 
-    var rendererManager:InteractiveRendererManager = this.rendererManager;
+    var rendererManager:RendererManager = this.rendererManager;
     if (rendererManager == null) {
       rendererManager = laf.getFactory(_lafKey + ".rendererManager").newInstance();
       this.rendererManager = rendererManager;
     }
 
     rendererManager.container = this;
-    rendererManager.selectionModel = this;
+    if (rendererManager is InteractiveRendererManager) {
+      InteractiveRendererManager(rendererManager).selectionModel = this;
+    }
 
     layout.rendererManager = rendererManager;
     layout.dataSource = dataSource;

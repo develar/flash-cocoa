@@ -12,7 +12,7 @@
     import cocoa.renderer.TextRendererManager;
     import cocoa.tableView.TableColumn;
     import cocoa.tableView.TableColumnImpl;
-    import cocoa.util.FileUtil;
+    import cocoa.util.Files;
 
     use namespace INCLUDE_TRAITS;
 
@@ -39,7 +39,7 @@
     }
 
     public static function dd(s:String, v:ByteArray):void {
-      FileUtil.writeBytes("/Users/develar/f/" + s + ".png", v);
+      Files.writeBytes("/Users/develar/f/" + s + ".png", v);
     }
 
     private function changeS():void {
