@@ -1,13 +1,17 @@
 package cocoa.layout {
 public class ListVerticalLayout extends ListLayout implements CollectionLayout {
   override public function measure():void {
-    _container.measuredWidth = _dimension;
+    _container.measuredWidth = hasExplicitDimension ? _dimension : 0;
     _container.measuredHeight = 0;
   }
 
   override public function layout(w:Number, h:Number):void {
     if (_container.measuredHeight == h) {
       return;
+    }
+
+    if (!hasExplicitDimension) {
+      _dimension = w;
     }
 
     doLayout(h);

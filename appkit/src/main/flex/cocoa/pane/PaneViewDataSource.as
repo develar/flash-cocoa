@@ -54,5 +54,12 @@ public class PaneViewDataSource extends AbstractCollectionViewDataSource impleme
   public function getItemIndex(object:Object):int {
     return source.indexOf(object);
   }
+
+  public function clear():void {
+    source.length = 0;
+    if (_reset != null) {
+      _reset.dispatch();
+    }
+  }
 }
 }

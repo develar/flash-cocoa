@@ -192,6 +192,9 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     if (rendererManager is InteractiveRendererManager) {
       InteractiveRendererManager(rendererManager).selectionModel = this;
     }
+    else {
+      mode = SelectionMode.NONE;
+    }
 
     layout.rendererManager = rendererManager;
     layout.dataSource = dataSource;

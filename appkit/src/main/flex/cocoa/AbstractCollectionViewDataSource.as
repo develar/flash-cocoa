@@ -4,6 +4,7 @@ import flash.errors.IllegalOperationError;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
+[Abstract]
 public class AbstractCollectionViewDataSource {
   protected var _itemCount:int = 0;
   public function get itemCount():int {

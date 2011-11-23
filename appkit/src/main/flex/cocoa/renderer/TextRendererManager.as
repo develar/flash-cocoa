@@ -27,8 +27,8 @@ public class TextRendererManager implements RendererManager {
 
   public function TextRendererManager(textFormat:TextFormat = null, textInsets:Insets = null) {
     textLineRendererFactory = TextLineRendererFactory.instance;
-    this.textInsets = textInsets;
     this.textFormat = textFormat;
+    this.textInsets = textInsets;
   }
 
   protected function get textLineContainer():DisplayObjectContainer {

@@ -23,18 +23,28 @@ internal class ListLayout implements CollectionLayout {
     _insets = value;
   }
 
+  protected var hasExplicitDimension:Boolean;
+
   protected var _dimension:Number;
   public function get dimension():Number {
     return _dimension;
   }
   public function set dimension(value:Number):void {
+    if (value != value) {
+      throw new IllegalOperationError("must be not NaN");
+    }
+    if (value < 0) {
+      throw new IllegalOperationError("must be greater than 0");
+    }
+
+    hasExplicitDimension = true;
     _dimension = value;
   }
 
   protected var _rendererManager:RendererManager;
   public function set rendererManager(value:RendererManager):void {
     _rendererManager = value;
-    if (_rendererManager is InteractiveRendererManager) {
+    if (hasExplicitDimension && _rendererManager is InteractiveRendererManager) {
       InteractiveRendererManager(_rendererManager).fixedRendererDimension = _dimension;
     }
 
