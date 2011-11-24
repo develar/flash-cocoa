@@ -23,28 +23,15 @@ internal class ListLayout implements CollectionLayout {
     _insets = value;
   }
 
-  protected var hasExplicitDimension:Boolean;
-
-  protected var _dimension:Number;
-  public function get dimension():Number {
-    return _dimension;
-  }
-  public function set dimension(value:Number):void {
-    if (value != value) {
-      throw new IllegalOperationError("must be not NaN");
-    }
-    if (value < 0) {
-      throw new IllegalOperationError("must be greater than 0");
-    }
-
-    hasExplicitDimension = true;
+  protected var _dimension:ExplicitDimensionProvider;
+  public function set dimension(value:ExplicitDimensionProvider):void {
     _dimension = value;
   }
 
   protected var _rendererManager:RendererManager;
   public function set rendererManager(value:RendererManager):void {
     _rendererManager = value;
-    if (hasExplicitDimension && _rendererManager is InteractiveRendererManager) {
+    if (_rendererManager is InteractiveRendererManager) {
       InteractiveRendererManager(_rendererManager).fixedRendererDimension = _dimension;
     }
 
@@ -129,28 +116,24 @@ internal class ListLayout implements CollectionLayout {
     _container.invalidateSize();
   }
 
-  protected function doLayout(endPosition:Number):void {
-    if (_rendererManager.renderedItemCount > 0) {
-
-    }
-    else if (_dataSource != null) {
-      initialDrawItems(endPosition);
-    }
+  protected function doLayout(endPosition:Number, effectiveDimension:Number):void {
+    initialDrawItems(endPosition, effectiveDimension);
   }
 
-  protected function initialDrawItems(endPosition:Number):Number {
+  protected function initialDrawItems(endPosition:Number, effectiveDimension:Number):Number {
     const startItemIndex:int = 0;
     const endItemIndex:int = _dataSource.itemCount;
     const newVisibleItemCount:int = endItemIndex - startItemIndex;
     if (_rendererManager.renderedItemCount > 0) {
       _rendererManager.reuse(-_rendererManager.renderedItemCount, newVisibleItemCount == 0);
     }
-    return newVisibleItemCount == 0 ? 0 : drawItems(0, endPosition, startItemIndex, endItemIndex, true);
+    return newVisibleItemCount == 0 ? 0 : drawItems(0, endPosition, startItemIndex, endItemIndex, effectiveDimension, true);
   }
 
   // startPosition and endPosition include insets, i.e. drawItems must respect insets —
   // as example, if startPosition == 0, ListHorizontalLayout must use startX = insets.left
-  protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {
+  protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, effectiveDimension:Number,
+                               head:Boolean):Number {
     throw new Error();
   }
 

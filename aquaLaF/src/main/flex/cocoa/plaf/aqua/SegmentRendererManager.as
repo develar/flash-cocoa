@@ -100,7 +100,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     var shape:Shape = Shape(entry.displayObject);
     var g:Graphics = shape.graphics;
     g.clear();
-    draw(itemIndex, g, entry.line.userData, _fixedRendererDimension, selecting, selected);
+    draw(itemIndex, g, entry.line.userData, _fixedRendererDimension.value, selecting, selected);
   }
 
   override public function setSelecting(itemIndex:int, value:Boolean):void {

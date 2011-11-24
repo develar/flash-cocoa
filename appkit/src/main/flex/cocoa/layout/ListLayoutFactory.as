@@ -14,9 +14,23 @@ public final class ListLayoutFactory implements IFactory {
 
   public function newInstance():* {
     var l:ListLayout = horizontal ? new ListHorizontalLayout() : new ListVerticalLayout();
-    l.dimension = dimension;
+    l.dimension = new MyExplicitDimensionProvider(dimension);
     l.gap = gap;
     return l;
   }
 }
+}
+
+import cocoa.layout.ExplicitDimensionProvider;
+
+class MyExplicitDimensionProvider implements ExplicitDimensionProvider {
+  private var _value:Number;
+
+  public function MyExplicitDimensionProvider(value:Number) {
+    _value = value;
+  }
+
+  public function get value():Number {
+    return _value;
+  }
 }

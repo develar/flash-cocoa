@@ -1,23 +1,20 @@
 package cocoa.layout {
 public class ListVerticalLayout extends ListLayout implements CollectionLayout {
   override public function measure():void {
-    _container.measuredWidth = hasExplicitDimension ? _dimension : 0;
-    _container.measuredHeight = 0;
+    _container.measuredWidth = _dimension.value;
+    _container.measuredHeight = initialDrawItems(100000, _dimension.value);
   }
 
   override public function layout(w:Number, h:Number):void {
-    if (_container.measuredHeight == h) {
+    if (_container.measuredHeight == h && _container.measuredWidth == w) {
       return;
     }
 
-    if (!hasExplicitDimension) {
-      _dimension = w;
-    }
-
-    doLayout(h);
+    doLayout(h, w);
   }
 
-  override protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, head:Boolean):Number {
+  override protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int,
+                                        effectiveDimension:Number, head:Boolean):Number {
     endPosition -= _insets.bottom;
 
     const x:Number = _insets.left;
@@ -25,7 +22,7 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
     while (y < endPosition && itemIndex < endItemIndex) {
-      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, _dimension, NaN);
+      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, effectiveDimension, NaN);
       y += _rendererManager.lastCreatedRendererDimension + _gap;
     }
     _rendererManager.postLayout();

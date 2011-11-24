@@ -1,5 +1,6 @@
 package cocoa.renderer {
 import cocoa.ListSelectionModel;
+import cocoa.layout.ExplicitDimensionProvider;
 
 import flash.display.InteractiveObject;
 
@@ -15,6 +16,6 @@ public interface InteractiveRendererManager extends RendererManager {
 
   function set selectionModel(selectionModel:ListSelectionModel):void;
 
-  function set fixedRendererDimension(value:Number):void;
+  function set fixedRendererDimension(value:ExplicitDimensionProvider):void;
 }
 }
