@@ -1,7 +1,7 @@
 package cocoa.util {
 import flash.utils.ByteArray;
 
-public class StringUtil {
+public class Strings {
   private static const MAX_PATHNAME_LENGTH:uint = 20;
   private static const SUMMARY_LENGTH:uint = 150;
 
@@ -26,6 +26,7 @@ public class StringUtil {
 
   public static function replace(string:String, map:Object):String {
     for (var from:String in map) {
+      //noinspection JSUnfilteredForInLoop
       string = string.replace(new RegExp(from.replace('$', '\\$'), 'g'), map[from]);
     }
     return string;

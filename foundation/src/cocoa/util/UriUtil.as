@@ -1,11 +1,11 @@
 package cocoa.util {
 public final class UriUtil {
   public static function trim(uri:String, deleteWWW:Boolean = false):String {
-    uri = StringUtil.trim(uri);
-    if (StringUtil.startsWith(uri, "http://")) {
+    uri = Strings.trim(uri);
+    if (Strings.startsWith(uri, "http://")) {
       uri = uri.substr(7);
     }
-    if (deleteWWW && StringUtil.startsWith(uri, "www.")) {
+    if (deleteWWW && Strings.startsWith(uri, "www.")) {
       uri = uri.substr(4);
     }
     if (uri.charAt(uri.length - 1) == '/') {

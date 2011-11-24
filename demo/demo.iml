@@ -53,7 +53,7 @@
     <orderEntry type="library" name="Maven: org.osflash:as3-signals:swc:0.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4" level="project" />
     <orderEntry type="module" module-name="collections" />
-    <orderEntry type="module" module-name="foundation" />
+    <orderEntry type="library" name="Maven: org.flyti:foundation:swc:1.2.5" level="project" />
     <orderEntry type="module" module-name="acocoa" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:swc:4.5.2.21576" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:2.6" level="project" />

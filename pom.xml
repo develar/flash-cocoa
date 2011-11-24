@@ -14,6 +14,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>migLayout</module>
     <module>asset-builder-maven-plugin</module>
     <!--<module>laf-compiler-ext</module>-->
     <module>appkit</module>
