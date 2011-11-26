@@ -14,7 +14,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>migLayout</module>
+
     <module>asset-builder-maven-plugin</module>
     <!--<module>laf-compiler-ext</module>-->
     <module>appkit</module>
@@ -32,6 +32,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
+        <module>migLayout</module>
         <module>foundation</module>
         <module>collections</module>
       </modules>
