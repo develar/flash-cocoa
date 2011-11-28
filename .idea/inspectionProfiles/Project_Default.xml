@@ -3,10 +3,15 @@
     <option name="myName" value="Project Default" />
     <option name="myLocal" value="false" />
     <inspection_tool class="FieldMayBeFinal" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSMismatchedCollectionQueryUpdate" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="queries" value="trace,write" />
+      <option name="updates" value="pop,push,shift,splice,unshift" />
+    </inspection_tool>
     <inspection_tool class="JSMismatchedCollectionQueryUpdateInspection" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="queries" value="trace,write" />
       <option name="updates" value="pop,push,shift,splice,unshift" />
     </inspection_tool>
+    <inspection_tool class="JSUnfilteredForInLoop" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavaDoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="TOP_LEVEL_CLASS_OPTIONS">
         <value>
