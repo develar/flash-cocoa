@@ -29,7 +29,7 @@ public class CompositeEntryFactory extends TextLineAndDisplayObjectEntryFactory 
   override public function finalizeReused(container:DisplayObjectContainer):void {
     for (var i:int = oldPoolSize, n:int = poolSize; i < n; i++) {
       var e:CompositeEntry = CompositeEntry(pool[i]);
-      container.removeChild(e.displayObject);
+      e.displayObject.parent.removeChild(e.displayObject);
       for each (var component:Component in e.components) {
         var child:DisplayObject = DisplayObject(component.skin);
         child.parent.removeChild(child);
