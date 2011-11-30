@@ -13,6 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/collections/collections.iml" filepath="$PROJECT_DIR$/collections/collections.iml" />
       <module fileurl="file://$PROJECT_DIR$/migLayout/core/core.iml" filepath="$PROJECT_DIR$/migLayout/core/core.iml" group="migLayoutAggregator and modules" />
       <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/migLayout/demo/demo migLayout.iml" filepath="$PROJECT_DIR$/migLayout/demo/demo migLayout.iml" group="migLayoutAggregator and modules" />
       <module fileurl="file://$PROJECT_DIR$/migLayout/flash/flash.iml" filepath="$PROJECT_DIR$/migLayout/flash/flash.iml" group="migLayoutAggregator and modules" />
       <module fileurl="file://$PROJECT_DIR$/foundation/foundation.iml" filepath="$PROJECT_DIR$/foundation/foundation.iml" />
       <module fileurl="file://$PROJECT_DIR$/migLayout/migLayoutAggregator.iml" filepath="$PROJECT_DIR$/migLayout/migLayoutAggregator.iml" group="migLayoutAggregator and modules" />
