@@ -12,7 +12,7 @@
         <option name="CUSTOM_CONFIG_FILE_FOR_TESTS" value="" />
         <option name="APPLICATION_ENTRY_POINT" value="" />
         <option name="MAIN_CLASS" value="cocoa.plaf.aqua.demo.Main" />
-        <option name="OUTPUT_FILE_NAME" value="demo-1.4-SNAPSHOT.swf" />
+        <option name="OUTPUT_FILE_NAME" value="demo-2.0-SNAPSHOT.swf" />
         <option name="USE_FACET_COMPILE_OUTPUT_PATH" value="true" />
         <option name="FACET_COMPILE_OUTPUT_PATH" value="$MODULE_DIR$/target" />
         <option name="FACET_COMPILE_OUTPUT_PATH_FOR_TESTS" value="$MODULE_DIR$/target/test-classes" />
@@ -54,6 +54,7 @@
     <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4" level="project" />
     <orderEntry type="module" module-name="collections" />
     <orderEntry type="module" module-name="foundation" />
+    <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="acocoa" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airframework:swc:4.5.2.21576" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:airglobal:swc:2.6" level="project" />

@@ -4,7 +4,7 @@ import flash.display.DisplayObject;
 import mx.core.IInvalidating;
 import mx.core.IUIComponent;
 
-public interface View extends Viewable, IUIComponent, IInvalidating {
+public interface View extends Viewable {
   /**
    *  This method allows access to the Player's native implementation of addChild()
    */
@@ -14,8 +14,6 @@ public interface View extends Viewable, IUIComponent, IInvalidating {
    *  This method allows access to the Player's native implementation of removeChild()
    */
   function removeDisplayObject(displayObject:DisplayObject):void;
-
-  function get initialized():Boolean;
 
   function setFocus():void;
 

@@ -24,15 +24,8 @@ import org.flyti.plexus.events.InjectorEvent;
 
 use namespace mx_internal;
 
-[Frame(factoryClass="cocoa.SystemManager")]
-
 [DefaultProperty("mxmlContent")]
 public class ApplicationImpl extends LayoutlessContainer implements Application {
-  public var frameRate:Number;
-  public var pageTitle:String;
-  public var preloader:Object;
-  public var usePreloader:Boolean;
-
   protected var maps:Vector.<EventMap>;
 
   private var resizeWidth:Boolean = true;
@@ -115,30 +108,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application 
 
   }
 
-  override public function get id():String {
-    if (!super.id && this == FlexGlobals.topLevelApplication && ExternalInterface.available) {
-      return ExternalInterface.objectID;
-    }
-
-    return super.id;
-  }
-
-  override public function set percentHeight(value:Number):void {
-    if (value != super.percentHeight) {
-      super.percentHeight = value;
-      percentBoundsChanged = true;
-      invalidateProperties();
-    }
-  }
-
-  override public function set percentWidth(value:Number):void {
-    if (value != super.percentWidth) {
-      super.percentWidth = value;
-      percentBoundsChanged = true;
-      invalidateProperties();
-    }
-  }
-
   override public function set tabIndex(value:int):void {
   }
 
@@ -171,23 +140,6 @@ public class ApplicationImpl extends LayoutlessContainer implements Application 
    */
   public function get url():String {
     return _url;
-  }
-
-  override protected function invalidateParentSizeAndDisplayList():void {
-    if (!includeInLayout) {
-      return;
-    }
-
-    var p:IInvalidating = parent as IInvalidating;
-    if (!p) {
-      if (parent is ISystemManager) {
-        ISystemManager(parent).invalidateParentSizeAndDisplayList();
-      }
-
-      return;
-    }
-
-    super.invalidateParentSizeAndDisplayList();
   }
 
   override protected function commitProperties():void {

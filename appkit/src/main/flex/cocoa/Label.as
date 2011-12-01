@@ -13,7 +13,6 @@ import flashx.textLayout.formats.VerticalAlign;
 /**
  * Единственно правильным и нормальным способом ставить формат текста — это получение его из LaF.
  * В приложении свобода аля на уровне компонента что-то вписать — даром не нужно. Если все-таки нужен формат не входящий в предоставляемый системой — он выносится в LaF.
- * Но Label используется в дизайнах xp, там по сути эти inline font format тоже надо бы заменить на TextFormat, но пока что не с руки.
  * Поэтому мы допускаем установку таковых свойств, при этом для всех, кроме color, только один раз
  * (color меняется в ответ на состояние, то есть нечто типа color.normal="0xFFFFFF" color="0x000000")
  */
@@ -33,26 +32,6 @@ public class Label extends AbstractView {
     mouseChildren = false;
 
     labelHelper = new LabelHelper(this);
-  }
-
-  private var _paddingLeft:Number = 0;
-  public function set paddingLeft(value:Number):void {
-    _paddingLeft = value;
-  }
-
-  private var _paddingRight:Number = 0;
-  public function set paddingRight(value:Number):void {
-    _paddingRight = value;
-  }
-
-  private var _paddingTop:Number = 0;
-  public function set paddingTop(value:Number):void {
-    _paddingTop = value;
-  }
-
-  private var _paddingBottom:Number = 0;
-  public function set paddingBottom(value:Number):void {
-    _paddingBottom = value;
   }
 
   public function get color():uint {
@@ -107,16 +86,6 @@ public class Label extends AbstractView {
     }
   }
 
-  private var _textAlign:String = TextAlign.START;
-  public function set textAlign(value:String):void {
-    _textAlign = value;
-  }
-
-  private var _verticalAlign:String = VerticalAlign.TOP;
-  public function set verticalAlign(value:String):void {
-    _verticalAlign = value;
-  }
-
   public function get title():String {
     return labelHelper.text;
   }
@@ -151,8 +120,8 @@ public class Label extends AbstractView {
   override protected function measure():void {
     if (labelHelper.hasText) {
       labelHelper.validate();
-      measuredWidth = labelHelper.textWidth + _paddingLeft + _paddingRight;
-      measuredHeight = labelHelper.textHeight + _paddingBottom + _paddingTop;
+      measuredWidth = labelHelper.textWidth ;
+      measuredHeight = labelHelper.textHeight;
     }
     else {
       measuredWidth = 0;
@@ -169,12 +138,12 @@ public class Label extends AbstractView {
     labelHelper.validate();
 
     // verticalAlign = top
-    var textY:Number = labelHelper.textLine.ascent + _paddingTop;
+    var textY:Number = labelHelper.textLine.ascent;
 
     switch (_textAlign) {
       case TextAlign.START:
       case TextAlign.LEFT:
-        labelHelper.move(_paddingLeft, textY);
+        labelHelper.move(0, textY);
         break;
 
       case TextAlign.CENTER:
@@ -186,7 +155,7 @@ public class Label extends AbstractView {
   override public function get baselinePosition():Number {
     if (labelHelper.hasText) {
       labelHelper.validate();
-      return _paddingTop + labelHelper.textLine.ascent;
+      return labelHelper.textLine.ascent;
     }
     else {
       return 0;

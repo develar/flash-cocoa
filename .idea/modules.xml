@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/artFileDecoder/artFileDecoder.iml" filepath="$PROJECT_DIR$/artFileDecoder/artFileDecoder.iml" />
       <module fileurl="file://$PROJECT_DIR$/asset-builder-maven-plugin/asset-builder-maven-plugin.iml" filepath="$PROJECT_DIR$/asset-builder-maven-plugin/asset-builder-maven-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/appkit/cocoa.iml" filepath="$PROJECT_DIR$/appkit/cocoa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cocoa-mx/cocoa-mx.iml" filepath="$PROJECT_DIR$/cocoa-mx/cocoa-mx.iml" />
       <module fileurl="file://$PROJECT_DIR$/cocoaAggregator.iml" filepath="$PROJECT_DIR$/cocoaAggregator.iml" />
       <module fileurl="file://$PROJECT_DIR$/collections/collections.iml" filepath="$PROJECT_DIR$/collections/collections.iml" />
       <module fileurl="file://$PROJECT_DIR$/migLayout/core/core.iml" filepath="$PROJECT_DIR$/migLayout/core/core.iml" group="migLayoutAggregator and modules" />

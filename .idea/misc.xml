@@ -53,6 +53,11 @@
         <option value="allP" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/cocoa-mx/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="org.jetbrains.annotations.Nullable" />

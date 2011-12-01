@@ -7,6 +7,6 @@
   <initialWindow>
     <!--<systemChrome>none</systemChrome>-->
     <!--<transparent>true</transparent>-->
-    <content>demo-1.4-SNAPSHOT.swf</content>
+    <content>demo-2.0-SNAPSHOT.swf</content>
   </initialWindow>
 </application>

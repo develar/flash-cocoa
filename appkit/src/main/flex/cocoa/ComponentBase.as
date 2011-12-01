@@ -3,14 +3,12 @@ import cocoa.plaf.SimpleSkin;
 
 import flash.utils.Dictionary;
 
-import mx.core.IVisualElement;
 import mx.events.PropertyChangeEvent;
-import mx.utils.OnDemandEventDispatcher;
 
 use namespace ui;
 
 [Abstract]
-public class ComponentBase extends OnDemandEventDispatcher {
+public class ComponentBase {
   protected static const HANDLER_NOT_EXISTS:int = 2;
 
   //noinspection JSUnusedLocalSymbols
@@ -69,15 +67,6 @@ public class ComponentBase extends OnDemandEventDispatcher {
     if ((int(skinParts[id]) & HANDLER_NOT_EXISTS) == 0) {
       this[id + "Added"]();
     }
-  }
-
-  public function get hidden():Boolean {
-    return !IVisualElement(untypedSkin).visible && !IVisualElement(untypedSkin).includeInLayout;
-  }
-
-  public function set hidden(value:Boolean):void {
-    IVisualElement(untypedSkin).visible = !value;
-    IVisualElement(untypedSkin).includeInLayout = !value;
   }
 }
 }

@@ -20,13 +20,8 @@ import spark.components.supportClasses.GroupBase;
 import spark.layouts.BasicLayout;
 import spark.layouts.supportClasses.LayoutBase;
 
-use namespace mx_internal;
-
-// компилятор flex не поддерживает массивы при генерации states
-// и свойство обязано быть названо mxmlContent — AddItems
-
 [DefaultProperty("mxmlContent")]
-public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider, IVisualElementContainer {
+public class Container extends GroupBase implements ViewContainer, LookAndFeelProvider {
   private var createChildrenCalled:Boolean;
   private var subviewsChanged:Boolean;
 
@@ -35,15 +30,6 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
 
     mouseEnabledWhereTransparent = false;
     mouseEnabled = false;
-  }
-
-  protected var _resourceBundle:String;
-  public function set resourceBundle(value:String):void {
-    _resourceBundle = value;
-  }
-
-  protected function l(key:String):String {
-    return resourceManager.getString(_resourceBundle, key);
   }
 
   private var _subviews:Array;
@@ -243,46 +229,12 @@ public class Container extends GroupBase implements ViewContainer, LookAndFeelPr
   // disable unwanted legacy
   include "../../unwantedLegacy.as";
 
-  include "../../legacyConstraints.as";
-
   override public function parentChanged(p:DisplayObjectContainer):void {
     super.parentChanged(p);
 
     if (p != null) {
       _parent = p; // так как наше AbstractView не есть ни IStyleClient, ни ISystemManager
     }
-  }
-
-  // we need implement IVisualElementContainer for states (AddItems)
-  public function addElement(element:IVisualElement):IVisualElement {
-    addSubview(Viewable(element));
-    return element;
-  }
-
-  public function addElementAt(element:IVisualElement, index:int):IVisualElement {
-    addSubview(Viewable(element), index);
-    return element;
-  }
-
-  public function removeElement(element:IVisualElement):IVisualElement {
-    removeSubview(Viewable(element));
-    return element;
-  }
-
-  public function removeAllElements():void {
-    throw new IllegalOperationError();
-  }
-
-  public function setElementIndex(element:IVisualElement, index:int):void {
-    throw new IllegalOperationError();
-  }
-
-  public function swapElements(element1:IVisualElement, element2:IVisualElement):void {
-    throw new IllegalOperationError();
-  }
-
-  public function swapElementsAt(index1:int, index2:int):void {
-    throw new IllegalOperationError();
   }
 
   override public function getStyle(styleProp:String):* {

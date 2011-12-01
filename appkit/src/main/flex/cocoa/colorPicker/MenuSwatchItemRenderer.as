@@ -43,7 +43,7 @@ public class MenuSwatchItemRenderer extends AbstractView {
     swatchGrid = new SwatchGridWithHighlightIndicator();
     swatchGrid.x = 8;
     swatchGrid.y = 8;
-    addDisplayObject(swatchGrid);
+    addChild(swatchGrid);
   }
 
   override protected function commitProperties():void {

@@ -100,10 +100,6 @@ public class TextView extends AbstractTextView {
     }
   }
 
-  override protected function commitProperties():void {
-    super.commitProperties();
-  }
-
   override protected function measure():void {
     super.measure();
 
