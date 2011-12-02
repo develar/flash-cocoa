@@ -124,7 +124,6 @@ public class ScrollView extends AbstractView implements IFocusManagerComponent {
       case "contentWidth":
       case "contentHeight":
         invalidateSize();
-        invalidateDisplayList();
         break;
     }
   }

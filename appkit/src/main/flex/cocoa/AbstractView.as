@@ -8,6 +8,7 @@ import net.miginfocom.layout.ComponentType;
 
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LayoutUtil;
+import net.miginfocom.layout.PlatformDefaults;
 
 use namespace mx_internal;
 [Abstract]
@@ -85,7 +86,16 @@ public class AbstractView extends Sprite implements View, ComponentWrapper {
   protected function commitProperties():void {
   }
 
-  protected function updateDisplayList(w:Number, h:Number):void {
+  public function getPixelUnitFactor(isHor:Boolean):Number {
+    return 1;
+  }
+
+  public function get horizontalScreenDPI():Number {
+    return PlatformDefaults.defaultDPI;
+  }
+
+  public function get verticalScreenDPI():Number {
+    return PlatformDefaults.defaultDPI;
   }
 
   public function get visualPadding():Vector.<Number> {
