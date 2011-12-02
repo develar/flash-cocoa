@@ -1,10 +1,16 @@
 package cocoa {
+import cocoa.plaf.LookAndFeel;
+
+import flash.display.DisplayObjectContainer;
+
 import flash.display.Sprite;
+import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.layout.Strings;
 
 [Abstract]
 public class AbstractView extends Sprite implements View {
@@ -104,11 +110,15 @@ public class AbstractView extends Sprite implements View {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
+    return LayoutUtil.calculateHash(this);
   }
 
   public function getComponentType(disregardScrollPane:Boolean):int {
     return ComponentType.TYPE_UNKNOWN;
+  }
+
+  public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+    throw new IllegalOperationError("Abstract");
   }
 }
 }

@@ -88,7 +88,7 @@ internal class ComponentWrapperImpl implements View {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
+    return LayoutUtil.calculateHash(this);
   }
 
   public function getComponentType(disregardScrollPane:Boolean):int {

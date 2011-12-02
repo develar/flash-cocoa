@@ -1,5 +1,5 @@
 package cocoa.message {
-import cocoa.AbstractComponent;
+import cocoa.AbstractSkinnableComponent;
 import cocoa.text.EditableTextView;
 import cocoa.ui;
 
@@ -7,7 +7,7 @@ import flash.utils.Dictionary;
 
 use namespace ui;
 
-public class ApplicationNotification extends AbstractComponent {
+public class ApplicationNotification extends AbstractSkinnableComponent {
   public function ApplicationNotification() {
     super();
 

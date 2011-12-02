@@ -9,7 +9,7 @@ import spark.events.TextOperationEvent;
 
 use namespace ui;
 
-public class TextInput extends AbstractComponent implements Control {
+public class TextInput extends AbstractSkinnableComponent implements Control {
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.textDisplay = 0;
   override protected function get skinParts():Dictionary {

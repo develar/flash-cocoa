@@ -4,7 +4,6 @@ import cocoa.plaf.LookAndFeelProvider;
 import cocoa.util.SharedPoint;
 
 import flash.display.DisplayObjectContainer;
-import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ContainerWrapper;
@@ -26,6 +25,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
 
   public function validate():void {
     if (!componentInitialized) {
+      componentInitialized = true;
       for each (var view:View in components) {
         view.init(_laf, this);
       }  
@@ -66,7 +66,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
     return ComponentType.TYPE_CONTAINER;
   }
 
-  private var _components:Vector.<View>;
+  protected var _components:Vector.<View>;
   public function get components():Vector.<View> {
     return _components;
   }
@@ -112,7 +112,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
     _laf = value;
   }
 
-  public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+  override public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
     _laf = laf;
   }
 }

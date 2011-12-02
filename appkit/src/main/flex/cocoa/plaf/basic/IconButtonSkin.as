@@ -24,25 +24,21 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
     throw new Error("abstract");
   }
 
-  protected function measureIcon():void {
-    measuredWidth = iconInsets.width;
-    measuredHeight = iconInsets.height;
-    if (_icon != null) {
-      measuredWidth += _icon.iconWidth;
-      measuredHeight += _icon.iconHeight;
-    }
-  }
-
-  override protected function measure():void {
-    measureIcon();
-
+  override public function getPreferredWidth(hHint:int = -1):int {
+    var w:Number = iconInsets.width + _icon.iconWidth;
     if (labelHelper != null) {
       labelHelper.validate();
-      var widthExcess:Number = (Math.round(labelHelper.textWidth) + labelInsets.width) - measuredWidth;
+      var widthExcess:Number = (Math.round(labelHelper.textWidth) + labelInsets.width) - w;
       if (widthExcess > 0) {
-        measuredWidth += widthExcess;
+        w += widthExcess;
       }
     }
+    
+    return w;
+  }
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    return iconInsets.height + _icon.iconHeight;
   }
 
   protected function drawBorder4(g:Graphics, w:Number, h:Number):void {

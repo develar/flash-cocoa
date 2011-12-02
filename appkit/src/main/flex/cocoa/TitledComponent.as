@@ -3,7 +3,7 @@ import cocoa.pane.TitledPane;
 import cocoa.plaf.TitledComponentSkin;
 
 [Abstract]
-public class TitledComponent extends AbstractComponent implements TitledPane {
+public class TitledComponent extends AbstractSkinnableComponent implements TitledPane {
   private var _title:String;
   public function get title():String {
     return _title;

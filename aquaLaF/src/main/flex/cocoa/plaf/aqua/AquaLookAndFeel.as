@@ -117,7 +117,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["MenuItem.b"] = new MenuItemBorder(data["MenuItem.b.highlighted"]);
     data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
-    data["SliderNumericStepper"] = SliderNumericStepperSkin;
+    //data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
     data["ScrollBar.h"] = HScrollBarSkin;
     data["ScrollBar.v"] = VScrollBarSkin;

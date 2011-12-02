@@ -6,10 +6,9 @@ import cocoa.PushButton;
 import cocoa.Toolbar;
 import cocoa.View;
 import cocoa.Window;
-import cocoa.layout.AdvancedLayout;
-import cocoa.plaf.basic.AbstractSkin;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.WindowSkin;
+import cocoa.plaf.basic.AbstractSkin;
 import cocoa.ui;
 
 import flash.display.DisplayObject;
@@ -18,14 +17,9 @@ import flash.events.MouseEvent;
 import flash.system.Capabilities;
 import flash.text.engine.TextLine;
 
-import mx.core.IFlexDisplayObject;
 import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
-import mx.core.mx_internal;
-import mx.managers.IFocusManager;
-import mx.managers.IFocusManagerContainer;
 
-use namespace mx_internal;
 use namespace ui;
 
 /**
@@ -33,7 +27,7 @@ use namespace ui;
  *
  * IFocusManagerContainer нужен так как flex PopUpManager только в этом случае создаст focus manager для окна (а он нужен)
  */
-public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin, AdvancedLayout, IFocusManagerContainer {
+public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.WindowSkin {
   [Embed(source="/Window.resizeGripper.png")]
   private static const resizeGripperClass:Class;
 
@@ -243,20 +237,6 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
         closeButtonSkin.x = w - 4 - closeButtonSkin.getExplicitOrMeasuredWidth();
       }
     }
-  }
-
-  public function get defaultButton():IFlexDisplayObject {
-    return null;
-  }
-
-  public function set defaultButton(value:IFlexDisplayObject):void {
-  }
-
-  override public function get isPopUp():Boolean {
-    return true;
-  }
-
-  public function set focusManager(value:IFocusManager):void {
   }
 }
 }

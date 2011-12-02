@@ -4,11 +4,8 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.WindowSkin;
 
-import flash.events.Event;
-
 import org.flyti.plexus.Injectable;
 
-[DefaultProperty("mxmlContent")]
 public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable {
   protected var mySkin:WindowSkin;
   protected var flags:uint = RESIZABLE | CLOSABLE;
@@ -16,17 +13,7 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
   protected static const RESIZABLE:uint = 1 << 0;
   protected static const CLOSABLE:uint = 1 << 1;
 
-  public function Window() {
-    super();
-
-    listenResourceChange();
-  }
-
   protected var toolbar:Toolbar;
-
-  protected final function l(key:String):String {
-    return resourceManager.getString(_resourceBundle, key);
-  }
 
   public function get resizable():Boolean {
     return (flags & RESIZABLE) != 0;
@@ -48,18 +35,8 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
     }
   }
 
-  private var _mxmlContent:Array;
-  public function set mxmlContent(value:Array):void {
-    _mxmlContent = value;
-  }
-
-  protected var _resourceBundle:String;
-  public function set resourceBundle(value:String):void {
-    _resourceBundle = value;
-  }
-
   public function close():void {
-    dispatchEvent(new Event(Event.CLOSE));
+    //!! dispatchEvent(new Event(Event.CLOSE));
   }
 
   override protected function skinAttached():void {
@@ -67,33 +44,16 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
 
     mySkin = WindowSkin(skin);
 
-    if (title == null && _resourceBundle != null) {
-      title = resourceManager.getNullableString(_resourceBundle, "windowTitle");
-    }
+    //if (title == null && _resourceBundle != null) {
+    //  title = resourceManager.getNullableString(_resourceBundle, "windowTitle");
+    //}
 
     if (toolbar != null) {
       mySkin.toolbar = toolbar;
     }
 
-    if (_mxmlContent != null) {
-      if (_mxmlContent.length > 1) {
-        var container:Container = new Container();
-        container.subviews = _mxmlContent;
-        mySkin.contentView = container;
-      }
-      else {
-        _contentView = _mxmlContent[0];
-      }
-      _mxmlContent = null;
-    }
-
     if (_contentView != null) {
-      if (_contentView is Component) {
-        mySkin.contentView = Component(_contentView).skin == null ? Component(_contentView).createView(laf) : Component(_contentView).skin;
-      }
-      else {
-        mySkin.contentView = View(_contentView);
-      }
+      mySkin.contentView = _contentView;
     }
 
     super.skinAttached();

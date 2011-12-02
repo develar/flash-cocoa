@@ -35,7 +35,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
     }
     else {
       var scrollView:ScrollView = new ScrollView();
-      scrollView.hasFocusableChildren = false;
+      //scrollView.hasFocusableChildren = false;
       scrollView.documentView = documentView;
 
       scrollView.horizontalScrollPolicy = component.horizontalScrollPolicy;

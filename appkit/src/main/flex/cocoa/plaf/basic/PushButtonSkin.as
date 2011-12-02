@@ -10,6 +10,7 @@ import cocoa.TextInsets;
 import cocoa.plaf.ButtonSkinInteraction;
 import cocoa.plaf.LookAndFeel;
 
+import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 import flash.display.InteractiveObject;
 import flash.events.Event;
@@ -37,18 +38,52 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     return true;
   }
 
-  override public function attach(component:Component, laf:LookAndFeel):void {
-    super.attach(component, laf);
+  override public function attach(component:Component, container:DisplayObjectContainer, laf:LookAndFeel):void {
+    super.attach(component, container, laf);
 
     myComponent = Cell(component);
   }
 
-  override public function get baselinePosition():Number {
+  override public function get hasBaseline():Boolean {
+    return true;
+  }
+
+  override public function getBaseline(width:int, height:int):int {
     return border.layoutHeight - border.contentInsets.bottom;
   }
 
   public function get labelLeftMargin():Number {
     return border.contentInsets.left;
+  }
+
+  override public function getMinimumWidth(hHint:int = -1):int {
+    return getPreferredWidth();
+  }
+
+  override public function getMinimumHeight(wHint:int = -1):int {
+    return getPreferredHeight();
+  }
+
+  override public function getPreferredWidth(hHint:int = -1):int {
+    if (labelHelper == null || !labelHelper.hasText) {
+      return border.layoutWidth;
+    }
+    else {
+      labelHelper.validate();
+      return Math.round(labelHelper.textWidth) + border.contentInsets.width;
+    }
+  }
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    return border.layoutHeight;
+  }
+
+  override public function getMaximumWidth(hHint:int = -1):int {
+    return getPreferredWidth();
+  }
+
+  override public function getMaximumHeight(wHint:int = -1):int {
+    return getPreferredHeight();
   }
 
   override protected function createChildren():void {
@@ -194,6 +229,10 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
 
   public function get focusObject():InteractiveObject {
     return this;
+  }
+
+  public function get enabled():Boolean {
+    return false;
   }
 }
 }

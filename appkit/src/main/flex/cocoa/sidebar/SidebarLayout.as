@@ -1,15 +1,13 @@
 package cocoa.sidebar {
 import mx.core.ILayoutElement;
 
-import cocoa.layout.AdvancedLayout;
-
 import spark.components.supportClasses.GroupBase;
 import spark.layouts.supportClasses.LayoutBase;
 
 /**
  * SidebarLayout don't measure — sidebar size explicitly determined by skin
  */
-public class SidebarLayout extends LayoutBase implements AdvancedLayout {
+public class SidebarLayout extends LayoutBase {
   private var _gap:Number = 0;
   public function set gap(value:Number):void {
     _gap = value;

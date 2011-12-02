@@ -7,7 +7,7 @@ import spark.layouts.supportClasses.LayoutBase;
 use namespace ui;
 
 [DefaultProperty("mxmlContent")]
-public class Box extends AbstractComponent implements ViewContainerProvider {
+public class Box extends AbstractSkinnableComponent implements ViewContainerProvider {
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.contentGroup = 0;
   override protected function get skinParts():Dictionary {

@@ -2,13 +2,12 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
 use namespace ui;
 
 [Abstract]
-public class AbstractComponent extends ComponentBase implements Component {
+public class AbstractSkinnableComponent extends ComponentBase implements Component {
   protected var _skinClass:Class;
   public function set skinClass(value:Class):void {
     _skinClass = value;
@@ -64,11 +63,9 @@ public class AbstractComponent extends ComponentBase implements Component {
     }
     _skin = new _skinClass();
     _skinClass = null;
-    _skin.attach(this, laf);
+    _skin.attach(this, container, laf);
     skinAttached();
     listenSkinParts(_skin);
-
-    container.addChild(DisplayObject(_skin));
   }
 
   private var _lafKey:String;
@@ -94,10 +91,6 @@ public class AbstractComponent extends ComponentBase implements Component {
   }
 
   public function commitProperties():void {
-  }
-
-  protected function getCurrentSkinState():String {
-    return null;
   }
 }
 }

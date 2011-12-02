@@ -7,6 +7,7 @@ import cocoa.UIPartProvider;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
+import flash.display.DisplayObjectContainer;
 import flash.geom.Point;
 
 import flashx.textLayout.formats.ITextLayoutFormat;
@@ -50,22 +51,20 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     return laf.getFactory(_component.lafKey + "." + key, false);
   }
 
-  public function attach(component:Component, laf:LookAndFeel):void {
+  public function attach(component:Component, container:DisplayObjectContainer, laf:LookAndFeel):void {
     _component = component;
     this.laf = laf;
+
+    createChildren();
+    container.addChild(this);
   }
 
-  override protected function createChildren():void {
+  protected function createChildren():void {
     // Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга,
     // поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.
     if (_component is Injectable) {
       dispatchEvent(new InjectorEvent(_component, _component.linkId));
     }
-  }
-
-  override protected function commitProperties():void {
-    hostComponent.commitProperties();
-    super.commitProperties();
   }
 
   override public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean = false):Boolean {

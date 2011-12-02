@@ -25,7 +25,7 @@ public class Label extends ComponentWrapperImpl {
   }
 
   override public function getMinimumWidth(hHint:int = -1):int {
-    return super.getPreferredWidth();
+    return getPreferredWidth();
   }
 
   override public function getMinimumHeight(wHint:int = -1):int {

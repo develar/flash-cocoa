@@ -3,7 +3,6 @@ import cocoa.Component;
 import cocoa.Insets;
 import cocoa.SegmentedControl;
 import cocoa.View;
-import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
 
@@ -13,16 +12,11 @@ import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 
 [Abstract]
-public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout, TabViewSkin {
+public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin {
   protected var tabBar:SegmentedControl;
   protected var contentView:View;
 
   protected var tabBarPlacement:int;
-
-  public function childCanSkipMeasurement(element:ILayoutElement):Boolean {
-    // если у окна установлена фиксированный размер, то content pane устанавливается в размер невзирая на его preferred
-    return canSkipMeasurement();
-  }
 
   public function get contentInsets():Insets {
     throw new Error("abstract");
