@@ -2,7 +2,6 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.DisplayObjectContainer;
-
 import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
 
@@ -10,7 +9,6 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
-import net.miginfocom.layout.Strings;
 
 [Abstract]
 public class AbstractView extends Sprite implements View {

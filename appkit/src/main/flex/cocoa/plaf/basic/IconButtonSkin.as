@@ -9,7 +9,7 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
   protected var _icon:Icon;
   public function set icon(value:Icon):void {
     _icon = value;
-    invalidateDisplayList();
+    invalidate();
   }
 
   override protected function get bordered():Boolean {
@@ -48,7 +48,7 @@ public class IconButtonSkin extends PushButtonSkin implements cocoa.plaf.IconBut
     g.endFill();
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
 

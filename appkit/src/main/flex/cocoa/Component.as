@@ -13,7 +13,5 @@ public interface Component extends View, UIPartController {
   function get skin():Skin;
 
   function set skinClass(value:Class):void;
-
-  //function commitProperties():void;
 }
 }

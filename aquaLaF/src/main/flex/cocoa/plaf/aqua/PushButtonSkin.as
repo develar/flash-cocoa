@@ -6,10 +6,10 @@ import cocoa.plaf.basic.PushButtonSkin;
 import flash.events.MouseEvent;
 
 public class PushButtonSkin extends cocoa.plaf.basic.PushButtonSkin {
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:Number, h:Number):void {
     StatefulBorder(border).stateIndex = enabled ? (myComponent.state == CellState.ON ? 1 : 0) : 2;
 
-    super.updateDisplayList(w, h);
+    super.draw(w, h);
   }
 
   override public function mouseOverHandler(event:MouseEvent):void {

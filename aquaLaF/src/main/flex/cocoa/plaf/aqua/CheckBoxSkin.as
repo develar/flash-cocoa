@@ -13,7 +13,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
     return true;
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:Number, h:Number):void {
     StatefulBorder(border).stateIndex = (myComponent.state * 3) + (enabled ? 0 : 2);
 
     if (labelHelper != null && labelHelper.hasText) {

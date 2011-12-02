@@ -3,6 +3,7 @@ import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Component;
 import cocoa.Icon;
+import cocoa.Invalidator;
 import cocoa.UIPartProvider;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
@@ -65,6 +66,10 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     if (_component is Injectable) {
       dispatchEvent(new InjectorEvent(_component, _component.linkId));
     }
+  }
+
+  protected final function invalidate(invalidateContainer:Boolean = true):void {
+
   }
 
   override public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean = false):Boolean {

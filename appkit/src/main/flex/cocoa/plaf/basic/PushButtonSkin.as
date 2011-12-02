@@ -117,7 +117,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     }
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:Number, h:Number):void {
     if (labelHelper != null && labelHelper.hasText) {
       if (myComponent.state == CellState.MIXED) {
         if (labelHelper.textLine != null && labelHelper.textLine.parent != null) {
