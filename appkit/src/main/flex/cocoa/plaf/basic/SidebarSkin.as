@@ -14,10 +14,10 @@ public class SidebarSkin extends AbstractSkin {
     if (tabBar == null) {
       tabBar = new SegmentedControl();
       tabBar.mode = SelectionMode.ANY;
-      tabBar.lafKey = component.lafKey +  ".tabBar";
+      tabBar.lafKey = hostComponent.lafKey +  ".tabBar";
 
       addChild(tabBar);
-      component.uiPartAdded("segmentedControl", tabBar);
+      hostComponent.uiPartAdded("segmentedControl", tabBar);
     }
 
     if (paneGroup == null) {
@@ -27,7 +27,7 @@ public class SidebarSkin extends AbstractSkin {
       paneGroup.layout = sidebarLayout;
       paneGroup.x = -1; // idea sidebar: if open, overlap editor tab right border, 1px.
       addChild(paneGroup);
-      component.uiPartAdded("paneGroup", paneGroup);
+      hostComponent.uiPartAdded("paneGroup", paneGroup);
     }
   }
 

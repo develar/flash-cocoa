@@ -8,7 +8,7 @@ import spark.core.IViewport;
 
 public class BasicTableViewSkin extends AbstractCollectionViewSkin implements TableViewSkin {
   override protected function createDocumentView():IViewport {
-    return new TableBody(TableView(component), laf);
+    return new TableBody(TableView(hostComponent), laf);
   }
 
   public function get bodyHitArea():Sprite {

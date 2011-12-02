@@ -5,7 +5,7 @@ import mx.core.ILayoutElement;
 import mx.core.IUIComponent;
 
 [DefaultProperty("mxmlContent")]
-public class ViewStack extends LayoutlessContainer implements AdvancedLayout {
+public class ViewStack extends Container implements AdvancedLayout {
   private var currentView:IUIComponent;
 
   private var _subviews:Array;
@@ -22,7 +22,7 @@ public class ViewStack extends LayoutlessContainer implements AdvancedLayout {
     }
   }
 
-  public function show(viewable:Viewable):void {
+  public function show(viewable:View):void {
     if (currentView != null) {
       currentView.visible = false;
     }

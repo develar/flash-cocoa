@@ -5,7 +5,7 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.utils.Dictionary;
 
-public final class TextLineUtil {
+public final class TextLines {
   private static const TRUNCATION_INDICATOR:String = "…";
 
   private static var truncationIndicatorMap:Dictionary;
@@ -83,10 +83,10 @@ public final class TextLineUtil {
       textElement.text = TRUNCATION_INDICATOR;
 
       if (textLineForTruncationIndicator == null) {
-        textLineForTruncationIndicator = TextLineUtil.create(textElement.textBlock, swfContext);
+        textLineForTruncationIndicator = TextLines.create(textElement.textBlock, swfContext);
       }
       else {
-        TextLineUtil.recreate(textElement.textBlock, swfContext, textLineForTruncationIndicator);
+        TextLines.recreate(textElement.textBlock, swfContext, textLineForTruncationIndicator);
       }
 
       truncationIndicatorMap[format] = width = textLineForTruncationIndicator.textWidth;

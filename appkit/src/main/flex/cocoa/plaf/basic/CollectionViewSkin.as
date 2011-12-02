@@ -22,11 +22,11 @@ public class CollectionViewSkin extends AbstractSkin {
   }
 
   override protected function measure():void {
-    CollectionView(component).layout.measure();
+    CollectionView(hostComponent).layout.measure();
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    var collectionView:CollectionView = CollectionView(component);
+    var collectionView:CollectionView = CollectionView(hostComponent);
     //collectionView.layout.updateDisplayList(this, w, h);
   }
 }

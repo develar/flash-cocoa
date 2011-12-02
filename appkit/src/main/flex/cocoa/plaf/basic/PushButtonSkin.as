@@ -158,11 +158,11 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
       state = myComponent.state == CellState.OFF ? CellState.ON : CellState.OFF;
     }
 
-    if (component.hasEventListener("selectedChanged")) {
-      component.dispatchEvent(new Event("selectedChanged"));
+    if (hostComponent.hasEventListener("selectedChanged")) {
+      hostComponent.dispatchEvent(new Event("selectedChanged"));
     }
 
-    AbstractButton(component).setStateAndCallUserInitiatedActionHandler(state);
+    AbstractButton(hostComponent).setStateAndCallUserInitiatedActionHandler(state);
 
     mouseUp();
     drawBorder();

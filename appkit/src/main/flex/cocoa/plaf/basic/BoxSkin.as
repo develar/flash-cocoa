@@ -9,7 +9,7 @@ public class BoxSkin extends AbstractSkin {
 
     if (contentGroup == null) {
       contentGroup = new Container();
-      component.uiPartAdded("contentGroup", contentGroup);
+      hostComponent.uiPartAdded("contentGroup", contentGroup);
       addChild(contentGroup);
     }
   }

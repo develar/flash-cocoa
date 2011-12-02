@@ -1,11 +1,11 @@
 package cocoa.plaf {
 import cocoa.Insets;
-import cocoa.Viewable;
+import cocoa.View;
 
 public interface TabViewSkin {
   function get contentInsets():Insets;
 
-  function show(viewable:Viewable):void;
+  function show(viewable:View):void;
   function hide():void;
 }
 }

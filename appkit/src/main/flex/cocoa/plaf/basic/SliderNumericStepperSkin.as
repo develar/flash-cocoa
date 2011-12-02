@@ -19,7 +19,7 @@ public class SliderNumericStepperSkin extends TitledComponentSkin
 			slider = new HSlider();
 			slider.enabled = enabled;
 			addChild(slider);
-			component.uiPartAdded("slider", slider);
+			hostComponent.uiPartAdded("slider", slider);
 		}
 
 		if (stepper == null)
@@ -27,7 +27,7 @@ public class SliderNumericStepperSkin extends TitledComponentSkin
 			stepper = new NumericStepper();
 			stepper.enabled = enabled;
 			addChild(stepper);
-			component.uiPartAdded("stepper", stepper);
+			hostComponent.uiPartAdded("stepper", stepper);
 		}
 	}
 

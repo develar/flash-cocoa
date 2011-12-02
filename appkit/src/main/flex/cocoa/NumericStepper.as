@@ -3,7 +3,6 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.text.EditableTextView;
 import cocoa.text.TextUIModel;
-import cocoa.util.StringUtil;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
@@ -19,7 +18,7 @@ import spark.components.Spinner;
 use namespace mx_internal;
 use namespace ui;
 
-public class NumericStepper extends Spinner implements UIPartController, Viewable {
+public class NumericStepper extends Spinner implements UIPartController {
   private var textUIModel:TextUIModel;
 
   public function NumericStepper() {

@@ -1,7 +1,8 @@
 package cocoa {
 import cocoa.text.TextFormat;
-import cocoa.text.TextLineUtil;
+import cocoa.text.TextLines;
 
+import flash.display.DisplayObjectContainer;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
@@ -22,20 +23,20 @@ public class LabelHelper {
 
   private var _textLine:TextLine;
   
-  public function LabelHelper(container:View, textFormat:TextFormat = null) {
+  public function LabelHelper(container:DisplayObjectContainer, textFormat:TextFormat = null) {
     this._container = container;
     _textFormat = textFormat;
   }
 
   public var textLineInsets:TextLineInsets;
   
-  private var _container:View;
-  public function set container(value:View):void {
+  private var _container:DisplayObjectContainer;
+  public function set container(value:DisplayObjectContainer):void {
     if (value != _container) {
       if (_textLine != null) {
-        _container.removeDisplayObject(_textLine);
+        _container.removeChild(_textLine);
         if (value != null) {
-          value.addDisplayObject(_textLine);
+          value.addChild(_textLine);
         }
       }
       
@@ -75,7 +76,7 @@ public class LabelHelper {
 
   private var _text:String;
   public function get text():String {
-    return _text
+    return _text;
   }
 
   /**
@@ -156,11 +157,11 @@ public class LabelHelper {
     }
 
     if (_textLine == null) {
-      _textLine = TextLineUtil.create(textBlock, _textFormat.swfContext, availableWidth);
-      _container.addDisplayObject(_textLine);
+      _textLine = TextLines.create(textBlock, _textFormat.swfContext, availableWidth);
+      _container.addChild(_textLine);
     }
     else {
-      TextLineUtil.recreate(textBlock, _textFormat.swfContext, _textLine, availableWidth);
+      TextLines.recreate(textBlock, _textFormat.swfContext, _textLine, availableWidth);
     }
 
     if (_textLine == null) {
@@ -169,7 +170,7 @@ public class LabelHelper {
     else {
       truncated = textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY;
       if (truncated && _useTruncationIndicator) {
-        TextLineUtil.truncate(_text, textElement, _textLine, _textFormat.swfContext, availableWidth);
+        TextLines.truncate(_text, textElement, _textLine, _textFormat.swfContext, availableWidth);
       }
     }
 

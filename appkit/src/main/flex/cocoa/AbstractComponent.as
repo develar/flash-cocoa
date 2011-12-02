@@ -1,27 +1,14 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
-import cocoa.resources.ResourceManager;
 
-import flash.events.Event;
-
-import mx.core.IMXMLObject;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 
 use namespace ui;
 
 [Abstract]
-public class AbstractComponent extends ComponentBase implements Component, IMXMLObject {
-  protected var resourceManager:ResourceManager;
-  
-  private var _id:String;
-  public function get id():String {
-    return _id;
-  }
-
-  public function set id(value:String):void {
-    _id = value;
-  }
-
+public class AbstractComponent extends ComponentBase implements Component {
   protected var _skinClass:Class;
   public function set skinClass(value:Class):void {
     _skinClass = value;
@@ -32,20 +19,39 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
     return _skin;
   }
 
-  protected function listenResourceChange():void {
-    resourceManager = ResourceManager.instance;
-    resourceManager.addEventListener(Event.CHANGE, resourceChangeHandler, false, 0, true);
+  override public function get actualWidth():int {
+    return _skin.actualWidth;
   }
 
-  protected function resourceChangeHandler(event:Event):void {
-    resourcesChanged();
+  override public function get actualHeight():int {
+    return _skin.actualHeight;
   }
 
-  protected function resourcesChanged():void {
-
+  override public function getMinimumWidth(hHint:int = -1):int {
+    return _skin.getMinimumWidth(hHint);
   }
 
-  public final function createView(laf:LookAndFeel):Skin {
+  override public function getMinimumHeight(wHint:int = -1):int {
+    return _skin.getMinimumHeight(wHint);
+  }
+
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return _skin.getPreferredWidth(hHint);
+  }
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    return _skin.getPreferredHeight(wHint);
+  }
+
+  override public function getMaximumWidth(hHint:int = -1):int {
+    return _skin.getMaximumWidth(hHint);
+  }
+
+  override public function getMaximumHeight(wHint:int = -1):int {
+    return _skin.getMaximumHeight(wHint);
+  }
+
+  override public final function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
     _lafKey = _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
     if (laf.controlSize != null) {
       _lafKey = laf.controlSize + "." + _lafKey;
@@ -61,7 +67,8 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
     _skin.attach(this, laf);
     skinAttached();
     listenSkinParts(_skin);
-    return _skin;
+
+    container.addChild(DisplayObject(_skin));
   }
 
   private var _lafKey:String;
@@ -91,10 +98,6 @@ public class AbstractComponent extends ComponentBase implements Component, IMXML
 
   protected function getCurrentSkinState():String {
     return null;
-  }
-
-  public function initialized(document:Object, id:String):void {
-    _id = id;
   }
 }
 }

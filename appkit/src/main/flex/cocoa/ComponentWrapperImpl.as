@@ -1,78 +1,59 @@
-package org.jetbrains.migLayout.flash {
-import flash.display.DisplayObject;
+package cocoa {
+import cocoa.plaf.LookAndFeel;
+
+import flash.display.DisplayObjectContainer;
+import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
-import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
-internal class FlashComponentWrapper implements ComponentWrapper {
-  protected var c:DisplayObject;
-
-  function FlashComponentWrapper(c:DisplayObject, constraints:CC) {
-    this.c = c;
-    _constraints = constraints;
-  }
-
+[Abstract]
+internal class ComponentWrapperImpl implements View {
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
   }
-  
+
   public function get component():Object {
-    return c;
-  }
-
-  public function get x():Number {
-    return c.x;
-  }
-
-  public function get y():Number {
-    return c.y;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function get actualWidth():int {
-    return c.width;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function get actualHeight():int {
-    return c.height;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getMinimumWidth(hHint:int = -1):int {
-    return 0;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getMinimumHeight(wHint:int = -1):int {
-    return 0;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getPreferredWidth(hHint:int = -1):int {
-    return c.width;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getPreferredHeight(wHint:int = -1):int {
-    return c.height;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getMaximumWidth(hHint:int = -1):int {
-    return 32767;
+    return AbstractView.DEFAULT_MAX_WIDTH;
   }
 
   public function getMaximumHeight(wHint:int = -1):int {
-    return 32767;
+    return AbstractView.DEFAULT_MAX_HEIGHT;
   }
 
   public function setBounds(x:Number, y:Number, width:int, height:int):void {
-    c.x = x;
-    c.y = y;
-    c.width = width;
-    c.height = height;
-  }
-
-  public function get visible():Boolean {
-    return c.visible;
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getBaseline(width:int, height:int):int {
@@ -95,14 +76,6 @@ internal class FlashComponentWrapper implements ComponentWrapper {
     return PlatformDefaults.defaultDPI;
   }
 
-  public function get linkId():String {
-    return c.name;
-  }
-
-  public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
-  }
-
   public function get visualPadding():Vector.<Number> {
     return null;
   }
@@ -110,8 +83,32 @@ internal class FlashComponentWrapper implements ComponentWrapper {
   public function paintDebugOutline():void {
   }
 
+  public function get linkId():String {
+    return null;
+  }
+
+  public function get layoutHashCode():int {
+    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
+  }
+
   public function getComponentType(disregardScrollPane:Boolean):int {
     return ComponentType.TYPE_UNKNOWN;
+  }
+
+  public function get x():Number {
+    throw new IllegalOperationError("Abstract");
+  }
+
+  public function get y():Number {
+    throw new IllegalOperationError("Abstract");
+  }
+
+  public function get visible():Boolean {
+    return true;
+  }
+
+  public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+    throw new IllegalOperationError("Abstract");
   }
 }
 }

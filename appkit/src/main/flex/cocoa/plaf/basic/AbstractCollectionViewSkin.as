@@ -28,7 +28,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
 
     border = getNullableBorder();
 
-    var component:AbstractCollectionView = AbstractCollectionView(this.component);
+    var component:AbstractCollectionView = AbstractCollectionView(this.hostComponent);
     documentView = createDocumentView();
     if (component.horizontalScrollPolicy == ScrollPolicy.OFF && component.verticalScrollPolicy == ScrollPolicy.OFF) {
       contentView = IUIComponent(documentView);

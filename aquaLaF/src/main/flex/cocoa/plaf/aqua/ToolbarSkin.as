@@ -18,8 +18,8 @@ public class ToolbarSkin extends BoxSkin {
 
     BorderedContainer(contentGroup).border = getNullableBorder();
     contentGroup.mouseEnabled = false;
-    contentGroup.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(component).small);
-    component.uiPartAdded("contentGroup", contentGroup);
+    contentGroup.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
+    hostComponent.uiPartAdded("contentGroup", contentGroup);
 
     if (contentGroup.layout == null) {
       var layout:BarLayout = new BarLayout();

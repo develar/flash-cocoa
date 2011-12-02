@@ -2,7 +2,7 @@ package cocoa.plaf.basic {
 import cocoa.Component;
 import cocoa.Insets;
 import cocoa.SegmentedControl;
-import cocoa.Viewable;
+import cocoa.View;
 import cocoa.layout.AdvancedLayout;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
@@ -15,7 +15,7 @@ import mx.core.IUIComponent;
 [Abstract]
 public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout, TabViewSkin {
   protected var tabBar:SegmentedControl;
-  protected var contentView:IUIComponent;
+  protected var contentView:View;
 
   protected var tabBarPlacement:int;
 
@@ -33,16 +33,16 @@ public class AbstractTabViewSkin extends AbstractSkin implements AdvancedLayout,
 
     if (tabBar == null) {
       tabBar = new SegmentedControl();
-      const tabBarLafKey:String = component.lafKey + ".tabBar";
+      const tabBarLafKey:String = hostComponent.lafKey + ".tabBar";
       tabBar.lafKey = tabBarLafKey;
 
       tabBarPlacement = laf.getInt(tabBarLafKey + ".placement");
       addChild(tabBar);
-      component.uiPartAdded("segmentedControl", tabBar);
+      hostComponent.uiPartAdded("segmentedControl", tabBar);
     }
   }
 
-  public function show(viewable:Viewable):void {
+  public function show(viewable:View):void {
     if (contentView != null) {
       removeChild(DisplayObject(contentView));
     }

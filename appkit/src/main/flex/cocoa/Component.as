@@ -1,10 +1,7 @@
 package cocoa {
-import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-import flash.events.IEventDispatcher;
-
-public interface Component extends Viewable, UIPartController {
+public interface Component extends View, UIPartController {
   /**
    * Префикс, используемый компонентом при составлении абсолютного ключа для получения некого стиля.
    * В самом компоненте указывается путем переопределения геттера defaultLaFPrefix.
@@ -17,12 +14,6 @@ public interface Component extends Viewable, UIPartController {
 
   function set skinClass(value:Class):void;
 
-  function createView(laf:LookAndFeel):Skin;
-
-  function commitProperties():void;
-
-  function get id():String;
-
-  function set id(value:String):void;
+  //function commitProperties():void;
 }
 }

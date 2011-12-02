@@ -34,7 +34,7 @@ public class DocumentWindow extends NativeWindow {
 
   private var _contentView:Skin;
   public function get contentView():Component {
-    return _contentView.component;
+    return _contentView.hostComponent;
   }
 
   private function init(contentView:Component, map:LocalEventMap, bounds:Rectangle):void {

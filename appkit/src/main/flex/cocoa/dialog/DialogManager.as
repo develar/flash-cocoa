@@ -63,7 +63,7 @@ public class DialogManager {
     if (autoCenter) {
       PopUpManager.centerPopUp(skin);
     }
-    skin.setFocus();
+    //!! skin.setFocus();
   }
 
   private function stageResizeHandler(event:Event):void {

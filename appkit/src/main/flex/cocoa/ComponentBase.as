@@ -8,7 +8,7 @@ import mx.events.PropertyChangeEvent;
 use namespace ui;
 
 [Abstract]
-public class ComponentBase {
+public class ComponentBase extends ComponentWrapperImpl {
   protected static const HANDLER_NOT_EXISTS:int = 2;
 
   //noinspection JSUnusedLocalSymbols
@@ -35,18 +35,6 @@ public class ComponentBase {
 
   protected function listenSkinParts(skin:SimpleSkin):void {
     untypedSkin = skin;
-
-    if (!(skin is UIPartProvider)) {
-      skin.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, skinPropertyChangeHandler);
-
-      // PROPERTY_CHANGE вешается поздно, и некоторые skin part устанавливаются в конструкторе
-      for (var skinPartId:String in skinParts) {
-        var instance:Object = skin[skinPartId];
-        if (instance != null && this[skinPartId] == null) {
-          partAdded(skinPartId, instance);
-        }
-      }
-    }
   }
 
   protected final function invalidateProperties():void {

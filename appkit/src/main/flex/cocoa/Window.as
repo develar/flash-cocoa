@@ -99,12 +99,12 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
     super.skinAttached();
   }
 
-  private var _contentView:Viewable;
-  public function get contentView():Viewable {
+  private var _contentView:View;
+  public function get contentView():View {
     return _contentView;
   }
 
-  public function set contentView(view:Viewable):void {
+  public function set contentView(view:View):void {
     _contentView = view;
   }
 

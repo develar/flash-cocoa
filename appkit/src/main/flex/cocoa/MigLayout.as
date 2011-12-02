@@ -1,7 +1,6 @@
-package org.jetbrains.migLayout.flash {
-import flash.display.DisplayObjectContainer;
-
+package cocoa {
 import net.miginfocom.layout.AbstractMigLayout;
+import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
@@ -15,25 +14,28 @@ public class MigLayout extends AbstractMigLayout {
     super(layoutConstraints, colConstraints, rowConstraints);
   }
 
-  public function layoutContainer(container:FlashContainerWrapper):void {
+  public function preferredLayoutWidth(container:Container, sizeType:int):Number {
+    if (invalid) {
+      checkCache(container);
+    }
+
+    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
+  }
+
+  public function preferredLayoutHeight(container:Container, sizeType:int):Number {
+    if (invalid) {
+      checkCache(container);
+    }
+
+    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
+  }
+
+  public function layoutContainer(container:Container):void {
     checkCache(container);
 
-    var w:Number;
-    var h:Number;
-    var o:DisplayObjectContainer = DisplayObjectContainer(container.component);
-    if (o.parent == o.stage) {
-      w = o.stage.stageWidth;
-      h = o.stage.stageHeight;
-    }
-    else {
-      w = LayoutUtil.getSizeSafe(grid != null ? grid.width : null, LayoutUtil.PREF);
-      h = LayoutUtil.getSizeSafe(grid != null ? grid.height : null, LayoutUtil.PREF);
-    }
-    
-    container.w = w;
-    container.h = h;
-
-    if (grid.layout(0, 0, w, h,  lc.alignX, lc.alignY, _debug, true)) {
+    const w:int = container.getPreferredWidth(-1);
+    const h:int = container.getPreferredHeight(-1);
+    if (grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, true)) {
       grid = null;
       checkCache(container);
       grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, false);
@@ -43,11 +45,7 @@ public class MigLayout extends AbstractMigLayout {
   /** Check if something has changed and if so recreate it to the cached objects.
    * @param container The container that is the target for this layout manager.
    */
-  private function checkCache(container:FlashContainerWrapper):void {
-    if (container == null) {
-      return;
-    }
-
+  private function checkCache(container:Container):void {
     if (invalid) {
       grid = null;
     }
@@ -60,7 +58,7 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     var hash:int = 0;
-    for each (var componentWrapper:FlashComponentWrapper in container.components) {
+    for each (var componentWrapper:ComponentWrapper in container.components) {
       hash ^= componentWrapper.layoutHashCode;
       hash += 285134905;
     }
@@ -79,8 +77,6 @@ public class MigLayout extends AbstractMigLayout {
       lastInvalidH = container.actualHeight;
     }
 
-    //setDebug(par, getDebugMillis() > 0);
-
     if (grid == null) {
       grid = new Grid(container, lc, rowSpecs, colSpecs, null);
     }
@@ -96,13 +92,3 @@ public class MigLayout extends AbstractMigLayout {
   //}
 }
 }
-
-
-
-
-
-
-
-
-
-

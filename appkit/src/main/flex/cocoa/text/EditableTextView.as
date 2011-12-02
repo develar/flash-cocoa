@@ -721,7 +721,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   public function measureText(text:String, elementFormat:ElementFormat = null):TextLine {
-    return TextLineUtil.measureText(text, elementFormat == null ? SimpleTextLayoutFormat(_textFormat).textFormat.format : elementFormat, embeddedFontContext);
+    return TextLines.measureText(text, elementFormat == null ? SimpleTextLayoutFormat(_textFormat).textFormat.format : elementFormat, embeddedFontContext);
   }
 
   private function calculateWidthInChars():Number {
@@ -733,7 +733,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    */
   private function calculateHeightInLines():Number {
     var charMetrics:CharMetrics = this.charMetrics;
-    const lineHeight:Number = TextLineUtil.calculateLineHeight(effectiveTextFormat.lineHeight, charMetrics.height);
+    const lineHeight:Number = TextLines.calculateLineHeight(effectiveTextFormat.lineHeight, charMetrics.height);
     const firstBaselineOffset:Object = effectiveTextFormat.firstBaselineOffset;
     var height:Number = int(effectiveTextFormat.paddingTop) + int(effectiveTextFormat.paddingBottom) + ((heightInLines - 1) * lineHeight) + charMetrics.descent /* add in descent of last line */;
     if (firstBaselineOffset == BaselineOffset.LINE_HEIGHT) {

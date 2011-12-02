@@ -87,21 +87,21 @@ public class TextLineRendererFactory {
     var line:TextLine;
     if (youngOrphanCount != 0) {
       line = youngOrphanLines[--youngOrphanCount];
-      TextLineUtil.recreate(textBlock, swfContext, line, availableWidth);
+      TextLines.recreate(textBlock, swfContext, line, availableWidth);
     }
     else {
       if (orphanCount != 0) {
         line = orphanLines[--orphanCount];
-        TextLineUtil.recreate(textBlock, swfContext, line, availableWidth);
+        TextLines.recreate(textBlock, swfContext, line, availableWidth);
       }
       else {
-        line = TextLineUtil.create(textBlock, swfContext, availableWidth);
+        line = TextLines.create(textBlock, swfContext, availableWidth);
       }
       container.addChild(line);
     }
 
     if (useTruncationIndicator && textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY) {
-      TextLineUtil.truncate(text, textElement, line, swfContext, availableWidth);
+      TextLines.truncate(text, textElement, line, swfContext, availableWidth);
     }
 
     if (rotation != null) {
@@ -116,10 +116,10 @@ public class TextLineRendererFactory {
     textElement.elementFormat = elementFormat;
     textElement.text = text;
 
-    TextLineUtil.recreate(textBlock, swfContext, line, availableWidth);
+    TextLines.recreate(textBlock, swfContext, line, availableWidth);
 
     if (useTruncationIndicator && textBlock.textLineCreationResult == TextLineCreationResult.EMERGENCY) {
-      TextLineUtil.truncate(text, textElement, line, swfContext, availableWidth);
+      TextLines.truncate(text, textElement, line, swfContext, availableWidth);
     }
   }
 

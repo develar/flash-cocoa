@@ -39,7 +39,7 @@ public class HUDInspectorManager {
   }
 
   public function show(element:Object, elementView:View):void {
-    var inspectorContentView:Viewable;
+    var inspectorContentView:View;
     // такое будет если при hide мы обнаруживаем что новый элемент имеет такой же тип и не скрываем инспектор, а ничего не делаем
     if (currentInspector != null) {
       inspectorContentView = currentInspector.contentView;
@@ -86,10 +86,10 @@ public class HUDInspectorManager {
     var windowHeightWithPadding:Number = inspectorView.height + WINDOW_PADDING;
     var y:Number = point.y - windowHeightWithPadding;
     if (y < 0) {
-      y = point.y + elementView.height + windowHeightWithPadding;
+      y = point.y + elementView.actualHeight + windowHeightWithPadding;
     }
 
-    inspectorView.move(Math.round(point.x + (elementView.width / 2) - (inspectorView.width / 2)), Math.round(y));
+    inspectorView.move(Math.round(point.x + (elementView.actualWidth / 2) - (inspectorView.width / 2)), Math.round(y));
   }
 
   private function userCloseHandler(event:Event):void {

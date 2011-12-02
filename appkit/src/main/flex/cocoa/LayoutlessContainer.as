@@ -29,7 +29,7 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
     }
   }
 
-  public function addSubview(viewable:Viewable, index:int = -1):void {
+  public function addSubview(viewable:View, index:int = -1):void {
     if (viewable is Component) {
       var component:Component = Component(viewable);
       addChildAt(DisplayObject(component.skin == null ? component.createView(laf) : component.skin), index == -1 ? numChildren : index);
@@ -43,11 +43,11 @@ public class LayoutlessContainer extends AbstractView implements ViewContainer, 
     }
   }
 
-  public function removeSubview(view:Viewable):void {
+  public function removeSubview(view:View):void {
     removeChild(DisplayObject(view is Component ? Component(view).skin : view));
   }
 
-  public function getSubviewIndex(view:Viewable):int {
+  public function getSubviewIndex(view:View):int {
     return getChildIndex(DisplayObject(view is Component ? Component(view).skin : view));
   }
 

@@ -1,5 +1,5 @@
 package cocoa.message {
-import cocoa.Viewable;
+import cocoa.View;
 
 import flash.display.DisplayObjectContainer;
 import flash.events.IEventDispatcher;
@@ -17,12 +17,12 @@ public class MessageKind {
     return _id;
   }
 
-  private var _message:Viewable;
-  public function get message():Viewable {
+  private var _message:View;
+  public function get message():View {
     return _message;
   }
 
-  public function set message(value:Viewable):void {
+  public function set message(value:View):void {
     _message = value;
   }
 

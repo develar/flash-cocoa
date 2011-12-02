@@ -1,40 +1,15 @@
 package cocoa {
 import flash.display.Sprite;
 
-import mx.core.UIComponentGlobals;
-import mx.core.mx_internal;
-
+import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
-
-import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
-use namespace mx_internal;
 [Abstract]
-public class AbstractView extends Sprite implements View, ComponentWrapper {
-  private static const INITIALIZED:uint = 1 << 0;
-  private static const DISABLED:uint = 1 << 11;
-  private static const EXCLUDE_FROM_LAYOUT:uint = 1 << 12;
-
-  private static const INVALID_PROPERTIES:uint = 1 << 5;
-  private static const INVALID_SIZE:uint = 1 << 6;
-  private static const INVALID_DISPLAY_LIST:uint = 1 << 7;
-
-  /**
-   * if component has been reparented, we need to potentially reassign systemManager, cause we could be in a new Window.
-   */
-  private static const SYSTEM_MANAGER_DIRTY:uint = 1 << 14;
-
-  private static const HAS_FOCUSABLE_CHILDREN:uint = 1 << 15;
-  private static const FOCUS_ENABLED:uint = 1 << 16;
-  private static const MOUSE_FOCUS_ENABLED:uint = 1 << 17;
-  private static const TAB_FOCUS_ENABLED:uint = 1 << 18;
-
-  private var flags:uint = FOCUS_ENABLED | MOUSE_FOCUS_ENABLED;
-
-  private static const DEFAULT_MAX_WIDTH:Number = 10000;
-  private static const DEFAULT_MAX_HEIGHT:Number = 10000;
+public class AbstractView extends Sprite implements View {
+  internal static const DEFAULT_MAX_WIDTH:int = 32767;
+  internal static const DEFAULT_MAX_HEIGHT:int = 32767;
 
   public function AbstractView() {
     super();
@@ -42,48 +17,67 @@ public class AbstractView extends Sprite implements View, ComponentWrapper {
     focusRect = false;
   }
 
-  private var _preferredWidth:Number;
-  public function getPreferredWidth():Number {
+  private var _constraints:CC;
+  public function get constraints():CC {
+    return _constraints;
+  }
+
+  public function get component():Object {
+    return this;
+  }
+
+  private var _actualWidth:int;
+  public function get actualWidth():int {
+    return _actualWidth;
+  }
+
+  private var _actualHeight:int;
+  public function get actualHeight():int {
+    return _actualHeight;
+  }
+
+  private var minWidth:int;
+  private var minHeight:int;
+  public function getMinimumWidth(hHint:int = -1):int {
+    return minWidth;
+  }
+
+  public function getMinimumHeight(wHint:int = -1):int {
+    return minHeight;
+  }
+
+  protected var _preferredWidth:int;
+  public function getPreferredWidth(hHint:int = -1):int {
     return _preferredWidth;
   }
 
-  private var _preferredHeight:Number;
-  public function getPreferredHeight():Number {
+  protected var _preferredHeight:int;
+  public function getPreferredHeight(wHint:int = -1):int {
     return _preferredHeight;
   }
 
-
-  protected function createChildren():void {
+  public function getMaximumWidth(hHint:int = -1):int {
+    return DEFAULT_MAX_WIDTH;
   }
 
-  public final function invalidateProperties():void {
-    if ((flags & INVALID_PROPERTIES) == 0) {
-      flags |= INVALID_PROPERTIES;
+  public function getMaximumHeight(wHint:int = -1):int {
+    return DEFAULT_MAX_HEIGHT;
+  }
+  
+  public function setBounds(x:Number, y:Number, width:int, height:int):void {
+    this.x = x;
+    this.y = y;
 
-      if (parent != null) {
-        UIComponentGlobals.layoutManager.invalidateProperties(this);
-      }
-    }
+    _actualWidth = width;
+    _actualHeight = height;
+  }
+  
+  public function getBaseline(width:int, height:int):int {
+    return -1;
   }
 
-  public final function invalidateSize():void {
-    if ((flags & INVALID_SIZE) == 0) {
-      flags |= INVALID_SIZE;
-
-      if (parent != null) {
-        UIComponentGlobals.layoutManager.invalidateSize(this);
-      }
-    }
-  }
-
-  public function validateProperties():void {
-    if (flags & INVALID_PROPERTIES) {
-      commitProperties();
-      flags &= ~INVALID_PROPERTIES;
-    }
-  }
-
-  protected function commitProperties():void {
+  public function get hasBaseline():Boolean {
+    return false;
   }
 
   public function getPixelUnitFactor(isHor:Boolean):Number {
@@ -110,7 +104,7 @@ public class AbstractView extends Sprite implements View, ComponentWrapper {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(width, height, visible, linkId);
+    return LayoutUtil.calculateHash(actualWidth, actualHeight, visible, linkId);
   }
 
   public function getComponentType(disregardScrollPane:Boolean):int {

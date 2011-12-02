@@ -1,5 +1,5 @@
 package cocoa.tabView {
-import cocoa.Viewable;
+import cocoa.View;
 import cocoa.bar.SingleSelectionBar;
 import cocoa.pane.PaneItem;
 import cocoa.pane.TitledPane;
@@ -67,7 +67,7 @@ public class TabView extends SingleSelectionBar {
   protected function createPaneView(paneItem:PaneItem):void {
     assert(paneItem.view == null);
 
-    var pane:Viewable = paneItem.viewFactory.newInstance();
+    var pane:View = paneItem.viewFactory.newInstance();
     paneItem.view = pane;
 
     if (pane is TitledPane) {
