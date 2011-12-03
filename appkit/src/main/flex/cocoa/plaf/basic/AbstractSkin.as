@@ -2,8 +2,8 @@ package cocoa.plaf.basic {
 import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Component;
+import cocoa.Container;
 import cocoa.Icon;
-import cocoa.Invalidator;
 import cocoa.UIPartProvider;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
@@ -23,9 +23,10 @@ import org.flyti.plexus.events.InjectorEvent;
  */
 [Abstract]
 public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
-  private static var sharedPoint:Point;
+  private static const INVALID:uint = 1 << 0;
 
-  protected var laf:LookAndFeel;
+  protected var flags:uint;
+  protected var container:Container;
 
   private var _component:Component;
   public final function get hostComponent():Component {
@@ -33,28 +34,27 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
   }
 
   protected final function getTextLayoutFormat(key:String):ITextLayoutFormat {
-    return laf.getTextLayoutFormat(_component.lafKey + "." + key);
+    return container.laf.getTextLayoutFormat(_component.lafKey + "." + key);
   }
 
   protected final function getBorder(key:String = "b"):Border {
-    return laf.getBorder(_component.lafKey + "." + key, false);
+    return container.laf.getBorder(_component.lafKey + "." + key, false);
   }
 
   protected final function getNullableBorder(key:String = "b"):Border {
-    return laf.getBorder(_component.lafKey + "." + key, true);
+    return container.laf.getBorder(_component.lafKey + "." + key, true);
   }
 
   protected final function getIcon(key:String):Icon {
-    return laf.getIcon(_component.lafKey + "." + key);
+    return container.laf.getIcon(_component.lafKey + "." + key);
   }
 
   protected final function getFactory(key:String):IFactory {
-    return laf.getFactory(_component.lafKey + "." + key, false);
+    return container.laf.getFactory(_component.lafKey + "." + key, false);
   }
 
   public function attach(component:Component, container:DisplayObjectContainer, laf:LookAndFeel):void {
     _component = component;
-    this.laf = laf;
 
     createChildren();
     container.addChild(this);
@@ -68,25 +68,40 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     }
   }
 
-  protected final function invalidate(invalidateContainer:Boolean = true):void {
+  override public function setBounds(x:Number, y:Number, width:int, height:int):void {
+    this.x = x;
+    this.y = y;
 
+    var resized:Boolean = false;
+    if (width != _actualWidth) {
+      _actualWidth = width;
+      resized = true;
+    }
+    if (height != _actualHeight) {
+      _actualHeight = height;
+      resized = true;
+    }
+
+    if (resized) {
+
+    }
   }
 
-  override public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean = false):Boolean {
-    if (shapeFlag) {
-      return super.hitTestPoint(x, y, shapeFlag);
+  protected final function invalidate(invalidateContainer:Boolean = true):void {
+    if (container == null) {
+      return;
     }
-    else {
-      if (sharedPoint == null) {
-        sharedPoint = new Point(x, y);
-      }
-      else {
-        sharedPoint.x = x;
-        sharedPoint.y = y;
-      }
 
-      var local:Point = globalToLocal(sharedPoint);
-      return local.x >= 0 && local.y >= 0 && local.x <= width && local.y <= height;
+    if (invalidateContainer) {
+      container.invalidateSize();
+    }
+
+    if ((flags & INVALID) != 0) {
+      return;
+    }
+
+    if (container != null) {
+      container.invalidateSubview(this, invalidateContainer);
     }
   }
 }

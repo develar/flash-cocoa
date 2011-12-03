@@ -1,4 +1,8 @@
 package cocoa {
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.events.IEventDispatcher;
+
 import net.miginfocom.layout.AbstractMigLayout;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.Grid;
@@ -9,6 +13,10 @@ public class MigLayout extends AbstractMigLayout {
   private var lastHash:int = -1;
   private var lastInvalidW:Number;
   private var lastInvalidH:Number;
+
+  private var validateListenersAttached:Boolean;
+  private var checkCacheScheduled:Boolean;
+  private var subviews:Vector.<View>;
 
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
@@ -90,5 +98,39 @@ public class MigLayout extends AbstractMigLayout {
   //  var h:Number = LayoutUtil.getSizeSafe(grid != null ? grid.height : null, sizeType);
   //  return new Dimension(w, h);
   //}
+
+  public function invalidateSubview(subview:View, dispatcher:DisplayObject, invalidateContainer:Boolean):void {
+    if (subviews == null) {
+      subviews = new Vector.<View>(1);
+      subviews[0] = subview;
+    }
+    else if (subviews.indexOf(subview) == -1) {
+      subviews[subviews.length] = subview;
+    }
+
+    if (invalidateContainer) {
+      checkCacheScheduled = true;
+    }
+
+    if (!validateListenersAttached) {
+      validateListenersAttached = true;
+      dispatcher.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+    }
+  }
+
+  private function enterFrameHandler(event:Event):void {
+    IEventDispatcher(event.currentTarget).removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+    if (checkCacheScheduled) {
+      checkCache();
+    }
+
+    if (controls.length > 0) {
+      var oldControls:Vector.<View> = controls;
+      controls = new Vector.<View>();
+      for each (var control:View in oldControls) {
+        control.validate();
+      }
+    }
+  }
 }
 }

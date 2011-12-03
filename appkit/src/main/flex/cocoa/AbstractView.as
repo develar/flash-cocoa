@@ -21,6 +21,9 @@ public class AbstractView extends Sprite implements View {
     focusRect = false;
   }
 
+
+  //private static const INVALID:uint = 1 << 0;
+
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
@@ -30,12 +33,12 @@ public class AbstractView extends Sprite implements View {
     return this;
   }
 
-  private var _actualWidth:int;
+  protected var _actualWidth:int;
   public function get actualWidth():int {
     return _actualWidth;
   }
 
-  private var _actualHeight:int;
+  protected var _actualHeight:int;
   public function get actualHeight():int {
     return _actualHeight;
   }

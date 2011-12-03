@@ -1,6 +1,7 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
+import cocoa.plaf.basic.AbstractSkin;
 import cocoa.util.SharedPoint;
 
 import flash.display.DisplayObjectContainer;
@@ -11,7 +12,9 @@ import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
 public class Container extends AbstractView implements ViewContainer, LookAndFeelProvider, ContainerWrapper {
-  private var componentInitialized:Boolean; 
+  private var flags:uint;
+
+  private static const SUBVIEWS_INITIALIZED:uint = 1 << 0;
   
   public function Container(components:Vector.<View>, layout:MigLayout) {
     _components = components;
@@ -24,8 +27,8 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
   }
 
   public function validate():void {
-    if (!componentInitialized) {
-      componentInitialized = true;
+    if ((flags & SUBVIEWS_INITIALIZED) == 0) {
+      flags |= SUBVIEWS_INITIALIZED;
       for each (var view:View in components) {
         view.init(_laf, this);
       }  
@@ -114,6 +117,14 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
 
   override public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
     _laf = laf;
+  }
+
+  public function invalidateSubview():void {
+
+  }
+
+  public function invalidateSize():void {
+    _layout
   }
 }
 }
