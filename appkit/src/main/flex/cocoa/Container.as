@@ -1,10 +1,11 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
-import cocoa.plaf.basic.AbstractSkin;
 import cocoa.util.SharedPoint;
 
 import flash.display.DisplayObjectContainer;
+import flash.events.Event;
+import flash.events.IEventDispatcher;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ContainerWrapper;
@@ -12,9 +13,11 @@ import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
 public class Container extends AbstractView implements ViewContainer, LookAndFeelProvider, ContainerWrapper {
-  private var flags:uint;
+  private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 0;
+  private static const CHECK_CACHE_SCHEDULED:uint = 1 << 1;
+  private static const SOME_SUBVIEW_SIZE_INVALID:uint = 1 << 2;
 
-  private static const SUBVIEWS_INITIALIZED:uint = 1 << 0;
+  private var flags:uint;
   
   public function Container(components:Vector.<View>, layout:MigLayout) {
     _components = components;
@@ -27,13 +30,10 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
   }
 
   public function validate():void {
-    if ((flags & SUBVIEWS_INITIALIZED) == 0) {
-      flags |= SUBVIEWS_INITIALIZED;
-      for each (var view:View in components) {
-        view.init(_laf, this);
-      }  
-    }
-    
+    if ((flags & CHECK_CACHE_SCHEDULED) == 0) {
+          checkCache();
+        }
+
     _layout.layoutContainer(this);
   }
 
@@ -117,14 +117,36 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
 
   override public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
     _laf = laf;
+
+    for each (var view:View in components) {
+      view.init(_laf, this);
+    }
   }
 
-  public function invalidateSubview():void {
+  public function invalidateSubview(invalidateContainer:Boolean):void {
+    if (invalidateContainer) {
+      flags |= SOME_SUBVIEW_SIZE_INVALID;
+    }
 
+    if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
+      flags |= VALIDATE_LISTENERS_ATTACHED;
+      addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+    }
   }
 
-  public function invalidateSize():void {
-    _layout
+  private function enterFrameHandler(event:Event):void {
+    IEventDispatcher(event.currentTarget).removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+    if ((flags & CHECK_CACHE_SCHEDULED) == 0) {
+      checkCache();
+    }
+
+    if (controls.length > 0) {
+      var oldControls:Vector.<View> = controls;
+      controls = new Vector.<View>();
+      for each (var control:View in oldControls) {
+        control.validate();
+      }
+    }
   }
 }
 }

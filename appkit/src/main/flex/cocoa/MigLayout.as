@@ -11,19 +11,15 @@ import net.miginfocom.layout.PlatformDefaults;
 
 public class MigLayout extends AbstractMigLayout {
   private var lastHash:int = -1;
-  private var lastInvalidW:Number;
-  private var lastInvalidH:Number;
-
-  private var validateListenersAttached:Boolean;
-  private var checkCacheScheduled:Boolean;
-  private var subviews:Vector.<View>;
+  private var lastInvalidW:int;
+  private var lastInvalidH:int;
 
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
   }
 
   public function preferredLayoutWidth(container:Container, sizeType:int):Number {
-    if (invalid) {
+    if ((flags & INVALID) != 0) {
       checkCache(container);
     }
 
@@ -31,7 +27,7 @@ public class MigLayout extends AbstractMigLayout {
   }
 
   public function preferredLayoutHeight(container:Container, sizeType:int):Number {
-    if (invalid) {
+    if ((flags & INVALID) != 0) {
       checkCache(container);
     }
 
@@ -54,7 +50,7 @@ public class MigLayout extends AbstractMigLayout {
    * @param container The container that is the target for this layout manager.
    */
   private function checkCache(container:Container):void {
-    if (invalid) {
+    if ((flags & INVALID) != 0) {
       grid = null;
     }
 
@@ -89,7 +85,7 @@ public class MigLayout extends AbstractMigLayout {
       grid = new Grid(container, lc, rowSpecs, colSpecs, null);
     }
 
-    invalid = false;
+    flags &= ~INVALID;
   }
 
   //private function calculateSize(container:FlashContainerWrapper, sizeType:int) {
@@ -99,28 +95,13 @@ public class MigLayout extends AbstractMigLayout {
   //  return new Dimension(w, h);
   //}
 
-  public function invalidateSubview(subview:View, dispatcher:DisplayObject, invalidateContainer:Boolean):void {
-    if (subviews == null) {
-      subviews = new Vector.<View>(1);
-      subviews[0] = subview;
-    }
-    else if (subviews.indexOf(subview) == -1) {
-      subviews[subviews.length] = subview;
-    }
+  public function invalidateSubview(invalidateContainer:Boolean, dispatcher:DisplayObject):void {
 
-    if (invalidateContainer) {
-      checkCacheScheduled = true;
-    }
-
-    if (!validateListenersAttached) {
-      validateListenersAttached = true;
-      dispatcher.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
-    }
   }
 
   private function enterFrameHandler(event:Event):void {
     IEventDispatcher(event.currentTarget).removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
-    if (checkCacheScheduled) {
+    if ((flags & SOME_SUBVIEW_INVALID) == 0) {
       checkCache();
     }
 

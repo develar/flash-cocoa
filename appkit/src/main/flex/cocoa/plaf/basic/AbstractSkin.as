@@ -93,15 +93,11 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     }
 
     if (invalidateContainer) {
-      container.invalidateSize();
+      container.invalidateSubview(invalidateContainer);
     }
 
     if ((flags & INVALID) != 0) {
       return;
-    }
-
-    if (container != null) {
-      container.invalidateSubview(this, invalidateContainer);
     }
   }
 }
