@@ -1,6 +1,6 @@
 package cocoa.dialog {
 import cocoa.PushButton;
-import cocoa.ViewContainer;
+import cocoa.ContentView;
 import cocoa.Window;
 import cocoa.dialog.events.DialogEvent;
 import cocoa.keyboard.KeyCode;
@@ -34,7 +34,7 @@ public class Dialog extends Window {
     flags &= ~CLOSABLE;
   }
 
-  ui var controlBar:ViewContainer;
+  ui var controlBar:ContentView;
 
   private var okButton:PushButton;
   private var cancelButton:PushButton;

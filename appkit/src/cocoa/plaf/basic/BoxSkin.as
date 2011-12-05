@@ -1,28 +1,55 @@
 package cocoa.plaf.basic {
 import cocoa.Container;
 
-public class BoxSkin extends AbstractSkin {
-  protected var contentGroup:Container;
+public class BoxSkin extends Container {
+  protected var contentView:Container;
+
+  public function BoxSkin() {
+    super();
+
+    mouseEnabled = false;
+  }
+
+  override public function getMinimumWidth(hHint:int = -1):int {
+      return contentView.getMinimumWidth(hHint);
+    }
+
+    override public function getMinimumHeight(wHint:int = -1):int {
+      return _layout.preferredLayoutHeight(LayoutUtil.MIN);
+    }
+
+    override public function getPreferredWidth(hHint:int = -1):int {
+      return _preferredWidth == 0 ? _layout.preferredLayoutWidth(LayoutUtil.PREF) : _preferredWidth;
+    }
+
+    public function set preferredWidth(value:int):void {
+      _preferredWidth = value;
+      _layout.invalidateSubview(true);
+    }
+
+    override public function getPreferredHeight(wHint:int = -1):int {
+      return _preferredHeight == 0 ? _layout.preferredLayoutHeight(LayoutUtil.PREF) : _preferredHeight;
+    }
 
   override protected function createChildren():void {
     super.createChildren();
 
-    if (contentGroup == null) {
-      contentGroup = new Container();
-      hostComponent.uiPartAdded("contentGroup", contentGroup);
-      addChild(contentGroup);
+    if (contentView == null) {
+      contentView = new Container();
+      hostComponent.uiPartAdded("contentView", contentView);
+      addChild(contentView);
     }
   }
 
   override protected function measure():void {
-    measuredMinWidth = contentGroup.minWidth;
-    measuredMinHeight = contentGroup.minHeight;
-    measuredWidth = contentGroup.getExplicitOrMeasuredWidth();
-    measuredHeight = contentGroup.getExplicitOrMeasuredHeight();
+    measuredMinWidth = contentView.minWidth;
+    measuredMinHeight = contentView.minHeight;
+    measuredWidth = contentView.getExplicitOrMeasuredWidth();
+    measuredHeight = contentView.getExplicitOrMeasuredHeight();
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    contentGroup.setActualSize(w, h);
+    contentView.setActualSize(w, h);
   }
 }
 }

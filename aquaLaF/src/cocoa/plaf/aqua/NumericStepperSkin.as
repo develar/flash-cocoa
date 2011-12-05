@@ -12,7 +12,7 @@ import flash.display.DisplayObject;
 
 use namespace ui;
 
-public class NumericStepperSkin extends LightFlexUIComponent implements UIPartProvider {
+public class NumericStepperSkin extends LightFlexUIComponent {
   protected var textDisplay:TextInput;
 
   protected var incrementButton:FlexButton;

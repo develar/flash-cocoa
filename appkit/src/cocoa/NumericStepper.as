@@ -361,9 +361,9 @@ public class NumericStepper extends Spinner implements UIPartController {
     $addChildAt(mySkin, 0);
     childAdded(mySkin);
 
-    if (!(mySkin is UIPartProvider)) {
-      findSkinParts();
-    }
+    //if (!(mySkin is UIPartProvider)) {
+    //  findSkinParts();
+    //}
   }
 
   override protected function attachSkin():void {

@@ -10,6 +10,7 @@ import net.miginfocom.layout.PlatformDefaults;
 public class MigLayout extends AbstractMigLayout {
   private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 1;
   private static const SOME_SUBVIEW_SIZE_INVALID:uint = 1 << 2;
+  private static const CONTAINER_SIZE_INVALID:uint = 1 << 3;
 
   private var lastHash:int = -1;
   private var lastInvalidW:int;
@@ -66,7 +67,7 @@ public class MigLayout extends AbstractMigLayout {
     if ((flags & INVALID) != 0) {
       grid = null;
     }
-    else if ((flags & SOME_SUBVIEW_SIZE_INVALID) == 0) {
+    else if ((flags & SOME_SUBVIEW_SIZE_INVALID) == 0 && (flags & CONTAINER_SIZE_INVALID) == 0) {
       return false;
     }
 
@@ -102,9 +103,13 @@ public class MigLayout extends AbstractMigLayout {
       layoutInvalid = true;
       grid = new Grid(_container, lc, rowSpecs, colSpecs, null);
     }
+    else {
+      layoutInvalid = (flags & CONTAINER_SIZE_INVALID) != 0;
+    }
 
     flags &= ~INVALID;
     flags &= ~SOME_SUBVIEW_SIZE_INVALID;
+    flags &= ~CONTAINER_SIZE_INVALID;
     return layoutInvalid;
   }
 
@@ -114,6 +119,13 @@ public class MigLayout extends AbstractMigLayout {
   //  var h:Number = LayoutUtil.getSizeSafe(grid != null ? grid.height : null, sizeType);
   //  return new Dimension(w, h);
   //}
+
+  public function invalidateContainerSize():void {
+    if (grid != null) {
+      grid.invalidateContainerSize();
+      flags |= CONTAINER_SIZE_INVALID;
+    }
+  }
 
   public function invalidateSubview(invalidateContainer:Boolean):void {
     if (invalidateContainer && (flags & SOME_SUBVIEW_SIZE_INVALID) == 0) {

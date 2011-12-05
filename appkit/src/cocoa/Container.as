@@ -1,7 +1,9 @@
 package cocoa {
+import cocoa.border.EmptyBorder;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelProvider;
 import cocoa.util.SharedPoint;
+
+import flash.display.DisplayObject;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
@@ -9,11 +11,16 @@ import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
-public class Container extends AbstractView implements ViewContainer, LookAndFeelProvider, ContainerWrapper {
+public class Container extends AbstractView implements ContentView, ContainerWrapper {
   public function Container(components:Vector.<View>, layout:MigLayout) {
     subviews = components;
     _layout = layout;
     _layout.container = this;
+  }
+  
+  private var _border:Border = EmptyBorder.EMPTY;
+  public function set border(value:Border):void {
+    _border = value;
   }
 
   private var _layout:MigLayout;
@@ -39,6 +46,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
 
   public function set preferredWidth(value:int):void {
     _preferredWidth = value;
+    _layout.invalidateSubview(true);
   }
 
   override public function getPreferredHeight(wHint:int = -1):int {
@@ -121,6 +129,10 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
 
   public function invalidateSubview(invalidateContainer:Boolean = true):void {
     _layout.invalidateSubview(invalidateContainer);
+  }
+
+  public function get displayObject():DisplayObject {
+    return this;
   }
 }
 }

@@ -85,7 +85,7 @@
                 <class>**.Application</class>
               </excludes>
               <includes>
-                <!--<class>**.SegmentedControl</class>-->
+                <class>**.SegmentedControl</class>
                 <!--<class>**.Dialog</class>-->
                 <!--<class>**.Tab*</class>-->
 

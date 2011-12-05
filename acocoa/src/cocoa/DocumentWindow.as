@@ -1,6 +1,4 @@
 package cocoa {
-import cocoa.plaf.Skin;
-
 import flash.display.DisplayObject;
 import flash.display.NativeWindow;
 import flash.display.NativeWindowInitOptions;
@@ -13,11 +11,11 @@ import org.flyti.plexus.LocalEventMap;
 public class DocumentWindow extends NativeWindow {
   private static const DEFAULT_INIT_OPTIONS:NativeWindowInitOptions = new NativeWindowInitOptions();
 
-  public function DocumentWindow(contentView:Component, map:LocalEventMap, bounds:Rectangle = null, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
+  public function DocumentWindow(contentView:ContentView, map:LocalEventMap, bounds:Rectangle = null, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
     super(initOptions || DEFAULT_INIT_OPTIONS);
     _focusManager = focusManager;
-    
-    init(contentView, map, bounds);
+    _contentView = contentView;
+    init(map, bounds);
   }
 
   // keep link
@@ -29,20 +27,18 @@ public class DocumentWindow extends NativeWindow {
     return _focusManager;
   }
 
-  private var _contentView:Skin;
-  public function get contentView():Component {
-    return _contentView.hostComponent;
+  private var _contentView:ContentView;
+  public function get contentView():ContentView {
+    return _contentView;
   }
 
-  private function init(contentView:Component, map:LocalEventMap, bounds:Rectangle):void {
+  private function init(map:LocalEventMap, bounds:Rectangle):void {
     if (bounds == null || Screen.getScreensForRectangle(bounds).length == 0) {
       bounds = Screen.mainScreen.visibleBounds;
     }
 
-    //_contentView = contentView.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
-
     if (map != null) {
-      //map.dispatcher = _contentView;
+      map.dispatcher = _contentView.displayObject;
       this.map = map;
     }
 
@@ -62,16 +58,15 @@ public class DocumentWindow extends NativeWindow {
   }
 
   private function resizeHandler(event:NativeWindowBoundsEvent):void {
-    if (DisplayObject(_contentView).parent == null) {
-      var sm:WindowedSystemManager = new WindowedSystemManager();
-      stage.addChild(sm);
-      //sm.init(_contentView);
-    }
-    else {
-      //_contentView.setActualSize(stage.stageWidth, stage.stageHeight);
+    var displayObject:DisplayObject = _contentView.displayObject;
+    if (displayObject.parent == null) {
+      stage.addChild(displayObject);
     }
 
-    //_contentView.validateNow();
+    _contentView.preferredWidth = stage.stageWidth;
+    _contentView.preferredHeight = stage.stageHeight;
+
+    _contentView.validate();
   }
 }
 }

@@ -9,7 +9,7 @@ import cocoa.plaf.LookAndFeelUtil;
 import spark.components.supportClasses.ScrollBarBase;
 
 [Abstract]
-internal class AbstractScrollBarSkin extends LightFlexUIComponent implements UIPartProvider {
+internal class AbstractScrollBarSkin extends LightFlexUIComponent {
   protected var track:TrackOrThumbButton;
   protected var thumb:TrackOrThumbButton;
   protected var decrementButton:ArrowButton;

@@ -93,12 +93,12 @@ public class HSlider extends spark.components.HSlider implements UIPartControlle
 		addingChild(mySkin);
 		$addChildAt(mySkin, 0);
 		childAdded(mySkin);
-
-		if (!(mySkin is UIPartProvider))
-		{
-			findSkinParts();
-			invalidateSkinState();
-		}
+    //
+		//if (!(mySkin is UIPartProvider))
+		//{
+		//	findSkinParts();
+		//	invalidateSkinState();
+		//}
 	}
 
 	override protected function attachSkin():void

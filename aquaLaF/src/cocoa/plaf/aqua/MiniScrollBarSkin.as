@@ -12,7 +12,7 @@ import flash.display.Graphics;
 import spark.components.supportClasses.ScrollBarBase;
 
 [BorderRequirement("ScrollBar.thumb")]
-public class MiniScrollBarSkin extends LightFlexUIComponent implements UIPartProvider {
+public class MiniScrollBarSkin extends LightFlexUIComponent {
   private var thumb:TrackOrThumbButton;
   protected var track:TrackButton;
 

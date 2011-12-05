@@ -5,13 +5,17 @@ import cocoa.View;
 import flash.display.Graphics;
 
 public class EmptyBorder extends AbstractBorder {
+  public static const EMPTY:EmptyBorder = new EmptyBorder();
+
   private var _layoutHeight:Number;
 
-  public function EmptyBorder(layoutHeight:Number, contentInsets:Insets) {
+  public function EmptyBorder(layoutHeight:Number = NaN, contentInsets:Insets = null) {
     super();
 
     _layoutHeight = layoutHeight;
-    _contentInsets = contentInsets;
+    if (contentInsets != null) {
+      _contentInsets = contentInsets;
+    }
   }
 
   override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {

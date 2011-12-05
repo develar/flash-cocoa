@@ -1,4 +1,6 @@
 package cocoa {
+import flash.display.DisplayObject;
+
 import net.miginfocom.layout.ComponentWrapper;
 
 public interface View extends ComponentWrapper {

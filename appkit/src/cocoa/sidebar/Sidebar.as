@@ -1,6 +1,6 @@
 package cocoa.sidebar {
 import cocoa.Panel;
-import cocoa.ViewContainer;
+import cocoa.ContentView;
 import cocoa.bar.Bar;
 import cocoa.pane.PaneItem;
 import cocoa.ui;
@@ -17,7 +17,7 @@ public class Sidebar extends Bar {
     return _skinParts;
   }
 
-  ui var paneGroup:ViewContainer;
+  ui var paneGroup:ContentView;
 
   private var collapsed:Boolean = true;
 

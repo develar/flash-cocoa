@@ -15,7 +15,7 @@ import org.flyti.plexus.events.InjectorEvent;
  * Default base skin implementation for view
  */
 [Abstract]
-public class AbstractSkin extends ControlView implements Skin, UIPartProvider {
+public class AbstractSkin extends ControlView implements Skin {
   private var _component:Component;
   public final function get hostComponent():Component {
     return _component;

@@ -63,7 +63,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TableView.intercellSpacing"] = data["small.TableView.intercellSpacing"] = new Point(3, 2); // height (y) must be even
     data["TableView.bg"] = data["small.TableView.bg"] = new <uint>[0xffffff, 0xedf3fe];
 
-    //data["Toolbar"] = ToolbarSkin;
+    data["Toolbar"] = ToolbarSkin;
     data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));
 
     //data["Dialog"] = WindowSkin;
