@@ -4,8 +4,6 @@ import cocoa.plaf.LookAndFeelProvider;
 import cocoa.util.SharedPoint;
 
 import flash.display.DisplayObjectContainer;
-import flash.events.Event;
-import flash.events.IEventDispatcher;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ContainerWrapper;
@@ -13,15 +11,10 @@ import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
 public class Container extends AbstractView implements ViewContainer, LookAndFeelProvider, ContainerWrapper {
-  private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 0;
-  private static const CHECK_CACHE_SCHEDULED:uint = 1 << 1;
-  private static const SOME_SUBVIEW_SIZE_INVALID:uint = 1 << 2;
-
-  private var flags:uint;
-  
   public function Container(components:Vector.<View>, layout:MigLayout) {
-    _components = components;
+    subviews = components;
     _layout = layout;
+    _layout.container = this;
   }
 
   private var _layout:MigLayout;
@@ -29,24 +22,20 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
     return _layout;
   }
 
-  public function validate():void {
-    if ((flags & CHECK_CACHE_SCHEDULED) == 0) {
-          checkCache();
-        }
-
-    _layout.layoutContainer(this);
+  override public function validate():void {
+    _layout.validate();
   }
 
   override public function getMinimumWidth(hHint:int = -1):int {
-    return _layout.preferredLayoutWidth(this, LayoutUtil.MIN);
+    return _layout.preferredLayoutWidth(LayoutUtil.MIN);
   }
 
   override public function getMinimumHeight(wHint:int = -1):int {
-    return _layout.preferredLayoutHeight(this, LayoutUtil.MIN);
+    return _layout.preferredLayoutHeight(LayoutUtil.MIN);
   }
 
   override public function getPreferredWidth(hHint:int = -1):int {
-    return _preferredWidth == 0 ? _layout.preferredLayoutWidth(this, LayoutUtil.PREF) : _preferredWidth;
+    return _preferredWidth == 0 ? _layout.preferredLayoutWidth(LayoutUtil.PREF) : _preferredWidth;
   }
 
   public function set preferredWidth(value:int):void {
@@ -54,7 +43,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
   }
 
   override public function getPreferredHeight(wHint:int = -1):int {
-    return _preferredHeight == 0 ? _layout.preferredLayoutHeight(this, LayoutUtil.PREF) : _preferredHeight;
+    return _preferredHeight == 0 ? _layout.preferredLayoutHeight(LayoutUtil.PREF) : _preferredHeight;
   }
 
   public function set preferredHeight(value:int):void {
@@ -69,13 +58,13 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
     return ComponentType.TYPE_CONTAINER;
   }
 
-  protected var _components:Vector.<View>;
+  protected var subviews:Vector.<View>;
   public function get components():Vector.<View> {
-    return _components;
+    return subviews;
   }
 
   public function get componentCount():int {
-    return _components.length;
+    return subviews.length;
   }
 
   public function get leftToRight():Boolean {
@@ -124,29 +113,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
   }
 
   public function invalidateSubview(invalidateContainer:Boolean):void {
-    if (invalidateContainer) {
-      flags |= SOME_SUBVIEW_SIZE_INVALID;
-    }
-
-    if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
-      flags |= VALIDATE_LISTENERS_ATTACHED;
-      addEventListener(Event.ENTER_FRAME, enterFrameHandler);
-    }
-  }
-
-  private function enterFrameHandler(event:Event):void {
-    IEventDispatcher(event.currentTarget).removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
-    if ((flags & CHECK_CACHE_SCHEDULED) == 0) {
-      checkCache();
-    }
-
-    if (controls.length > 0) {
-      var oldControls:Vector.<View> = controls;
-      controls = new Vector.<View>();
-      for each (var control:View in oldControls) {
-        control.validate();
-      }
-    }
+    _layout.invalidateSubview(invalidateContainer);
   }
 }
 }

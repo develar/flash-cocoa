@@ -1,15 +1,16 @@
 package cocoa {
-import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
 import net.miginfocom.layout.AbstractMigLayout;
-import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
 public class MigLayout extends AbstractMigLayout {
+  private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 1;
+  private static const SOME_SUBVIEW_SIZE_INVALID:uint = 1 << 2;
+
   private var lastHash:int = -1;
   private var lastInvalidW:int;
   private var lastInvalidH:int;
@@ -17,41 +18,56 @@ public class MigLayout extends AbstractMigLayout {
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
   }
-
-  public function preferredLayoutWidth(container:Container, sizeType:int):Number {
-    if ((flags & INVALID) != 0) {
-      checkCache(container);
+  
+  private var _container:Container;
+  public function set container(value:Container):void {
+    if (_container != value) {
+      _container = value;
+      flags |= INVALID;
     }
+  }
+
+  public function validate():void {
+    if ((flags & VALIDATE_LISTENERS_ATTACHED) != 0) {
+      _container.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+    }
+
+    if (checkCache()) {
+      const w:int = _container.getPreferredWidth(-1);
+      const h:int = _container.getPreferredHeight(-1);
+      if (grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, true)) {
+        grid = null;
+        checkCache();
+        grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, false);
+      }
+    }
+
+    for each (var view:View in _container.components) {
+      view.validate();
+    }
+  }
+
+  public function preferredLayoutWidth(sizeType:int):Number {
+    checkCache();
 
     return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
   }
 
-  public function preferredLayoutHeight(container:Container, sizeType:int):Number {
-    if ((flags & INVALID) != 0) {
-      checkCache(container);
-    }
+  public function preferredLayoutHeight(sizeType:int):Number {
+    checkCache();
 
     return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
-  }
-
-  public function layoutContainer(container:Container):void {
-    checkCache(container);
-
-    const w:int = container.getPreferredWidth(-1);
-    const h:int = container.getPreferredHeight(-1);
-    if (grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, true)) {
-      grid = null;
-      checkCache(container);
-      grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, false);
-    }
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.
-   * @param container The container that is the target for this layout manager.
    */
-  private function checkCache(container:Container):void {
+  private function checkCache():Boolean {
+    var layoutInvalid:Boolean;
     if ((flags & INVALID) != 0) {
       grid = null;
+    }
+    else if ((flags & SOME_SUBVIEW_SIZE_INVALID) == 0) {
+      return false;
     }
 
     // Check if the grid is valid
@@ -62,7 +78,7 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     var hash:int = 0;
-    for each (var componentWrapper:ComponentWrapper in container.components) {
+    for each (var componentWrapper:View in _container.components) {
       hash ^= componentWrapper.layoutHashCode;
       hash += 285134905;
     }
@@ -72,20 +88,24 @@ public class MigLayout extends AbstractMigLayout {
       lastHash = hash;
     }
 
-    if (lastInvalidW != container.actualWidth || lastInvalidH != container.actualHeight) {
+    if (lastInvalidW != _container.actualWidth || lastInvalidH != _container.actualHeight) {
       if (grid != null) {
         grid.invalidateContainerSize();
+        layoutInvalid = true;
       }
 
-      lastInvalidW = container.actualWidth;
-      lastInvalidH = container.actualHeight;
+      lastInvalidW = _container.actualWidth;
+      lastInvalidH = _container.actualHeight;
     }
 
     if (grid == null) {
-      grid = new Grid(container, lc, rowSpecs, colSpecs, null);
+      layoutInvalid = true;
+      grid = new Grid(_container, lc, rowSpecs, colSpecs, null);
     }
 
     flags &= ~INVALID;
+    flags &= ~SOME_SUBVIEW_SIZE_INVALID;
+    return layoutInvalid;
   }
 
   //private function calculateSize(container:FlashContainerWrapper, sizeType:int) {
@@ -95,23 +115,19 @@ public class MigLayout extends AbstractMigLayout {
   //  return new Dimension(w, h);
   //}
 
-  public function invalidateSubview(invalidateContainer:Boolean, dispatcher:DisplayObject):void {
+  public function invalidateSubview(invalidateContainer:Boolean):void {
+    if (invalidateContainer && (flags & SOME_SUBVIEW_SIZE_INVALID) == 0) {
+      flags |= SOME_SUBVIEW_SIZE_INVALID;
+    }
 
+    if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
+      _container.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+    }
   }
 
   private function enterFrameHandler(event:Event):void {
     IEventDispatcher(event.currentTarget).removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
-    if ((flags & SOME_SUBVIEW_INVALID) == 0) {
-      checkCache();
-    }
-
-    if (controls.length > 0) {
-      var oldControls:Vector.<View> = controls;
-      controls = new Vector.<View>();
-      for each (var control:View in oldControls) {
-        control.validate();
-      }
-    }
+    validate();
   }
 }
 }

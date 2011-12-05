@@ -13,7 +13,6 @@ import cocoa.plaf.LookAndFeel;
 import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 import flash.display.InteractiveObject;
-import flash.events.Event;
 import flash.events.MouseEvent;
 
 public class PushButtonSkin extends TitledComponentSkin implements Focusable, ButtonSkinInteraction {
@@ -104,32 +103,19 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     }
   }
 
-  override protected function measure():void {
-    if (labelHelper == null || !labelHelper.hasText) {
-      measuredWidth = border.layoutWidth;
-      measuredHeight = border.layoutHeight;
-    }
-    else {
-      labelHelper.validate();
-
-      measuredWidth = Math.round(labelHelper.textWidth) + border.contentInsets.width;
-      measuredHeight = border.layoutHeight;
-    }
-  }
-
-  override protected function draw(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     if (labelHelper != null && labelHelper.hasText) {
       if (myComponent.state == CellState.MIXED) {
         if (labelHelper.textLine != null && labelHelper.textLine.parent != null) {
-          removeDisplayObject(labelHelper.textLine);
+          removeChild(labelHelper.textLine);
         }
       }
       else {
         if (labelHelper.textLine != null && labelHelper.textLine.parent == null) {
-          addDisplayObject(labelHelper.textLine);
+          addChild(labelHelper.textLine);
         }
 
-        if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth))) {
+        if (border != null) {
           var titleInsets:Insets = border.contentInsets;
           labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
         }
@@ -153,8 +139,8 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     drawBorder2(width, height);
   }
 
-  override public function set enabled(value:Boolean):void {
-    super.enabled = value;
+  public function set enabled(value:Boolean):void {
+    //!! super.enabled = value;
 
     if (responsibleForInteraction) {
       mouseEnabled = value;
@@ -191,10 +177,6 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     var state:int = CellState.OFF;
     if (toggled) {
       state = myComponent.state == CellState.OFF ? CellState.ON : CellState.OFF;
-    }
-
-    if (hostComponent.hasEventListener("selectedChanged")) {
-      hostComponent.dispatchEvent(new Event("selectedChanged"));
     }
 
     AbstractButton(hostComponent).setStateAndCallUserInitiatedActionHandler(state);

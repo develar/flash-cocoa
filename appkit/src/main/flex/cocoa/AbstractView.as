@@ -121,5 +121,9 @@ public class AbstractView extends Sprite implements View {
   public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
     throw new IllegalOperationError("Abstract");
   }
+
+  public function validate():void {
+    throw new IllegalOperationError("Abstract");
+  }
 }
 }

@@ -9,7 +9,6 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
-import flash.geom.Point;
 
 import flashx.textLayout.formats.ITextLayoutFormat;
 
@@ -96,9 +95,20 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
       container.invalidateSubview(invalidateContainer);
     }
 
-    if ((flags & INVALID) != 0) {
+    flags |= INVALID;
+  }
+
+  override public function validate():void {
+    if ((flags & INVALID) == 0) {
       return;
     }
+
+    flags &= ~INVALID;
+    draw(_actualWidth, _actualHeight);
+  }
+
+  protected function draw(w:int, h:int):void {
+
   }
 }
 }
