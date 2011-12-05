@@ -6,9 +6,6 @@ import cocoa.text.TextFormat;
 import flash.geom.Point;
 import flash.utils.Dictionary;
 
-import flashx.textLayout.edit.SelectionFormat;
-import flashx.textLayout.formats.ITextLayoutFormat;
-
 import mx.core.IFactory;
 
 public interface LookAndFeel {
@@ -21,10 +18,6 @@ public interface LookAndFeel {
   function getIcon(key:String):Icon;
 
   function getTextFormat(key:String):TextFormat;
-
-  function getTextLayoutFormat(key:String):ITextLayoutFormat;
-
-  function getSelectionFormat(key:String):SelectionFormat;
 
   function getClass(key:String):Class;
 

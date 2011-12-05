@@ -8,6 +8,10 @@ import cocoa.text.EditableTextView;
 import flash.display.Graphics;
 import flash.display.InteractiveObject;
 
+import flashx.textLayout.edit.SelectionFormat;
+
+import flashx.textLayout.formats.ITextLayoutFormat;
+
 /**
  * http://developer.apple.com/mac/library/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGControls/XHIGControls.html#//apple_ref/doc/uid/TP30000359-TPXREF225
  */
@@ -25,8 +29,8 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
     if (!enabled) {
       textDisplay.enabled = false;
     }
-    textDisplay.textFormat = getTextLayoutFormat("SystemTextFormat");
-    textDisplay.selectionFormat = laf.getSelectionFormat("SelectionFormat");
+    textDisplay.textFormat = ITextLayoutFormat(getObject("SystemTextFormat"));
+    textDisplay.selectionFormat = SelectionFormat(getObject("SelectionFormat"));
     configureAndAddTextDisplay();
     documentView.x = border.contentInsets.left;
     documentView.y = border.contentInsets.top;

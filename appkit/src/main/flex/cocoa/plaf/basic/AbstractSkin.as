@@ -10,8 +10,6 @@ import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
 
-import flashx.textLayout.formats.ITextLayoutFormat;
-
 import mx.core.IFactory;
 
 import org.flyti.plexus.Injectable;
@@ -32,8 +30,8 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     return _component;
   }
 
-  protected final function getTextLayoutFormat(key:String):ITextLayoutFormat {
-    return container.laf.getTextLayoutFormat(_component.lafKey + "." + key);
+  protected final function getObject(key:String):Object {
+    return container.laf.getObject(_component.lafKey + "." + key, false);
   }
 
   protected final function getBorder(key:String = "b"):Border {
