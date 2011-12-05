@@ -16,6 +16,14 @@ public class AbstractSkinnableComponent extends ComponentBase implements Compone
     return _skin;
   }
 
+  override public function get x():Number {
+    return _skin.x;
+  }
+
+  override public function get y():Number {
+    return _skin.y;
+  }
+
   override public function get actualWidth():int {
     return _skin.actualWidth;
   }

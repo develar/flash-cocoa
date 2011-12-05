@@ -6,14 +6,25 @@ import flash.text.engine.FontDescription;
 import flash.text.engine.TextLine;
 
 public class Label extends ComponentWrapperImpl {
-  private var fontDescription:FontDescription;
+  private var container:Container;
 
+  private var fontDescription:FontDescription;
   private var textFormat:TextFormat;
 
   private var labelHelper:LabelHelper;
 
   public function Label() {
     labelHelper = new LabelHelper(null);
+  }
+
+  override public function get x():Number {
+    var textLine:TextLine = labelHelper.textLine;
+    return textLine == null ? 0 : labelHelper.textLine.x;
+  }
+
+  override public function get y():Number {
+    var textLine:TextLine = labelHelper.textLine;
+    return textLine == null ? 0 : labelHelper.textLine.y - textLine.ascent;
   }
 
   override public function get actualWidth():int {
@@ -59,11 +70,15 @@ public class Label extends ComponentWrapperImpl {
   public function set title(value:String):void {
     if (value != labelHelper.text) {
       labelHelper.text = value;
-      //!! invalidateDisplayList();
+      if (container != null) {
+        container.invalidateSubview();
+      }
     }
   }
 
   override public function init(container:Container):void {
+    this.container = container;
+
     if (textFormat != null && fontDescription != null) {
       textFormat.format.fontDescription = fontDescription;
     }
@@ -99,6 +114,10 @@ public class Label extends ComponentWrapperImpl {
     else {
       return -1;
     }
+  }
+
+  override public function validate():void {
+    labelHelper.validate();
   }
 }
 }

@@ -119,7 +119,7 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
     }
   }
 
-  public function invalidateSubview(invalidateContainer:Boolean):void {
+  public function invalidateSubview(invalidateContainer:Boolean = true):void {
     _layout.invalidateSubview(invalidateContainer);
   }
 }
