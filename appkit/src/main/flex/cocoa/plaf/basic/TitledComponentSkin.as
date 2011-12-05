@@ -17,7 +17,7 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
         return;
       }
 
-      labelHelper = new LabelHelper(this, laf == null ? null : laf.getTextFormat(titleTextFormatId));
+      labelHelper = new LabelHelper(this, container.laf == null ? null : container.laf.getTextFormat(titleTextFormatId));
     }
     else if (value == labelHelper.text) {
       return;
@@ -25,15 +25,14 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
 
     labelHelper.text = value;
 
-    invalidateSize();
-    invalidateDisplayList();
+    invalidate();
   }
 
   override protected function createChildren():void {
     super.createChildren();
 
     if (labelHelper != null) {
-      labelHelper.textFormat = laf.getTextFormat(titleTextFormatId);
+      labelHelper.textFormat = container.laf.getTextFormat(titleTextFormatId);
     }
   }
 }

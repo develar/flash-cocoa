@@ -1,32 +1,17 @@
 package cocoa {
 import cocoa.layout.CollectionLayout;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelUtil;
-import cocoa.plaf.Skin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
-
-import flash.display.DisplayObject;
 
 import org.flyti.plexus.Injectable;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
 public class SegmentedControl extends CollectionBody implements Injectable, ListSelectionModel {
-  public var stupidMxmlId:String;
-
   private static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
-  }
-
-  public function get hidden():Boolean {
-    return !visible && !includeInLayout;
-  }
-
-  public function set hidden(value:Boolean):void {
-    visible = !value;
-    includeInLayout = !value;
   }
 
   private var _mode:int = SelectionMode.ONE;
@@ -176,8 +161,8 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     return mode == SelectionMode.ONE ? selectedIndex == index : (!isEmpty(selectedIndices) && selectedIndices.indexOf(index) != -1);
   }
 
-  override protected function createChildren():void {
-    var laf:LookAndFeel = LookAndFeelUtil.find(parent);
+  override public function init(container:Container):void {
+    var laf:LookAndFeel = container.laf;
     if (layout == null) {
       layout = laf.getFactory(_lafKey + ".layout").newInstance();
     }
@@ -203,25 +188,9 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     if (mode != SelectionMode.NONE) {
       SegmentedControlInteractor(laf.getFactory(_lafKey + ".interactor").newInstance()).register(this);
     }
-
-    super.createChildren();
   }
 
-  override public function addChild(child:DisplayObject):DisplayObject {
-    child is Skin ? super.addChild(child) : addDisplayObject(child);
-    return child;
-  }
-
-  override public function removeChild(child:DisplayObject):DisplayObject {
-    child is Skin ? super.removeChild(child) : removeDisplayObject(child);
-    return child;
-  }
-
-  override protected function measure():void {
-    layout.measure();
-  }
-
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     layout.layout(w, h);
   }
 

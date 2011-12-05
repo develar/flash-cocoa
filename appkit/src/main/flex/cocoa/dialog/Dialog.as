@@ -50,7 +50,7 @@ public class Dialog extends Window {
     if (value != _valid) {
       _valid = value;
       if (okButton != null) {
-        okButton.enabled = _valid;
+        //okButton.enabled = _valid;
       }
     }
   }

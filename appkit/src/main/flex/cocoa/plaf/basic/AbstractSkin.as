@@ -1,14 +1,10 @@
 package cocoa.plaf.basic {
-import cocoa.AbstractView;
 import cocoa.Border;
 import cocoa.Component;
-import cocoa.Container;
+import cocoa.ControlView;
 import cocoa.Icon;
 import cocoa.UIPartProvider;
-import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
-
-import flash.display.DisplayObjectContainer;
 
 import mx.core.IFactory;
 
@@ -19,12 +15,7 @@ import org.flyti.plexus.events.InjectorEvent;
  * Default base skin implementation for view
  */
 [Abstract]
-public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
-  private static const INVALID:uint = 1 << 0;
-
-  protected var flags:uint;
-  protected var container:Container;
-
+public class AbstractSkin extends ControlView implements Skin, UIPartProvider {
   private var _component:Component;
   public final function get hostComponent():Component {
     return _component;
@@ -50,7 +41,7 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     return container.laf.getFactory(_component.lafKey + "." + key, false);
   }
 
-  public function attach(component:Component, container:DisplayObjectContainer, laf:LookAndFeel):void {
+  public function attach(component:Component):void {
     _component = component;
 
     createChildren();
@@ -84,29 +75,8 @@ public class AbstractSkin extends AbstractView implements Skin, UIPartProvider {
     }
   }
 
-  protected final function invalidate(invalidateContainer:Boolean = true):void {
-    if (container == null) {
-      return;
-    }
-
-    if (invalidateContainer) {
-      container.invalidateSubview(invalidateContainer);
-    }
-
-    flags |= INVALID;
-  }
-
-  override public function validate():void {
-    if ((flags & INVALID) == 0) {
-      return;
-    }
-
-    flags &= ~INVALID;
-    draw(_actualWidth, _actualHeight);
-  }
-
-  protected function draw(w:int, h:int):void {
-
+  public function hostComponentPropertyChanged():void {
+    invalidate(true);
   }
 }
 }

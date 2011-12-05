@@ -1,10 +1,10 @@
 package cocoa.colorPicker {
-import cocoa.AbstractView;
+import cocoa.ControlView;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.Graphics;
 
-public class MenuSwatchItemRenderer extends AbstractView {
+public class MenuSwatchItemRenderer extends ControlView {
   private var swatchGrid:SwatchGrid;
 
   public function MenuSwatchItemRenderer() {
@@ -22,7 +22,7 @@ public class MenuSwatchItemRenderer extends AbstractView {
     if (value != _color) {
       _color = value;
       colorChanged = true;
-      invalidateProperties();
+      invalidate();
     }
   }
 

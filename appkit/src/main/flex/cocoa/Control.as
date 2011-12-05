@@ -11,8 +11,5 @@ public interface Control {
   function get objectValue():Object;
 
   function set objectValue(value:Object):void;
-
-  function get hidden():Boolean;
-  function set hidden(value:Boolean):void;
 }
 }

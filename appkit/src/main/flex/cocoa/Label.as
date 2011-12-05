@@ -1,9 +1,7 @@
 package cocoa {
-import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.TextFormatId;
 import cocoa.text.TextFormat;
 
-import flash.display.DisplayObjectContainer;
 import flash.text.engine.FontDescription;
 import flash.text.engine.TextLine;
 
@@ -13,6 +11,10 @@ public class Label extends ComponentWrapperImpl {
   private var textFormat:TextFormat;
 
   private var labelHelper:LabelHelper;
+
+  public function Label() {
+    labelHelper = new LabelHelper(null);
+  }
 
   override public function get actualWidth():int {
     var textLine:TextLine = labelHelper.textLine;
@@ -61,12 +63,12 @@ public class Label extends ComponentWrapperImpl {
     }
   }
 
-  override public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+  override public function init(container:Container):void {
     if (textFormat != null && fontDescription != null) {
       textFormat.format.fontDescription = fontDescription;
     }
     else {
-      var lafTextFormat:TextFormat = laf.getTextFormat(TextFormatId.VIEW);
+      var lafTextFormat:TextFormat = container.laf.getTextFormat(TextFormatId.VIEW);
       if (textFormat == null) {
         textFormat = lafTextFormat;
       }
@@ -76,14 +78,13 @@ public class Label extends ComponentWrapperImpl {
       }
     }
 
-    labelHelper = new LabelHelper(container, textFormat);
+    labelHelper.container = container;
+    labelHelper.textFormat = textFormat;
   }
 
   override public function setBounds(x:Number, y:Number, width:int, height:int):void {
     labelHelper.validate();
-    labelHelper.move(x, y);
-    
-    super.setBounds(x, y, width, height);
+    labelHelper.move(x, y, false);
   }
 
   override public function get hasBaseline():Boolean {

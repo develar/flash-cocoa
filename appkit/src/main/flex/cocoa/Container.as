@@ -3,9 +3,8 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 import cocoa.util.SharedPoint;
 
-import flash.display.DisplayObjectContainer;
-
 import net.miginfocom.layout.ComponentType;
+import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
@@ -59,8 +58,8 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
   }
 
   protected var subviews:Vector.<View>;
-  public function get components():Vector.<View> {
-    return subviews;
+  public function get components():Vector.<ComponentWrapper> {
+    return Vector.<ComponentWrapper>(subviews);
   }
 
   public function get componentCount():int {
@@ -104,11 +103,19 @@ public class Container extends AbstractView implements ViewContainer, LookAndFee
     _laf = value;
   }
 
-  override public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+  public function initRoot(laf:LookAndFeel):void {
     _laf = laf;
+    initSubviews();
+  }
 
+  override public function init(container:Container):void {
+    _laf = container.laf;
+    initSubviews();
+  }
+
+  private function initSubviews():void {
     for each (var view:View in components) {
-      view.init(_laf, this);
+      view.init(this);
     }
   }
 

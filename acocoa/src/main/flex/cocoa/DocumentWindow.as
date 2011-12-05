@@ -1,5 +1,4 @@
 package cocoa {
-import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObject;
@@ -8,8 +7,6 @@ import flash.display.NativeWindowInitOptions;
 import flash.display.Screen;
 import flash.events.NativeWindowBoundsEvent;
 import flash.geom.Rectangle;
-
-import mx.managers.SystemManagerGlobals;
 
 import org.flyti.plexus.LocalEventMap;
 
@@ -42,10 +39,10 @@ public class DocumentWindow extends NativeWindow {
       bounds = Screen.mainScreen.visibleBounds;
     }
 
-    _contentView = contentView.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
+    //_contentView = contentView.createView(LookAndFeelProvider(SystemManagerGlobals.topLevelSystemManagers[0]).laf);
 
     if (map != null) {
-      map.dispatcher = _contentView;
+      //map.dispatcher = _contentView;
       this.map = map;
     }
 
@@ -68,13 +65,13 @@ public class DocumentWindow extends NativeWindow {
     if (DisplayObject(_contentView).parent == null) {
       var sm:WindowedSystemManager = new WindowedSystemManager();
       stage.addChild(sm);
-      sm.init(_contentView);
+      //sm.init(_contentView);
     }
     else {
-      _contentView.setActualSize(stage.stageWidth, stage.stageHeight);
+      //_contentView.setActualSize(stage.stageWidth, stage.stageHeight);
     }
 
-    _contentView.validateNow();
+    //_contentView.validateNow();
   }
 }
 }

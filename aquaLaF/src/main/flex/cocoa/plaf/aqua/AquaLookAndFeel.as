@@ -1,36 +1,18 @@
 package cocoa.plaf.aqua {
-import cocoa.ClassFactory;
 import cocoa.FrameInsets;
-import cocoa.Insets;
 import cocoa.SingletonClassFactory;
 import cocoa.border.LinearGradientBorder;
-import cocoa.layout.ListLayoutFactory;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
 import cocoa.plaf.RendererManagerFactory;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
-import cocoa.plaf.basic.BasicTableViewSkin;
-import cocoa.plaf.basic.BoxSkin;
-import cocoa.plaf.basic.CollectionViewSkin;
-import cocoa.plaf.basic.ColorPickerMenuController;
 import cocoa.plaf.basic.IconButtonSkin;
-import cocoa.plaf.basic.MenuSkin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
-import cocoa.plaf.basic.SeparatorSkin;
-import cocoa.plaf.basic.SidebarSkin;
-import cocoa.plaf.basic.SliderNumericStepperSkin;
-import cocoa.plaf.basic.scrollbar.HScrollBarSkin;
-import cocoa.plaf.basic.scrollbar.VScrollBarSkin;
-import cocoa.text.SimpleTextLayoutFormat;
 
-import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.text.engine.FontDescription;
-
-import flashx.textLayout.edit.SelectionFormat;
-import flashx.textLayout.formats.LineBreak;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
@@ -69,83 +51,83 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data[TextFormatId.MENU] = AquaFonts.SYSTEM_FONT;
     data[TextFormatId.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
-    data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
+    //data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
-    data["Box"] = BoxSkin;
+    //data["Box"] = BoxSkin;
 
-    data["CollectionView"] = data["small.CollectionView"] = CollectionViewSkin;
+    //data["CollectionView"] = data["small.CollectionView"] = CollectionViewSkin;
     
-    data["TableView"] = data["small.TableView"] = BasicTableViewSkin;
+    //data["TableView"] = data["small.TableView"] = BasicTableViewSkin;
     data["TableView.rowHeight"] = 17;
     data["small.TableView.rowHeight"] = 14;
     data["TableView.intercellSpacing"] = data["small.TableView.intercellSpacing"] = new Point(3, 2); // height (y) must be even
     data["TableView.bg"] = data["small.TableView.bg"] = new <uint>[0xffffff, 0xedf3fe];
 
-    data["Toolbar"] = ToolbarSkin;
+    //data["Toolbar"] = ToolbarSkin;
     data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));
 
-    data["Dialog"] = WindowSkin;
-    data["HUDWindow"] = HUDWindowSkin;
+    //data["Dialog"] = WindowSkin;
+    //data["HUDWindow"] = HUDWindowSkin;
 
     data["SwatchGrid.b"] = data["ListView.b"] = data["TextArea.b"] = data["TableView.b"] = data["small.TableView.b"] = new BezelBorder();
 
     data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, this, "SegmentItem");
 
-    data["TabView"] = TabViewSkin;
-    data["TabView.borderless"] = BorderlessTabViewSkin;
+    //data["TabView"] = TabViewSkin;
+    //data["TabView.borderless"] = BorderlessTabViewSkin;
     data["Sidebar.tabBar.interactor"] = data["SegmentedControl.interactor"] = data["TabView.tabBar.interactor"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlInteractor);
-    data["TabView.tabBar.layout"] = data["SegmentedControl.layout"] = new ListLayoutFactory(20, 1);
+    //data["TabView.tabBar.layout"] = data["SegmentedControl.layout"] = new ListLayoutFactory(20, 1);
     data["TabView.tabBar.placement"] = Placement.PAGE_START_LINE_CENTER;
 
-    data["Sidebar"] = SidebarSkin;
-    data["Sidebar.tabBar.layout"] = new ListLayoutFactory(20, 6, false);
+    //data["Sidebar"] = SidebarSkin;
+    //data["Sidebar.tabBar.layout"] = new ListLayoutFactory(20, 6, false);
 
     data["PushButton"] = PushButtonSkin;
     data["IconButton"] = IconButtonSkin;
 
     data["PopUpButton"] = PushButtonSkin;
-    data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuInteractor);
+    //data["PopUpButton.menuController"] = new SingletonClassFactory(PopUpMenuInteractor);
 
     data["ColorPicker"] = PushButtonSkin;
     data["ColorPicker.b"] = data["PopUpButton.b"];
 
-    data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
+    //data["ColorPicker.menuController"] = new SingletonClassFactory(ColorPickerMenuController);
 
-    data["Menu"] = MenuSkin;
-    data["Menu.iR"] = new ClassFactory(MenuItemRenderer);
+    //data["Menu"] = MenuSkin;
+    //data["Menu.iR"] = new ClassFactory(MenuItemRenderer);
 
     data["MenuItem.b"] = new MenuItemBorder(data["MenuItem.b.highlighted"]);
     data["MenuItem.separatorBorder"] = new SeparatorMenuItemBorder();
 
     //data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
-    data["ScrollBar.h"] = HScrollBarSkin;
-    data["ScrollBar.v"] = VScrollBarSkin;
+    //data["ScrollBar.h"] = HScrollBarSkin;
+    //data["ScrollBar.v"] = VScrollBarSkin;
 
-    data["VSeparator"] = data["HSeparator"] = SeparatorSkin;
+    //data["VSeparator"] = data["HSeparator"] = SeparatorSkin;
 
-    data["NumericStepper"] = NumericStepperSkin;
+    //data["NumericStepper"] = NumericStepperSkin;
     data["CheckBox"] = data["small.CheckBox"] = CheckBoxSkin;
-    data["HSlider"] = HSliderSkin;
+    //data["HSlider"] = HSliderSkin;
 
-    data["TextInput"] = TextInputSkin;
-    data["TextInput.SystemTextFormat"] = createDefaultTextFormat(false);
+    //data["TextInput"] = TextInputSkin;
+    //data["TextInput.SystemTextFormat"] = createDefaultTextFormat(false);
 
     data["small.TextInput"] = data["TextInput"];
     data["small.TextInput.b"] = data["TextInput.b"];
-    data["small.TextInput.SystemTextFormat"] = createDefaultTextFormat(true);
+    //data["small.TextInput.SystemTextFormat"] = createDefaultTextFormat(true);
 
-    data["TextArea"] = TextAreaSkin;
+    //data["TextArea"] = TextAreaSkin;
 
-    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT, new Insets(5, 2, 5));
-    textFormat.$lineBreak = LineBreak.TO_FIT;
-    data["TextArea.SystemTextFormat"] = textFormat;
+    //var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT, new Insets(5, 2, 5));
+    //textFormat.$lineBreak = LineBreak.TO_FIT;
+    //data["TextArea.SystemTextFormat"] = textFormat;
 
-    data["NumericStepper.TextInput"] = TextInputSkin;
+    //data["NumericStepper.TextInput"] = TextInputSkin;
 
     data["HSeparator.b"] = new SeparatorBorder();
 
-    data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
+    //data["Tree.defaults"] = {paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, indentation: 16, useRollOver: false};
   }
 
   public function createWindowFrameLookAndFeel(small:Boolean = false):LookAndFeel {
@@ -179,15 +161,14 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     return hudLookAndFeel;
   }
 
-  private static function createDefaultTextFormat(small:Boolean):SimpleTextLayoutFormat {
-    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(small ? AquaFonts.SMALL_SYSTEM_FONT : AquaFonts.SYSTEM_FONT, new Insets(0, 2));
-    textFormat.$lineBreak = LineBreak.EXPLICIT;
-    return textFormat;
-  }
+  //private static function createDefaultTextFormat(small:Boolean):SimpleTextLayoutFormat {
+  //  var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(small ? AquaFonts.SMALL_SYSTEM_FONT : AquaFonts.SYSTEM_FONT, new Insets(0, 2));
+  //  textFormat.$lineBreak = LineBreak.EXPLICIT;
+  //  return textFormat;
+  //}
 }
 }
 
-import cocoa.Insets;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatId;
@@ -197,19 +178,12 @@ import cocoa.plaf.aqua.HUDTextInputBorder;
 import cocoa.plaf.aqua.MenuItemBorder;
 import cocoa.plaf.aqua.NumericStepperTextInputBorder;
 import cocoa.plaf.aqua.SeparatorBorder;
-import cocoa.plaf.aqua.TextInputSkin;
 import cocoa.plaf.basic.AbstractLookAndFeel;
-import cocoa.text.SimpleTextLayoutFormat;
 import cocoa.text.TextFormat;
 
-import flash.display.BlendMode;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontWeight;
-
-import flashx.textLayout.edit.SelectionFormat;
-import flashx.textLayout.formats.LineBreak;
-import flashx.textLayout.formats.TextAlign;
 
 final class PanelLookAndFeel extends AbstractLookAndFeel {
   public function PanelLookAndFeel(parent:AquaLookAndFeel) {
@@ -275,10 +249,10 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     LookAndFeelUtil.initAssets(data, assetsDataClass);
     assetsDataClass = null;
 
-    data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
+    //data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
     data["TextInput.b"] = new HUDTextInputBorder();
-    data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
+    //data["TextInput.SystemTextFormat"] = createDefaultTextFormat();
 
     data["HSeparator.b"] = new SeparatorBorder();
 
@@ -286,21 +260,21 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
 
     data["MenuItem.b"] = new MenuItemBorder(data["MenuItem.b.highlighted"]);
 
-    data["NumericStepper.TextInput"] = TextInputSkin;
+    //data["NumericStepper.TextInput"] = TextInputSkin;
     data["NumericStepper.TextInput.b"] = new NumericStepperTextInputBorder();
 
-    var numericStepperTextFormat:SimpleTextLayoutFormat = createDefaultTextFormat();
-    numericStepperTextFormat.$textAlign = TextAlign.END;
-    data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
+    //var numericStepperTextFormat:SimpleTextLayoutFormat = createDefaultTextFormat();
+    //numericStepperTextFormat.$textAlign = TextAlign.END;
+    //data["NumericStepper.TextInput.SystemTextFormat"] = numericStepperTextFormat;
 
     data["TitleBar.PushButton"] = _parent.getClass("PushButton");
   }
 
-  private static function createDefaultTextFormat():SimpleTextLayoutFormat {
-    var textInputTextFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT_HUD, new Insets(0, 2));
-    textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
-    return textInputTextFormat;
-  }
+  //private static function createDefaultTextFormat():SimpleTextLayoutFormat {
+  //  var textInputTextFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(AquaFonts.SYSTEM_FONT_HUD, new Insets(0, 2));
+  //  textInputTextFormat.$lineBreak = LineBreak.EXPLICIT;
+  //  return textInputTextFormat;
+  //}
 }
 
 /**

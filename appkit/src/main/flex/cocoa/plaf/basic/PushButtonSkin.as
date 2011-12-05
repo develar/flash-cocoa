@@ -8,9 +8,7 @@ import cocoa.Focusable;
 import cocoa.Insets;
 import cocoa.TextInsets;
 import cocoa.plaf.ButtonSkinInteraction;
-import cocoa.plaf.LookAndFeel;
 
-import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 import flash.display.InteractiveObject;
 import flash.events.MouseEvent;
@@ -21,6 +19,8 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
 
   public function PushButtonSkin() {
     mouseChildren = false;
+
+    flags |= HAS_BASELINE;
   }
 
   //noinspection JSMethodCanBeStatic
@@ -37,14 +37,10 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     return true;
   }
 
-  override public function attach(component:Component, container:DisplayObjectContainer, laf:LookAndFeel):void {
-    super.attach(component, container, laf);
+  override public function attach(component:Component):void {
+    super.attach(component);
 
     myComponent = Cell(component);
-  }
-
-  override public function get hasBaseline():Boolean {
-    return true;
   }
 
   override public function getBaseline(width:int, height:int):int {
@@ -211,10 +207,6 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
 
   public function get focusObject():InteractiveObject {
     return this;
-  }
-
-  public function get enabled():Boolean {
-    return false;
   }
 }
 }

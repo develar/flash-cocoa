@@ -34,12 +34,44 @@
 				<configuration>
 					<includeFiles>
             <include>${project.build.directory}/ea</include>
-					</includeFiles>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.flyti</groupId>
-				<artifactId>asset-builder-maven-plugin</artifactId>
+          </includeFiles>
+          <includeClasses>
+            <scan>
+              <includes>
+                <!--<class>cocoa.plaf.aqua.AbstractWindowSkin</class>-->
+                <class>cocoa.plaf.aqua.AquaLookAndFeel</class>
+                <class>cocoa.plaf.aqua.BezelBorder</class>
+                <!--<class>cocoa.plaf.aqua.BorderlessTabViewSkin</class>-->
+                <class>cocoa.plaf.aqua.CheckBoxSkin</class>
+                <!--<class>cocoa.plaf.aqua.HSliderSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.HUDPushButtonSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.HUDTextInputBorder</class>-->
+                <!--<class>cocoa.plaf.aqua.HUDWindowSkin</class>-->
+                <class>cocoa.plaf.aqua.IconPosition</class>
+                <!--<class>cocoa.plaf.aqua.MenuItemBorder</class>-->
+                <!--<class>cocoa.plaf.aqua.MenuItemRenderer</class>-->
+                <!--<class>cocoa.plaf.aqua.MiniScrollBarSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.NumericStepperSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.NumericStepperTextInputBorder</class>-->
+                <!--<class>cocoa.plaf.aqua.PopUpMenuInteractor</class>-->
+                <class>cocoa.plaf.aqua.PushButtonSkin</class>
+                <class>cocoa.plaf.aqua.SegmentRendererManager</class>
+                <class>cocoa.plaf.aqua.SeparatorBorder</class>
+                <class>cocoa.plaf.aqua.SeparatorMenuItemBorder</class>
+                <!--<class>cocoa.plaf.aqua.TabViewSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.TextAreaSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.ToolbarSkin</class>-->
+                <!--<class>cocoa.plaf.aqua.WindowMover</class>-->
+                <!--<class>cocoa.plaf.aqua.WindowResizer</class>-->
+                <!--<class>cocoa.plaf.aqua.WindowSkin</class>-->
+              </includes>
+            </scan>
+          </includeClasses>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.flyti</groupId>
+        <artifactId>asset-builder-maven-plugin</artifactId>
 				<version>2.0-SNAPSHOT</version>
 				<executions>
           <execution>

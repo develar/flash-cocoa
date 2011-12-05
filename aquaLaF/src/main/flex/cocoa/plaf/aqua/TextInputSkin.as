@@ -27,13 +27,13 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
 
     textDisplay = new EditableTextView();
     if (!enabled) {
-      textDisplay.enabled = false;
+      //textDisplay.enabled = false;
     }
     textDisplay.textFormat = ITextLayoutFormat(getObject("SystemTextFormat"));
     textDisplay.selectionFormat = SelectionFormat(getObject("SelectionFormat"));
     configureAndAddTextDisplay();
-    documentView.x = border.contentInsets.left;
-    documentView.y = border.contentInsets.top;
+    //documentView.x = border.contentInsets.left;
+    //documentView.y = border.contentInsets.top;
     hostComponent.uiPartAdded("textDisplay", textDisplay);
   }
 
@@ -47,26 +47,26 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
     return textDisplay;
   }
 
-  override protected function measure():void {
-    measuredWidth = Math.ceil(documentView.getExplicitOrMeasuredWidth()) + border.contentInsets.width;
-  }
+  //override protected function measure():void {
+  //  measuredWidth = Math.ceil(documentView.getExplicitOrMeasuredWidth()) + border.contentInsets.width;
+  //}
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     var g:Graphics = graphics;
     g.clear();
     border.draw(g, w, h, 0, 0, this);
 
-    documentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
+    //documentView.setActualSize(w - border.contentInsets.width, h - border.contentInsets.height);
   }
 
-  override public function set enabled(value:Boolean):void {
-    if (value != enabled) {
-      super.enabled = value;
-      if (documentView != null) {
-        documentView.enabled = value;
-      }
-    }
-  }
+  //override public function set enabled(value:Boolean):void {
+  //  if (value != enabled) {
+  //    //super.enabled = value;
+  //    if (documentView != null) {
+  //      //documentView.enabled = value;
+  //    }
+  //  }
+  //}
 
   public function get focusObject():InteractiveObject {
     return textDisplay;

@@ -1,7 +1,4 @@
 package cocoa {
-import cocoa.plaf.LookAndFeel;
-
-import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
 
@@ -15,14 +12,15 @@ public class AbstractView extends Sprite implements View {
   internal static const DEFAULT_MAX_WIDTH:int = 32767;
   internal static const DEFAULT_MAX_HEIGHT:int = 32767;
 
+  protected static const HAS_BASELINE:uint = 1 << 0;
+
+  protected var flags:uint;
+
   public function AbstractView() {
     super();
 
     focusRect = false;
   }
-
-
-  //private static const INVALID:uint = 1 << 0;
 
   private var _constraints:CC;
   public function get constraints():CC {
@@ -83,8 +81,8 @@ public class AbstractView extends Sprite implements View {
     return -1;
   }
 
-  public function get hasBaseline():Boolean {
-    return false;
+  public final function get hasBaseline():Boolean {
+    return (flags & HAS_BASELINE) != 0;
   }
 
   public function getPixelUnitFactor(isHor:Boolean):Number {
@@ -118,12 +116,16 @@ public class AbstractView extends Sprite implements View {
     return ComponentType.TYPE_UNKNOWN;
   }
 
-  public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+  public function init(container:Container):void {
     throw new IllegalOperationError("Abstract");
   }
 
   public function validate():void {
     throw new IllegalOperationError("Abstract");
+  }
+
+  public function get enabled():Boolean {
+    return true;
   }
 }
 }

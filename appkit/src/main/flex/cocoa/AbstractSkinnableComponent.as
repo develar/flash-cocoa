@@ -2,8 +2,6 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
-import flash.display.DisplayObjectContainer;
-
 use namespace ui;
 
 [Abstract]
@@ -50,7 +48,8 @@ public class AbstractSkinnableComponent extends ComponentBase implements Compone
     return _skin.getMaximumHeight(wHint);
   }
 
-  override public final function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+  override public final function init(container:Container):void {
+    var laf:LookAndFeel = container.laf;
     _lafKey = _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
     if (laf.controlSize != null) {
       _lafKey = laf.controlSize + "." + _lafKey;
@@ -63,7 +62,8 @@ public class AbstractSkinnableComponent extends ComponentBase implements Compone
     }
     _skin = new _skinClass();
     _skinClass = null;
-    _skin.attach(this, container, laf);
+    _skin.init(container);
+    _skin.attach(this);
     skinAttached();
     listenSkinParts(_skin);
   }

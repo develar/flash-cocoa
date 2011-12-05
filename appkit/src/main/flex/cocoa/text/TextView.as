@@ -44,8 +44,8 @@ public class TextView extends AbstractTextView {
       setSelectionManager();
     }
 
-    invalidateProperties();
-    invalidateDisplayList();
+    //!! invalidateProperties();
+    //!! invalidateDisplayList();
   }
 
   public function set selectable(value:Boolean):void {
@@ -53,7 +53,7 @@ public class TextView extends AbstractTextView {
       _selectable = value;
       if (_textFlow != null) {
         setSelectionManager();
-        invalidateDisplayList();
+        //!! invalidateDisplayList();
       }
     }
   }
@@ -69,7 +69,7 @@ public class TextView extends AbstractTextView {
 
   private function createController():void {
     container = new Sprite();
-    addDisplayObject(container);
+    //addDisplayObject(container);
     containerController = new ContainerController(container, 0, 0);
   }
 
@@ -88,7 +88,7 @@ public class TextView extends AbstractTextView {
       //trace("composeWidth", containerController.compositionWidth, "contentWidth", oldContentWidth, newContentWidth);
 
       // If there is a scroller, this triggers the scroller layout.
-      dispatchPropertyChangeEvent("contentWidth", oldContentWidth, newContentWidth);
+      //!! dispatchPropertyChangeEvent("contentWidth", oldContentWidth, newContentWidth);
     }
 
     if (newContentHeight != oldContentHeight) {
@@ -96,32 +96,32 @@ public class TextView extends AbstractTextView {
       //trace("composeHeight", containerController.compositionHeight, "contentHeight", oldContentHeight, newContentHeight);
 
       // If there is a scroller, this triggers the scroller layout.
-      dispatchPropertyChangeEvent("contentHeight", oldContentHeight, newContentHeight);
+      //dispatchPropertyChangeEvent("contentHeight", oldContentHeight, newContentHeight);
     }
   }
 
-  override protected function measure():void {
-    super.measure();
+  //override protected function measure():void {
+  //  super.measure();
+  //
+  //  if (!isNaN(explicitWidth)) {
+  //    measuredWidth = explicitWidth;
+  //  } else if (_textFlow != null) {
+  //    measuredWidth = containerController.compositionWidth;
+  //  }
+  //
+  //  if (!isNaN(explicitHeight)) {
+  //    measuredHeight = explicitHeight;
+  //  } else if (_textFlow != null) {
+  //    measuredHeight = containerController.compositionHeight;
+  //  }
+  //}
+  //
+  //override protected function updateDisplayList(w:Number, h:Number):void {
+  //  if (_textFlow != null) {
+  //    containerController.setCompositionSize(w, h);
+  //    _textFlow.flowComposer.updateToController();
+  //  }
 
-    if (!isNaN(explicitWidth)) {
-      measuredWidth = explicitWidth;
-    } else if (_textFlow != null) {
-      measuredWidth = containerController.compositionWidth;
-    }
-
-    if (!isNaN(explicitHeight)) {
-      measuredHeight = explicitHeight;
-    } else if (_textFlow != null) {
-      measuredHeight = containerController.compositionHeight;
-    }
-  }
-
-  override protected function updateDisplayList(w:Number, h:Number):void {
-    if (_textFlow != null) {
-      containerController.setCompositionSize(w, h);
-      _textFlow.flowComposer.updateToController();
-    }
-
-  }
+  //}
 }
 }

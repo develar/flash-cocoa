@@ -1,7 +1,4 @@
 package cocoa {
-import cocoa.plaf.LookAndFeel;
-
-import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
@@ -107,8 +104,15 @@ internal class ComponentWrapperImpl implements View {
     return true;
   }
 
-  public function init(laf:LookAndFeel, container:DisplayObjectContainer):void {
+  public function init(container:Container):void {
     throw new IllegalOperationError("Abstract");
+  }
+
+  public function validate():void {
+  }
+
+  public function get enabled():Boolean {
+    return true;
   }
 }
 }

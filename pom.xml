@@ -21,7 +21,7 @@
     <module>acocoa</module>
     <module>aquaLaFAssetBuilder</module>
     <module>aquaLaF</module>
-    <module>demo</module>
+    <!--<module>demo</module>-->
   </modules>
 
   <profiles>

@@ -32,7 +32,7 @@ public class AbstractControl extends AbstractSkinnableComponent implements Contr
   public function set state(value:int):void {
     _state = value;
     if (skin != null) {
-      skin.invalidateDisplayList();
+      skin.hostComponentPropertyChanged();
 
       updateToolTip();
     }

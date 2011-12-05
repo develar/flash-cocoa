@@ -98,9 +98,9 @@ public class LabelHelper {
     _textLine.y = value;
   }
 
-  public function move(x:Number, y:Number):void {
+  public function move(x:Number, y:Number, isYLineRelated:Boolean = true):void {
     _textLine.x = x;
-    _textLine.y = y;
+    _textLine.y = isYLineRelated ? y : (y + _textLine.ascent);
   }
 
   public function moveToCenter(w:Number, y:Number):void {

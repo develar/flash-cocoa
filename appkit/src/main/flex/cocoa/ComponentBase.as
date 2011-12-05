@@ -3,8 +3,6 @@ import cocoa.plaf.SimpleSkin;
 
 import flash.utils.Dictionary;
 
-import mx.events.PropertyChangeEvent;
-
 use namespace ui;
 
 [Abstract]
@@ -39,14 +37,7 @@ public class ComponentBase extends ComponentWrapperImpl {
 
   protected final function invalidateProperties():void {
     if (untypedSkin != null) {
-      untypedSkin.invalidateProperties();
-    }
-  }
-
-  protected function skinPropertyChangeHandler(event:PropertyChangeEvent):void {
-    var skinPartId:String = String(event.property);
-    if (skinPartId in skinParts) {
-      partAdded(skinPartId, event.newValue);
+      //untypedSkin.invalidateProperties();
     }
   }
 

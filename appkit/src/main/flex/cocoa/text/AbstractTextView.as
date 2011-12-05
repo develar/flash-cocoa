@@ -1,10 +1,9 @@
 package cocoa.text {
-import cocoa.AbstractView;
+import cocoa.ControlView;
 
 import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 
-import flashx.textLayout.container.ScrollPolicy;
 import flashx.textLayout.container.TextContainerManager;
 import flashx.textLayout.elements.Configuration;
 import flashx.textLayout.elements.TextFlow;
@@ -13,13 +12,13 @@ import flashx.textLayout.tlf_internal;
 
 import mx.events.FlexEvent;
 
-import spark.core.IViewport;
 import spark.core.NavigationUnit;
 
 use namespace tlf_internal;
 
 [Abstract]
-internal class AbstractTextView extends AbstractView implements IViewport {
+//internal class AbstractTextView extends AbstractView implements IViewport {
+internal class AbstractTextView extends ControlView {
   private static var classInitialized:Boolean = false;
 
   protected static var configuration:Configuration;
@@ -123,9 +122,9 @@ internal class AbstractTextView extends AbstractView implements IViewport {
     // The other two are now invalid and must be recalculated when needed.
     _textFlow = null;
 
-    invalidateProperties();
-    invalidateSize();
-    invalidateDisplayList();
+    //invalidateProperties();
+    //invalidateSize();
+    //invalidateDisplayList();
 
     if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
       dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
@@ -164,7 +163,7 @@ internal class AbstractTextView extends AbstractView implements IViewport {
     if (_clipAndEnableScrolling != value) {
       _clipAndEnableScrolling = value;
       clipAndEnableScrollingChanged = true;
-      invalidateProperties();
+      //invalidateProperties();
     }
   }
 
@@ -193,7 +192,7 @@ internal class AbstractTextView extends AbstractView implements IViewport {
       _horizontalScrollPosition = value;
       horizontalScrollPositionChanged = true;
 
-      invalidateProperties();
+      //invalidateProperties();
     }
   }
 
@@ -210,7 +209,7 @@ internal class AbstractTextView extends AbstractView implements IViewport {
       _verticalScrollPosition = value;
       verticalScrollPositionChanged = true;
 
-      invalidateProperties();
+      //invalidateProperties();
     }
   }
 
@@ -258,28 +257,28 @@ internal class AbstractTextView extends AbstractView implements IViewport {
     }
   }
 
-  override protected function commitProperties():void {
-    super.commitProperties();
-
-    if (clipAndEnableScrollingChanged) {
-      scrollController.horizontalScrollPolicy = scrollController.verticalScrollPolicy = clipAndEnableScrolling ? ScrollPolicy.AUTO : ScrollPolicy.OFF;
-
-      clipAndEnableScrollingChanged = false;
-    }
-
-    if (horizontalScrollPositionChanged) {
-      var oldHorizontalScrollPosition:Number = scrollController.horizontalScrollPosition;
-      scrollController.horizontalScrollPosition = horizontalScrollPosition;
-      dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, horizontalScrollPosition);
-      horizontalScrollPositionChanged = false;
-    }
-
-    if (verticalScrollPositionChanged) {
-      var oldVerticalScrollPosition:Number = scrollController.verticalScrollPosition;
-      scrollController.verticalScrollPosition = verticalScrollPosition;
-      dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, verticalScrollPosition);
-      verticalScrollPositionChanged = false;
-    }
-  }
+  //override protected function commitProperties():void {
+  //  super.commitProperties();
+  //
+  //  if (clipAndEnableScrollingChanged) {
+  //    scrollController.horizontalScrollPolicy = scrollController.verticalScrollPolicy = clipAndEnableScrolling ? ScrollPolicy.AUTO : ScrollPolicy.OFF;
+  //
+  //    clipAndEnableScrollingChanged = false;
+  //  }
+  //
+  //  if (horizontalScrollPositionChanged) {
+  //    var oldHorizontalScrollPosition:Number = scrollController.horizontalScrollPosition;
+  //    scrollController.horizontalScrollPosition = horizontalScrollPosition;
+  //    dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, horizontalScrollPosition);
+  //    horizontalScrollPositionChanged = false;
+  //  }
+  //
+  //  if (verticalScrollPositionChanged) {
+  //    var oldVerticalScrollPosition:Number = scrollController.verticalScrollPosition;
+  //    scrollController.verticalScrollPosition = verticalScrollPosition;
+  //    dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, verticalScrollPosition);
+  //    verticalScrollPositionChanged = false;
+  //  }
+  //}
 }
 }

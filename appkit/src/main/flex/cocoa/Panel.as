@@ -36,7 +36,7 @@ public class Panel extends Window {
     
     _emptyText = value;
     if (skin != null) {
-      skin.invalidateDisplayList();
+      //skin.invalidate();
     }
   }
 

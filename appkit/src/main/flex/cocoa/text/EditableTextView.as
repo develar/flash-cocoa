@@ -57,7 +57,7 @@ import spark.events.TextOperationEvent;
 use namespace mx_internal;
 use namespace tlf_internal;
 
-public class EditableTextView extends AbstractTextView implements IFocusManagerComponent, IIMESupport, ISystemCursorClient {
+public class EditableTextView extends AbstractTextView {
   private static const IGNORE_DAMAGE_EVENT:uint = 1 << 0;
   /**
    * If the selection was via the selectRange() or selectAll() api,
@@ -89,7 +89,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private static const EDITABLE_CHANGED:uint = 1 << 9;
   private static const SELECTABLE_CHANGED:uint = 1 << 10;
 
-  protected var flags:uint = DISPATCH_CHANGE_AND_CHANGING_EVENTS | EDITABLE;
+  protected var myFlags:uint = DISPATCH_CHANGE_AND_CHANGING_EVENTS | EDITABLE;
 
   /**
    *  Holds the last recorded value of the textFlow generation. Used to
@@ -124,6 +124,8 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   public function EditableTextView() {
     super();
+
+    myFlags |= HAS_BASELINE;
 
     textContainerManager = new EditableTextContainerManager(this, configuration);
     textContainerManager.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, compositionCompleteHandler);
@@ -186,54 +188,21 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     _selectionFormat = value;
   }
 
-  override public function get baselinePosition():Number {
+  override public function getBaseline(width:int, height:int):int {
     return effectiveTextFormat.paddingTop + charMetrics.ascent;
   }
 
-  override public function set enabled(value:Boolean):void {
-    if (value == super.enabled) {
-      return;
-    }
-
-    super.enabled = value;
-    flags |= ENABLED_CHANGED;
-
-    invalidateProperties();
-    invalidateDisplayList();
-  }
-
-  override public function set explicitHeight(value:Number):void {
-    super.explicitHeight = value;
-
-    // Because of autoSizing, the size and display might be impacted.
-    invalidateSize();
-    invalidateDisplayList();
-  }
-
-  override public function set explicitWidth(value:Number):void {
-    super.explicitWidth = value;
-
-    // Because of autoSizing, the size and display might be impacted.
-    invalidateDisplayList();
-  }
-
-  override public function set percentHeight(value:Number):void {
-    super.percentHeight = value;
-
-    // If we were autoSizing and now we are not we need to remeasure.
-    invalidateDisplayList();
-  }
-
-  override public function set percentWidth(value:Number):void {
-    super.percentWidth = value;
-
-    // If we were autoSizing and now we are not we need to remeasure.
-    invalidateDisplayList();
-  }
-
-  public function get showSystemCursor():Boolean {
-    return editable;
-  }
+  //override public function set enabled(value:Boolean):void {
+  //  if (value == super.enabled) {
+  //    return;
+  //  }
+  //
+  //  super.enabled = value;
+  //  flags |= ENABLED_CHANGED;
+  //
+  //  invalidateProperties();
+  //  invalidateDisplayList();
+  //}
 
   /**
    *  A flag indicating whether the user is allowed to edit the text in this control.
@@ -248,16 +217,15 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
    *  @see #selectable
    */
   public function get editable():Boolean {
-    return (flags & EDITABLE) != 0;
+    return (myFlags & EDITABLE) != 0;
   }
 
   public function set editable(value:Boolean):void {
-    if (value == ((flags & EDITABLE) == 0)) {
-      value ? flags |= EDITABLE : flags &= ~EDITABLE;
+    if (value == ((myFlags & EDITABLE) == 0)) {
+      value ? myFlags |= EDITABLE : myFlags &= ~EDITABLE;
 
-      flags |= EDITABLE_CHANGED;
-      invalidateProperties();
-      invalidateDisplayList();
+      myFlags |= EDITABLE_CHANGED;
+      invalidate();
     }
   }
 
@@ -271,12 +239,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function commitForEditingMode():void {
-    if ((flags & ENABLED_CHANGED) != 0 || (flags & EDITABLE_CHANGED) != 0 || (flags & SELECTABLE_CHANGED) != 0) {
+    if ((myFlags & ENABLED_CHANGED) != 0 || (myFlags & EDITABLE_CHANGED) != 0 || (myFlags & SELECTABLE_CHANGED) != 0) {
       updateEditingMode();
 
-      flags &= ~ENABLED_CHANGED;
-      flags &= ~EDITABLE_CHANGED;
-      flags &= ~SELECTABLE_CHANGED;
+      myFlags &= ~ENABLED_CHANGED;
+      myFlags &= ~EDITABLE_CHANGED;
+      myFlags &= ~SELECTABLE_CHANGED;
     }
   }
 
@@ -314,7 +282,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     _selectable = value;
-    flags |= SELECTABLE_CHANGED;
+    myFlags |= SELECTABLE_CHANGED;
 
     invalidateProperties();
     invalidateDisplayList();
@@ -501,16 +469,6 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
   }
 
-  override public function addChild(child:DisplayObject):DisplayObject {
-    addDisplayObject(child);
-    return child;
-  }
-
-  override public function removeChild(child:DisplayObject):DisplayObject {
-    removeDisplayObject(child);
-    return child;
-  }
-
   override protected function commitProperties():void {
     super.commitProperties();
 
@@ -542,10 +500,10 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
   override protected function measure():void {
     // don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
-    flags |= IGNORE_DAMAGE_EVENT;
+    myFlags |= IGNORE_DAMAGE_EVENT;
 
-    flags &= ~AUTO_HEIGHT;
-    flags &= ~AUTO_WIDTH;
+    myFlags &= ~AUTO_HEIGHT;
+    myFlags &= ~AUTO_WIDTH;
 
     var composeWidth:Number = explicitWidth;
     if (isNaN(composeWidth) && _uiModel.widthInChars != -1) {
@@ -575,19 +533,19 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
         bounds = measureTextSize(composeWidth, NaN);
         measuredHeight = Math.ceil(bounds.bottom);
         if (adjustMeasuredHeightToRange() != MeasurementAdjustResult.MAX) {
-          flags |= AUTO_HEIGHT;
+          myFlags |= AUTO_HEIGHT;
         }
       }
       else if (!isNaN(composeHeight)) {
         bounds = measureTextSize(NaN, composeHeight);
         measuredWidth = Math.ceil(bounds.right);
         if (adjustMeasuredWidthToRange() != MeasurementAdjustResult.MAX) {
-          flags |= AUTO_WIDTH;
+          myFlags |= AUTO_WIDTH;
         }
       }
       else {
-        flags |= AUTO_HEIGHT;
-        flags |= AUTO_WIDTH;
+        myFlags |= AUTO_HEIGHT;
+        myFlags |= AUTO_WIDTH;
         bounds = measureTextSize(NaN, NaN);
         measuredWidth = Math.ceil(bounds.right);
         measuredHeight = Math.ceil(bounds.bottom);
@@ -602,12 +560,12 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     invalidateDisplayList();
 
-    flags &= ~IGNORE_DAMAGE_EVENT;
+    myFlags &= ~IGNORE_DAMAGE_EVENT;
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {
-    textContainerManager.compositionWidth = (flags & AUTO_WIDTH) ? (w < measuredWidth ? w : NaN) : w;
-    textContainerManager.compositionHeight = (flags & AUTO_HEIGHT) ? (h < measuredHeight ? h : NaN) : h;
+    textContainerManager.compositionWidth = (myFlags & AUTO_WIDTH) ? (w < measuredWidth ? w : NaN) : w;
+    textContainerManager.compositionHeight = (myFlags & AUTO_HEIGHT) ? (h < measuredHeight ? h : NaN) : h;
 
     textContainerManager.updateContainer();
   }
@@ -688,7 +646,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Remember if the current selection is a range which was set programatically.
-    (anchorPosition != activePosition) ? flags |= HAS_PROGRAMMATIC_SELECTION_RANGE : flags &= ~HAS_PROGRAMMATIC_SELECTION_RANGE;
+    (anchorPosition != activePosition) ? myFlags |= HAS_PROGRAMMATIC_SELECTION_RANGE : myFlags &= ~HAS_PROGRAMMATIC_SELECTION_RANGE;
   }
 
   /**
@@ -748,7 +706,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   private function updateEditingMode():void {
     var newEditingMode:String = EditingMode.READ_ONLY;
     if (enabled) {
-      if ((flags & EDITABLE) != 0) {
+      if ((myFlags & EDITABLE) != 0) {
         newEditingMode = EditingMode.READ_WRITE;
       }
       else if (_selectable) {
@@ -812,7 +770,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Generate a CHANGING event for the PasteOperation but not for the
     // DeleteTextOperation or the InsertTextOperation which are also part of the paste.
-    flags &= ~DISPATCH_CHANGE_AND_CHANGING_EVENTS;
+    myFlags &= ~DISPATCH_CHANGE_AND_CHANGING_EVENTS;
 
     var selectionState:SelectionState = new SelectionState(op.textFlow, op.absoluteStart, op.absoluteStart + textLength);
     editManager.deleteText(selectionState);
@@ -825,7 +783,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // All done with the edit manager.
     textContainerManager.endInteraction();
 
-    flags |= DISPATCH_CHANGE_AND_CHANGING_EVENTS;
+    myFlags |= DISPATCH_CHANGE_AND_CHANGING_EVENTS;
   }
 
   /**
@@ -875,7 +833,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       // If the focusIn was because of a mouseDown event, let TLF
       // handle the selection.  Otherwise it was because we tabbed in
       // or we programatically set the focus.
-      if ((flags & MOUSE_DOWN) == 0) {
+      if ((myFlags & MOUSE_DOWN) == 0) {
         var selectionManager:ISelectionManager = textContainerManager.beginInteraction();
 
         if (multiline) {
@@ -883,7 +841,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
             selectionManager.selectRange(0, 0);
           }
         }
-        else if ((flags & HAS_PROGRAMMATIC_SELECTION_RANGE) == 0) {
+        else if ((myFlags & HAS_PROGRAMMATIC_SELECTION_RANGE) == 0) {
           selectionManager.selectAll();
         }
 
@@ -895,16 +853,16 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
       if (_imeMode != null) {
         // When IME.conversionMode is unknown it cannot be set to anything other than unknown(English)
         try {
-          if ((flags & ERROR_CAUGHT) == 0 && IME.conversionMode != IMEConversionMode.UNKNOWN) {
+          if ((myFlags & ERROR_CAUGHT) == 0 && IME.conversionMode != IMEConversionMode.UNKNOWN) {
             IME.conversionMode = _imeMode;
           }
-          flags &= ~ERROR_CAUGHT;
+          myFlags &= ~ERROR_CAUGHT;
         }
         catch(e:Error) {
           // Once an error is thrown, focusIn is called
           // again after the Alert is closed, throw error
           // only the first time.
-          flags |= ERROR_CAUGHT;
+          myFlags |= ERROR_CAUGHT;
           throw new Error("unsupportedMode: " + _imeMode);
         }
       }
@@ -967,7 +925,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   mx_internal function mouseDownHandler(event:MouseEvent):void {
-    flags |= MOUSE_DOWN;
+    myFlags |= MOUSE_DOWN;
 
     // Need to get called even if mouse events are dispatched outside of this component. For example, when the user does
     // a mouse down in RET, drags the mouse outside of the component, and then releases the mouse.
@@ -975,7 +933,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
   }
 
   private function systemManager_mouseUpHandler(event:MouseEvent):void {
-    flags &= ~MOUSE_DOWN;
+    myFlags &= ~MOUSE_DOWN;
 
     systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
   }
@@ -1083,7 +1041,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // If no changes, don't recompose/update. The TextFlowFactory createTextLines dispatches damage events
     // every time the textFlow is composed, even if there are no changes.
     // If there are pending changes, don't wipe them out. We have not gotten to commitProperties() yet.
-    if ((flags & IGNORE_DAMAGE_EVENT) != 0 || event.damageLength == 0 || (_textFlow != null && _textFlow.generation == lastGeneration) || textChanged || textFlowChanged) {
+    if ((myFlags & IGNORE_DAMAGE_EVENT) != 0 || event.damageLength == 0 || (_textFlow != null && _textFlow.generation == lastGeneration) || textChanged || textFlowChanged) {
       return;
     }
 
@@ -1145,7 +1103,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
 
     // Selection changed so reset.
-    flags |= HAS_PROGRAMMATIC_SELECTION_RANGE;
+    myFlags |= HAS_PROGRAMMATIC_SELECTION_RANGE;
 
     // Only dispatch the event if the selection has really changed.
     if (oldAnchor != _selectionAnchorPosition || oldActive != _selectionActivePosition) {
@@ -1225,7 +1183,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
 
     // Dispatch a 'changing' event from the RichEditableText as notification that an editing operation is about to occur.
     // The level will be 0 for single operations, and at the start of a composite operation.
-    if ((flags & DISPATCH_CHANGE_AND_CHANGING_EVENTS) != 0 && event.level == 0) {
+    if ((myFlags & DISPATCH_CHANGE_AND_CHANGING_EVENTS) != 0 && event.level == 0) {
       var newEvent:TextOperationEvent = new TextOperationEvent(TextOperationEvent.CHANGING, false, true, op);
       dispatchEvent(newEvent);
 
@@ -1248,7 +1206,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     // Dispatch a 'change' event from the this as notification that an editing operation has occurred.
     // The flow is now in a state that it can be manipulated.
     // The level will be 0 for single operations, and at the end of a composite operation.
-    if ((flags & DISPATCH_CHANGE_AND_CHANGING_EVENTS) != 0 && event.level == 0) {
+    if ((myFlags & DISPATCH_CHANGE_AND_CHANGING_EVENTS) != 0 && event.level == 0) {
       dispatchEvent(new TextOperationEvent(TextOperationEvent.CHANGE, false, true, event.operation));
     }
   }
@@ -1265,7 +1223,7 @@ public class EditableTextView extends AbstractTextView implements IFocusManagerC
     }
     else if (event.status == InlineGraphicElementStatus.READY) {
       // Now that the actual size of the graphic is available need to optionally remeasure and updateContainer.
-      if ((flags & AUTO_WIDTH) != 0 || (flags & AUTO_HEIGHT) != 0) {
+      if ((myFlags & AUTO_WIDTH) != 0 || (myFlags & AUTO_HEIGHT) != 0) {
         invalidateSize();
       }
 

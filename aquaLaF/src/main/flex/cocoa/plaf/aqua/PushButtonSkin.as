@@ -5,8 +5,9 @@ import cocoa.plaf.basic.PushButtonSkin;
 
 import flash.events.MouseEvent;
 
-public class PushButtonSkin extends cocoa.plaf.basic.PushButtonSkin {
-  override protected function draw(w:Number, h:Number):void {
+public class
+PushButtonSkin extends cocoa.plaf.basic.PushButtonSkin {
+  override protected function draw(w:int, h:int):void {
     StatefulBorder(border).stateIndex = enabled ? (myComponent.state == CellState.ON ? 1 : 0) : 2;
 
     super.draw(w, h);

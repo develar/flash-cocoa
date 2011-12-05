@@ -2,10 +2,8 @@ package cocoa.plaf.aqua {
 import cocoa.Component;
 import cocoa.Insets;
 import cocoa.View;
-import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelProvider;
 
-import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 
 public class HUDWindowSkin extends AbstractWindowSkin {
@@ -18,8 +16,8 @@ public class HUDWindowSkin extends AbstractWindowSkin {
     return CONTENT_FRAME_INSETS;
   }
 
-  override public function attach(component:Component, container:DisplayObjectContainer, laf:LookAndFeel):void {
-    super.attach(component, container, AquaLookAndFeel(laf).createHUDLookAndFeel());
+  override public function attach(component:Component):void {
+    super.attach(component);
   }
 
   override protected function drawTitleBottomBorderLine(g:Graphics, w:Number):void {

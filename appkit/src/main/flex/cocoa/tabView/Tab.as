@@ -1,7 +1,7 @@
 package cocoa.tabView {
 import cocoa.Container;
-
-import spark.layouts.HorizontalLayout;
+import cocoa.MigLayout;
+import cocoa.View;
 
 [Abstract]
 public class Tab extends Container {
@@ -20,13 +20,13 @@ public class Tab extends Container {
   protected function commitActiveState():void {
   }
 
-  override protected function createChildren():void {
-    if (layout == null) {
-      layout = new HorizontalLayout();
-    }
-
-    super.createChildren();
-  }
+  //override protected function createChildren():void {
+  //  if (layout == null) {
+  //    layout = new HorizontalLayout();
+  //  }
+  //
+  //  super.createChildren();
+  //}
 
   override public function set visible(value:Boolean):void {
     if (value != visible) {
@@ -38,6 +38,10 @@ public class Tab extends Container {
       _active = true;
       invalidateActiveState();
     }
+  }
+
+  public function Tab(components:Vector.<View>, layout:MigLayout) {
+    super(components, layout);
   }
 }
 }

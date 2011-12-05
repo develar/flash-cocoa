@@ -13,11 +13,11 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
     return true;
   }
 
-  override protected function draw(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     StatefulBorder(border).stateIndex = (myComponent.state * 3) + (enabled ? 0 : 2);
 
     if (labelHelper != null && labelHelper.hasText) {
-      if (border != null && (!isNaN(explicitWidth) || !isNaN(percentWidth))) {
+      if (border != null) {
         var titleInsets:Insets = border.contentInsets;
         labelHelper.adjustWidth(w - titleInsets.left - (titleInsets is TextInsets ? TextInsets(titleInsets).truncatedTailMargin : titleInsets.right));
       }

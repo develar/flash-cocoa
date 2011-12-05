@@ -139,19 +139,6 @@ public class AbstractLookAndFeel implements LookAndFeel {
     }
   }
 
-  public function getSelectionFormat(key:String):SelectionFormat {
-    var value:SelectionFormat = data[key];
-    if (value != null) {
-      return value;
-    }
-    else if (_parent == null) {
-      throw new ArgumentError("Unknown " + key);
-    }
-    else {
-      return _parent.getSelectionFormat(key);
-    }
-  }
-
   public function getClass(key:String):Class {
     var value:Class = data[key];
     if (value != null) {

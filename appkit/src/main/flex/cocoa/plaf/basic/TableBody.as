@@ -44,7 +44,7 @@ public class TableBody extends CollectionBody {
     super.createChildren();
 
     background = new Shape();
-    addDisplayObject(background);
+    addChild(background);
 
     dataSource.reset.add(dataSourceResetHandler);
   }

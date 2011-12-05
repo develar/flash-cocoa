@@ -1,13 +1,11 @@
 package cocoa {
 import flash.display.InteractiveObject;
 import flash.errors.IllegalOperationError;
-import flash.geom.Rectangle;
 
-import spark.core.IViewport;
 import spark.core.NavigationUnit;
 
 [Abstract]
-public class CollectionBody extends AbstractView implements IViewport, Focusable {
+public class CollectionBody extends ControlView implements Focusable {
   protected var rowHeightWithSpacing:Number;
   protected var oldHeight:Number = 0;
 
@@ -63,9 +61,9 @@ public class CollectionBody extends AbstractView implements IViewport, Focusable
     var delta:Number = value - oldVerticalScrollPosition;
     _verticalScrollPosition = value;
 
-    if (!displayListInvalid) {
-      scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
-    }
+    // _20_ if (!displayListInvalid) {
+    //  scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
+    //}
     verticalScrollPositionChanged(delta, oldVerticalScrollPosition);
   }
 

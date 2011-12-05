@@ -1,6 +1,4 @@
 package cocoa.plaf {
-import cocoa.ScrollView;
-
 public interface ListViewSkin {
   function set verticalScrollPolicy(value:uint):void;
 
@@ -10,6 +8,6 @@ public interface ListViewSkin {
 
   function set bordered(value:Boolean):void;
 
-  function get scrollView():ScrollView;
+  //function get scrollView():ScrollView;
 }
 }

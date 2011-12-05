@@ -12,12 +12,12 @@ public class CollectionViewSkin extends AbstractSkin {
   }
 
   override public function addChild(child:DisplayObject):DisplayObject {
-    child is Skin ? super.addChild(child) : addDisplayObject(child);
+    child is Skin ? super.addChild(child) : addChild(child);
     return child;
   }
 
   override public function removeChild(child:DisplayObject):DisplayObject {
-    child is Skin ? super.removeChild(child) : removeDisplayObject(child);
+    child is Skin ? super.removeChild(child) : removeChild(child);
     return child;
   }
 
