@@ -80,8 +80,8 @@
             </goals>
             <configuration>
               <inputs>
-                <input>src/main/resources/assets.png</input>
-                <input>src/main/resources</input>
+                <input>resources/assets.png</input>
+                <input>resources</input>
               </inputs>
               <output>${project.build.directory}/assets</output>
             </configuration>
@@ -93,10 +93,10 @@
             </goals>
             <configuration>
               <inputs>
-                <input>src/main/resources/extra</input>
+                <input>resources/extra</input>
               </inputs>
               <output>${project.build.directory}/ea</output>
-              <descriptor>src/main/resources/extraAssets.yml</descriptor>
+              <descriptor>resources/extraAssets.yml</descriptor>
             </configuration>
           </execution>
           <execution>
@@ -106,10 +106,10 @@
             </goals>
             <configuration>
               <inputs>
-                <input>src/main/resources/hud</input>
+                <input>resources/hud</input>
               </inputs>
               <output>${project.build.directory}/hudAssets</output>
-              <descriptor>src/main/resources/hudAssets.yml</descriptor>
+              <descriptor>resources/hudAssets.yml</descriptor>
             </configuration>
           </execution>
         </executions>
