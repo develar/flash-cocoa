@@ -230,7 +230,7 @@ final class WindowFrameSmallLookAndFeel extends AbstractLookAndFeel {
 
 
 final class HUDLookAndFeel extends AbstractLookAndFeel {
-  [Embed(source="../../../../../../target/hudAssets", mimeType="application/octet-stream")]
+  [Embed(source="../../../../target/hudAssets", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
 
   public function HUDLookAndFeel(parent:AquaLookAndFeel) {

@@ -26,10 +26,10 @@ import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
 public class Builder {
-  [Embed(source="../../../../../../../../aquaLaF/src/main/resources/assets.png")]
+  [Embed(source="../../../../../../aquaLaF/resources/assets.png")]
   private static const assetsClass:Class;
 
-  [Embed(source="../../../../../../../../aquaLaF/target/assets", mimeType="application/octet-stream")]
+  [Embed(source="../../../../../../aquaLaF/target/assets", mimeType="application/octet-stream")]
   private static const bordersClass:Class;
 
   [Embed(source="/popUpMenu.png")]
