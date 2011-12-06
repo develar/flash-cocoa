@@ -1,5 +1,5 @@
 package cocoa.plaf.aqua {
-import cocoa.Component;
+import cocoa.SkinnableView;
 import cocoa.Insets;
 import cocoa.View;
 import cocoa.plaf.LookAndFeelProvider;
@@ -16,7 +16,7 @@ public class HUDWindowSkin extends AbstractWindowSkin {
     return CONTENT_FRAME_INSETS;
   }
 
-  override public function attach(component:Component):void {
+  override public function attach(component:SkinnableView):void {
     super.attach(component);
   }
 

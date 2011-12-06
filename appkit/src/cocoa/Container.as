@@ -11,9 +11,9 @@ import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
+[DefaultProperty("subviews")]
 public class Container extends AbstractView implements ContentView, ContainerWrapper {
-  public function Container(components:Vector.<View>, layout:MigLayout) {
-    subviews = components;
+  public function Container(layout:MigLayout) {
     _layout = layout;
     _layout.container = this;
   }
@@ -23,8 +23,21 @@ public class Container extends AbstractView implements ContentView, ContainerWra
     _border = value;
   }
 
+  public function get insets():Insets {
+    return _border.contentInsets;
+  }
+
+  private var _subviews:Vector.<ComponentWrapper>;
+  public function set subviews(value:Vector.<ComponentWrapper>):void {
+    _subviews = value;
+  }
+
   private var _layout:MigLayout;
-  public function get layout():Object {
+  public function set layout(value:MigLayout):void {
+    _layout = value;
+  }
+
+  public function getLayout():Object {
     return _layout;
   }
 
@@ -65,13 +78,12 @@ public class Container extends AbstractView implements ContentView, ContainerWra
     return ComponentType.TYPE_CONTAINER;
   }
 
-  protected var subviews:Vector.<View>;
   public function get components():Vector.<ComponentWrapper> {
-    return Vector.<ComponentWrapper>(subviews);
+    return _subviews;
   }
 
   public function get componentCount():int {
-    return subviews.length;
+    return _subviews.length;
   }
 
   public function get leftToRight():Boolean {

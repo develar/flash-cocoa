@@ -15,10 +15,6 @@ public class MigLayout extends AbstractMigLayout {
   private var lastHash:int = -1;
   private var lastInvalidW:int;
   private var lastInvalidH:int;
-
-  public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
-    super(layoutConstraints, colConstraints, rowConstraints);
-  }
   
   private var _container:Container;
   public function set container(value:Container):void {
@@ -34,12 +30,13 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     if (checkCache()) {
-      const w:int = _container.getPreferredWidth(-1);
-      const h:int = _container.getPreferredHeight(-1);
-      if (grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, true)) {
+      var insets:Insets = _container.insets;
+      const w:int = _container.getPreferredWidth(-1) - insets.width;
+      const h:int = _container.getPreferredHeight(-1) - insets.height;
+      if (grid.layout(insets.left, insets.top, w, h, lc.alignX, lc.alignY, _debug, true)) {
         grid = null;
         checkCache();
-        grid.layout(0, 0, w, h, lc.alignX, lc.alignY, _debug, false);
+        grid.layout(insets.left, insets.top, w, h, lc.alignX, lc.alignY, _debug, false);
       }
     }
 
@@ -51,13 +48,13 @@ public class MigLayout extends AbstractMigLayout {
   public function preferredLayoutWidth(sizeType:int):Number {
     checkCache();
 
-    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
+    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType) + _container.insets.width;
   }
 
   public function preferredLayoutHeight(sizeType:int):Number {
     checkCache();
 
-    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
+    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType) + _container.insets.height;
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.

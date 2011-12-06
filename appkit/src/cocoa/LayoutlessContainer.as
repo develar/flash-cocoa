@@ -30,8 +30,8 @@ public class LayoutlessContainer extends AbstractView implements ContentView, Lo
   }
 
   public function addSubview(viewable:View, index:int = -1):void {
-    if (viewable is Component) {
-      var component:Component = Component(viewable);
+    if (viewable is SkinnableView) {
+      var component:SkinnableView = SkinnableView(viewable);
       addChildAt(DisplayObject(component.skin == null ? component.createView(laf) : component.skin), index == -1 ? numChildren : index);
     }
     else {
@@ -44,11 +44,11 @@ public class LayoutlessContainer extends AbstractView implements ContentView, Lo
   }
 
   public function removeSubview(view:View):void {
-    removeChild(DisplayObject(view is Component ? Component(view).skin : view));
+    removeChild(DisplayObject(view is SkinnableView ? SkinnableView(view).skin : view));
   }
 
   public function getSubviewIndex(view:View):int {
-    return getChildIndex(DisplayObject(view is Component ? Component(view).skin : view));
+    return getChildIndex(DisplayObject(view is SkinnableView ? SkinnableView(view).skin : view));
   }
 
   public function getSubviewAt(index:int):View {

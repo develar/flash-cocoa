@@ -1,10 +1,10 @@
 package cocoa.plaf {
-import cocoa.Component;
+import cocoa.SkinnableView;
 
 public interface Skin extends SimpleSkin {
-  function get hostComponent():Component;
+  function get hostComponent():SkinnableView;
 
-  function attach(component:Component):void;
+  function attach(component:SkinnableView):void;
 
   function hostComponentPropertyChanged():void;
 }

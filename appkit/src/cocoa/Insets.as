@@ -18,12 +18,12 @@ public class Insets {
   }
 
   private var _width:Number;
-  public function get width():Number {
+  public final function get width():Number {
     return _width;
   }
 
   private var _height:Number;
-  public function get height():Number {
+  public final function get height():Number {
     return _height;
   }
 }

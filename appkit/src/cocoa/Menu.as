@@ -8,7 +8,7 @@ import org.flyti.util.List;
 
 use namespace ui;
 
-public class Menu extends AbstractSkinnableComponent {
+public class Menu extends AbstractSkinnableView {
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.itemGroup = 0;
   override protected function get skinParts():Dictionary {

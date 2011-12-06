@@ -1,7 +1,9 @@
 package cocoa.plaf.basic {
 import cocoa.Container;
+import cocoa.SkinnableView;
+import cocoa.plaf.Skin;
 
-public class BoxSkin extends Container {
+public class BoxSkin extends Container implements Skin {
   protected var contentView:Container;
 
   public function BoxSkin() {
@@ -10,17 +12,7 @@ public class BoxSkin extends Container {
     mouseEnabled = false;
   }
 
-  override public function getMinimumWidth(hHint:int = -1):int {
-      return contentView.getMinimumWidth(hHint);
-    }
 
-    override public function getMinimumHeight(wHint:int = -1):int {
-      return _layout.preferredLayoutHeight(LayoutUtil.MIN);
-    }
-
-    override public function getPreferredWidth(hHint:int = -1):int {
-      return _preferredWidth == 0 ? _layout.preferredLayoutWidth(LayoutUtil.PREF) : _preferredWidth;
-    }
 
     public function set preferredWidth(value:int):void {
       _preferredWidth = value;
@@ -50,6 +42,16 @@ public class BoxSkin extends Container {
 
   override protected function updateDisplayList(w:Number, h:Number):void {
     contentView.setActualSize(w, h);
+  }
+
+  public function get hostComponent():SkinnableView {
+    return null;
+  }
+
+  public function attach(component:SkinnableView):void {
+  }
+
+  public function hostComponentPropertyChanged():void {
   }
 }
 }

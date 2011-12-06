@@ -3,7 +3,7 @@ import cocoa.AbstractButton;
 import cocoa.Border;
 import cocoa.Cell;
 import cocoa.CellState;
-import cocoa.Component;
+import cocoa.SkinnableView;
 import cocoa.Focusable;
 import cocoa.Insets;
 import cocoa.TextInsets;
@@ -37,7 +37,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     return true;
   }
 
-  override public function attach(component:Component):void {
+  override public function attach(component:SkinnableView):void {
     super.attach(component);
 
     myComponent = Cell(component);

@@ -1,6 +1,6 @@
 package cocoa.message {
 import cocoa.Application;
-import cocoa.Component;
+import cocoa.SkinnableView;
 import cocoa.plaf.LookAndFeelProvider;
 
 import flash.display.DisplayObject;
@@ -66,8 +66,8 @@ public class MessageExistenceManager {
   }
 
   private function getMessageView():IFlexDisplayObject {
-    if (kind.message is Component) {
-      var component:Component = Component(kind.message);
+    if (kind.message is SkinnableView) {
+      var component:SkinnableView = SkinnableView(kind.message);
       return component.skin == null ? component.createView(LookAndFeelProvider(FlexGlobals.topLevelApplication).laf) : component.skin;
     }
     else {

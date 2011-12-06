@@ -1,5 +1,5 @@
 package cocoa.plaf.basic {
-import cocoa.Component;
+import cocoa.SkinnableView;
 import cocoa.Insets;
 import cocoa.SegmentedControl;
 import cocoa.View;
@@ -41,8 +41,8 @@ public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin {
       removeChild(DisplayObject(contentView));
     }
 
-    if (viewable is Component) {
-      var component:Component = Component(viewable);
+    if (viewable is SkinnableView) {
+      var component:SkinnableView = SkinnableView(viewable);
       contentView = component.skin == null ? component.createView(laf) : component.skin;
     }
     else {

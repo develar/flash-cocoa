@@ -64,7 +64,7 @@
                 <include>**.AbstractLookAndFeel</include>
                 <include>**.Container</include>
                 <include>**.View</include>
-                <include>**.Component</include>
+                <include>**.SkinnableView</include>
                 <include>**.Focusable</include>
                 <include>**.border.*</include>
                 <include>cocoa.plaf.basic.AbstractSkin</include>

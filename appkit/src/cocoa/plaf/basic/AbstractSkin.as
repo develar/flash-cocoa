@@ -1,6 +1,6 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
-import cocoa.Component;
+import cocoa.SkinnableView;
 import cocoa.ControlView;
 import cocoa.Icon;
 import cocoa.UIPartProvider;
@@ -16,8 +16,8 @@ import org.flyti.plexus.events.InjectorEvent;
  */
 [Abstract]
 public class AbstractSkin extends ControlView implements Skin {
-  private var _component:Component;
-  public final function get hostComponent():Component {
+  private var _component:SkinnableView;
+  public final function get hostComponent():SkinnableView {
     return _component;
   }
 
@@ -41,7 +41,7 @@ public class AbstractSkin extends ControlView implements Skin {
     return container.laf.getFactory(_component.lafKey + "." + key, false);
   }
 
-  public function attach(component:Component):void {
+  public function attach(component:SkinnableView):void {
     _component = component;
 
     createChildren();

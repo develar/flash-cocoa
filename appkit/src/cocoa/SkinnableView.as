@@ -1,7 +1,7 @@
 package cocoa {
 import cocoa.plaf.Skin;
 
-public interface Component extends View, UIPartController {
+public interface SkinnableView extends View, UIPartController {
   /**
    * Префикс, используемый компонентом при составлении абсолютного ключа для получения некого стиля.
    * В самом компоненте указывается путем переопределения геттера defaultLaFPrefix.

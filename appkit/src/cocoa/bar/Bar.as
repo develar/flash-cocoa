@@ -1,5 +1,5 @@
 package cocoa.bar {
-import cocoa.AbstractSkinnableComponent;
+import cocoa.AbstractSkinnableView;
 import cocoa.ListViewDataSource;
 import cocoa.SegmentedControl;
 import cocoa.pane.PaneViewDataSource;
@@ -12,7 +12,7 @@ import org.flyti.plexus.Injectable;
 use namespace ui;
 
 [Abstract]
-public class Bar extends AbstractSkinnableComponent implements Injectable {
+public class Bar extends AbstractSkinnableView implements Injectable {
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.segmentedControl = 0;
   override protected function get skinParts():Dictionary {

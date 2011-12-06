@@ -6,7 +6,7 @@ import spark.layouts.supportClasses.LayoutBase;
 use namespace ui;
 
 [DefaultProperty("subviews")]
-public class Box extends AbstractSkinnableComponent {
+public class Box extends AbstractSkinnableView {
   public var subviews:Vector.<View>;
 
   protected static const _skinParts:Dictionary = new Dictionary();
