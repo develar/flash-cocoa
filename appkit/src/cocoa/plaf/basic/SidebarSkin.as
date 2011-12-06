@@ -2,7 +2,7 @@ package cocoa.plaf.basic {
 import cocoa.Container;
 import cocoa.SegmentedControl;
 import cocoa.SelectionMode;
-import cocoa.sidebar.SidebarLayout;
+import cocoa.toolWindow.SidebarLayout;
 
 public class SidebarSkin extends AbstractSkin {
   private var tabBar:SegmentedControl;

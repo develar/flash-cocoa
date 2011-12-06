@@ -1,4 +1,4 @@
-package cocoa.sidebar {
+package cocoa.toolWindow {
 import cocoa.Panel;
 import cocoa.ContentView;
 import cocoa.bar.Bar;
@@ -9,12 +9,9 @@ import flash.utils.Dictionary;
 
 use namespace ui;
 
-public class Sidebar extends Bar {
-  private static const _skinParts:Dictionary = new Dictionary();
-  _cl(_skinParts, Bar._skinParts);
-  _skinParts.paneGroup = HANDLER_NOT_EXISTS;
-  override protected function get skinParts():Dictionary {
-    return _skinParts;
+public class ToolWindowManager {
+  public function registerToolWindow() {
+
   }
 
   ui var paneGroup:ContentView;
