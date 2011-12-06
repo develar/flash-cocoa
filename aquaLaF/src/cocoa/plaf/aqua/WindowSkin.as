@@ -1,7 +1,5 @@
 package cocoa.plaf.aqua {
-import cocoa.BorderedContainer;
 import cocoa.Insets;
-import cocoa.layout.BarLayout;
 import cocoa.plaf.DialogSkin;
 import cocoa.plaf.basic.BottomBarStyle;
 
@@ -34,10 +32,10 @@ public class WindowSkin extends AbstractWindowSkin implements DialogSkin {
       controlBar.border = laf.getBorder("Window.bottomBar." + _bottomBarStyle.name, false);
       controlBar.mouseEnabled = false;
 
-      var bottomBarGroupLayout:BarLayout = new BarLayout();
-      bottomBarGroupLayout.padding = 20;
-      bottomBarGroupLayout.gap = _bottomBarStyle == BottomBarStyle.application ? 8 : 12;
-      controlBar.layout = bottomBarGroupLayout;
+      //var bottomBarGroupLayout:BarLayout = new BarLayout();
+      //bottomBarGroupLayout.padding = 20;
+      //bottomBarGroupLayout.gap = _bottomBarStyle == BottomBarStyle.application ? 8 : 12;
+      //controlBar.layout = bottomBarGroupLayout;
 
       hostComponent.uiPartAdded("controlBar", controlBar);
       addChildAt(controlBar, 0);

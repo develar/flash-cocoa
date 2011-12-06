@@ -28,6 +28,10 @@ public class SpriteBackedView extends Sprite implements View {
     return _constraints;
   }
 
+  public function set constraints(value:CC):void {
+    _constraints = value;
+  }
+
   public function set c(value:String):void {
     _constraints = ConstraintParser.parseComponentConstraint(value);
   }

@@ -143,5 +143,9 @@ public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin, Co
   public function set laf(value:LookAndFeel):void {
     throw new IllegalOperationError("not allowed");
   }
+
+  public function addSubview(view:View):void {
+    throw new IllegalOperationError("not allowed");
+  }
 }
 }

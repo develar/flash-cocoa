@@ -11,5 +11,7 @@ public interface ContentView extends View, LookAndFeelProvider {
   function get displayObject():DisplayObjectContainer;
 
   function invalidateSubview(invalidateSuperview:Boolean = true):void;
+
+  function addSubview(view:View):void;
 }
 }

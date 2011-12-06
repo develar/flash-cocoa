@@ -33,7 +33,13 @@ public class PaneViewDataSource extends AbstractCollectionViewDataSource impleme
   }
 
   override public function addItemAt(item:Object, index:int):void {
-    source.splice(index, 0, item);
+    if (index == source.length) {
+      source[index] = PaneItem(item);
+    }
+    else {
+      source.splice(index, 0, item);
+    }
+
     if (_itemAdded != null) {
       _itemAdded.dispatch(item, index);
     }

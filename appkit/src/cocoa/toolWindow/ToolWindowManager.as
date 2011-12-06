@@ -1,22 +1,58 @@
 package cocoa.toolWindow {
-import cocoa.Panel;
 import cocoa.ContentView;
-import cocoa.bar.Bar;
+import cocoa.ListViewModifiableDataSource;
+import cocoa.Panel;
+import cocoa.SegmentedControl;
 import cocoa.pane.PaneItem;
+import cocoa.pane.PaneViewDataSource;
 import cocoa.ui;
 
-import flash.utils.Dictionary;
+import flash.errors.IllegalOperationError;
+
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.MigConstants;
 
 use namespace ui;
 
 public class ToolWindowManager {
-  public function registerToolWindow() {
+  private var toolWindows:Vector.<SegmentedControl> = new Vector.<SegmentedControl>(4, true);
 
+  public function registerToolWindow(item:PaneItem, side:int):void {
+    var tabBar:SegmentedControl;
+    for each (tabBar in toolWindows) {
+      if (tabBar != null && tabBar.dataSource.getItemIndex(item) != -1) {
+        throw new IllegalOperationError("item already registered");
+      }
+    }
+    
+    tabBar = toolWindows[side];
+    var dataSource:ListViewModifiableDataSource;
+    if (tabBar == null) {
+      tabBar = new SegmentedControl();
+      dataSource = new PaneViewDataSource(new Vector.<PaneItem>());
+      tabBar.dataSource = dataSource;
+
+      var cc:CC = new CC();
+      cc.cellX = side == MigConstants.RIGHT ? 4 : 0;
+      cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 1 : side == MigConstants.TOP ? 0 : 3;
+      tabBar.constraints = cc;
+      toolWindows[side] = tabBar;
+
+      if (_container != null) {
+        _container.addSubview(tabBar);
+      }
+    }
+    else {
+      dataSource = ListViewModifiableDataSource(tabBar.dataSource);
+    }
+
+    dataSource.addItem(item);
   }
 
-  ui var paneGroup:ContentView;
-
-  private var collapsed:Boolean = true;
+  private var _container:ContentView;
+  public function set container(value:ContentView):void {
+    _container = value;
+  }
 
   private var pendingSelectedIndices:Vector.<int>;
 

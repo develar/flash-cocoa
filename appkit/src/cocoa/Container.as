@@ -4,6 +4,7 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.util.SharedPoint;
 
 import flash.display.DisplayObjectContainer;
+import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
@@ -155,6 +156,15 @@ public class Container extends SpriteBackedView implements ContentView, Containe
 
   public function get displayObject():DisplayObjectContainer {
     return this;
+  }
+
+  public function addSubview(view:View):void {
+    if (_subviews.indexOf(view) != -1) {
+      throw new IllegalOperationError("already added");
+    }
+
+    _subviews[_subviews.length] = view;
+    _layout.invalidateSubview(true);
   }
 }
 }

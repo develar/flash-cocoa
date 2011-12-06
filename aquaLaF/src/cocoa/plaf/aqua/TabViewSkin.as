@@ -17,8 +17,8 @@ public class TabViewSkin extends AbstractTabViewSkin {
     super.doInit();
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
-    super.updateDisplayList(w, h);
+  override protected function draw(w:int, h:int):void {
+    super.draw(w, h);
 
     var g:Graphics = graphics;
     g.clear();
