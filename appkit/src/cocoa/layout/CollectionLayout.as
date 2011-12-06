@@ -1,5 +1,5 @@
 package cocoa.layout {
-import cocoa.AbstractView;
+import cocoa.SpriteBackedView;
 import cocoa.Insets;
 import cocoa.ListViewDataSource;
 import cocoa.renderer.RendererManager;
@@ -13,7 +13,7 @@ public interface CollectionLayout {
 
   function set dataSource(dataSource:ListViewDataSource):void;
 
-  function set container(value:AbstractView):void;
+  function set container(value:SpriteBackedView):void;
 
   function set gap(gap:Number):void;
 

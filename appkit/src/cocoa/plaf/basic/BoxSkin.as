@@ -1,5 +1,6 @@
 package cocoa.plaf.basic {
 import cocoa.Container;
+import cocoa.ContentView;
 import cocoa.SkinnableView;
 import cocoa.plaf.Skin;
 
@@ -10,9 +11,10 @@ public class BoxSkin extends Container implements Skin {
     return _component;
   }
 
-  override public function init(container:Container):void {
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
+
     hostComponent.uiPartAdded("contentView", this);
-    container.addChild(this);
   }
 
   override public function validate():void {

@@ -1,6 +1,7 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
 import cocoa.Container;
+import cocoa.ContentView;
 import cocoa.ControlView;
 import cocoa.Icon;
 import cocoa.SkinnableView;
@@ -22,32 +23,31 @@ public class AbstractSkin extends ControlView implements Skin {
   }
 
   protected final function getObject(key:String):Object {
-    return container.laf.getObject(_component.lafKey + "." + key, false);
+    return superview.laf.getObject(_component.lafKey + "." + key, false);
   }
 
   protected final function getBorder(key:String = "b"):Border {
-    return container.laf.getBorder(_component.lafKey + "." + key, false);
+    return superview.laf.getBorder(_component.lafKey + "." + key, false);
   }
 
   protected final function getNullableBorder(key:String = "b"):Border {
-    return container.laf.getBorder(_component.lafKey + "." + key, true);
+    return superview.laf.getBorder(_component.lafKey + "." + key, true);
   }
 
   protected final function getIcon(key:String):Icon {
-    return container.laf.getIcon(_component.lafKey + "." + key);
+    return superview.laf.getIcon(_component.lafKey + "." + key);
   }
 
   protected final function getFactory(key:String):IFactory {
-    return container.laf.getFactory(_component.lafKey + "." + key, false);
+    return superview.laf.getFactory(_component.lafKey + "." + key, false);
   }
 
   public function attach(component:SkinnableView):void {
     _component = component;
   }
 
-  override public function init(container:Container):void {
-    super.init(container);
-    container.addChild(this);
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
     doInit();
   }
 

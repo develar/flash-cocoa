@@ -7,8 +7,6 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.TabViewSkin;
 import cocoa.ui;
 
-import flash.events.Event;
-
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
@@ -32,10 +30,6 @@ public class TabView extends SingleSelectionBar {
 
     if (_selectionChanged != null) {
       _selectionChanged.dispatch(oldItem, newItem);
-    }
-    
-    if (hasEventListener("selectedItemChanged")) {
-      dispatchEvent(new Event("selectedItemChanged"));
     }
   }
 

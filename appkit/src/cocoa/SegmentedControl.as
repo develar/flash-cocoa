@@ -161,8 +161,10 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     return mode == SelectionMode.ONE ? selectedIndex == index : (!isEmpty(selectedIndices) && selectedIndices.indexOf(index) != -1);
   }
 
-  override public function init(container:Container):void {
-    var laf:LookAndFeel = container.laf;
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
+
+    var laf:LookAndFeel = superview.laf;
     if (layout == null) {
       layout = laf.getFactory(_lafKey + ".layout").newInstance();
     }

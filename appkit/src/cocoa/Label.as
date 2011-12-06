@@ -5,8 +5,8 @@ import cocoa.text.TextFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.TextLine;
 
-public class Label extends ComponentWrapperImpl {
-  private var container:Container;
+public class Label extends ObjectBackedView {
+  private var superview:ContentView;
 
   private var fontDescription:FontDescription;
   private var textFormat:TextFormat;
@@ -70,20 +70,20 @@ public class Label extends ComponentWrapperImpl {
   public function set title(value:String):void {
     if (value != labelHelper.text) {
       labelHelper.text = value;
-      if (container != null) {
-        container.invalidateSubview();
+      if (superview != null) {
+        superview.invalidateSubview();
       }
     }
   }
 
-  override public function init(container:Container):void {
-    this.container = container;
+  override public function addToSuperview(superview:ContentView):void {
+    this.superview = superview;
 
     if (textFormat != null && fontDescription != null) {
       textFormat.format.fontDescription = fontDescription;
     }
     else {
-      var lafTextFormat:TextFormat = container.laf.getTextFormat(TextFormatId.VIEW);
+      var lafTextFormat:TextFormat = superview.laf.getTextFormat(TextFormatId.VIEW);
       if (textFormat == null) {
         textFormat = lafTextFormat;
       }
@@ -93,8 +93,13 @@ public class Label extends ComponentWrapperImpl {
       }
     }
 
-    labelHelper.container = container;
+    labelHelper.container = superview.displayObject;
     labelHelper.textFormat = textFormat;
+  }
+
+  override public function removeFromSuperview(superview:ContentView):void {
+    this.superview = null;
+    labelHelper.container = null;
   }
 
   override public function setBounds(x:Number, y:Number, width:int, height:int):void {

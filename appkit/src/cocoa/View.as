@@ -4,7 +4,15 @@ import flash.display.DisplayObject;
 import net.miginfocom.layout.ComponentWrapper;
 
 public interface View extends ComponentWrapper {
-  function init(container:Container):void;
+  /**
+   * Add view to superview.
+   *
+   * View should initialize or reinitialize related properties.
+   *
+   * @param contentView
+   */
+  function addToSuperview(superview:ContentView):void;
+  function removeFromSuperview(superview:ContentView):void;
 
   function validate():void;
 

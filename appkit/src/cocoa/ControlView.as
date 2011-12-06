@@ -1,9 +1,9 @@
 package cocoa {
 [Abstract]
-public class ControlView extends AbstractView {
-  private static const INVALID:uint = 1 << 1;
+public class ControlView extends SpriteBackedView {
+  protected static const INVALID:uint = 1 << 1;
 
-  protected var container:Container;
+  protected var superview:ContentView;
 
   override public function validate():void {
     if ((flags & INVALID) == 0) {
@@ -14,21 +14,22 @@ public class ControlView extends AbstractView {
     draw(_actualWidth, _actualHeight);
   }
 
-  override public function init(container:Container):void {
-    this.container = container;
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
+    this.superview = superview;
   }
 
   protected function draw(w:int, h:int):void {
 
   }
 
-  protected final function invalidate(invalidateContainer:Boolean = true):void {
-    if (container == null) {
+  protected final function invalidate(invalidateSuperview:Boolean = true):void {
+    if (superview == null) {
       return;
     }
 
-    if (invalidateContainer) {
-      container.invalidateSubview(invalidateContainer);
+    if (invalidateSuperview) {
+      superview.invalidateSubview(invalidateSuperview);
     }
 
     flags |= INVALID;

@@ -3,7 +3,7 @@ import cocoa.border.EmptyBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.util.SharedPoint;
 
-import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
@@ -12,7 +12,7 @@ import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
 [DefaultProperty("subviews")]
-public class Container extends AbstractView implements ContentView, ContainerWrapper {
+public class Container extends SpriteBackedView implements ContentView, ContainerWrapper {
   public function Container() {
     mouseEnabled = false;
   }
@@ -132,22 +132,28 @@ public class Container extends AbstractView implements ContentView, ContainerWra
     initSubviews();
   }
 
-  override public function init(container:Container):void {
-    _laf = container.laf;
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
+
+    _laf = superview.laf;
     initSubviews();
+  }
+
+  override public function removeFromSuperview(superview:ContentView):void {
+    super.removeFromSuperview(superview);
   }
 
   private function initSubviews():void {
     for each (var view:View in components) {
-      view.init(this);
+      view.addToSuperview(this);
     }
   }
 
-  public function invalidateSubview(invalidateContainer:Boolean = true):void {
-    _layout.invalidateSubview(invalidateContainer);
+  public function invalidateSubview(invalidateSuperview:Boolean = true):void {
+    _layout.invalidateSubview(invalidateSuperview);
   }
 
-  public function get displayObject():DisplayObject {
+  public function get displayObject():DisplayObjectContainer {
     return this;
   }
 }

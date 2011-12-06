@@ -13,7 +13,7 @@ import flash.geom.Rectangle;
 import spark.layouts.HorizontalAlign;
 import spark.layouts.VerticalAlign;
 
-public class ImageView extends AbstractView {
+public class ImageView extends SpriteBackedView {
   private static const sharedRectangle:Rectangle = new Rectangle();
   private static const sharedMatrix:Matrix = new Matrix();
 

@@ -44,12 +44,12 @@ public class TableColumnImpl implements TableColumn, ListViewDataSource {
     _width = value;
   }
 
-  private var _minWidth:Number = 0;
-  public function get minWidth():Number {
+  private var _minWidth:int = 0;
+  public function get minWidth():int {
     return _minWidth;
   }
 
-  public function set minWidth(value:Number):void {
+  public function set minWidth(value:int):void {
     _minWidth = value;
   }
 

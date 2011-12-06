@@ -24,7 +24,7 @@ import spark.core.IViewport;
  * для этого установите у track border соответствующий contentInsets.
  */
 [DefaultProperty("documentView")]
-public class ScrollView extends AbstractView implements IFocusManagerComponent {
+public class ScrollView extends SpriteBackedView implements IFocusManagerComponent {
   private var _horizontalScrollBar:HScrollBar;
   private var _verticalScrollBar:VScrollBar;
 

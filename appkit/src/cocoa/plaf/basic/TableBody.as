@@ -1,12 +1,11 @@
 package cocoa.plaf.basic {
 import cocoa.CollectionBody;
+import cocoa.ContentView;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
 
-import flash.display.DisplayObject;
 import flash.display.Graphics;
 import flash.display.Shape;
 import flash.geom.Point;
@@ -40,8 +39,8 @@ public class TableBody extends CollectionBody {
     }
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
 
     background = new Shape();
     addChild(background);
@@ -53,39 +52,49 @@ public class TableBody extends CollectionBody {
     _verticalScrollPosition = 0;
     _horizontalScrollPosition = 0;
     background.y = 0;
-    dispatchPropertyChangeEvent("verticalScrollPosition", -1, 0);
-    dispatchPropertyChangeEvent("horizontalScrollPosition", -1, 0);
+    //dispatchPropertyChangeEvent("verticalScrollPosition", -1, 0);
+    //dispatchPropertyChangeEvent("horizontalScrollPosition", -1, 0);
     if (visibleRowCount != -1) {
       visibleRowCount = -visibleRowCount - 1;
     }
-    invalidateSize();
-    invalidateDisplayList();
+
+    invalidate();
   }
 
-  override protected function measure():void {
-    measuredMinHeight = tableView.minRowCount * rowHeightWithSpacing;
+  override public function getMinimumHeight(wHint:int = -1):int {
+    return tableView.minRowCount * rowHeightWithSpacing;
+  }
+
+  override public function getMinimumWidth(hHint:int = -1):int {
+    var minWidth:Number = 0;
+    for each (var column:TableColumn in tableView.columns) {
+      minWidth += column.minWidth;
+    }
+
+    return minWidth + (tableView.columns.length - 1) * intercellSpacing.x;
+  }
+
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return super.getPreferredWidth(hHint);
+  }
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    return Math.max(dataSource.itemCount, tableView.minRowCount) * rowHeightWithSpacing;
+  }
+
+   protected function measure():void {
     _contentHeight = Math.max(dataSource.itemCount, tableView.minRowCount) * rowHeightWithSpacing;
-    dispatchPropertyChangeEvent("contentHeight", -1, _contentHeight);
-    measuredHeight = _contentHeight;
+    //dispatchPropertyChangeEvent("contentHeight", -1, _contentHeight);
+    //measuredHeight = _contentHeight;
 
     var minWidth:Number = 0;
     for each (var column:TableColumn in tableView.columns) {
       minWidth += column.minWidth;
     }
 
-    measuredMinWidth = minWidth + (tableView.columns.length - 1) * intercellSpacing.x;
-    measuredWidth = 0;
+    //measuredWidth = 0;
   }
 
-  override public function addChild(child:DisplayObject):DisplayObject {
-    child is Skin ? super.addChild(child) : addDisplayObject(child);
-    return child;
-  }
-
-  override public function removeChild(child:DisplayObject):DisplayObject {
-    child is Skin ? super.removeChild(child) : removeDisplayObject(child);
-    return child;
-  }
 
   private function computeInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number, h:Number):int {
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
@@ -97,10 +106,10 @@ public class TableBody extends CollectionBody {
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
     background.y = _verticalScrollPosition - invisibleFirstRowPartTop - (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0 ? 0 : rowHeightWithSpacing);
 
-    if (displayListInvalid) {
+    //if (displayListInvalid) {
       // updateDisplayList responsible for
-      return;
-    }
+      //return;
+    //}
 
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);
@@ -159,7 +168,7 @@ public class TableBody extends CollectionBody {
     return int(h / rowHeightWithSpacing) + (remainder > 1 ? 2 : remainder);
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     var s:Rectangle = scrollRect;
     var oldVerticalScrollPosition:Number = s == null ? 0 : s.y;
     if (clipAndEnableScrolling) {

@@ -1,7 +1,7 @@
 package cocoa {
 import mx.managers.IToolTipManagerClient;
 
-public class AbstractControl extends AbstractSkinnableView implements Control, Cell {
+public class AbstractControl extends ObjectBackedSkinnableView implements Control, Cell {
   protected var actionParameters:Array;
 
   protected var _action:Function;

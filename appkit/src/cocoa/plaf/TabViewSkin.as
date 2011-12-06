@@ -5,7 +5,7 @@ import cocoa.View;
 public interface TabViewSkin {
   function get contentInsets():Insets;
 
-  function show(viewable:View):void;
+  function show(view:View):void;
   function hide():void;
 }
 }

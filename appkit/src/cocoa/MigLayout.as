@@ -30,6 +30,7 @@ public class MigLayout extends AbstractMigLayout {
 
   public function validate():void {
     if ((flags & VALIDATE_LISTENERS_ATTACHED) != 0) {
+      flags &= ~VALIDATE_LISTENERS_ATTACHED;
       _container.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
     }
 
@@ -134,12 +135,12 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
+      flags |= VALIDATE_LISTENERS_ATTACHED;
       _container.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
     }
   }
 
   private function enterFrameHandler(event:Event):void {
-    IEventDispatcher(event.currentTarget).removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
     validate();
   }
 }

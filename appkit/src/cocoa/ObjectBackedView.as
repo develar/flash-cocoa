@@ -3,14 +3,19 @@ import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
+import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
 [Abstract]
-internal class ComponentWrapperImpl implements View {
+internal class ObjectBackedView implements View {
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
+  }
+
+  public function set c(value:String):void {
+    _constraints = ConstraintParser.parseComponentConstraint(value);
   }
 
   public function get component():Object {
@@ -42,11 +47,11 @@ internal class ComponentWrapperImpl implements View {
   }
 
   public function getMaximumWidth(hHint:int = -1):int {
-    return AbstractView.DEFAULT_MAX_WIDTH;
+    return SpriteBackedView.DEFAULT_MAX_WIDTH;
   }
 
   public function getMaximumHeight(wHint:int = -1):int {
-    return AbstractView.DEFAULT_MAX_HEIGHT;
+    return SpriteBackedView.DEFAULT_MAX_HEIGHT;
   }
 
   public function setBounds(x:Number, y:Number, width:int, height:int):void {
@@ -104,7 +109,7 @@ internal class ComponentWrapperImpl implements View {
     return true;
   }
 
-  public function init(container:Container):void {
+  public function addToSuperview(superview:ContentView):void {
     throw new IllegalOperationError("Abstract");
   }
 
@@ -113,6 +118,10 @@ internal class ComponentWrapperImpl implements View {
 
   public function get enabled():Boolean {
     return true;
+  }
+
+  public function removeFromSuperview(superview:ContentView):void {
+    throw new IllegalOperationError("Abstract");
   }
 }
 }

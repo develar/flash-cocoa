@@ -64,7 +64,7 @@
                 <include>**.AbstractLookAndFeel</include>
                 <include>**.Container</include>
                 <include>**.View</include>
-                <include>**.SkinnableView</include>
+                <include>**.ObjectBackedSkinnableView</include>
                 <include>**.Focusable</include>
                 <include>**.border.*</include>
                 <include>cocoa.plaf.basic.AbstractSkin</include>
@@ -88,7 +88,7 @@
               <includes>
                 <class>**.SegmentedControl</class>
                 <!--<class>**.Dialog</class>-->
-                <!--<class>**.Tab*</class>-->
+                <class>**.Tab*</class>
 
                 <!--<class>**.colorPicker.ColorPicker</class>-->
 

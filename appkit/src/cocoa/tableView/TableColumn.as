@@ -14,9 +14,9 @@ public interface TableColumn {
 
   function set width(value:Number):void;
 
-  function get minWidth():Number;
+  function get minWidth():int;
 
-  function set minWidth(value:Number):void;
+  function set minWidth(value:int):void;
 
   function get actualWidth():Number;
 

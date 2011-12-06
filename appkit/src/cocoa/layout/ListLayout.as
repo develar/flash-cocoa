@@ -1,5 +1,5 @@
 package cocoa.layout {
-import cocoa.AbstractView;
+import cocoa.SpriteBackedView;
 import cocoa.Insets;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
@@ -13,8 +13,8 @@ internal class ListLayout implements CollectionLayout {
   protected var pendingAddedIndices:Vector.<int>;
   protected var pendingRemovedIndices:Vector.<int>;
 
-  protected var _container:AbstractView;
-  public function set container(value:AbstractView):void {
+  protected var _container:SpriteBackedView;
+  public function set container(value:SpriteBackedView):void {
     _container = value;
   }
 

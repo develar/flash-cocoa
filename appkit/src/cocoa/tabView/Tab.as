@@ -1,7 +1,5 @@
 package cocoa.tabView {
 import cocoa.Container;
-import cocoa.MigLayout;
-import cocoa.View;
 
 [Abstract]
 public class Tab extends Container {
@@ -38,10 +36,6 @@ public class Tab extends Container {
       _active = true;
       invalidateActiveState();
     }
-  }
-
-  public function Tab(components:Vector.<View>, layout:MigLayout) {
-    super(components, layout);
   }
 }
 }

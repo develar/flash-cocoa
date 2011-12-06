@@ -6,7 +6,7 @@ import spark.core.NavigationUnit;
 
 [Abstract]
 public class CollectionBody extends ControlView implements Focusable {
-  protected var rowHeightWithSpacing:Number;
+  protected var rowHeightWithSpacing:int;
   protected var oldHeight:Number = 0;
 
   protected var _clipAndEnableScrolling:Boolean;

@@ -1,6 +1,5 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.SimpleSkin;
 import cocoa.plaf.Skin;
 
 import flash.utils.Dictionary;
@@ -8,7 +7,7 @@ import flash.utils.Dictionary;
 use namespace ui;
 
 [Abstract]
-public class AbstractSkinnableView extends ComponentWrapperImpl implements SkinnableView {
+public class ObjectBackedSkinnableView extends ObjectBackedView implements SkinnableView {
   protected static const HANDLER_NOT_EXISTS:int = 2;
 
   //noinspection JSUnusedLocalSymbols
@@ -27,19 +26,13 @@ public class AbstractSkinnableView extends ComponentWrapperImpl implements Skinn
     return _skinParts;
   }
 
-  private var untypedSkin:SimpleSkin;
-
   public function uiPartAdded(id:String, instance:Object):void {
     partAdded(id, instance);
   }
 
-  protected function listenSkinParts(skin:SimpleSkin):void {
-    untypedSkin = skin;
-  }
-
   protected final function invalidateProperties():void {
-    if (untypedSkin != null) {
-      //untypedSkin.invalidateProperties();
+    if (_skin != null) {
+      _skin.hostComponentPropertyChanged();
     }
   }
 
@@ -100,8 +93,8 @@ public class AbstractSkinnableView extends ComponentWrapperImpl implements Skinn
     return _skin.getMaximumHeight(wHint);
   }
 
-  override public final function init(container:Container):void {
-    var laf:LookAndFeel = container.laf;
+  override public final function addToSuperview(superview:ContentView):void {
+    var laf:LookAndFeel = superview.laf;
     _lafKey = _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
     if (laf.controlSize != null) {
       _lafKey = laf.controlSize + "." + _lafKey;
@@ -115,9 +108,12 @@ public class AbstractSkinnableView extends ComponentWrapperImpl implements Skinn
     _skin = new _skinClass();
     _skinClass = null;
     _skin.attach(this);
-    _skin.init(container);
+    _skin.addToSuperview(superview);
     skinAttached();
-    listenSkinParts(_skin);
+  }
+
+  override public function removeFromSuperview(superview:ContentView):void {
+    _skin.removeFromSuperview(superview);
   }
 
   private var _lafKey:String;

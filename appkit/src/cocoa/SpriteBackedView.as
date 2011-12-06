@@ -8,7 +8,7 @@ import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
 [Abstract]
-public class AbstractView extends Sprite implements View {
+public class SpriteBackedView extends Sprite implements View {
   internal static const DEFAULT_MAX_WIDTH:int = 32767;
   internal static const DEFAULT_MAX_HEIGHT:int = 32767;
 
@@ -16,7 +16,7 @@ public class AbstractView extends Sprite implements View {
 
   protected var flags:uint;
 
-  public function AbstractView() {
+  public function SpriteBackedView() {
     super();
 
     focusRect = false;
@@ -116,8 +116,12 @@ public class AbstractView extends Sprite implements View {
     return ComponentType.TYPE_UNKNOWN;
   }
 
-  public function init(container:Container):void {
-    throw new IllegalOperationError("Abstract");
+  public function addToSuperview(superview:ContentView):void {
+    superview.displayObject.addChild(this);
+  }
+
+  public function removeFromSuperview(superview:ContentView):void {
+    superview.displayObject.removeChild(this);
   }
 
   public function validate():void {

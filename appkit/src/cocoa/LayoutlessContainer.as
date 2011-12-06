@@ -13,7 +13,7 @@ import org.flyti.plexus.events.InjectorEvent;
 import spark.components.supportClasses.GroupBase;
 import spark.components.supportClasses.SkinnableComponent;
 
-public class LayoutlessContainer extends AbstractView implements ContentView, LookAndFeelProvider {
+public class LayoutlessContainer extends SpriteBackedView implements ContentView, LookAndFeelProvider {
   private var _laf:LookAndFeel;
   public function get laf():LookAndFeel {
     return _laf;

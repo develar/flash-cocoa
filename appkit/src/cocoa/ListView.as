@@ -8,10 +8,10 @@ public class ListView extends SegmentedControl {
     _lafKey = "List";
   }
 
-  override public function init(container:Container):void {
-    super.init(container);
+  override public function addToSuperview(superview:ContentView):void {
+    super.addToSuperview(superview);
 
-    var laf:LookAndFeel = container.laf;
+    var laf:LookAndFeel = superview.laf;
     border = laf.getBorder(_lafKey + ".b", true);
     if (border != null) {
       layout.insets = border.contentInsets;

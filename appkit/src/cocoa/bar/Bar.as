@@ -1,8 +1,9 @@
 package cocoa.bar {
-import cocoa.AbstractSkinnableView;
+import cocoa.ObjectBackedSkinnableView;
 import cocoa.ListViewDataSource;
 import cocoa.SegmentedControl;
 import cocoa.pane.PaneViewDataSource;
+import cocoa.resources.ResourceManager;
 import cocoa.ui;
 
 import flash.utils.Dictionary;
@@ -12,7 +13,7 @@ import org.flyti.plexus.Injectable;
 use namespace ui;
 
 [Abstract]
-public class Bar extends AbstractSkinnableView implements Injectable {
+public class Bar extends ObjectBackedSkinnableView implements Injectable {
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.segmentedControl = 0;
   override protected function get skinParts():Dictionary {
@@ -54,7 +55,7 @@ public class Bar extends AbstractSkinnableView implements Injectable {
 
   protected function validateItems():void {
     if (dataSource is PaneViewDataSource) {
-      PaneViewDataSource(dataSource).localize(resourceManager);
+      PaneViewDataSource(dataSource).localize(ResourceManager.instance);
     }
   }
 }
