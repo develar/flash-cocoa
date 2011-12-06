@@ -86,6 +86,7 @@
                 <class>**.Application</class>
               </excludes>
               <includes>
+                <class>**.MigLayout</class>
                 <class>**.SegmentedControl</class>
                 <!--<class>**.Dialog</class>-->
                 <class>**.Tab*</class>

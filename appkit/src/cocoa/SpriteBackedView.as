@@ -4,6 +4,7 @@ import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
+import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
@@ -25,6 +26,10 @@ public class SpriteBackedView extends Sprite implements View {
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
+  }
+
+  public function set c(value:String):void {
+    _constraints = ConstraintParser.parseComponentConstraint(value);
   }
 
   public function get component():Object {
