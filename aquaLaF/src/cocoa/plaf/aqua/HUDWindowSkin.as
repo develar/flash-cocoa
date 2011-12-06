@@ -48,8 +48,8 @@ public class HUDWindowSkin extends AbstractWindowSkin {
     return true;
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
   }
 }
 }

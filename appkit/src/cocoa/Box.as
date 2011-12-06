@@ -1,13 +1,13 @@
 package cocoa {
 import flash.utils.Dictionary;
 
-import spark.layouts.supportClasses.LayoutBase;
+import net.miginfocom.layout.ComponentWrapper;
 
 use namespace ui;
 
-[DefaultProperty("subviews")]
+[DefaultProperty("_subviews")]
 public class Box extends AbstractSkinnableView {
-  public var subviews:Vector.<View>;
+  ui var contentView:Container;
 
   protected static const _skinParts:Dictionary = new Dictionary();
   _skinParts.contentGroup = 0;
@@ -15,20 +15,23 @@ public class Box extends AbstractSkinnableView {
     return _skinParts;
   }
 
-  ui var contentView:Container;
-
   override protected function get primaryLaFKey():String {
     return "Box";
   }
 
-  private var _layout:LayoutBase;
-  public function set layout(value:LayoutBase):void {
+  private var _layout:MigLayout;
+  public function set layout(value:MigLayout):void {
     _layout = value;
   }
 
-  protected var _resourceBundle:String;
-  public function set resourceBundle(value:String):void {
-    _resourceBundle = value;
+  private var _subviews:Vector.<ComponentWrapper>;
+  public function set subviews(value:Vector.<ComponentWrapper>):void {
+    _subviews = value;
+  }
+
+  ui function contentViewAdded():void {
+    contentView.layout = _layout == null ? new MigLayout() : _layout;
+    contentView.subviews = _subviews;
   }
 }
 }

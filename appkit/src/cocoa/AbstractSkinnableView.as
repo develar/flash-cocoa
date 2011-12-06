@@ -114,8 +114,8 @@ public class AbstractSkinnableView extends ComponentWrapperImpl implements Skinn
     }
     _skin = new _skinClass();
     _skinClass = null;
-    _skin.init(container);
     _skin.attach(this);
+    _skin.init(container);
     skinAttached();
     listenSkinParts(_skin);
   }

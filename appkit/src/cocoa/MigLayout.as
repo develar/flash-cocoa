@@ -16,7 +16,7 @@ public class MigLayout extends AbstractMigLayout {
   private var lastInvalidW:int;
   private var lastInvalidH:int;
 
-  public function MigLayout(layoutConstraints:String, colConstraints:String, rowConstraints:String) {
+  public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
   }
   

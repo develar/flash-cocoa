@@ -13,9 +13,8 @@ import net.miginfocom.layout.LayoutUtil;
 
 [DefaultProperty("subviews")]
 public class Container extends AbstractView implements ContentView, ContainerWrapper {
-  public function Container(layout:MigLayout) {
-    _layout = layout;
-    _layout.container = this;
+  public function Container() {
+    mouseEnabled = false;
   }
   
   private var _border:Border = EmptyBorder.EMPTY;
@@ -34,7 +33,12 @@ public class Container extends AbstractView implements ContentView, ContainerWra
 
   private var _layout:MigLayout;
   public function set layout(value:MigLayout):void {
-    _layout = value;
+    if (_layout != value) {
+      _layout = value;
+      if (_layout != null) {
+        _layout.container = this;
+      }
+    }
   }
 
   public function getLayout():Object {

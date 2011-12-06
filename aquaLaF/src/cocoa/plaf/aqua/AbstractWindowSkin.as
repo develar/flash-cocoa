@@ -112,7 +112,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
     return contentFrameInsets.height + contentLayoutInsets.height;
   }
 
-  override protected function createChildren():void {
+  override protected function doInit():void {
     // skip super.createChildren() так там только инжектирование, а за него отвечает DialogManager
 
     labelHelper.textFormat = laf.getTextFormat(TextFormatId.SYSTEM);

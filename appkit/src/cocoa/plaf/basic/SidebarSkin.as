@@ -8,8 +8,8 @@ public class SidebarSkin extends AbstractSkin {
   private var tabBar:SegmentedControl;
   private var paneGroup:Container;
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     if (tabBar == null) {
       tabBar = new SegmentedControl();

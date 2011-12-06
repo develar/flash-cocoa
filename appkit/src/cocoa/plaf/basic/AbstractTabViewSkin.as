@@ -22,8 +22,8 @@ public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin {
     throw new Error("abstract");
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     if (tabBar == null) {
       tabBar = new SegmentedControl();

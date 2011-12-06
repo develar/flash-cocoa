@@ -12,9 +12,9 @@ public class TabViewSkin extends AbstractTabViewSkin {
     return border.contentInsets;
   }
 
-  override protected function createChildren():void {
+  override protected function doInit():void {
     border = getBorder();
-    super.createChildren();
+    super.doInit();
   }
 
   override protected function updateDisplayList(w:Number, h:Number):void {

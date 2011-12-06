@@ -24,8 +24,8 @@ public class WindowSkin extends AbstractWindowSkin implements DialogSkin {
     return _useWindowGap ? (_bottomBarStyle == null ? CONTENT_LAYOUT_INSETS : CONTENT_LAYOUT_INSETS_BOTTOM_BAR) : super.contentLayoutInsets;
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     if (controlBar == null) {
       controlBar = new BorderedContainer();

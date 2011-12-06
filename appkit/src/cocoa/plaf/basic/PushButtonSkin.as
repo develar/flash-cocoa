@@ -81,8 +81,8 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     return getPreferredHeight();
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     if (responsibleForInteraction) {
       addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);

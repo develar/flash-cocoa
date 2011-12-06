@@ -28,8 +28,8 @@ public class TitledComponentSkin extends AbstractSkin implements cocoa.plaf.Titl
     invalidate();
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     if (labelHelper != null) {
       labelHelper.textFormat = container.laf.getTextFormat(titleTextFormatId);

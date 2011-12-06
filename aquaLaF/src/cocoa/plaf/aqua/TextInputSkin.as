@@ -20,8 +20,8 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
 
   protected var border:Border;
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     border = getBorder();
 

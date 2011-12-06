@@ -26,8 +26,8 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner {
     return _border;
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     _border = getBorder();
 

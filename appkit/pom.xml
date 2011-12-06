@@ -68,6 +68,7 @@
                 <include>**.Focusable</include>
                 <include>**.border.*</include>
                 <include>cocoa.plaf.basic.AbstractSkin</include>
+                <include>cocoa.plaf.basic.BoxSkin</include>
                 <include>cocoa.plaf.basic.BitmapIcon</include>
                 <include>cocoa.plaf.basic.PushButtonSkin</include>
                 <include>cocoa.plaf.basic.SegmentedControlInteractor</include>
@@ -112,8 +113,8 @@
                 <!--<class>**.*Stepper</class>-->
                 <!--<class>**.*Slider</class>-->
                 <!--<class>**.*Bar</class>-->
-                <!--<class>**.Toolbar</class>-->
-                <!--<class>**.*Box</class>-->
+                <class>**.Toolbar</class>
+                <class>**.*Box</class>
                 <!--<class>**.ListView</class>-->
                 <!--<class>**.ResourceMetadata</class>-->
                 <!--<class>**.Menu</class>-->

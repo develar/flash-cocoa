@@ -75,7 +75,7 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
 					<debug>true</debug>
-					<!--<sourceFile>cocoa/plaf/aqua/demo/Main.mxml</sourceFile>-->
+					<sourceFile>cocoa/demo/Main.as</sourceFile>
           <localesCompiled>
             <locale>en_US</locale>
           </localesCompiled>

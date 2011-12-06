@@ -5,8 +5,8 @@ import cocoa.plaf.Skin;
 import flash.display.DisplayObject;
 
 public class CollectionViewSkin extends AbstractSkin {
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     //ListHorizontalLayout(CollectionView(component).layout).init(CollectionView(component), this);
   }

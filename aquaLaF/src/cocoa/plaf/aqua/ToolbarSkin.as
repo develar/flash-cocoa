@@ -1,19 +1,15 @@
 package cocoa.plaf.aqua {
+import cocoa.Container;
 import cocoa.Toolbar;
 import cocoa.plaf.basic.BoxSkin;
 
 public class ToolbarSkin extends BoxSkin {
-  override protected function createChildren():void {
-    contentView = new BorderedContainer();
+  override public function init(container:Container):void {
+    var laf:AquaLookAndFeel = AquaLookAndFeel(container.laf);
+    laf.getBorder(hostComponent.lafKey + ".b", true);
+    this.laf = laf.createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
 
-    super.createChildren();
-
-    BorderedContainer(contentView).border = getNullableBorder();
-    contentView.mouseEnabled = false;
-    contentView.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
-    hostComponent.uiPartAdded("contentGroup", contentView);
-
-    addChild(contentView);
+    super.init(container);
   }
 }
 }

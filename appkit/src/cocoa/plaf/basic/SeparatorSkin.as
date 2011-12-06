@@ -13,8 +13,8 @@ public class SeparatorSkin extends AbstractSkin {
     mouseChildren = false;
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     border = laf.getBorder(hostComponent.lafKey + ".b", false);
     if (border.layoutWidth < 0) {

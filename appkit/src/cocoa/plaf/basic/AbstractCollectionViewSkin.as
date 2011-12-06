@@ -23,8 +23,8 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
     throw new IllegalOperationError("abstract");
   }
 
-  override protected function createChildren():void {
-    super.createChildren();
+  override protected function doInit():void {
+    super.doInit();
 
     border = getNullableBorder();
 
