@@ -1,9 +1,8 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
-import cocoa.SkinnableView;
 import cocoa.ControlView;
 import cocoa.Icon;
-import cocoa.UIPartProvider;
+import cocoa.SkinnableView;
 import cocoa.plaf.Skin;
 
 import mx.core.IFactory;

@@ -13,33 +13,60 @@
 	<packaging>swf</packaging>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.flyti.cocoa</groupId>
-			<artifactId>aquaLaF</artifactId>
-			<type>swc</type>
-			<version>2.0-SNAPSHOT</version>
+		<!--<dependency>-->
+			<!--<groupId>org.flyti.cocoa</groupId>-->
+			<!--<artifactId>aquaLaF</artifactId>-->
+			<!--<type>swc</type>-->
+			<!--<version>2.0-SNAPSHOT</version>-->
+      <!--<exclusions>-->
+        <!--<exclusion>-->
+          <!--<groupId>com.adobe.flex.framework</groupId>-->
+          <!--<artifactId>flex-framework</artifactId>-->
+        <!--</exclusion>-->
+      <!--</exclusions>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>org.flyti.cocoa</groupId>-->
+			<!--<artifactId>acocoa</artifactId>-->
+			<!--<type>swc</type>-->
+			<!--<version>2.0-SNAPSHOT</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.flyti.cocoa</groupId>-->
+			<!--<artifactId>cocoa</artifactId>-->
+			<!--<version>2.0-SNAPSHOT</version>-->
+			<!--<type>rb.swc</type>-->
+			<!--<classifier>en_US</classifier>-->
+		<!--</dependency>-->
+
+    <dependency>
+      <groupId>org.flyti.cocoa</groupId>
+      <artifactId>aquaLaF</artifactId>
+      <version>2.0-SNAPSHOT</version>
+      <type>swc</type>
       <exclusions>
         <exclusion>
-          <groupId>com.adobe.flex.framework</groupId>
-          <artifactId>flex-framework</artifactId>
+          <groupId>flashx</groupId>
+          <artifactId>textLayout</artifactId>
         </exclusion>
       </exclusions>
-		</dependency>
+    </dependency>
 
-		<dependency>
-			<groupId>org.flyti.cocoa</groupId>
-			<artifactId>acocoa</artifactId>
-			<type>swc</type>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.flyti.cocoa</groupId>
-			<artifactId>cocoa</artifactId>
-			<version>2.0-SNAPSHOT</version>
-			<type>rb.swc</type>
-			<classifier>en_US</classifier>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.flyti.cocoa</groupId>
+      <artifactId>cocoa</artifactId>
+      <version>2.0-SNAPSHOT</version>
+      <type>rb.swc</type>
+      <classifier>en_US</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>flashx</groupId>
+          <artifactId>textLayout</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
 	<build>
 		<plugins>
@@ -48,7 +75,7 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<configuration>
 					<debug>true</debug>
-					<sourceFile>cocoa/plaf/aqua/demo/Main.mxml</sourceFile>
+					<!--<sourceFile>cocoa/plaf/aqua/demo/Main.mxml</sourceFile>-->
           <localesCompiled>
             <locale>en_US</locale>
           </localesCompiled>

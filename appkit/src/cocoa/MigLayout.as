@@ -15,6 +15,10 @@ public class MigLayout extends AbstractMigLayout {
   private var lastHash:int = -1;
   private var lastInvalidW:int;
   private var lastInvalidH:int;
+
+  public function MigLayout(layoutConstraints:String, colConstraints:String, rowConstraints:String) {
+    super(layoutConstraints, colConstraints, rowConstraints);
+  }
   
   private var _container:Container;
   public function set container(value:Container):void {

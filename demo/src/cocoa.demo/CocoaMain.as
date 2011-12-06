@@ -1,4 +1,4 @@
-package org.jetbrains.migLayout {
+package cocoa.demo {
 import cocoa.Container;
 import cocoa.Label;
 import cocoa.MigLayout;
