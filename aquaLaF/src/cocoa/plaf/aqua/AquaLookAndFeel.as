@@ -2,6 +2,7 @@ package cocoa.plaf.aqua {
 import cocoa.FrameInsets;
 import cocoa.SingletonClassFactory;
 import cocoa.border.LinearGradientBorder;
+import cocoa.layout.ListLayoutFactory;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.Placement;
@@ -73,14 +74,13 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, this, "SegmentItem");
 
-    //data["TabView"] = TabViewSkin;
+    data["TabView"] = TabViewSkin;
     //data["TabView.borderless"] = BorderlessTabViewSkin;
     data["Sidebar.tabBar.interactor"] = data["SegmentedControl.interactor"] = data["TabView.tabBar.interactor"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlInteractor);
     //data["TabView.tabBar.layout"] = data["SegmentedControl.layout"] = new ListLayoutFactory(20, 1);
     data["TabView.tabBar.placement"] = Placement.PAGE_START_LINE_CENTER;
 
-    //data["Sidebar"] = SidebarSkin;
-    //data["Sidebar.tabBar.layout"] = new ListLayoutFactory(20, 6, false);
+    data["ToolWindowManager.tabBar.layout"] = new ListLayoutFactory(20, 6, false);
 
     data["PushButton"] = PushButtonSkin;
     data["IconButton"] = IconButtonSkin;

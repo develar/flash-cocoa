@@ -164,6 +164,7 @@ public class Container extends SpriteBackedView implements ContentView, Containe
     }
 
     _subviews[_subviews.length] = view;
+    view.addToSuperview(this);
     _layout.invalidateSubview(true);
   }
 }

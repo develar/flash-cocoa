@@ -2,7 +2,7 @@ package cocoa.layout {
 public class ListVerticalLayout extends ListLayout implements CollectionLayout {
   override public function measure():void {
     _container.measuredWidth = _dimension.value;
-    _container.measuredHeight = initialDrawItems(100000, _dimension.value);
+    _container.measuredHeight = initialDrawItems(10000, _dimension.value);
   }
 
   override public function layout(w:Number, h:Number):void {

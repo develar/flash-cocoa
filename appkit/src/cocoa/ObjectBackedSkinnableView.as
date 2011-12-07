@@ -106,6 +106,7 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
       _skinClass = laf.getClass(_lafKey);
     }
     _skin = new _skinClass();
+    _skin.visible = visible;
     _skinClass = null;
     _skin.attach(this);
     _skin.addToSuperview(superview);
@@ -139,6 +140,13 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
   }
 
   public function commitProperties():void {
+  }
+
+  override public function set visible(value:Boolean):void {
+    super.visible = value;
+    if (_skin != null) {
+      _skin.hostComponentPropertyChanged();
+    }
   }
 }
 }

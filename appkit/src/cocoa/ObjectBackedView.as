@@ -14,6 +14,10 @@ internal class ObjectBackedView implements View {
     return _constraints;
   }
 
+  public function set constraints(value:CC):void {
+    _constraints = value;
+  }
+
   public function set c(value:String):void {
     _constraints = ConstraintParser.parseComponentConstraint(value);
   }
@@ -105,8 +109,13 @@ internal class ObjectBackedView implements View {
     throw new IllegalOperationError("Abstract");
   }
 
+  private var _visible:Boolean = true;
   public function get visible():Boolean {
-    return true;
+    return _visible;
+  }
+
+  public function set visible(value:Boolean):void {
+    _visible = value;
   }
 
   public function addToSuperview(superview:ContentView):void {

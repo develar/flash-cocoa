@@ -20,5 +20,7 @@ public interface CollectionLayout {
   function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void;
 
   function set insets(value:Insets):void;
+
+  function getPreferredWidth(hHint:int):int;
 }
 }

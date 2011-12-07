@@ -14,6 +14,10 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     return v == null || v.length == 0;
   }
 
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return layout.getPreferredWidth(hHint);
+  }
+
   private var _mode:int = SelectionMode.ONE;
   public function get mode():int {
     return _mode;
@@ -161,6 +165,8 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     return mode == SelectionMode.ONE ? selectedIndex == index : (!isEmpty(selectedIndices) && selectedIndices.indexOf(index) != -1);
   }
 
+
+
   override public function addToSuperview(superview:ContentView):void {
     super.addToSuperview(superview);
 
@@ -218,13 +224,18 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     }
     else {
       if (value) {
-        selectedIndices.push(index);
+        selectedIndices[selectedIndices.length] = index;
+      }
+      else if (index == (selectedIndices.length - 1)) {
+        selectedIndices.length = index;
       }
       else {
         selectedIndices.splice(selectedIndices.indexOf(index), 1);
       }
 
-      layout.setSelected(index, -1, value);
+      if (layout != null) {
+        layout.setSelected(index, -1, value);
+      }
 
       if (_selectionChanged != null) {
         _selectionChanged.dispatch(value ? new <int>[index] : null, value ? null : new <int>[index]);

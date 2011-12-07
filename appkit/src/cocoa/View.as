@@ -17,5 +17,7 @@ public interface View extends ComponentWrapper {
   function validate():void;
 
   function get enabled():Boolean;
+
+  function set visible(value:Boolean):void;
 }
 }
