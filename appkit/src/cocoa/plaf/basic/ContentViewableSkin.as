@@ -11,14 +11,6 @@ import flash.events.Event;
 public class ContentViewableSkin extends AbstractSkin implements ContentView {
   private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 3;
 
-  public function set preferredWidth(value:int):void {
-    throw new IllegalOperationError("not allowed");
-  }
-
-  public function set preferredHeight(value:int):void {
-    throw new IllegalOperationError("not allowed");
-  }
-
   public function get displayObject():DisplayObjectContainer {
     return this;
   }
@@ -53,10 +45,6 @@ public class ContentViewableSkin extends AbstractSkin implements ContentView {
   }
 
   public function set laf(value:LookAndFeel):void {
-    throw new IllegalOperationError("not allowed");
-  }
-
-  public function addSubview(view:View):void {
     throw new IllegalOperationError("not allowed");
   }
 }

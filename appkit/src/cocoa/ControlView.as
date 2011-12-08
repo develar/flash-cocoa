@@ -1,7 +1,7 @@
 package cocoa {
 [Abstract]
 public class ControlView extends SpriteBackedView {
-  protected static const INVALID:uint = 1 << 1;
+  protected static const INVALID:uint = 1 << 2;
 
   protected var superview:ContentView;
 
@@ -43,15 +43,11 @@ public class ControlView extends SpriteBackedView {
   }
 
   protected final function invalidate(invalidateSuperview:Boolean = true):void {
-    if (superview == null) {
-      return;
-    }
-
-    if (invalidateSuperview) {
+    flags |= INVALID;
+    
+    if (invalidateSuperview && superview != null) {
       superview.invalidateSubview(invalidateSuperview);
     }
-
-    flags |= INVALID;
   }
 }
 }

@@ -8,12 +8,17 @@ import org.flyti.plexus.Injectable;
 
 public class Window extends TitledComponent implements TitledPane, LookAndFeelProvider, Injectable {
   protected var mySkin:WindowSkin;
-  protected var flags:uint = RESIZABLE | CLOSABLE;
 
-  protected static const RESIZABLE:uint = 1 << 0;
-  protected static const CLOSABLE:uint = 1 << 1;
+  protected static const RESIZABLE:uint = 1 << 2;
+  protected static const CLOSABLE:uint = 1 << 3;
 
   protected var toolbar:Toolbar;
+
+  public function Window() {
+    super();
+
+    flags |= RESIZABLE | CLOSABLE;
+  }
 
   public function get resizable():Boolean {
     return (flags & RESIZABLE) != 0;

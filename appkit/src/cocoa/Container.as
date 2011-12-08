@@ -8,12 +8,11 @@ import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
-import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
 
 [DefaultProperty("subviews")]
-public class Container extends SpriteBackedView implements ContentView, ContainerWrapper {
+public class Container extends SpriteBackedView implements RootContentView {
   public function Container() {
     mouseEnabled = false;
   }

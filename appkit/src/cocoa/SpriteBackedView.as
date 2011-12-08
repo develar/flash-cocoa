@@ -14,6 +14,7 @@ public class SpriteBackedView extends Sprite implements View {
   internal static const DEFAULT_MAX_HEIGHT:int = 32767;
 
   protected static const HAS_BASELINE:uint = 1 << 0;
+  protected static const DISABLED:uint = 1 << 1;
 
   protected var flags:uint;
 
@@ -145,7 +146,11 @@ public class SpriteBackedView extends Sprite implements View {
   }
 
   public function get enabled():Boolean {
-    return true;
+    return (flags & DISABLED) == 0;
+  }
+
+  public function set enabled(value:Boolean):void {
+    value ? flags &= ~DISABLED : flags |= DISABLED;
   }
 }
 }

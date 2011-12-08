@@ -1,5 +1,4 @@
 package cocoa {
-import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
@@ -10,6 +9,11 @@ import net.miginfocom.layout.PlatformDefaults;
 
 [Abstract]
 internal class ObjectBackedView implements View {
+  protected static const INVISIBLE:uint = 1 << 0;
+  protected static const DISABLED:uint = 1 << 1;
+
+  protected var flags:uint;
+
   private var _constraints:CC;
   public function get constraints():CC {
     return _constraints;
@@ -119,13 +123,12 @@ internal class ObjectBackedView implements View {
     throw new IllegalOperationError("Abstract");
   }
 
-  private var _visible:Boolean = true;
   public function get visible():Boolean {
-    return _visible;
+    return (flags & INVISIBLE) == 0;
   }
 
   public function set visible(value:Boolean):void {
-    _visible = value;
+    value ? flags &= ~INVISIBLE : flags |= INVISIBLE;
   }
 
   public function addToSuperview(superview:ContentView):void {
@@ -136,7 +139,11 @@ internal class ObjectBackedView implements View {
   }
 
   public function get enabled():Boolean {
-    return true;
+    return (flags & DISABLED) == 0;
+  }
+
+  public function set enabled(value:Boolean):void {
+    value ? flags &= ~DISABLED : flags |= DISABLED;
   }
 
   public function removeFromSuperview():void {

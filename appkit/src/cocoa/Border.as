@@ -28,7 +28,7 @@ public interface Border {
   function get layoutWidth():Number;
 
   /**
-   * View для получения состояния view — disabled к примеру
+   * View для получения состояния view — enabled к примеру
    */
   function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void;
 }

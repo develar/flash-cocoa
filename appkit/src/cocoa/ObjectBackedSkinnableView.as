@@ -157,7 +157,14 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
   override public function set visible(value:Boolean):void {
     super.visible = value;
     if (_skin != null) {
-      _skin.hostComponentPropertyChanged();
+      _skin.setVisibleAndBurnInHellAdobe(value);
+    }
+  }
+
+  override public function set enabled(value:Boolean):void {
+    super.enabled = value;
+    if (_skin != null) {
+      _skin.enabled = value;
     }
   }
 }

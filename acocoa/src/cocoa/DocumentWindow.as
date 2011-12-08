@@ -11,7 +11,7 @@ import org.flyti.plexus.LocalEventMap;
 public class DocumentWindow extends NativeWindow {
   private static const DEFAULT_INIT_OPTIONS:NativeWindowInitOptions = new NativeWindowInitOptions();
 
-  public function DocumentWindow(contentView:ContentView, map:LocalEventMap, bounds:Rectangle = null, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
+  public function DocumentWindow(contentView:RootContentView, map:LocalEventMap, bounds:Rectangle = null, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
     super(initOptions || DEFAULT_INIT_OPTIONS);
     _focusManager = focusManager;
     _contentView = contentView;
@@ -27,8 +27,8 @@ public class DocumentWindow extends NativeWindow {
     return _focusManager;
   }
 
-  private var _contentView:ContentView;
-  public function get contentView():ContentView {
+  private var _contentView:RootContentView;
+  public function get contentView():RootContentView {
     return _contentView;
   }
 

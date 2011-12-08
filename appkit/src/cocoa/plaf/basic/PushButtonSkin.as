@@ -135,8 +135,8 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     drawBorder2(width, height);
   }
 
-  public function set enabled(value:Boolean):void {
-    //!! super.enabled = value;
+  override public function set enabled(value:Boolean):void {
+    super.enabled = value;
 
     if (responsibleForInteraction) {
       mouseEnabled = value;

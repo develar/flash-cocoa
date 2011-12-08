@@ -72,5 +72,14 @@ public class AbstractSkin extends ControlView implements Skin {
   public function setVisibleAndBurnInHellAdobe(value:Boolean):void {
     visible = value;
   }
+
+  override public function set visible(value:Boolean):void {
+    if (visible != value) {
+      super.visible = value;
+      if (superview != null) {
+        superview.invalidateSubview(true);
+      }
+    }
+  }
 }
 }
