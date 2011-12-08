@@ -16,10 +16,6 @@ public class TextLineAndDisplayObjectEntry extends TextLineEntry {
     factory.addToPool(this);
   }
 
-  override public function getY(textLineYAdjustment:Number):Number {
-    return displayObject.y;
-  }
-
   override public function moveX(increment:Number):void {
     if (line != null) {
       super.moveX(increment);

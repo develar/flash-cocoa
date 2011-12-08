@@ -29,10 +29,6 @@ public class TextLineEntry {
     }
   }
 
-  public function getY(textLineYAdjustment:Number):Number {
-    return line.y + textLineYAdjustment;
-  }
-
   public function addToPool():void {
     if (poolSize == pool.length) {
       pool.fixed = false;

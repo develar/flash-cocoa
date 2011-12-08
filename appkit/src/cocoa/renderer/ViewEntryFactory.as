@@ -1,21 +1,16 @@
 package cocoa.renderer {
-import cocoa.SkinnableView;
-
 import flash.display.DisplayObjectContainer;
 import flash.display.Shape;
 import flash.text.engine.TextLine;
 
-public class CompositeEntryFactory extends TextLineAndDisplayObjectEntryFactory {
-  private var additionalSize:int;
-
-  public function CompositeEntryFactory(additionalSize:int) {
+public class ViewEntryFactory extends TextLineAndDisplayObjectEntryFactory {
+  public function ViewEntryFactory() {
     super(Shape, true);
-    this.additionalSize = additionalSize;
   }
 
   override public function create(line:TextLine):TextLineAndDisplayObjectEntry {
     if (poolSize == 0) {
-      return new CompositeEntry(additionalSize, line, new Shape(), this);
+      return new ViewEntry(line, new Shape(), this);
     }
     else {
       var entry:TextLineAndDisplayObjectEntry = pool[--poolSize];
@@ -26,11 +21,9 @@ public class CompositeEntryFactory extends TextLineAndDisplayObjectEntryFactory 
 
   override public function finalizeReused(container:DisplayObjectContainer):void {
     for (var i:int = oldPoolSize, n:int = poolSize; i < n; i++) {
-      var e:CompositeEntry = CompositeEntry(pool[i]);
+      var e:ViewEntry = ViewEntry(pool[i]);
       e.displayObject.parent.removeChild(e.displayObject);
-      for each (var component:SkinnableView in e.components) {
-        component.removeFromSuperview();
-      }
+      e.view.removeFromSuperview();
     }
     oldPoolSize = poolSize;
   }
