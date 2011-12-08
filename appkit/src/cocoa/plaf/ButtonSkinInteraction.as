@@ -8,7 +8,7 @@ public interface ButtonSkinInteraction {
 
   function mouseUpHandler(event:MouseEvent):void;
 
-  function deletegateInteraction():void;
+  function delegateInteraction():void;
 
   function mouseDownHandler(event:MouseEvent):void;
 

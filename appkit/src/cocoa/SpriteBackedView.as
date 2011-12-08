@@ -136,8 +136,8 @@ public class SpriteBackedView extends Sprite implements View {
     superview.displayObject.addChild(this);
   }
 
-  public function removeFromSuperview(superview:ContentView):void {
-    superview.displayObject.removeChild(this);
+  public function removeFromSuperview():void {
+    parent.removeChild(this);
   }
 
   public function validate():void {

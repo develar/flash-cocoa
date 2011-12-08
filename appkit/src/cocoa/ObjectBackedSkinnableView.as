@@ -125,8 +125,8 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     skinAttached();
   }
 
-  override public function removeFromSuperview(superview:ContentView):void {
-    _skin.removeFromSuperview(superview);
+  override public function removeFromSuperview():void {
+    _skin.removeFromSuperview();
   }
 
   private var _lafKey:String;

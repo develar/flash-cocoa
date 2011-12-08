@@ -29,7 +29,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
   }
 
   private var responsibleForInteraction:Boolean = true;
-  public function deletegateInteraction():void {
+  public function delegateInteraction():void {
     responsibleForInteraction = false;
   }
 

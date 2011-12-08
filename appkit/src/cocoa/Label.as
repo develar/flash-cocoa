@@ -97,7 +97,7 @@ public class Label extends ObjectBackedView {
     labelHelper.textFormat = textFormat;
   }
 
-  override public function removeFromSuperview(superview:ContentView):void {
+  override public function removeFromSuperview():void {
     this.superview = null;
     labelHelper.container = null;
   }

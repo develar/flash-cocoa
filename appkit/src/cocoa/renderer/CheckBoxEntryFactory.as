@@ -1,5 +1,4 @@
 package cocoa.renderer {
-import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
 public class CheckBoxEntryFactory implements EntryFactory {
@@ -30,7 +29,7 @@ public class CheckBoxEntryFactory implements EntryFactory {
 
   public function finalizeReused(container:DisplayObjectContainer):void {
     for (var i:int = oldPoolSize, n:int = poolSize; i < n; i++) {
-      container.removeChild(DisplayObject(pool[i].checkbox.skin));
+      pool[i].checkbox.removeFromSuperview();
     }
     oldPoolSize = poolSize;
   }

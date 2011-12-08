@@ -64,7 +64,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
   
   public function hide():void {
     if (contentView != null) {
-      contentView.removeFromSuperview(this);
+      contentView.removeFromSuperview();
       contentView = null;
     }
   }

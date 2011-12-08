@@ -140,10 +140,6 @@ public class Container extends SpriteBackedView implements ContentView, Containe
     initSubviews();
   }
 
-  override public function removeFromSuperview(superview:ContentView):void {
-    super.removeFromSuperview(superview);
-  }
-
   private function initSubviews():void {
     for each (var view:View in components) {
       view.addToSuperview(this);

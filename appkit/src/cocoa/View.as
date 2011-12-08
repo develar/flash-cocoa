@@ -10,7 +10,7 @@ public interface View extends ComponentWrapper {
    * @param superview
    */
   function addToSuperview(superview:ContentView):void;
-  function removeFromSuperview(superview:ContentView):void;
+  function removeFromSuperview():void;
 
   function validate():void;
 

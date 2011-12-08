@@ -1,4 +1,5 @@
 package cocoa {
+import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
@@ -138,7 +139,7 @@ internal class ObjectBackedView implements View {
     return true;
   }
 
-  public function removeFromSuperview(superview:ContentView):void {
+  public function removeFromSuperview():void {
     throw new IllegalOperationError("Abstract");
   }
 }

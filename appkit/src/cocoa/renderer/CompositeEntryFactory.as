@@ -1,8 +1,6 @@
 package cocoa.renderer {
 import cocoa.SkinnableView;
 
-import flash.display.DisplayObject;
-
 import flash.display.DisplayObjectContainer;
 import flash.display.Shape;
 import flash.text.engine.TextLine;
@@ -31,8 +29,7 @@ public class CompositeEntryFactory extends TextLineAndDisplayObjectEntryFactory 
       var e:CompositeEntry = CompositeEntry(pool[i]);
       e.displayObject.parent.removeChild(e.displayObject);
       for each (var component:SkinnableView in e.components) {
-        var child:DisplayObject = DisplayObject(component.skin);
-        child.parent.removeChild(child);
+        component.removeFromSuperview();
       }
     }
     oldPoolSize = poolSize;
