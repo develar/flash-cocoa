@@ -78,14 +78,21 @@ public class SpriteBackedView extends Sprite implements View {
     return DEFAULT_MAX_HEIGHT;
   }
   
-  public function setBounds(x:Number, y:Number, width:int, height:int):void {
+  public function setBounds(x:Number, y:Number, w:int, h:int):void {
+    setLocation(x, y);
+    setSize(width, height);
+  }
+
+  public function setLocation(x:Number, y:Number):void {
     this.x = x;
     this.y = y;
+  }
 
+  public function setSize(w:int, h:int):void {
     _actualWidth = width;
     _actualHeight = height;
   }
-  
+
   public function getBaseline(width:int, height:int):int {
     return -1;
   }

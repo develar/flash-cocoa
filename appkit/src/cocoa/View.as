@@ -1,6 +1,4 @@
 package cocoa {
-import flash.display.DisplayObject;
-
 import net.miginfocom.layout.ComponentWrapper;
 
 public interface View extends ComponentWrapper {
@@ -9,7 +7,7 @@ public interface View extends ComponentWrapper {
    *
    * View should initialize or reinitialize related properties.
    *
-   * @param contentView
+   * @param superview
    */
   function addToSuperview(superview:ContentView):void;
   function removeFromSuperview(superview:ContentView):void;
@@ -19,5 +17,9 @@ public interface View extends ComponentWrapper {
   function get enabled():Boolean;
 
   function set visible(value:Boolean):void;
+  
+  function setLocation(x:Number, y:Number):void;
+
+  function setSize(w:int, h:int):void;
 }
 }

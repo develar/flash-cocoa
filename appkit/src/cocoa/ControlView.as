@@ -19,6 +19,25 @@ public class ControlView extends SpriteBackedView {
     this.superview = superview;
   }
 
+  override public function setSize(w:int, h:int):void {
+    var resized:Boolean = false;
+    if (width != _actualWidth) {
+      _actualWidth = width;
+      resized = true;
+    }
+    if (height != _actualHeight) {
+      _actualHeight = height;
+      resized = true;
+    }
+    
+    super.setSize(w, h);
+
+    if (resized) {
+      // after setBounds/setLocation superview call subview validdate in any case — subview doesn't need to invalidate container
+      invalidate(false);
+    }
+  }
+
   protected function draw(w:int, h:int):void {
 
   }

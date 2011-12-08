@@ -102,9 +102,12 @@ public class Label extends ObjectBackedView {
     labelHelper.container = null;
   }
 
-  override public function setBounds(x:Number, y:Number, width:int, height:int):void {
+  override public function setLocation(x:Number, y:Number):void {
     labelHelper.validate();
     labelHelper.move(x, y, false);
+  }
+
+  override public function setSize(w:int, h:int):void {
   }
 
   override public function get hasBaseline():Boolean {

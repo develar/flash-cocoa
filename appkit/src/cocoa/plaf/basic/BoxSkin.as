@@ -17,16 +17,16 @@ public class BoxSkin extends Container implements Skin {
     hostComponent.uiPartAdded("contentView", this);
   }
 
-  override public function validate():void {
-    super.validate();
-  }
-
   public function attach(component:SkinnableView):void {
     _component = component;
   }
 
   public function hostComponentPropertyChanged():void {
     //invalidate(true);
+  }
+
+  public function setVisibleAndBurnInHellAdobe(value:Boolean):void {
+    visible = value;
   }
 }
 }

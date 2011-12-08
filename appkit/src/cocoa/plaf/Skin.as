@@ -8,5 +8,7 @@ public interface Skin extends View {
   function attach(component:SkinnableView):void;
 
   function hostComponentPropertyChanged():void;
+
+  function setVisibleAndBurnInHellAdobe(value:Boolean):void;
 }
 }

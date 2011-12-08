@@ -93,6 +93,18 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     return _skin.getMaximumHeight(wHint);
   }
 
+  override public function setLocation(x:Number, y:Number):void {
+    skin.setLocation(x, y);
+  }
+
+  override public function setSize(w:int, h:int):void {
+    skin.setSize(w, h);
+  }
+
+  override public function setBounds(x:Number, y:Number, w:int, h:int):void {
+    skin.setBounds(x, y, w, h);
+  }
+
   override public final function addToSuperview(superview:ContentView):void {
     var laf:LookAndFeel = superview.laf;
     _lafKey = _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
@@ -106,7 +118,7 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
       _skinClass = laf.getClass(_lafKey);
     }
     _skin = new _skinClass();
-    _skin.visible = visible;
+    _skin.setVisibleAndBurnInHellAdobe(visible);
     _skinClass = null;
     _skin.attach(this);
     _skin.addToSuperview(superview);

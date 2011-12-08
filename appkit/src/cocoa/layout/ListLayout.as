@@ -1,8 +1,8 @@
 package cocoa.layout {
-import cocoa.SpriteBackedView;
 import cocoa.Insets;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
+import cocoa.SegmentedControl;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
 
@@ -13,8 +13,11 @@ internal class ListLayout implements CollectionLayout {
   protected var pendingAddedIndices:Vector.<int>;
   protected var pendingRemovedIndices:Vector.<int>;
 
-  protected var _container:SpriteBackedView;
-  public function set container(value:SpriteBackedView):void {
+  protected var _preferredWidth:int;
+  protected var _preferredHeight:int;
+
+  protected var _container:SegmentedControl;
+  public function set container(value:SegmentedControl):void {
     _container = value;
   }
 
@@ -23,8 +26,8 @@ internal class ListLayout implements CollectionLayout {
     _insets = value;
   }
 
-  protected var _dimension:ExplicitDimensionProvider;
-  public function set dimension(value:ExplicitDimensionProvider):void {
+  protected var _dimension:int = -1;
+  public function set dimension(value:int):void {
     _dimension = value;
   }
 
@@ -102,6 +105,10 @@ internal class ListLayout implements CollectionLayout {
     _gap = value;
   }
 
+  public function getPreferredWidth(hHint:int):int {
+    return 0;
+  }
+
   public function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void {
     if (itemIndex < _rendererManager.renderedItemCount) {
       InteractiveRendererManager(_rendererManager).setSelected(itemIndex, relatedIndex, value);
@@ -116,11 +123,11 @@ internal class ListLayout implements CollectionLayout {
     _container.invalidateSize();
   }
 
-  protected function doLayout(endPosition:Number, effectiveDimension:Number):void {
+  protected function doLayout(endPosition:int, effectiveDimension:int):void {
     initialDrawItems(endPosition, effectiveDimension);
   }
 
-  protected function initialDrawItems(endPosition:Number, effectiveDimension:Number):Number {
+  protected function initialDrawItems(endPosition:int, effectiveDimension:int):int {
     const startItemIndex:int = 0;
     const endItemIndex:int = _dataSource.itemCount;
     const newVisibleItemCount:int = endItemIndex - startItemIndex;
@@ -132,17 +139,17 @@ internal class ListLayout implements CollectionLayout {
 
   // startPosition and endPosition include insets, i.e. drawItems must respect insets —
   // as example, if startPosition == 0, ListHorizontalLayout must use startX = insets.left
-  protected function drawItems(startPosition:Number, endPosition:Number, startItemIndex:int, endItemIndex:int, effectiveDimension:Number,
-                               head:Boolean):Number {
+  protected function drawItems(startPosition:int, endPosition:int, startItemIndex:int, endItemIndex:int, effectiveDimension:int,
+                               head:Boolean):int {
     throw new Error();
   }
 
-  public function measure():void {
+  public function layout(w:int, h:int):void {
     throw new IllegalOperationError("Burn in hell, Adobe");
   }
 
-  public function layout(w:Number, h:Number):void {
-    throw new IllegalOperationError("Burn in hell, Adobe");
+  public function getPreferredHeight(wHint:int):int {
+    return 0;
   }
 }
 }

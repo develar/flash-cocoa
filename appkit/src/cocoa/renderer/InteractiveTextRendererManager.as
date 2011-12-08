@@ -2,7 +2,6 @@ package cocoa.renderer {
 import cocoa.Insets;
 import cocoa.ItemMouseSelectionMode;
 import cocoa.ListSelectionModel;
-import cocoa.layout.ExplicitDimensionProvider;
 import cocoa.text.TextFormat;
 
 import flash.display.InteractiveObject;
@@ -13,8 +12,8 @@ public class InteractiveTextRendererManager extends TextRendererManager implemen
     super(textFormat, textInsets);
   }
 
-  protected var _fixedRendererDimension:ExplicitDimensionProvider;
-  public function set fixedRendererDimension(value:ExplicitDimensionProvider):void {
+  protected var _fixedRendererDimension:int;
+  public function set fixedRendererDimension(value:int):void {
     _fixedRendererDimension = value;
   }
 

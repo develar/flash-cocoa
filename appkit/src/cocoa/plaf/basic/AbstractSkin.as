@@ -1,10 +1,10 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
-import cocoa.Container;
 import cocoa.ContentView;
 import cocoa.ControlView;
 import cocoa.Icon;
 import cocoa.SkinnableView;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
 import mx.core.IFactory;
@@ -20,6 +20,10 @@ public class AbstractSkin extends ControlView implements Skin {
   private var _component:SkinnableView;
   public final function get hostComponent():SkinnableView {
     return _component;
+  }
+
+  public final function get laf():LookAndFeel {
+    return superview.laf;
   }
 
   protected final function getObject(key:String):Object {
@@ -61,27 +65,12 @@ public class AbstractSkin extends ControlView implements Skin {
   protected function doInit():void {
   }
 
-  override public function setBounds(x:Number, y:Number, width:int, height:int):void {
-    this.x = x;
-    this.y = y;
-
-    var resized:Boolean = false;
-    if (width != _actualWidth) {
-      _actualWidth = width;
-      resized = true;
-    }
-    if (height != _actualHeight) {
-      _actualHeight = height;
-      resized = true;
-    }
-
-    if (resized) {
-
-    }
-  }
-
   public function hostComponentPropertyChanged():void {
     invalidate(true);
+  }
+
+  public function setVisibleAndBurnInHellAdobe(value:Boolean):void {
+    visible = value;
   }
 }
 }

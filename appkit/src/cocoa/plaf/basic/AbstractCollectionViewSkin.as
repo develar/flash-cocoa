@@ -41,7 +41,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
       scrollView.horizontalScrollPolicy = component.horizontalScrollPolicy;
       scrollView.verticalScrollPolicy = component.verticalScrollPolicy;
 
-      contentView = scrollView;
+      //contentView = scrollView;
     }
 
     if (border != null) {
@@ -50,7 +50,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
     addChild(DisplayObject(contentView));
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     if (border == null) {
       contentView.setActualSize(w, h);
     }
@@ -61,15 +61,25 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
     }
   }
 
-  override protected function measure():void {
+  override public function getPreferredWidth(hHint:int = -1):int {
     var insets:Insets = border != null ? border.contentInsets : Insets.EMPTY;
-
-    measuredMinWidth = contentView.minWidth + insets.width;
-    measuredWidth = contentView.getExplicitOrMeasuredWidth() + insets.width;
-
-    measuredMinHeight = contentView.minHeight + insets.height;
-    measuredHeight = contentView.getExplicitOrMeasuredHeight() + insets.height;
+    return contentView.getExplicitOrMeasuredWidth() + insets.width;
   }
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    var insets:Insets = border != null ? border.contentInsets : Insets.EMPTY;
+    return contentView.getExplicitOrMeasuredHeight() + insets.height;
+  }
+
+  //override protected function measure():void {
+  //
+  //
+  //  measuredMinWidth = contentView.minWidth + insets.width;
+  //  measuredWidth = contentView.getExplicitOrMeasuredWidth() + insets.width;
+  //
+  //  measuredMinHeight = contentView.minHeight + insets.height;
+  //  measuredHeight = contentView.getExplicitOrMeasuredHeight() + insets.height;
+  //}
 
   public function get focusObject():InteractiveObject {
     return InteractiveObject(documentView);

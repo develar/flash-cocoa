@@ -1,6 +1,5 @@
 package cocoa {
 import flash.events.Event;
-import flash.events.IEventDispatcher;
 
 import net.miginfocom.layout.AbstractMigLayout;
 import net.miginfocom.layout.Grid;

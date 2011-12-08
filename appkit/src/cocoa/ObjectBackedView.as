@@ -58,7 +58,16 @@ internal class ObjectBackedView implements View {
     return SpriteBackedView.DEFAULT_MAX_HEIGHT;
   }
 
-  public function setBounds(x:Number, y:Number, width:int, height:int):void {
+  public function setBounds(x:Number, y:Number, w:int, h:int):void {
+    setLocation(x, y);
+    setSize(w, h);
+  }
+
+  public function setSize(w:int, h:int):void {
+    throw new IllegalOperationError("Abstract");
+  }
+
+  public function setLocation(x:Number, y:Number):void {
     throw new IllegalOperationError("Abstract");
   }
 

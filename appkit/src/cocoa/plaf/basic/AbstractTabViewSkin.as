@@ -1,20 +1,12 @@
 package cocoa.plaf.basic {
-import cocoa.ContentView;
 import cocoa.Insets;
 import cocoa.SegmentedControl;
 import cocoa.View;
-import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
 
-import flash.display.DisplayObjectContainer;
-import flash.errors.IllegalOperationError;
-import flash.events.Event;
-
 [Abstract]
-public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin, ContentView {
-  private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 3;
-
+public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewSkin {
   protected var tabBar:SegmentedControl;
   protected var contentView:View;
 
@@ -77,23 +69,13 @@ public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin, Co
     }
   }
 
-  override public function validate():void {
-    if ((flags & VALIDATE_LISTENERS_ATTACHED) != 0) {
-      flags &= ~VALIDATE_LISTENERS_ATTACHED;
-      removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+  override protected function subviewsValidate():void {
+    if (tabBar != null) {
+      tabBar.validate();
     }
-
-    // i.e. our draw will not be called
-    if ((flags & INVALID) == 0) {
-      if (tabBar != null) {
-        tabBar.validate();
-      }
-      if (contentView != null) {
-        contentView.validate();
-      }
+    if (contentView != null) {
+      contentView.validate();
     }
-
-    super.validate();
   }
 
   override protected function draw(w:int, h:int):void {
@@ -102,50 +84,15 @@ public class AbstractTabViewSkin extends AbstractSkin implements TabViewSkin, Co
       contentView.validate();
     }
 
-    var tabBarPreferredHeight:int = tabBar.getPreferredHeight();
+    const tabBarPreferredHeight:int = tabBar.getPreferredHeight();
     if (tabBarPlacement == Placement.PAGE_START_LINE_CENTER) {
-      var tabBarPreferredWidth:int = tabBar.getPreferredWidth();
+      const tabBarPreferredWidth:int = tabBar.getPreferredWidth();
       tabBar.setBounds(Math.round((w - tabBarPreferredWidth) / 2), 0, tabBarPreferredWidth, tabBarPreferredHeight);
     }
     else {
       tabBar.setBounds(0, 0, w, tabBarPreferredHeight);
     }
     tabBar.validate();
-  }
-
-  public function set preferredWidth(value:int):void {
-    throw new IllegalOperationError("not allowed");
-  }
-
-  public function set preferredHeight(value:int):void {
-    throw new IllegalOperationError("not allowed");
-  }
-
-  public function get displayObject():DisplayObjectContainer {
-    return this;
-  }
-
-  public function invalidateSubview(invalidateSuperview:Boolean = true):void {
-    if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
-      flags |= VALIDATE_LISTENERS_ATTACHED;
-      addEventListener(Event.ENTER_FRAME, enterFrameHandler);
-    }
-  }
-
-  private function enterFrameHandler(event:Event):void {
-    validate();
-  }
-
-  public function get laf():LookAndFeel {
-    return superview.laf;
-  }
-
-  public function set laf(value:LookAndFeel):void {
-    throw new IllegalOperationError("not allowed");
-  }
-
-  public function addSubview(view:View):void {
-    throw new IllegalOperationError("not allowed");
   }
 }
 }

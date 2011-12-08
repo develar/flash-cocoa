@@ -68,6 +68,7 @@
                 <include>**.Focusable</include>
                 <include>**.border.*</include>
                 <include>cocoa.plaf.basic.AbstractSkin</include>
+                <include>cocoa.plaf.basic.AbstractTabViewSkin</include>
                 <include>cocoa.plaf.basic.BoxSkin</include>
                 <include>cocoa.plaf.basic.BitmapIcon</include>
                 <include>cocoa.plaf.basic.PushButtonSkin</include>
@@ -75,7 +76,8 @@
                 <include>cocoa.plaf.basic.IconButtonSkin</include>
                 <include>cocoa.plaf.*</include>
                 <include>cocoa.SingletonClassFactory</include>
-                <!--<include>cocoa.layout.ListLayoutFactory</include>-->
+                <include>cocoa.ListView</include>
+                <include>cocoa.layout.*</include>
               </includes>
             </scan>
           </includeClasses>
@@ -95,7 +97,7 @@
 
                 <!--<class>**.sidebar.*</class>-->
                 <!--<class>**.Window</class>-->
-                <!--<class>**.Panel</class>-->
+                <class>**.Panel</class>
                 <!--<class>**.AbstractSkin</class>-->
                 <!--<class>**.*?Button</class>-->
                 <class>**.Label</class>
