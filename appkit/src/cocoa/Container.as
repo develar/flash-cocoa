@@ -132,16 +132,16 @@ public class Container extends SpriteBackedView implements RootContentView {
     initSubviews();
   }
 
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
 
-    _laf = superview.laf;
+    _laf = laf;
     initSubviews();
   }
 
   private function initSubviews():void {
     for each (var view:View in components) {
-      view.addToSuperview(this);
+      view.addToSuperview(this, laf, this);
     }
   }
 
@@ -159,7 +159,7 @@ public class Container extends SpriteBackedView implements RootContentView {
     }
 
     _subviews[_subviews.length] = view;
-    view.addToSuperview(this);
+    view.addToSuperview(this, laf, this);
     _layout.invalidateSubview(true);
   }
 }

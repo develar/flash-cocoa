@@ -1,7 +1,9 @@
 package cocoa {
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.TextFormatId;
 import cocoa.text.TextFormat;
 
+import flash.display.DisplayObjectContainer;
 import flash.text.engine.FontDescription;
 import flash.text.engine.TextLine;
 
@@ -76,14 +78,14 @@ public class Label extends ObjectBackedView {
     }
   }
 
-  override public function addToSuperview(superview:ContentView):void {
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     this.superview = superview;
 
     if (textFormat != null && fontDescription != null) {
       textFormat.format.fontDescription = fontDescription;
     }
     else {
-      var lafTextFormat:TextFormat = superview.laf.getTextFormat(TextFormatId.VIEW);
+      var lafTextFormat:TextFormat = laf.getTextFormat(TextFormatId.VIEW);
       if (textFormat == null) {
         textFormat = lafTextFormat;
       }
@@ -93,7 +95,7 @@ public class Label extends ObjectBackedView {
       }
     }
 
-    labelHelper.container = superview.displayObject;
+    labelHelper.container = displayObjectContainer;
     labelHelper.textFormat = textFormat;
   }
 

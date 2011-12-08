@@ -1,4 +1,8 @@
 package cocoa {
+import cocoa.plaf.LookAndFeel;
+
+import flash.display.DisplayObjectContainer;
+
 [Abstract]
 public class ControlView extends SpriteBackedView {
   protected static const INVALID:uint = 1 << 2;
@@ -14,8 +18,8 @@ public class ControlView extends SpriteBackedView {
     draw(_actualWidth, _actualHeight);
   }
 
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
     this.superview = superview;
   }
 
@@ -44,7 +48,7 @@ public class ControlView extends SpriteBackedView {
 
   protected final function invalidate(invalidateSuperview:Boolean = true):void {
     flags |= INVALID;
-    
+
     if (invalidateSuperview && superview != null) {
       superview.invalidateSubview(invalidateSuperview);
     }

@@ -1,6 +1,5 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
-import cocoa.ContentView;
 import cocoa.ControlView;
 import cocoa.Icon;
 import cocoa.SkinnableView;
@@ -48,10 +47,6 @@ public class AbstractSkin extends ControlView implements Skin {
 
   public function attach(component:SkinnableView):void {
     _component = component;
-  }
-
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
 
     // Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга,
     // поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.

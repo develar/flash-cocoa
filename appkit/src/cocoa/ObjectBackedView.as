@@ -1,4 +1,7 @@
 package cocoa {
+import cocoa.plaf.LookAndFeel;
+
+import flash.display.DisplayObjectContainer;
 import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.CC;
@@ -131,7 +134,7 @@ internal class ObjectBackedView implements View {
     value ? flags &= ~INVISIBLE : flags |= INVISIBLE;
   }
 
-  public function addToSuperview(superview:ContentView):void {
+  public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     throw new IllegalOperationError("Abstract");
   }
 

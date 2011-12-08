@@ -1,15 +1,17 @@
 package cocoa.plaf.aqua {
 import cocoa.ContentView;
 import cocoa.Toolbar;
+import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.basic.BoxSkin;
 
-public class ToolbarSkin extends BoxSkin {
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
+import flash.display.DisplayObjectContainer;
 
-    var laf:AquaLookAndFeel = AquaLookAndFeel(superview.laf);
+public class ToolbarSkin extends BoxSkin {
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
+
     laf.getBorder(hostComponent.lafKey + ".b", true);
-    this.laf = laf.createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
+    this.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
   }
 }
 }

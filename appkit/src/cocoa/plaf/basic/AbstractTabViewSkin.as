@@ -49,7 +49,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
       tabBar.lafKey = tabBarLafKey;
 
       tabBarPlacement = superview.laf.getInt(tabBarLafKey + ".placement");
-      tabBar.addToSuperview(this);
+      tabBar.addToSuperview(this, laf, this);
       hostComponent.uiPartAdded("segmentedControl", tabBar);
     }
   }
@@ -58,7 +58,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
     hide();
 
     contentView = view;
-    contentView.addToSuperview(this);
+    contentView.addToSuperview(this, laf, this);
     invalidate(false); // doesn't change superview size
   }
   

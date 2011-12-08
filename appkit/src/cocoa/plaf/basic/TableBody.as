@@ -6,6 +6,7 @@ import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
 import cocoa.tableView.TableViewDataSource;
 
+import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
 import flash.display.Shape;
 import flash.geom.Point;
@@ -39,8 +40,8 @@ public class TableBody extends CollectionBody {
     }
   }
 
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
 
     background = new Shape();
     addChild(background);

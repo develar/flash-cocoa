@@ -1,6 +1,8 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
 
+import flash.display.DisplayObjectContainer;
+
 public class ListView extends SegmentedControl {
   private var border:Border;
 
@@ -8,10 +10,9 @@ public class ListView extends SegmentedControl {
     _lafKey = "List";
   }
 
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
 
-    var laf:LookAndFeel = superview.laf;
     border = laf.getBorder(_lafKey + ".b", true);
     if (border != null) {
       layout.insets = border.contentInsets;

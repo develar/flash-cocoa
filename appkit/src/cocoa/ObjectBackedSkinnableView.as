@@ -2,6 +2,7 @@ package cocoa {
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
+import flash.display.DisplayObjectContainer;
 import flash.utils.Dictionary;
 
 use namespace ui;
@@ -105,8 +106,7 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     skin.setBounds(x, y, w, h);
   }
 
-  override public final function addToSuperview(superview:ContentView):void {
-    var laf:LookAndFeel = superview.laf;
+  override public final function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     _lafKey = _lafSubkey == null ? primaryLaFKey : (_lafSubkey + "." + primaryLaFKey);
     if (laf.controlSize != null) {
       _lafKey = laf.controlSize + "." + _lafKey;
@@ -121,7 +121,7 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     _skin.setVisibleAndBurnInHellAdobe(visible);
     _skinClass = null;
     _skin.attach(this);
-    _skin.addToSuperview(superview);
+    _skin.addToSuperview(displayObjectContainer, laf, superview);
     skinAttached();
   }
 

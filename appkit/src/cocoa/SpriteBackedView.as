@@ -1,4 +1,7 @@
 package cocoa {
+import cocoa.plaf.LookAndFeel;
+
+import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
 
@@ -133,8 +136,8 @@ public class SpriteBackedView extends Sprite implements View {
     return ComponentType.TYPE_UNKNOWN;
   }
 
-  public function addToSuperview(superview:ContentView):void {
-    superview.displayObject.addChild(this);
+  public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    displayObjectContainer.addChild(this);
   }
 
   public function removeFromSuperview():void {

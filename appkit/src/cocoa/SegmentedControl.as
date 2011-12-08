@@ -5,6 +5,8 @@ import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
 
+import flash.display.DisplayObjectContainer;
+
 import org.flyti.plexus.Injectable;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
@@ -170,10 +172,9 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
   }
 
 
-  override public function addToSuperview(superview:ContentView):void {
-    super.addToSuperview(superview);
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
 
-    var laf:LookAndFeel = superview.laf;
     if (layout == null) {
       layout = laf.getFactory(_lafKey + ".layout").newInstance();
     }
