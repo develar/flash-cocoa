@@ -3,8 +3,13 @@ import cocoa.plaf.LookAndFeel;
 
 import flash.display.DisplayObjectContainer;
 
+import mx.core.IMXMLObject;
+
+import org.flyti.plexus.Injectable;
+import org.flyti.plexus.events.InjectorEvent;
+
 [Abstract]
-public class ControlView extends SpriteBackedView {
+public class ControlView extends SpriteBackedView implements IMXMLObject {
   protected static const INVALID:uint = 1 << 2;
 
   protected var superview:ContentView;
@@ -21,6 +26,10 @@ public class ControlView extends SpriteBackedView {
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     super.addToSuperview(displayObjectContainer, laf, superview);
     this.superview = superview;
+
+    if (this is Injectable) {
+      dispatchEvent(new InjectorEvent(this, linkId));
+    }
   }
 
   override public function setSize(w:int, h:int):void {
@@ -52,6 +61,16 @@ public class ControlView extends SpriteBackedView {
     if (invalidateSuperview && superview != null) {
       superview.invalidateSubview(invalidateSuperview);
     }
+  }
+
+  private var _linkId:String;
+
+  override public function get linkId():String {
+    return _linkId;
+  }
+
+  public function initialized(document:Object, id:String):void {
+    _linkId = id;
   }
 }
 }

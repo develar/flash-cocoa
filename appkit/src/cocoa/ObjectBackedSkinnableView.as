@@ -5,10 +5,12 @@ import cocoa.plaf.Skin;
 import flash.display.DisplayObjectContainer;
 import flash.utils.Dictionary;
 
+import mx.core.IMXMLObject;
+
 use namespace ui;
 
 [Abstract]
-public class ObjectBackedSkinnableView extends ObjectBackedView implements SkinnableView {
+public class ObjectBackedSkinnableView extends ObjectBackedView implements SkinnableView, IMXMLObject {
   protected static const HANDLER_NOT_EXISTS:int = 2;
 
   //noinspection JSUnusedLocalSymbols
@@ -170,6 +172,16 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     if (_skin != null) {
       _skin.enabled = value;
     }
+  }
+
+  private var _linkId:String;
+
+  override public function get linkId():String {
+    return _linkId;
+  }
+
+  public function initialized(document:Object, id:String):void {
+    _linkId = id;
   }
 }
 }

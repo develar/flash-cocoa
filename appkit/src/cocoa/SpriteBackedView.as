@@ -123,7 +123,7 @@ public class SpriteBackedView extends Sprite implements View {
   }
 
   public function get linkId():String {
-    return name;
+    return null;
   }
 
   public function get layoutHashCode():int {
