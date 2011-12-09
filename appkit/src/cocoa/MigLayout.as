@@ -2,6 +2,7 @@ package cocoa {
 import flash.events.Event;
 
 import net.miginfocom.layout.AbstractMigLayout;
+import net.miginfocom.layout.CC;
 import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
@@ -45,7 +46,10 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     for each (var view:View in _container.components) {
-      view.validate();
+      var cc:CC = view.constraints;
+      if (cc == null || !cc.external) {
+        view.validate();
+      }
     }
   }
 
