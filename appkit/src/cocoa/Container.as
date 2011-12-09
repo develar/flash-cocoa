@@ -63,7 +63,7 @@ public class Container extends SpriteBackedView implements RootContentView {
 
   public function set preferredWidth(value:int):void {
     _preferredWidth = value;
-    _layout.invalidateSubview(true);
+    _layout.invalidateContainerSize();
   }
 
   override public function getPreferredHeight(wHint:int = -1):int {
@@ -72,6 +72,7 @@ public class Container extends SpriteBackedView implements RootContentView {
 
   public function set preferredHeight(value:int):void {
     _preferredHeight = value;
+    _layout.invalidateContainerSize();
   }
 
   public function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void {
@@ -127,7 +128,7 @@ public class Container extends SpriteBackedView implements RootContentView {
     _laf = value;
   }
 
-  public function initRoot(laf:LookAndFeel):void {
+  protected function initRoot(laf:LookAndFeel):void {
     _laf = laf;
     initSubviews();
   }
@@ -135,7 +136,9 @@ public class Container extends SpriteBackedView implements RootContentView {
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     super.addToSuperview(displayObjectContainer, laf, superview);
 
-    _laf = laf;
+    if (laf != null) {
+      _laf = laf;
+    }
     initSubviews();
   }
 

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>26</version>
+    <version>27</version>
   </parent>
 
   <name>Cocoa Aggregator</name>
@@ -46,9 +46,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>flashx</groupId>
-        <artifactId>textLayout</artifactId>
-        <version>2.0.192-de1</version>
+        <groupId>org.flyti</groupId>
+        <artifactId>foundation</artifactId>
+        <version>1.2.6</version>
         <type>swc</type>
       </dependency>
       <dependency>

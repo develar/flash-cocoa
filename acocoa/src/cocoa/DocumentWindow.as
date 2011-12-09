@@ -1,5 +1,4 @@
 package cocoa {
-import flash.display.DisplayObject;
 import flash.display.NativeWindow;
 import flash.display.NativeWindowInitOptions;
 import flash.display.Screen;
@@ -47,6 +46,8 @@ public class DocumentWindow extends NativeWindow {
       AbstractFocusManager(focusManager).init(stage);
     }
 
+    _contentView.addToSuperview(stage, null, null);
+
     addEventListener(NativeWindowBoundsEvent.RESIZE, resizeHandler);
     this.bounds = bounds;
     activate();
@@ -58,11 +59,6 @@ public class DocumentWindow extends NativeWindow {
   }
 
   private function resizeHandler(event:NativeWindowBoundsEvent):void {
-    var displayObject:DisplayObject = _contentView.displayObject;
-    if (displayObject.parent == null) {
-      stage.addChild(displayObject);
-    }
-
     _contentView.preferredWidth = stage.stageWidth;
     _contentView.preferredHeight = stage.stageHeight;
 

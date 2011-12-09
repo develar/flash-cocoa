@@ -46,11 +46,11 @@ public final class Files {
   }
 
   public static function getCanonicalPath(path:String):String {
-    if (StringUtil.startsWith(path, "file://")) {
+    if (Strings.startsWith(path, "file://")) {
       path = path.substr(7);
     }
 
-    if (StringUtil.startsWith(path, OPEN_MACRO)) {
+    if (Strings.startsWith(path, OPEN_MACRO)) {
       var i:int = 1;
       var character:String;
       var propertyName:String = "";
@@ -62,7 +62,7 @@ public final class Files {
       }
       path = File(File[propertyName]).nativePath + File.separator + path.substr(i);
     }
-    else if (!StringUtil.startsWith(path, SEPARATOR)) {
+    else if (!Strings.startsWith(path, SEPARATOR)) {
       path = File.applicationDirectory.nativePath + File.separator + path;
     }
 

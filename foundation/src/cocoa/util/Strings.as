@@ -196,14 +196,5 @@ public class Strings {
 //			}
 //		}
 //	}
-
-  public static function operationCodeToText(code:String, small:Boolean = false):String {
-    switch (code) {
-      case '-': return '−'; // 8722
-      case ArithmeticOperation.MULTIPLICATION: return /*'×'*//*String.fromCharCode(0x25CF)*/ small ? '\u00B7' : '\u2022';
-      case ArithmeticOperation.DIVISION: return small ? ':' : '/';
-      default: return code;
-    }
-  }
 }
 }

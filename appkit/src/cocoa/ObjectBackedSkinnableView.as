@@ -94,6 +94,10 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     return _skin.getMaximumHeight(wHint);
   }
 
+  override public function get layoutHashCode():int {
+    return _skin.layoutHashCode;
+  }
+
   override public function setLocation(x:Number, y:Number):void {
     skin.setLocation(x, y);
   }
@@ -120,8 +124,8 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
     _skin = new _skinClass();
     _skin.setVisibleAndBurnInHellAdobe(visible);
     _skinClass = null;
-    _skin.attach(this);
     _skin.addToSuperview(displayObjectContainer, laf, superview);
+    _skin.attach(this);
     skinAttached();
   }
 
