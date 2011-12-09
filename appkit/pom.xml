@@ -60,7 +60,7 @@
           <includeClasses>
             <scan>
               <includes>
-                <include>**.renderer.*</include>
+                <include>cocoa.renderer.*</include>
                 <include>**.AbstractLookAndFeel</include>
                 <include>**.Container</include>
                 <include>**.View</include>
@@ -129,12 +129,10 @@
                 <!--<class>cocoa.keyboard.Shortcut</class>-->
                 <!--<class>cocoa.keyboard.EventMetadata</class>-->
 
-                <!--<class>cocoa.graphics.*</class>-->
-
                 <!--<class>cocoa.*Separator</class>-->
                 <!--<class>cocoa.*ImageView</class>-->
 
-                <!--<class>**.*ScrollView</class>-->
+                <class>**.ScrollView</class>
                 <!--<class>**.*UIModel</class>-->
 
                 <!--<class>cocoa.modules.ModuleId</class>-->

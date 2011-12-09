@@ -1,18 +1,11 @@
 package cocoa {
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.LookAndFeelUtil;
 
-import flash.display.DisplayObject;
-import flash.geom.Point;
+import flash.display.DisplayObjectContainer;
 
 import mx.core.IUIComponent;
-import mx.events.PropertyChangeEvent;
-import mx.managers.IFocusManagerComponent;
-import mx.utils.MatrixUtil;
 
 import spark.components.supportClasses.GroupBase;
-import spark.components.supportClasses.ScrollBarBase;
-import spark.core.IViewport;
 
 /**
  * http://developer.apple.com/mac/library/documentation/cocoa/reference/ApplicationKit/Classes/NSScrollView_Class/Reference/Reference.html
@@ -24,13 +17,11 @@ import spark.core.IViewport;
  * для этого установите у track border соответствующий contentInsets.
  */
 [DefaultProperty("documentView")]
-public class ScrollView extends SpriteBackedView implements IFocusManagerComponent {
-  private var _horizontalScrollBar:HScrollBar;
-  private var _verticalScrollBar:VScrollBar;
+public class ScrollView extends ObjectBackedView {
+  private var superview:ContentView;
 
-  public function get horizontalScrollBar():HScrollBar {
-    return _horizontalScrollBar;
-  }
+  private var _horizontalScrollBar:ScrollBar;
+  private var _verticalScrollBar:ScrollBar;
 
   /**
    * SDT - ScrollBar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
@@ -38,19 +29,13 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
    */
   private static const SDT:Number = 1.0;
 
-  public function ScrollView() {
-    super();
-    hasFocusableChildren = true;
-    focusEnabled = false;
-  }
-
-  private var documentViewChanged:Boolean;
-  private var _documentView:IViewport;
-  public function set documentView(value:IViewport):void {
+  private var _documentView:Viewport;
+  public function set documentView(value:Viewport):void {
     if (value != _documentView) {
-      documentViewChanged = true;
       _documentView = value;
-      invalidateProperties();
+      if (superview != null) {
+        superview.invalidateSubview(false);
+      }
     }
   }
 
@@ -72,59 +57,27 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
     }
   }
 
-  public function drawFocus(isFocused:Boolean):void {
-  }
-
-  override protected function createChildren():void {
-    var laf:LookAndFeel = LookAndFeelUtil.find(parent);
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    this.superview = superview;
 
     if (_verticalScrollPolicy != ScrollPolicy.OFF) {
-      _verticalScrollBar = new VScrollBar();
-      _verticalScrollBar.attach(laf);
-      addChild(_verticalScrollBar);
+      _verticalScrollBar = new ScrollBar(true);
+      _verticalScrollBar.addToSuperview(displayObjectContainer, laf, superview);
     }
 
     if (_horizontalScrollPolicy != ScrollPolicy.OFF) {
-      _horizontalScrollBar = new HScrollBar();
-      _horizontalScrollBar.attach(laf);
-      addChild(_horizontalScrollBar);
+      _horizontalScrollBar = new ScrollBar(false);
+      _horizontalScrollBar.addToSuperview(displayObjectContainer, laf, superview);
     }
+
+    _documentView.clipAndEnableScrolling = true;
+    _documentView.addToSuperview(displayObjectContainer, laf, superview);
+    _documentView.contentSizeChanged().add(documentViewPropertyChangeHandler);
   }
 
-  override protected function commitProperties():void {
-    super.commitProperties();
-
-    if (documentViewChanged) {
-      documentViewChanged = false;
-
-      var oldDocumentView:IViewport = numChildren == 0 ? null : (getChildAt(0) as IViewport);
-      if (oldDocumentView != null) {
-        removeChildAt(0);
-        oldDocumentView.clipAndEnableScrolling = false;
-        oldDocumentView.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, documentViewPropertyChangeHandler);
-      }
-
-      if (_documentView != null) {
-        _documentView.clipAndEnableScrolling = true;
-        addChildAt(DisplayObject(_documentView), 0);
-        _documentView.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, documentViewPropertyChangeHandler);
-      }
-
-      if (_verticalScrollBar != null) {
-        _verticalScrollBar.viewport = _documentView;
-      }
-      if (_horizontalScrollBar != null) {
-        _horizontalScrollBar.viewport = _documentView;
-      }
-    }
-  }
-
-  private function documentViewPropertyChangeHandler(event:PropertyChangeEvent):void {
-    switch (event.property) {
-      case "contentWidth":
-      case "contentHeight":
-        invalidateSize();
-        break;
+  private function documentViewPropertyChangeHandler():void {
+    if (superview != null) {
+      superview.invalidateSubview(false);
     }
   }
 
@@ -132,39 +85,17 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
     return _horizontalScrollBar != null && _horizontalScrollBar.visible;
   }
 
-  private function hsbRequiredHeight():Number {
-    return _horizontalScrollBar.getPreferredBoundsHeight();
-  }
-
   private function get vsbVisible():Boolean {
     return _verticalScrollBar != null && _verticalScrollBar.visible;
   }
 
-  private function vsbRequiredWidth():Number {
-    return _verticalScrollBar.getPreferredBoundsWidth();
-  }
-
-  private static const sharedPoint:Point = new Point(0, 0);
-  private function getLayoutContentSize():Point {
-    var cw:Number = _documentView.contentWidth;
-    var ch:Number = _documentView.contentHeight;
-    if ((cw == 0 && ch == 0) || (isNaN(cw) || isNaN(ch))) {
-      return sharedPoint;
-    }
-    else {
-      return MatrixUtil.transformSize(cw, ch, _documentView.getLayoutMatrix());
-    }
-  }
-
-  override protected function measure():void {
-    var hsb:ScrollBarBase = _horizontalScrollBar;
+  private function measure():void {
+    var hsb:ScrollBar = _horizontalScrollBar;
     var showHSB:Boolean = false;
     var hAuto:Boolean = false;
     switch (_horizontalScrollPolicy) {
       case ScrollPolicy.ON:
-        if (hsb != null) {
-          showHSB = true;
-        }
+        showHSB = true;
         break;
 
       case ScrollPolicy.AUTO:
@@ -175,14 +106,12 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
         break;
     }
 
-    var vsb:ScrollBarBase = _verticalScrollBar;
+    var vsb:ScrollBar = _verticalScrollBar;
     var showVSB:Boolean = false;
     var vAuto:Boolean = false;
     switch (_verticalScrollPolicy) {
       case ScrollPolicy.ON:
-        if (vsb != null) {
-          showVSB = true;
-        }
+        showVSB = true;
         break;
 
       case ScrollPolicy.AUTO:
@@ -193,37 +122,32 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
         break;
     }
 
-    var measuredW:Number = showHSB ? hsbRequiredHeight() : 0;
-    var measuredH:Number = showVSB ? vsbRequiredWidth() : 0;
-
+    var measuredW:Number = showHSB ? _horizontalScrollBar.getPreferredHeight() : 0;
+    var measuredH:Number = showVSB ? _verticalScrollBar.getPreferredWidth() : 0;
     // The measured size of the viewport is just its preferredBounds, except:
     // don't give up space if doing so would make an auto scrollbar visible.
     // In other words, if an auto scrollbar isn't already showing, and using
     // the preferred size would force it to show, and the current size would not,
     // then use its current size as the measured size. Note that a scrollbar
     // is only shown if the content size is greater than the viewport size by at least SDT.
-    var contentSize:Point = getLayoutContentSize();
-
-    var viewportPreferredW:Number = _documentView.getPreferredBoundsWidth();
-    var viewportContentW:Number = contentSize.x;
-    var viewportW:Number = _documentView.getLayoutBoundsWidth();  // "current" size
-    var currentSizeNoHSB:Boolean = !isNaN(viewportW) && ((viewportW + SDT) > viewportContentW);
-    if (hAuto && !showHSB && ((viewportPreferredW + SDT) <= viewportContentW) && currentSizeNoHSB) {
+    var viewportContentW:int = _documentView.contentWidth;
+    var viewportW:int = _documentView.getPreferredWidth();
+    var currentSizeNoHSB:Boolean = viewportW + SDT > viewportContentW;
+    if (hAuto && !showHSB && ((viewportW + SDT) <= viewportContentW) && currentSizeNoHSB) {
       measuredW += viewportW;
     }
     else {
-      measuredW += Math.max(viewportPreferredW, (showHSB) ? hsb.getMinBoundsWidth() : 0);
+      measuredW += Math.max(viewportW, showHSB ? hsb.getMinimumWidth() : 0);
     }
 
-    var viewportPreferredH:Number = _documentView.getPreferredBoundsHeight();
-    var viewportContentH:Number = contentSize.y;
-    var viewportH:Number = _documentView.getLayoutBoundsHeight();  // "current" size
+    var viewportContentH:int = _documentView.contentHeight;
+    var viewportH:Number = _documentView.getPreferredHeight();
     var currentSizeNoVSB:Boolean = !isNaN(viewportH) && ((viewportH + SDT) > viewportContentH);
-    if (vAuto && !showVSB && ((viewportPreferredH + SDT) <= viewportContentH) && currentSizeNoVSB) {
+    if (vAuto && !showVSB && ((viewportH + SDT) <= viewportContentH) && currentSizeNoVSB) {
       measuredH += viewportH;
     }
     else {
-      measuredH += Math.max(viewportPreferredH, (showVSB) ? vsb.getMinBoundsHeight() : 0);
+      measuredH += Math.max(viewportH, showVSB ? vsb.getMinimumHeight() : 0);
     }
 
     var minW:Number = 0;
@@ -246,10 +170,10 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
       }
     }
 
-    measuredWidth = Math.ceil(measuredW);
-    measuredHeight = Math.ceil(measuredH);
-    measuredMinWidth = Math.ceil(minW);
-    measuredMinHeight = Math.ceil(minH);
+    //measuredWidth = Math.ceil(measuredW);
+    //measuredHeight = Math.ceil(measuredH);
+    //measuredMinWidth = Math.ceil(minW);
+    //measuredMinHeight = Math.ceil(minH);
   }
 
   private function set hsbVisible(value:Boolean):void {
@@ -264,21 +188,11 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
     }
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
-    var hsb:ScrollBarBase = _horizontalScrollBar;
-    var vsb:ScrollBarBase = _verticalScrollBar;
-    var contentSize:Point = getLayoutContentSize();
-    var contentW:Number = contentSize.x;
-    var contentH:Number = contentSize.y;
-
-    // If the viewport's size has been explicitly set (not typical) then use it
-    // The initial values for viewportW,H are only used to decide if auto scrollbars should be shown.
-    var viewportUIC:IUIComponent = _documentView as IUIComponent;
-    var explicitViewportW:Number = viewportUIC ? viewportUIC.explicitWidth : NaN;
-    var explicitViewportH:Number = viewportUIC ? viewportUIC.explicitHeight : NaN;
-
-    var viewportW:Number = isNaN(explicitViewportW) ? w : explicitViewportW;
-    var viewportH:Number = isNaN(explicitViewportH) ? h : explicitViewportH;
+   protected function draw(w:Number, h:Number):void {
+    var hsb:ScrollBar = _horizontalScrollBar;
+    var vsb:ScrollBar = _verticalScrollBar;
+    var contentW:int = _documentView.contentWidth;
+    var contentH:int = _documentView.contentHeight;
 
     // Decide which scrollbars will be visible based on the viewport's content size
     // and the scroller's scroll policies. A scrollbar is shown if the content size
@@ -288,22 +202,18 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
 
     const hAuto:Boolean = _horizontalScrollPolicy == ScrollPolicy.AUTO;
     if (hAuto) {
-      _horizontalScrollBar.visible = contentW >= (viewportW + SDT);
+      _horizontalScrollBar.visible = contentW >= (w + SDT);
     }
 
     const vAuto:Boolean = _verticalScrollPolicy == ScrollPolicy.AUTO;
     if (vAuto) {
-      _verticalScrollBar.visible = contentH >= (viewportH + SDT);
+      _verticalScrollBar.visible = contentH >= (h + SDT);
     }
 
     // Reset the viewport's width,height to account for the visible scrollbars, unless
     // the viewport's size was explicitly set, then we just use that.
-    if (isNaN(explicitViewportW)) {
-      viewportW = w - (vsbVisible ? vsbRequiredWidth() : 0);
-    }
-    if (isNaN(explicitViewportH)) {
-      viewportH = h - (hsbVisible ? hsbRequiredHeight() : 0);
-    }
+    var viewportW:int = w - (vsbVisible ? _verticalScrollBar.actualWidth : 0);
+    var viewportH:int = h - (hsbVisible ? _horizontalScrollBar.actualHeight : 0);
 
     // If the scrollBarPolicy is auto, and we're only showing one scrollbar,
     // the viewport may have shrunk enough to require showing the other one.
@@ -314,31 +224,25 @@ public class ScrollView extends SpriteBackedView implements IFocusManagerCompone
       vsbVisible = true;
     }
 
-    if (isNaN(explicitViewportW)) {
-      viewportW = w - (vsbVisible ? vsbRequiredWidth() : 0);
-    }
-    if (isNaN(explicitViewportH)) {
-      viewportH = h - (hsbVisible ? hsbRequiredHeight() : 0);
-    }
+    viewportW = w - (vsbVisible ? _verticalScrollBar.getPreferredWidth() : 0);
+    viewportH = h - (hsbVisible ? _horizontalScrollBar.getPreferredHeight() : 0);
 
     // Layout the viewport and scrollbars.
-    _documentView.setLayoutBoundsSize(viewportW, viewportH);
-    _documentView.setLayoutBoundsPosition(0, 0);
+    _documentView.setSize(viewportW, viewportH);
+    _documentView.validate();
 
     if (hsbVisible) {
-      var hsbH:Number = hsb.getExplicitOrMeasuredHeight();
-      hsb.setActualSize(vsbVisible ? w - vsb.getExplicitOrMeasuredWidth() : w, hsbH);
-      hsb.y = h - hsbH;
+      var hsbH:int = hsb.actualHeight;
+      hsb.setBounds(hsb.x, h - hsbH, vsbVisible ? w - vsb.getPreferredWidth() : w, hsbH);
     }
 
     if (vsbVisible) {
-      var vsbW:Number = vsb.getExplicitOrMeasuredWidth();
-      vsb.setActualSize(vsbW, hsbVisible ? h - hsb.getExplicitOrMeasuredHeight() : h);
-      vsb.x = w - vsbW;
+      var vsbW:Number = vsb.actualWidth;
+      vsb.setBounds(w - vsbW, vsb.y, vsbW, hsbVisible ? h - hsb.getPreferredHeight() : h);
     }
 
     if ((vAuto && vsbVisible != oldShowVSB) || (hAuto && hsbVisible != oldShowHSB)) {
-      invalidateSize();
+      //invalidateSize();
       // If the viewport's layout is virtual, it's possible that its measured size changed as a consequence of laying it out,
       // so we invalidate its size as well.
       var viewportGroup:GroupBase = _documentView as GroupBase;

@@ -1,13 +1,12 @@
 package cocoa.plaf.basic {
+import cocoa.Viewport;
 import cocoa.plaf.TableViewSkin;
 import cocoa.tableView.TableView;
 
 import flash.display.Sprite;
 
-import spark.core.IViewport;
-
 public class BasicTableViewSkin extends AbstractCollectionViewSkin implements TableViewSkin {
-  override protected function createDocumentView():IViewport {
+  override protected function createDocumentView():Viewport {
     return new TableBody(TableView(hostComponent), laf);
   }
 
@@ -22,5 +21,14 @@ public class BasicTableViewSkin extends AbstractCollectionViewSkin implements Ta
   public function getRowIndexAt(y:Number):int {
     return TableBody(documentView).getRowIndexAt(y);
   }
+
+  //override protected function doInit():void {
+  //  super.doInit();
+  //
+  //  var interactorFactory:IFactory = getFactory("interactor", true);
+  //  if (interactorFactory != null) {
+  //    TableViewInteractor(interactorFactory.newInstance()).register(TableView(hostComponent));
+  //  }
+  //}
 }
 }

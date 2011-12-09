@@ -54,14 +54,12 @@ public class SpriteBackedView extends Sprite implements View {
     return _actualHeight;
   }
 
-  private var minWidth:int;
-  private var minHeight:int;
   public function getMinimumWidth(hHint:int = -1):int {
-    return minWidth;
+    return 0;
   }
 
   public function getMinimumHeight(wHint:int = -1):int {
-    return minHeight;
+    return 0;
   }
 
   protected var _preferredWidth:int;

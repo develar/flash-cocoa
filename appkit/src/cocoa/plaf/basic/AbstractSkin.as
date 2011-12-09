@@ -1,10 +1,13 @@
 package cocoa.plaf.basic {
 import cocoa.Border;
+import cocoa.ContentView;
 import cocoa.ControlView;
 import cocoa.Icon;
 import cocoa.SkinnableView;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
+
+import flash.display.DisplayObjectContainer;
 
 import mx.core.IFactory;
 
@@ -16,33 +19,40 @@ import org.flyti.plexus.events.InjectorEvent;
  */
 [Abstract]
 public class AbstractSkin extends ControlView implements Skin {
+  protected var _laf:LookAndFeel;
+
   private var _component:SkinnableView;
   public final function get hostComponent():SkinnableView {
     return _component;
   }
 
   public final function get laf():LookAndFeel {
-    return superview.laf;
+    return _laf;
   }
 
   protected final function getObject(key:String):Object {
-    return superview.laf.getObject(_component.lafKey + "." + key, false);
+    return _laf.getObject(_component.lafKey + "." + key, false);
   }
 
   protected final function getBorder(key:String = "b"):Border {
-    return superview.laf.getBorder(_component.lafKey + "." + key, false);
+    return _laf.getBorder(_component.lafKey + "." + key, false);
   }
 
   protected final function getNullableBorder(key:String = "b"):Border {
-    return superview.laf.getBorder(_component.lafKey + "." + key, true);
+    return _laf.getBorder(_component.lafKey + "." + key, true);
   }
 
   protected final function getIcon(key:String):Icon {
-    return superview.laf.getIcon(_component.lafKey + "." + key);
+    return _laf.getIcon(_component.lafKey + "." + key);
   }
 
-  protected final function getFactory(key:String):IFactory {
-    return superview.laf.getFactory(_component.lafKey + "." + key, false);
+  protected final function getFactory(key:String, nullable:Boolean = false):IFactory {
+    return _laf.getFactory(_component.lafKey + "." + key, nullable);
+  }
+
+  override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    super.addToSuperview(displayObjectContainer, laf, superview);
+    _laf = laf;
   }
 
   public function attach(component:SkinnableView):void {

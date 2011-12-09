@@ -96,7 +96,6 @@ public class TableBody extends CollectionBody {
     //measuredWidth = 0;
   }
 
-
   private function computeInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number, h:Number):int {
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? h : (h - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     const remainderSpace:int = availableSpace % rowHeightWithSpacing;

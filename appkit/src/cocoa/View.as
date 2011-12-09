@@ -19,8 +19,6 @@ public interface View extends ComponentWrapper {
 
   function get enabled():Boolean;
   function set enabled(value:Boolean):void;
-
-  function set visible(value:Boolean):void;
   
   function setLocation(x:Number, y:Number):void;
 

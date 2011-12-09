@@ -2,10 +2,13 @@ package cocoa {
 import flash.display.InteractiveObject;
 import flash.errors.IllegalOperationError;
 
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
+
 import spark.core.NavigationUnit;
 
 [Abstract]
-public class CollectionBody extends ControlView implements Focusable {
+public class CollectionBody extends ControlView implements Focusable, Viewport {
   protected var rowHeightWithSpacing:int;
   protected var oldHeight:Number = 0;
 
@@ -25,12 +28,12 @@ public class CollectionBody extends ControlView implements Focusable {
     }
   }
 
-  public function get contentWidth():Number {
+  public function get contentWidth():int {
     return 0;
   }
 
   protected var _contentHeight:Number = 0;
-  public function get contentHeight():Number {
+  public function get contentHeight():int {
     return _contentHeight;
   }
 
@@ -96,6 +99,14 @@ public class CollectionBody extends ControlView implements Focusable {
 
   public function get focusObject():InteractiveObject {
     return this;
+  }
+
+  private var _contentSizeChanged:Signal;
+  public function contentSizeChanged():ISignal {
+    if (_contentSizeChanged == null) {
+      _contentSizeChanged = new Signal();
+    }
+    return _contentSizeChanged;
   }
 }
 }

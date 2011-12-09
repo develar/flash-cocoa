@@ -179,7 +179,13 @@ public class TextRendererManager implements RendererManager {
       else {
         e.moveY(_lastCreatedRendererDimension);
       }
+      
+      entryMoved(e, isChangeWidth);
     }
+  }
+
+  protected function entryMoved(e:TextLineEntry, isChangeWidth:Boolean):void {
+    
   }
 
   public function removeRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void {
