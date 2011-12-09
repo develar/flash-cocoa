@@ -29,6 +29,9 @@ public class Container extends SpriteBackedView implements RootContentView {
   private var _subviews:Vector.<ComponentWrapper>;
   public function set subviews(value:Vector.<ComponentWrapper>):void {
     _subviews = value;
+    if (parent != null) {
+      addSubviews();
+    }
   }
 
   private var _layout:MigLayout;
@@ -130,7 +133,7 @@ public class Container extends SpriteBackedView implements RootContentView {
 
   protected function initRoot(laf:LookAndFeel):void {
     _laf = laf;
-    initSubviews();
+    addSubviews();
   }
 
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
@@ -139,10 +142,10 @@ public class Container extends SpriteBackedView implements RootContentView {
     if (laf != null) {
       _laf = laf;
     }
-    initSubviews();
+    addSubviews();
   }
 
-  private function initSubviews():void {
+  private function addSubviews():void {
     for each (var view:View in components) {
       view.addToSuperview(this, laf, this);
     }
