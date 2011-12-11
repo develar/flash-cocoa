@@ -11,7 +11,7 @@ import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
- * getPreferredWidth/getPreferredHeight are not declared as abstract because some user components is intended for works only with "fill" constraints
+ * getPreferredWidth/getPreferredHeight are not declared as abstract because some user component can be intended for works only with "fill" constraints
  */
 
 [Abstract]
