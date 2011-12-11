@@ -34,12 +34,12 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
 
   override public function setSize(w:int, h:int):void {
     var resized:Boolean = false;
-    if (width != _actualWidth) {
-      _actualWidth = width;
+    if (w != _actualWidth) {
+      _actualWidth = w;
       resized = true;
     }
-    if (height != _actualHeight) {
-      _actualHeight = height;
+    if (h != _actualHeight) {
+      _actualHeight = h;
       resized = true;
     }
     

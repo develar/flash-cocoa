@@ -44,12 +44,12 @@ public class SpriteBackedView extends Sprite implements View {
     return this;
   }
 
-  protected var _actualWidth:int;
+  protected var _actualWidth:int = -1;
   public function get actualWidth():int {
     return _actualWidth;
   }
 
-  protected var _actualHeight:int;
+  protected var _actualHeight:int = -1;
   public function get actualHeight():int {
     return _actualHeight;
   }
@@ -82,7 +82,7 @@ public class SpriteBackedView extends Sprite implements View {
   
   public function setBounds(x:Number, y:Number, w:int, h:int):void {
     setLocation(x, y);
-    setSize(width, height);
+    setSize(w, h);
   }
 
   public function setLocation(x:Number, y:Number):void {
@@ -91,8 +91,8 @@ public class SpriteBackedView extends Sprite implements View {
   }
 
   public function setSize(w:int, h:int):void {
-    _actualWidth = width;
-    _actualHeight = height;
+    _actualWidth = w;
+    _actualHeight = h;
   }
 
   public function getBaseline(width:int, height:int):int {
