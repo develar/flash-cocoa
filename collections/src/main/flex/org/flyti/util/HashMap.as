@@ -9,6 +9,9 @@ import flash.utils.IExternalizable;
 public class HashMap implements Map, IExternalizable {
   protected var storage:Object;
 
+  /**
+   * weakKeys will be ignored, if data is not null
+   */
   public function HashMap(weakKeys:Boolean = false, data:Object = null, size:int = 0) {
     if (data == null) {
       storage = new Dictionary(weakKeys);
@@ -17,12 +20,11 @@ public class HashMap implements Map, IExternalizable {
       storage = data;
       if (size == 0) {
         for (var key:String in data) {
-          _size++;
+          size++;
         }
       }
-      else {
-        _size = size;
-      }
+
+      _size = size;
     }
   }
 
@@ -77,7 +79,7 @@ public class HashMap implements Map, IExternalizable {
   }
 
   /**
-   * У нас сейчас всего одна реализация интерфейса Map, поэтому putAll оптимизирован для PrimitiveHashMap
+   * We have only one impl of Map, so, putAll optimized for HashMap
    */
   public function putAll(map:Map):void {
     for (var key:Object in HashMap(map).storage) {
@@ -122,6 +124,12 @@ public class HashMap implements Map, IExternalizable {
 
   public function readExternal(input:IDataInput):void {
     storage = input.readObject();
+
+    var s:int = 0;
+    for (var key:String in storage) {
+      s++;
+    }
+    _size = s;
   }
 
   public function writeExternal(output:IDataOutput):void {
