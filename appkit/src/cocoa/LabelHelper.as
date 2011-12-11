@@ -139,6 +139,10 @@ public class LabelHelper {
     availableWidth = newWidth;
   }
 
+  public function get isInvalid():Boolean {
+    return invalid;
+  }
+
   public function validate():void {
     if (!invalid) {
       return;

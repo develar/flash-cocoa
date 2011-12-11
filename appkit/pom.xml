@@ -26,7 +26,7 @@
       <groupId>org.osflash</groupId>
       <artifactId>as3-signals</artifactId>
       <type>swc</type>
-      <version>0.8.1</version>
+      <version>0.9-beta</version>
     </dependency>
     <dependency>
       <groupId>org.flyti</groupId>

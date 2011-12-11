@@ -60,6 +60,8 @@ public class Container extends SpriteBackedView implements RootContentView {
     return _layout.preferredLayoutHeight(LayoutUtil.MIN);
   }
 
+  private var _preferredWidth:int;
+
   override public function getPreferredWidth(hHint:int = -1):int {
     return _preferredWidth == 0 ? _layout.preferredLayoutWidth(LayoutUtil.PREF) : _preferredWidth;
   }
@@ -69,6 +71,8 @@ public class Container extends SpriteBackedView implements RootContentView {
     _layout.invalidateContainerSize();
   }
 
+  private var _preferredHeight:int;
+
   override public function getPreferredHeight(wHint:int = -1):int {
     return _preferredHeight == 0 ? _layout.preferredLayoutHeight(LayoutUtil.PREF) : _preferredHeight;
   }
@@ -76,6 +80,24 @@ public class Container extends SpriteBackedView implements RootContentView {
   public function set preferredHeight(value:int):void {
     _preferredHeight = value;
     _layout.invalidateContainerSize();
+  }
+
+  override public function setSize(w:int, h:int):void {
+    var resized:Boolean = false;
+    if (w != _actualWidth) {
+      _actualWidth = w;
+      resized = true;
+    }
+    if (h != _actualHeight) {
+      _actualHeight = h;
+      resized = true;
+    }
+
+    super.setSize(w, h);
+
+    if (resized) {
+      _layout.invalidateContainerSize();
+    }
   }
 
   public function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void {
@@ -96,10 +118,6 @@ public class Container extends SpriteBackedView implements RootContentView {
 
   public function get leftToRight():Boolean {
     return true;
-  }
-
-  override public function get layoutHashCode():int {
-    return 0;
   }
 
   public function get screenLocationX():Number {

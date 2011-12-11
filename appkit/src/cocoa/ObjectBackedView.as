@@ -7,7 +7,6 @@ import flash.errors.IllegalOperationError;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
-import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
 [Abstract]
@@ -111,7 +110,7 @@ internal class ObjectBackedView implements View {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(this);
+    throw new IllegalOperationError("Abstract");
   }
 
   public function getComponentType(disregardScrollPane:Boolean):int {

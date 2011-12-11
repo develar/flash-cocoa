@@ -8,7 +8,6 @@ import flash.errors.IllegalOperationError;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
-import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
 [Abstract]
@@ -62,14 +61,12 @@ public class SpriteBackedView extends Sprite implements View {
     return 0;
   }
 
-  protected var _preferredWidth:int;
   public function getPreferredWidth(hHint:int = -1):int {
-    return _preferredWidth;
+    throw new IllegalOperationError("abstract");
   }
 
-  protected var _preferredHeight:int;
   public function getPreferredHeight(wHint:int = -1):int {
-    return _preferredHeight;
+    throw new IllegalOperationError("abstract");
   }
 
   public function getMaximumWidth(hHint:int = -1):int {
@@ -127,7 +124,7 @@ public class SpriteBackedView extends Sprite implements View {
   }
 
   public function get layoutHashCode():int {
-    return LayoutUtil.calculateHash(this);
+    return 0;
   }
 
   public function getComponentType(disregardScrollPane:Boolean):int {

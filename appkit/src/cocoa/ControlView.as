@@ -10,16 +10,14 @@ import org.flyti.plexus.events.InjectorEvent;
 
 [Abstract]
 public class ControlView extends SpriteBackedView implements IMXMLObject {
-  protected static const INVALID:uint = 1 << 2;
-
   protected var superview:ContentView;
 
   override public function validate():void {
-    if ((flags & INVALID) == 0) {
+    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
       return;
     }
 
-    flags &= ~INVALID;
+    flags &= ~LayoutState.DISPLAY_INVALID;
     draw(_actualWidth, _actualHeight);
   }
 
@@ -46,8 +44,8 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
     super.setSize(w, h);
 
     if (resized) {
-      // after setBounds/setLocation superview call subview validdate in any case — subview doesn't need to invalidate container
-      invalidate(false);
+      // after setBounds/setLocation/setSize superview call subview validate in any case — subview doesn't need to invalidate container
+      flags |= LayoutState.DISPLAY_INVALID;
     }
   }
 
@@ -55,11 +53,14 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
 
   }
 
-  protected final function invalidate(invalidateSuperview:Boolean = true):void {
-    flags |= INVALID;
+  protected final function invalidate(sizeInvalid:Boolean = true):void {
+    flags |= LayoutState.DISPLAY_INVALID;
 
-    if (invalidateSuperview && superview != null) {
-      superview.invalidateSubview(invalidateSuperview);
+    if (sizeInvalid && ((flags & LayoutState.SIZE_INVALID) == 0)) {
+      flags |= LayoutState.SIZE_INVALID;
+      if (superview != null) {
+        superview.invalidateSubview(sizeInvalid);
+      }
     }
   }
 
@@ -71,6 +72,10 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
 
   public function initialized(document:Object, id:String):void {
     _linkId = id;
+  }
+
+  override public function get layoutHashCode():int {
+    return flags;
   }
 }
 }

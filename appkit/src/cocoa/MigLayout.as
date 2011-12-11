@@ -12,10 +12,6 @@ public class MigLayout extends AbstractMigLayout {
   private static const SOME_SUBVIEW_SIZE_INVALID:uint = 1 << 2;
   private static const CONTAINER_SIZE_INVALID:uint = 1 << 3;
 
-  private var lastHash:int = -1;
-  private var lastInvalidW:int;
-  private var lastInvalidH:int;
-
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
   }
@@ -83,25 +79,11 @@ public class MigLayout extends AbstractMigLayout {
       lastModCount = mc;
     }
 
-    var hash:int = 0;
     for each (var componentWrapper:View in _container.components) {
-      hash ^= componentWrapper.layoutHashCode;
-      hash += 285134905;
-    }
-
-    if (hash != lastHash) {
-      grid = null;
-      lastHash = hash;
-    }
-
-    if (lastInvalidW != _container.actualWidth || lastInvalidH != _container.actualHeight) {
-      if (grid != null) {
-        grid.invalidateContainerSize();
-        layoutInvalid = true;
+      if ((componentWrapper.layoutHashCode & LayoutState.SIZE_INVALID) == 0) {
+        grid = null;
+        break;
       }
-
-      lastInvalidW = _container.actualWidth;
-      lastInvalidH = _container.actualHeight;
     }
 
     if (grid == null) {

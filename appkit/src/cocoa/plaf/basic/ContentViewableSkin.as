@@ -1,15 +1,14 @@
 package cocoa.plaf.basic {
 import cocoa.ContentView;
-import cocoa.View;
+import cocoa.LayoutState;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.DisplayObjectContainer;
-
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
 
 public class ContentViewableSkin extends AbstractSkin implements ContentView {
-  private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 3;
+  private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 5;
 
   public function get displayObject():DisplayObjectContainer {
     return this;
@@ -29,7 +28,7 @@ public class ContentViewableSkin extends AbstractSkin implements ContentView {
     }
 
     // i.e. our draw will not be called
-    if ((flags & INVALID) == 0) {
+    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
       subviewsValidate();
     }
 

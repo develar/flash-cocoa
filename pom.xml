@@ -36,6 +36,15 @@
         <module>collections</module>
       </modules>
     </profile>
+    <profile>
+      <id>withMigLayout</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>migLayout</module>
+      </modules>
+    </profile>
   </profiles>
 
   <scm>
@@ -85,4 +94,11 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>flash-mvn-repo</id>
+      <url>http://develar.github.com/flash-mvn-repo/</url>
+    </repository>
+  </repositories>
 </project>
