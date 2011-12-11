@@ -10,6 +10,10 @@ import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.layout.PlatformDefaults;
 
+/**
+ * getPreferredWidth/getPreferredHeight are not declared as abstract because some user components is intended for works only with "fill" constraints
+ */
+
 [Abstract]
 public class SpriteBackedView extends Sprite implements View {
   internal static const DEFAULT_MAX_WIDTH:int = 32767;
@@ -62,11 +66,11 @@ public class SpriteBackedView extends Sprite implements View {
   }
 
   public function getPreferredWidth(hHint:int = -1):int {
-    throw new IllegalOperationError("abstract");
+    return 0;
   }
 
   public function getPreferredHeight(wHint:int = -1):int {
-    throw new IllegalOperationError("abstract");
+    return 0;
   }
 
   public function getMaximumWidth(hHint:int = -1):int {
