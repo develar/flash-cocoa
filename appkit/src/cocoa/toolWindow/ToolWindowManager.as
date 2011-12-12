@@ -1,8 +1,8 @@
 package cocoa.toolWindow {
-import cocoa.ContentView;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
 import cocoa.Panel;
+import cocoa.RootContentView;
 import cocoa.SegmentedControl;
 import cocoa.SelectionMode;
 import cocoa.pane.PaneItem;
@@ -60,8 +60,8 @@ public class ToolWindowManager {
     }
   }
 
-  private var _container:ContentView;
-  public function set container(value:ContentView):void {
+  private var _container:RootContentView;
+  public function set container(value:RootContentView):void {
     _container = value;
 
     for each (var tabBar:SegmentedControl in toolWindows) {
