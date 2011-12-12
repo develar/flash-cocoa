@@ -7,7 +7,7 @@ public class ToolbarSkin extends BoxSkin {
   override public function attach(component:SkinnableView):void {
     super.attach(component);
 
-    laf.getBorder(hostComponent.lafKey + ".b", true);
+    border = laf.getBorder(hostComponent.lafKey + ".b", true);
     this.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
   }
 }

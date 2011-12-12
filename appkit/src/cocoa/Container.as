@@ -1,9 +1,9 @@
 package cocoa {
-import cocoa.border.EmptyBorder;
 import cocoa.plaf.LookAndFeel;
 import cocoa.util.SharedPoint;
 
 import flash.display.DisplayObjectContainer;
+import flash.display.Graphics;
 import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.ComponentType;
@@ -17,13 +17,13 @@ public class Container extends SpriteBackedView implements RootContentView {
     mouseEnabled = false;
   }
   
-  private var _border:Border = EmptyBorder.EMPTY;
+  private var _border:Border;
   public function set border(value:Border):void {
     _border = value;
   }
 
   public function get insets():Insets {
-    return _border.contentInsets;
+    return _border == null ? Insets.EMPTY : _border.contentInsets;
   }
 
   private var _subviews:Vector.<ComponentWrapper>;
@@ -50,6 +50,18 @@ public class Container extends SpriteBackedView implements RootContentView {
 
   override public function validate():void {
     _layout.validate();
+
+    if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
+      flags &= ~LayoutState.DISPLAY_INVALID;
+
+      if (_border == null) {
+        return;
+      }
+      
+      var g:Graphics = graphics;
+      g.clear();
+      _border.draw(g, actualWidth, actualHeight);
+    }
   }
 
   override public function getMinimumWidth(hHint:int = -1):int {
@@ -60,26 +72,12 @@ public class Container extends SpriteBackedView implements RootContentView {
     return _layout.preferredLayoutHeight(LayoutUtil.MIN);
   }
 
-  private var _preferredWidth:int;
-
   override public function getPreferredWidth(hHint:int = -1):int {
-    return _preferredWidth == 0 ? _layout.preferredLayoutWidth(LayoutUtil.PREF) : _preferredWidth;
+    return _layout.preferredLayoutWidth(LayoutUtil.PREF);
   }
-
-  public function set preferredWidth(value:int):void {
-    _preferredWidth = value;
-    _layout.invalidateContainerSize();
-  }
-
-  private var _preferredHeight:int;
 
   override public function getPreferredHeight(wHint:int = -1):int {
-    return _preferredHeight == 0 ? _layout.preferredLayoutHeight(LayoutUtil.PREF) : _preferredHeight;
-  }
-
-  public function set preferredHeight(value:int):void {
-    _preferredHeight = value;
-    _layout.invalidateContainerSize();
+    return _layout.preferredLayoutHeight(LayoutUtil.PREF);
   }
 
   override public function setSize(w:int, h:int):void {
@@ -96,6 +94,7 @@ public class Container extends SpriteBackedView implements RootContentView {
     super.setSize(w, h);
 
     if (resized) {
+      flags |= LayoutState.DISPLAY_INVALID;
       _layout.invalidateContainerSize();
     }
   }

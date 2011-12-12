@@ -5,8 +5,6 @@ import cocoa.View;
 import flash.display.Graphics;
 
 public class EmptyBorder extends AbstractBorder {
-  public static const EMPTY:EmptyBorder = new EmptyBorder();
-
   private var _layoutHeight:Number;
 
   public function EmptyBorder(layoutHeight:Number = NaN, contentInsets:Insets = null) {

@@ -7,9 +7,5 @@ public interface RootContentView extends ContentView, ContainerWrapper {
   function get displayObject():DisplayObjectContainer;
 
   function addSubview(view:View):void;
-
-  function set preferredWidth(value:int):void;
-
-  function set preferredHeight(value:int):void;
 }
 }
