@@ -10,11 +10,11 @@ import org.flyti.plexus.LocalEventMap;
 public class DocumentWindow extends NativeWindow {
   private static const DEFAULT_INIT_OPTIONS:NativeWindowInitOptions = new NativeWindowInitOptions();
 
-  public function DocumentWindow(contentView:RootContentView, map:LocalEventMap, bounds:Rectangle = null, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
+  public function DocumentWindow(contentView:RootContentView, focusManager:FocusManager = null, initOptions:NativeWindowInitOptions = null) {
     super(initOptions || DEFAULT_INIT_OPTIONS);
     _focusManager = focusManager;
     _contentView = contentView;
-    init(map, bounds);
+    init();
   }
 
   // keep link
@@ -31,7 +31,7 @@ public class DocumentWindow extends NativeWindow {
     return _contentView;
   }
 
-  private function init(map:LocalEventMap, bounds:Rectangle):void {
+  public function init(map:LocalEventMap = null, bounds:Rectangle = null):void {
     if (bounds == null || Screen.getScreensForRectangle(bounds).length == 0) {
       bounds = Screen.mainScreen.visibleBounds;
     }
