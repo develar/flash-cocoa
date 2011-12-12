@@ -1,6 +1,6 @@
 package cocoa
 {
-public class VSeparator extends ObjectBackedSkinnableView
+public class VSeparator extends AbstractSkinnableView
 {
 	override protected function get primaryLaFKey():String
 	{

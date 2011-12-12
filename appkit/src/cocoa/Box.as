@@ -6,7 +6,7 @@ import net.miginfocom.layout.ComponentWrapper;
 use namespace ui;
 
 [DefaultProperty("subviews")]
-public class Box extends ObjectBackedSkinnableView {
+public class Box extends AbstractSkinnableView {
   ui var contentView:Container;
 
   protected static const _skinParts:Dictionary = new Dictionary();

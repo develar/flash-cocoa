@@ -10,7 +10,7 @@ import mx.core.IMXMLObject;
 use namespace ui;
 
 [Abstract]
-public class ObjectBackedSkinnableView extends ObjectBackedView implements SkinnableView, IMXMLObject {
+public class AbstractSkinnableView extends ObjectBackedView implements SkinnableView, IMXMLObject {
   protected static const HANDLER_NOT_EXISTS:int = 2;
 
   //noinspection JSUnusedLocalSymbols

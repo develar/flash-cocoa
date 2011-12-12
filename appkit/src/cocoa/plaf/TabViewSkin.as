@@ -1,11 +1,11 @@
 package cocoa.plaf {
-import cocoa.Insets;
+import cocoa.Toolbar;
 import cocoa.View;
 
 public interface TabViewSkin {
-  function get contentInsets():Insets;
-
   function show(view:View):void;
   function hide():void;
+
+  function toolbarChanged(oldToolbar:Toolbar, newToolbar:Toolbar):void;
 }
 }

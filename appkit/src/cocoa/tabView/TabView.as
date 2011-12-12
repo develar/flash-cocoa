@@ -1,4 +1,5 @@
 package cocoa.tabView {
+import cocoa.Toolbar;
 import cocoa.View;
 import cocoa.bar.SingleSelectionBar;
 import cocoa.pane.PaneItem;
@@ -15,6 +16,23 @@ use namespace ui;
 public class TabView extends SingleSelectionBar {
   public static const DEFAULT:int = 0;
   public static const BORDERLESS:int = 1;
+
+  private var _toolbar:Toolbar;
+  public function get toolbar():Toolbar {
+    return _toolbar;
+  }
+
+  public function set toolbar(value:Toolbar):void {
+    if (_toolbar == value) {
+      return;
+    }
+
+    var oldToolbar:Toolbar = _toolbar;
+    _toolbar = value;
+    if (skin != null) {
+      TabViewSkin(skin).toolbarChanged(oldToolbar, _toolbar);
+    }
+  }
 
   override protected function segmentedControlSelectionChanged(oldItem:PaneItem, newItem:PaneItem, oldIndex:int, newIndex:int):void {
     if (_selectionChanging != null) {

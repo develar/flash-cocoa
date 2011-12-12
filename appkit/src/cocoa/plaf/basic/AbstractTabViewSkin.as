@@ -1,9 +1,11 @@
 package cocoa.plaf.basic {
 import cocoa.Insets;
 import cocoa.SegmentedControl;
+import cocoa.Toolbar;
 import cocoa.View;
 import cocoa.plaf.Placement;
 import cocoa.plaf.TabViewSkin;
+import cocoa.tabView.TabView;
 
 [Abstract]
 public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewSkin {
@@ -29,7 +31,15 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
   }
 
   override public function getPreferredHeight(wHint:int = -1):int {
-    return contentView == null ? 0 : contentView.getPreferredHeight(wHint) + contentInsets.height;
+    var pw:int = contentInsets.height;
+    if (contentView != null) {
+      pw = contentView.getPreferredHeight(wHint);
+    }
+    var toolbar:Toolbar = TabView(hostComponent).toolbar;
+    if (toolbar != null) {
+      pw += toolbar.getPreferredHeight(wHint);
+    }
+    return pw;
   }
 
   override public function getMaximumWidth(hHint:int = -1):int {
@@ -48,9 +58,14 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
       const tabBarLafKey:String = hostComponent.lafKey + ".tabBar";
       tabBar.lafKey = tabBarLafKey;
 
-      tabBarPlacement = superview.laf.getInt(tabBarLafKey + ".placement");
+      tabBarPlacement = laf.getInt(tabBarLafKey + ".placement");
       tabBar.addToSuperview(this, laf, this);
       hostComponent.uiPartAdded("segmentedControl", tabBar);
+    }
+
+    var toolbar:Toolbar = TabView(hostComponent).toolbar;
+    if (toolbar != null) {
+      toolbar.addToSuperview(this, laf, this);
     }
   }
 
@@ -79,20 +94,39 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
   }
 
   override protected function draw(w:int, h:int):void {
-    if (contentView != null) {
-      contentView.setBounds(contentInsets.left, contentInsets.top, w - contentInsets.width, h - contentInsets.height);
-      contentView.validate();
-    }
-
     const tabBarPreferredHeight:int = tabBar.getPreferredHeight();
     if (tabBarPlacement == Placement.PAGE_START_LINE_CENTER) {
       const tabBarPreferredWidth:int = tabBar.getPreferredWidth();
       tabBar.setBounds(Math.round((w - tabBarPreferredWidth) / 2), 0, tabBarPreferredWidth, tabBarPreferredHeight);
     }
     else {
-      tabBar.setBounds(0, 0, w, tabBarPreferredHeight);
+      tabBar.setSize(w, tabBarPreferredHeight);
     }
     tabBar.validate();
+
+    var toolbar:Toolbar = TabView(hostComponent).toolbar;
+    var toolbarHeight:int = 0;
+    if (toolbar != null) {
+      toolbarHeight = toolbar.getPreferredHeight();
+      toolbar.setBounds(contentInsets.left, contentInsets.top, w - contentInsets.width, toolbarHeight);
+      toolbar.validate();
+    }
+
+    if (contentView != null) {
+      contentView.setBounds(contentInsets.left, contentInsets.top + toolbarHeight, w - contentInsets.width, h - contentInsets.height - toolbarHeight);
+      contentView.validate();
+    }
+  }
+
+  public function toolbarChanged(oldToolbar:Toolbar, newToolbar:Toolbar):void {
+    if (oldToolbar != null) {
+      oldToolbar.removeFromSuperview();
+    }
+    if (newToolbar != null) {
+      newToolbar.addToSuperview(this, laf, this);
+    }
+
+    invalidate(true);
   }
 }
 }
