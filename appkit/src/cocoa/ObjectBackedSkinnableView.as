@@ -183,5 +183,9 @@ public class ObjectBackedSkinnableView extends ObjectBackedView implements Skinn
   public function initialized(document:Object, id:String):void {
     _linkId = id;
   }
+
+  override public function validate():void {
+    _skin.validate();
+  }
 }
 }

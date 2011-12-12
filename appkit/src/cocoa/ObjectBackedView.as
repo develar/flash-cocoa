@@ -138,6 +138,7 @@ internal class ObjectBackedView implements View {
   }
 
   public function validate():void {
+    throw new IllegalOperationError("Abstract");
   }
 
   public function get enabled():Boolean {

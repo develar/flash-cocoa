@@ -32,11 +32,10 @@ public class MigLayout extends AbstractMigLayout {
 
     if (checkCache()) {
       var insets:Insets = _container.insets;
-      const w:int = _container.getPreferredWidth(-1) - insets.width;
-      const h:int = _container.getPreferredHeight(-1) - insets.height;
+      const w:int = _container.getPreferredWidth() - insets.width;
+      const h:int = _container.getPreferredHeight() - insets.height;
       if (grid.layout(insets.left, insets.top, w, h, lc.alignX, lc.alignY, _debug, true)) {
-        grid = null;
-        checkCache();
+        grid = new Grid(_container, lc, rowSpecs, colSpecs, null);
         grid.layout(insets.left, insets.top, w, h, lc.alignX, lc.alignY, _debug, false);
       }
     }
@@ -80,7 +79,7 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     for each (var componentWrapper:View in _container.components) {
-      if ((componentWrapper.layoutHashCode & LayoutState.SIZE_INVALID) == 0) {
+      if ((componentWrapper.layoutHashCode & LayoutState.SIZE_INVALID) != 0) {
         grid = null;
         break;
       }

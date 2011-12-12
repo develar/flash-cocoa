@@ -59,7 +59,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
 
     contentView = view;
     contentView.addToSuperview(this, laf, this);
-    invalidate(false); // doesn't change superview size
+    invalidate(true);
   }
   
   public function hide():void {
