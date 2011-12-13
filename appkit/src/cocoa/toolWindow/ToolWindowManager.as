@@ -16,7 +16,9 @@ import flash.errors.IllegalOperationError;
 import net.miginfocom.layout.BoundSize;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.DimConstraint;
+import net.miginfocom.layout.LC;
 import net.miginfocom.layout.MigConstants;
+import net.miginfocom.layout.UnitValue;
 
 use namespace ui;
 
@@ -101,6 +103,17 @@ public class ToolWindowManager {
       }
     }
 
+    var lc:LC = new LC();
+    var insets:Vector.<UnitValue> = new Vector.<UnitValue>(4);
+    for (i = 0; i < 4; i++) {
+      insets[i] = UnitValue.ZERO;
+    }
+    lc.insets = insets;
+
+    lc.gridGapX = BoundSize.ZERO_PIXEL;
+    lc.gridGapY = BoundSize.ZERO_PIXEL;
+
+    layout.setLayoutConstraints(lc);
     layout.setColumnConstraints(columnConstraints);
     layout.setRowConstraints(rowConstraints);
     _container.layout = layout;
