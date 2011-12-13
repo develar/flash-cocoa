@@ -1,6 +1,7 @@
 package cocoa.toolWindow {
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
+import cocoa.MigLayout;
 import cocoa.Panel;
 import cocoa.RootContentView;
 import cocoa.SegmentedControl;
@@ -12,7 +13,9 @@ import cocoa.ui;
 
 import flash.errors.IllegalOperationError;
 
+import net.miginfocom.layout.BoundSize;
 import net.miginfocom.layout.CC;
+import net.miginfocom.layout.DimConstraint;
 import net.miginfocom.layout.MigConstants;
 
 use namespace ui;
@@ -73,6 +76,34 @@ public class ToolWindowManager {
         _container.addSubview(tabBar);
       }
     }
+
+    var layout:MigLayout = new MigLayout();
+    var columnConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(5, true);
+    var i:int = 0;
+    var constraint:DimConstraint;
+    for (; i < 5; i++) {
+      constraint = new DimConstraint();
+      columnConstraints[i] = constraint;
+      constraint.grow = 100; // ResizeConstraint.WEIGHT_100
+      if (i != 2) {
+        constraint.size = BoundSize.ZERO_PIXEL;
+      }
+    }
+
+    var rowConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(3, true);
+    i = 0;
+    for (; i < 3; i++) {
+      constraint = new DimConstraint();
+      rowConstraints[i] = constraint;
+      constraint.grow = 100; // ResizeConstraint.WEIGHT_100
+      if (i != 1) {
+        constraint.size = BoundSize.ZERO_PIXEL;
+      }
+    }
+
+    layout.setColumnConstraints(columnConstraints);
+    layout.setRowConstraints(rowConstraints);
+    _container.layout = layout;
   }
 
   private function paneLabelBarSelectionChanged(added:Vector.<int>, removed:Vector.<int>):void {

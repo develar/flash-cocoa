@@ -16,6 +16,22 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     return v == null || v.length == 0;
   }
 
+  override public function getMaximumWidth(hHint:int = -1):int {
+    return layout.getMaximumWidth(hHint);
+  }
+
+  override public function getMaximumHeight(wHint:int = -1):int {
+    return layout.getMaximumHeight(wHint);
+  }
+
+  override public function getMinimumWidth(hHint:int = -1):int {
+    return layout.getMinimumWidth(hHint);
+  }
+
+  override public function getMinimumHeight(wHint:int = -1):int {
+    return layout.getMinimumHeight(wHint);
+  }
+
   override public function getPreferredWidth(hHint:int = -1):int {
     return layout.getPreferredWidth(hHint);
   }

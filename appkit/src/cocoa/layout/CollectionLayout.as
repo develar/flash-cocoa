@@ -22,5 +22,13 @@ public interface CollectionLayout {
   function getPreferredWidth(hHint:int):int;
 
   function getPreferredHeight(wHint:int):int;
+
+  function getMinimumHeight(wHint:int):int;
+
+  function getMinimumWidth(hHint:int):int;
+
+  function getMaximumWidth(hHint:int):int;
+
+  function getMaximumHeight(wHint:int):int;
 }
 }

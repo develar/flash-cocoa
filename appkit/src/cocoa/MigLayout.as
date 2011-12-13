@@ -34,9 +34,9 @@ public class MigLayout extends AbstractMigLayout {
       var insets:Insets = _container.insets;
       const w:int = _container.actualWidth - insets.width;
       const h:int = _container.actualHeight - insets.height;
-      if (grid.layout(insets.left, insets.top, w, h, lc.alignX, lc.alignY, lc.debugMillis > 0, true)) {
+      if (grid.layout(insets.left, insets.top, w, h, lc != null && lc.debugMillis > 0, true)) {
         grid = new Grid(_container, lc, rowSpecs, colSpecs, null);
-        grid.layout(insets.left, insets.top, w, h, lc.alignX, lc.alignY, lc.debugMillis > 0, false);
+        grid.layout(insets.left, insets.top, w, h, lc != null && lc.debugMillis > 0, false);
       }
     }
 

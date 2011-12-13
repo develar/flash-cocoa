@@ -16,6 +16,26 @@ internal class ListLayout implements CollectionLayout {
   protected var _preferredWidth:int;
   protected var _preferredHeight:int;
 
+  protected function get isVertical():Boolean {
+    return false;
+  }
+
+  public final function getMinimumWidth(hHint:int):int {
+    return isVertical ? _dimension == -1 ? 0 : _dimension : 0;
+  }
+
+  public final function getMinimumHeight(wHint:int):int {
+    return isVertical ? 0 : _dimension == -1 ? 0 : _dimension;
+  }
+
+  public final function getMaximumWidth(hHint:int):int {
+    return isVertical && _dimension != -1 ? _dimension : 32767;
+  }
+
+  public final function getMaximumHeight(wHint:int):int {
+    return !isVertical && _dimension != -1 ? _dimension : 32767;
+  }
+
   protected var _container:SegmentedControl;
   public function set container(value:SegmentedControl):void {
     _container = value;

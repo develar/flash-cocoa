@@ -80,8 +80,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TabView.tabBar.layout"] = data["SegmentedControl.layout"] = new ListLayoutFactory(20, 1);
     data["TabView.tabBar.placement"] = Placement.PAGE_START_LINE_CENTER;
 
-    data["ToolWindowManager.tabBar.layout"] = new ListLayoutFactory(20, 6, false);
-
     data["PushButton"] = PushButtonSkin;
     data["IconButton"] = IconButtonSkin;
 

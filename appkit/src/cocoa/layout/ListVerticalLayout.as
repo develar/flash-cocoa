@@ -1,7 +1,11 @@
 package cocoa.layout {
 public class ListVerticalLayout extends ListLayout implements CollectionLayout {
+  override protected function get isVertical():Boolean {
+    return true;
+  }
+
   override public function getPreferredWidth(hHint:int):int {
-    return 0;
+    return _dimension == -1 ? 0 : _dimension;
   }
 
   override public function getPreferredHeight(wHint:int):int {
