@@ -27,6 +27,10 @@ public class ToolWindowManager {
         throw new IllegalOperationError("item already registered");
       }
     }
+
+    if (item.localizedTitle == null && item.title != null) {
+      item.localizedTitle = ResourceManager.instance.getStringByRM(item.title);
+    }
     
     tabBar = toolWindows[side];
     var dataSource:ListViewModifiableDataSource;

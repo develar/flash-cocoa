@@ -14,7 +14,6 @@ public class DocumentWindow extends NativeWindow {
     super(initOptions || DEFAULT_INIT_OPTIONS);
     _focusManager = focusManager;
     _contentView = contentView;
-    init();
   }
 
   // keep link

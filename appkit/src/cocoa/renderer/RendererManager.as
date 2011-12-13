@@ -4,7 +4,7 @@ import cocoa.ListViewDataSource;
 import flash.display.DisplayObjectContainer;
 
 public interface RendererManager {
-  function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void;
+  function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:int, h:int):void;
 
   /**
    * @param itemCountDelta delta, greater than 0 if removed from top, less than 0 if removed from bottom
@@ -18,7 +18,7 @@ public interface RendererManager {
 
   function preLayout(head:Boolean):void;
 
-  function get lastCreatedRendererDimension():Number;
+  function get lastCreatedRendererDimension():int;
 
   function set dataSource(value:ListViewDataSource):void;
 

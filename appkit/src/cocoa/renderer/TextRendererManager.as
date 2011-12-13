@@ -35,8 +35,8 @@ public class TextRendererManager implements RendererManager {
     return _container;
   }
 
-  protected var _lastCreatedRendererDimension:Number;
-  public function get lastCreatedRendererDimension():Number {
+  protected var _lastCreatedRendererDimension:int;
+  public function get lastCreatedRendererDimension():int {
     return _lastCreatedRendererDimension;
   }
 
@@ -95,12 +95,12 @@ public class TextRendererManager implements RendererManager {
     return null;
   }
 
-  protected function createTextLine(itemIndex:int, w:Number):TextLine {
+  protected function createTextLine(itemIndex:int, w:int):TextLine {
     return textLineRendererFactory.create(textLineContainer, _dataSource.getStringValue(itemIndex), w, textFormat.format, textFormat.swfContext, true, textRotation);
   }
 
-  protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
-    var line:TextLine = createTextLine(itemIndex, w == w ? w : 10000);
+  protected function createEntry(itemIndex:int, x:Number, y:Number, w:int, h:int):TextLineEntry {
+    var line:TextLine = createTextLine(itemIndex, w == -1 ? 10000 : w);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -109,8 +109,8 @@ public class TextRendererManager implements RendererManager {
     return entry;
   }
 
-  protected function computeCreatingRendererSize(w:Number, h:Number, line:TextLine):void {
-    if (w != w) {
+  protected function computeCreatingRendererSize(w:int, h:int, line:TextLine):void {
+    if (w == -1) {
       _lastCreatedRendererDimension = Math.round(line.textWidth) + textInsets.width;
     }
     else {
@@ -121,12 +121,12 @@ public class TextRendererManager implements RendererManager {
     }
   }
 
-  protected function layoutTextLine(line:TextLine, x:Number, y:Number, h:Number):void {
+  protected function layoutTextLine(line:TextLine, x:Number, y:Number, h:int):void {
     line.x = x + textInsets.left;
     line.y = y + (h - textInsets.bottom);
   }
 
-  public function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:Number, h:Number):void {
+  public function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:int, h:int):void {
     var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
     newEntry.dimension = _lastCreatedRendererDimension;
     if (previousEntry == null) {
@@ -141,7 +141,7 @@ public class TextRendererManager implements RendererManager {
 
   public function createAndLayoutRendererAt(itemIndex:int, x:Number, y:Number, w:Number, h:Number, startInset:Number, gap:Number):void {
     var prevEntry:TextLineEntry;
-    const isChangeWidth:Boolean = w != w;
+    const isChangeWidth:Boolean = w == -1;
     var e:TextLineEntry;
     if (isChangeWidth) {
       x = startInset;
@@ -210,7 +210,7 @@ public class TextRendererManager implements RendererManager {
     }
 
     var e:TextLineEntry = nextEntry;
-    const isChangeWidth:Boolean = w != w;
+    const isChangeWidth:Boolean = w == -1;
     do {
       e.itemIndex--;
       if (isChangeWidth) {

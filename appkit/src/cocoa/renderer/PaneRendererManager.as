@@ -39,7 +39,7 @@ public class PaneRendererManager extends TextRendererManager {
     value.addChild(titleCanvasContainer);
   }
  
-  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
+  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:int, h:int):TextLineEntry {
     var line:TextLine = createTextLine(itemIndex, w);
     layoutTextLine(line, x, y, border.layoutHeight);
  

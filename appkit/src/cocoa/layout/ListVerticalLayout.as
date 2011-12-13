@@ -21,7 +21,7 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
     while (y < endPosition && itemIndex < endItemIndex) {
-      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, effectiveDimension, NaN);
+      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, effectiveDimension, -1);
       y += _rendererManager.lastCreatedRendererDimension + _gap;
     }
     _rendererManager.postLayout();

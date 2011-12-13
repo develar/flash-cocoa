@@ -13,5 +13,11 @@ public class PaneItem extends LabeledItem {
 
     this.viewFactory = viewFactory;
   }
+
+  public static function create(localizedTitle:String, viewFactory:IFactory):PaneItem {
+    var paneItem:PaneItem = new PaneItem(null, viewFactory);
+    paneItem.localizedTitle = localizedTitle;
+    return paneItem;
+  }
 }
 }

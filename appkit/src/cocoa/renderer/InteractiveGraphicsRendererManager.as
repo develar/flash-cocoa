@@ -64,9 +64,9 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     return TextLineAndDisplayObjectEntry(findEntry(itemIndex));
   }
 
-  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:Number, h:Number):TextLineEntry {
+  override protected function createEntry(itemIndex:int, x:Number, y:Number, w:int, h:int):TextLineEntry {
     // http://juick.com/develar/1452091
-    var line:TextLine = createTextLine(itemIndex, w == w && textRotation == null ? w : 10000);
+    var line:TextLine = createTextLine(itemIndex, w != -1 && textRotation == null ? w : 10000);
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
@@ -84,7 +84,7 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     shape.x = x;
     shape.y = y;
     line.userData = _lastCreatedRendererDimension;
-    drawEntry(entry, itemIndex, shape.graphics, w == w ? w : _lastCreatedRendererDimension, h == h ? h : _lastCreatedRendererDimension, x, y);
+    drawEntry(entry, itemIndex, shape.graphics, w != -1 ? w : _lastCreatedRendererDimension, h != -1 ? h : _lastCreatedRendererDimension, x, y);
     return entry;
   }
 
@@ -118,9 +118,7 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
     }
   }
 
-  protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:Number,
-                               h:Number, x:Number, y:Number):void {
-
+  protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:int, h:int, x:Number, y:Number):void {
   }
 
   override public function getItemIndexAt(x:Number, y:Number):int {

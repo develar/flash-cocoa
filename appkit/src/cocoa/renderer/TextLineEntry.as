@@ -12,7 +12,7 @@ public class TextLineEntry {
 
   public var line:TextLine;
   
-  public var dimension:Number;
+  public var dimension:int = -1;
 
   public function TextLineEntry(line:TextLine):void {
     this.line = line;
@@ -37,7 +37,7 @@ public class TextLineEntry {
     }
     pool[poolSize++] = this;
 
-    dimension = NaN;
+    dimension = -1;
     itemIndex = -1;
   }
 

@@ -50,7 +50,7 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
     _rendererManager.preLayout(head);
     var itemIndex:int = startItemIndex;
     while (x < endPosition && itemIndex < endItemIndex) {
-      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, NaN, effectiveDimension);
+      _rendererManager.createAndLayoutRenderer(itemIndex++, x, y, -1, effectiveDimension);
       x += _rendererManager.lastCreatedRendererDimension + _gap;
     }
     _rendererManager.postLayout();

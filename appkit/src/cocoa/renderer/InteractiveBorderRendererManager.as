@@ -22,7 +22,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
     }
   }
 
-  override protected function layoutTextLine(line:TextLine, x:Number, y:Number, h:Number):void {
+  override protected function layoutTextLine(line:TextLine, x:Number, y:Number, h:int):void {
     if (textLineInsets == null) {
       super.layoutTextLine(line, x, y, h);
       return;
@@ -45,8 +45,8 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
     }
   }
 
-  override protected function computeCreatingRendererSize(w:Number, h:Number, line:TextLine):void {
-    if (w != w) {
+  override protected function computeCreatingRendererSize(w:int, h:int, line:TextLine):void {
+    if (w == -1) {
       _lastCreatedRendererDimension = Math.round(line.textWidth) + textLineInsets.lineStartPadding + textLineInsets.lineEndPadding;
     }
     else {
@@ -57,13 +57,12 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
     }
   }
 
-  override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics,
-                                        w:Number, h:Number, x:Number, y:Number):void {
+  override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:int, h:int, x:Number, y:Number):void {
     if (border is StatefulBorder) {
       StatefulBorder(border).stateIndex = _selectionModel.isItemSelected(itemIndex) ? BorderStateIndex.ON : BorderStateIndex.OFF;
     }
 
-    border.draw(g, w != w ? _lastCreatedRendererDimension : w, h != h ? _lastCreatedRendererDimension : h);
+    border.draw(g, w == -1 ? _lastCreatedRendererDimension : w, h == -1 ? _lastCreatedRendererDimension : h);
   }
 
   private function drawOnInteract(itemIndex:int):void {

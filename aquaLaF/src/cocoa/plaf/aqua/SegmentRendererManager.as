@@ -25,12 +25,11 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     super(laf.getTextFormat(TextFormatId.SYSTEM), border.contentInsets);
   }
 
-  override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics,
-                                        w:Number, h:Number, x:Number, y:Number):void {
+  override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:int, h:int, x:Number, y:Number):void {
     draw(itemIndex, g, _lastCreatedRendererDimension, h, false, _selectionModel.isItemSelected(itemIndex));
   }
 
-  private function draw(itemIndex:int, g:Graphics, w:Number, h:Number, selecting:Boolean, selected:Boolean):void {
+  private function draw(itemIndex:int, g:Graphics, w:int, h:int, selecting:Boolean, selected:Boolean):void {
     const offset:int = selecting ? (selected ? BorderStateIndex.ON_SELECTING : BorderStateIndex.OFF_SELECTING) : (selected ? BorderStateIndex.ON : BorderStateIndex.OFF);
     const computedSepatatorIndex:int = separatorIndex + (offset % 2);
 
