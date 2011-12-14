@@ -56,6 +56,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/cocoa-mx/pom.xml" />
+        <option value="$PROJECT_DIR$/migLayout/pom.xml" />
       </set>
     </option>
   </component>

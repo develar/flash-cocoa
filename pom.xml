@@ -31,18 +31,8 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
-        <module>migLayout</module>
         <module>foundation</module>
         <module>collections</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>withMigLayout</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <modules>
-        <module>migLayout</module>
       </modules>
     </profile>
   </profiles>
