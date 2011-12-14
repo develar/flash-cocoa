@@ -104,10 +104,6 @@ public class SpriteBackedView extends Sprite implements View {
     return (flags & HAS_BASELINE) != 0;
   }
 
-  public function getPixelUnitFactor(isHor:Boolean):Number {
-    return 1;
-  }
-
   public function get horizontalScreenDPI():Number {
     return PlatformDefaults.defaultDPI;
   }

@@ -16,6 +16,10 @@ public class Container extends SpriteBackedView implements RootContentView {
   public function Container() {
     mouseEnabled = false;
   }
+
+  public function getPixelUnitFactor(isHor:Boolean):Number {
+    return 1;
+  }
   
   private var _border:Border;
   public function set border(value:Border):void {

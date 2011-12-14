@@ -35,9 +35,7 @@ public class Panel extends Window {
     }
     
     _emptyText = value;
-    if (skin != null) {
-      //skin.invalidate();
-    }
+    invalidateProperties();
   }
 
   private var _paneHid:ISignal = new Signal(Panel);

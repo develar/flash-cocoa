@@ -254,6 +254,10 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
       }
     }
     else {
+      if (_selectedIndices == null) {
+        _selectedIndices = new Vector.<int>();
+      }
+
       if (value) {
         selectedIndices[selectedIndices.length] = index;
       }

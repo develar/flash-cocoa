@@ -57,10 +57,6 @@ public class Window extends TitledComponent implements TitledPane, LookAndFeelPr
       mySkin.toolbar = toolbar;
     }
 
-    if (_contentView != null) {
-      mySkin.contentView = _contentView;
-    }
-
     super.skinAttached();
   }
 
