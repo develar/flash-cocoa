@@ -23,6 +23,7 @@ import net.miginfocom.layout.UnitValue;
 use namespace ui;
 
 public class ToolWindowManager {
+  private const columnConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(5, true);
   private var toolWindows:Vector.<SegmentedControl> = new Vector.<SegmentedControl>(4, true);
 
   public function registerToolWindow(item:PaneItem, side:int, opened:Boolean = false):void {
@@ -50,6 +51,7 @@ public class ToolWindowManager {
       tabBar.selectionChanged.add(paneLabelBarSelectionChanged);
 
       var cc:CC = new CC();
+      cc.vertical.grow = 100;
       cc.cellX = side == MigConstants.RIGHT ? 4 : 0;
       cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 1 : side == MigConstants.TOP ? 0 : 3;
       tabBar.constraints = cc;
@@ -58,6 +60,8 @@ public class ToolWindowManager {
       if (_container != null) {
         _container.addSubview(tabBar);
       }
+
+      columnConstraints[cc.cellX].size = null;
     }
     else {
       dataSource = ListViewModifiableDataSource(tabBar.dataSource);
@@ -71,6 +75,7 @@ public class ToolWindowManager {
 
   private var _container:RootContentView;
   public function set container(value:RootContentView):void {
+    assert(_container == null);
     _container = value;
 
     for each (var tabBar:SegmentedControl in toolWindows) {
@@ -80,27 +85,15 @@ public class ToolWindowManager {
     }
 
     var layout:MigLayout = new MigLayout();
-    var columnConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(5, true);
     var i:int = 0;
-    var constraint:DimConstraint;
     for (; i < 5; i++) {
-      constraint = new DimConstraint();
-      columnConstraints[i] = constraint;
-      constraint.grow = 100; // ResizeConstraint.WEIGHT_100
-      if (i != 2) {
-        constraint.size = BoundSize.ZERO_PIXEL;
-      }
+      columnConstraints[i] = createDimConstraint(i == 2);
     }
 
     var rowConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(3, true);
     i = 0;
     for (; i < 3; i++) {
-      constraint = new DimConstraint();
-      rowConstraints[i] = constraint;
-      constraint.grow = 100; // ResizeConstraint.WEIGHT_100
-      if (i != 1) {
-        constraint.size = BoundSize.ZERO_PIXEL;
-      }
+      rowConstraints[i] = createDimConstraint(i == 1);
     }
 
     var lc:LC = new LC();
@@ -117,6 +110,18 @@ public class ToolWindowManager {
     layout.setColumnConstraints(columnConstraints);
     layout.setRowConstraints(rowConstraints);
     _container.layout = layout;
+  }
+
+  private static function createDimConstraint(isContentCell:Boolean):DimConstraint {
+    var constraint:DimConstraint = new DimConstraint();
+    if (isContentCell) {
+      constraint.grow = 100; // ResizeConstraint.WEIGHT_100
+    }
+    else {
+      constraint.size = BoundSize.ZERO_PIXEL;
+    }
+
+    return constraint;
   }
 
   private function paneLabelBarSelectionChanged(added:Vector.<int>, removed:Vector.<int>):void {

@@ -12,6 +12,8 @@ import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
 public class SegmentedControl extends CollectionBody implements Injectable, ListSelectionModel {
+  private var border:Border;
+
   private static function isEmpty(v:Vector.<int>):Boolean {
     return v == null || v.length == 0;
   }
@@ -187,7 +189,6 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     return mode == SelectionMode.ONE ? selectedIndex == index : (!isEmpty(selectedIndices) && selectedIndices.indexOf(index) != -1);
   }
 
-
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     super.addToSuperview(displayObjectContainer, laf, superview);
 
@@ -209,6 +210,11 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
       mode = SelectionMode.NONE;
     }
 
+    border = laf.getBorder(_lafKey + ".b", true);
+    if (border != null) {
+      layout.insets = border.contentInsets;
+    }
+
     layout.rendererManager = rendererManager;
     layout.dataSource = dataSource;
     layout.container = this;
@@ -219,6 +225,11 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
   }
 
   override protected function draw(w:int, h:int):void {
+    if (border != null) {
+      graphics.clear();
+      border.draw(graphics, w, h);
+    }
+
     layout.layout(w, h);
   }
 

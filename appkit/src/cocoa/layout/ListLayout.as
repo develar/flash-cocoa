@@ -21,19 +21,19 @@ internal class ListLayout implements CollectionLayout {
   }
 
   public final function getMinimumWidth(hHint:int):int {
-    return isVertical ? _dimension == -1 ? 0 : _dimension : 0;
+    return isVertical && _dimension != -1 ? _dimension + _insets.width : _insets.width;
   }
 
   public final function getMinimumHeight(wHint:int):int {
-    return isVertical ? 0 : _dimension == -1 ? 0 : _dimension;
+    return !isVertical && _dimension != -1 ? _dimension + _insets.height : _insets.height;
   }
 
   public final function getMaximumWidth(hHint:int):int {
-    return isVertical && _dimension != -1 ? _dimension : 32767;
+    return isVertical && _dimension != -1 ? _dimension + _insets.width : 32767;
   }
 
   public final function getMaximumHeight(wHint:int):int {
-    return !isVertical && _dimension != -1 ? _dimension : 32767;
+    return !isVertical && _dimension != -1 ? _dimension + _insets.height : 32767;
   }
 
   protected var _container:SegmentedControl;
