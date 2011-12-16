@@ -8,7 +8,6 @@ import flash.errors.IllegalOperationError;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
-import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * getPreferredWidth/getPreferredHeight are not declared as abstract because some user component can be intended for works only with "fill" constraints
@@ -102,14 +101,6 @@ public class SpriteBackedView extends Sprite implements View {
 
   public final function get hasBaseline():Boolean {
     return (flags & HAS_BASELINE) != 0;
-  }
-
-  public function get horizontalScreenDPI():Number {
-    return PlatformDefaults.defaultDPI;
-  }
-
-  public function get verticalScreenDPI():Number {
-    return PlatformDefaults.defaultDPI;
   }
 
   public function get visualPadding():Vector.<Number> {

@@ -10,6 +10,7 @@ import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ContainerWrappers;
 import net.miginfocom.layout.LayoutUtil;
+import net.miginfocom.layout.PlatformDefaults;
 
 [DefaultProperty("subviews")]
 public class Container extends SpriteBackedView implements RootContentView {
@@ -119,16 +120,24 @@ public class Container extends SpriteBackedView implements RootContentView {
     return _subviews.length;
   }
 
+  public function get horizontalScreenDPI():Number {
+    return PlatformDefaults.defaultDPI;
+  }
+
+  public function get verticalScreenDPI():Number {
+    return PlatformDefaults.defaultDPI;
+  }
+
   public function get leftToRight():Boolean {
     return true;
   }
 
   public function get screenLocationX():Number {
-    return localToGlobal(SharedPoint.createPoint(this)).x;
+    return localToGlobal(SharedPoint.emptyPoint).x;
   }
 
   public function get screenLocationY():Number {
-    return localToGlobal(SharedPoint.createPoint(this)).y;
+    return localToGlobal(SharedPoint.emptyPoint).y;
   }
 
   public function get screenWidth():Number {

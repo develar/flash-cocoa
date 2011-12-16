@@ -7,7 +7,6 @@ import flash.errors.IllegalOperationError;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
-import net.miginfocom.layout.PlatformDefaults;
 
 [Abstract]
 internal class ObjectBackedView implements View {
@@ -84,14 +83,6 @@ internal class ObjectBackedView implements View {
 
   public function get hasBaseline():Boolean {
     return false;
-  }
-
-  public function get horizontalScreenDPI():Number {
-    return PlatformDefaults.defaultDPI;
-  }
-
-  public function get verticalScreenDPI():Number {
-    return PlatformDefaults.defaultDPI;
   }
 
   public function get visualPadding():Vector.<Number> {

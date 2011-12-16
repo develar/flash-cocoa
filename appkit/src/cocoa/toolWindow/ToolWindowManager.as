@@ -15,7 +15,7 @@ import flash.errors.IllegalOperationError;
 
 import net.miginfocom.layout.BoundSize;
 import net.miginfocom.layout.CC;
-import net.miginfocom.layout.DimConstraint;
+import net.miginfocom.layout.CellConstraint;
 import net.miginfocom.layout.LC;
 import net.miginfocom.layout.MigConstants;
 import net.miginfocom.layout.UnitValue;
@@ -23,7 +23,9 @@ import net.miginfocom.layout.UnitValue;
 use namespace ui;
 
 public class ToolWindowManager {
-  private const columnConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(5, true);
+  private static const SET_COUNT:int = 5;
+
+  private const columnConstraints:Vector.<CellConstraint> = new Vector.<CellConstraint>(SET_COUNT, true);
   private var toolWindows:Vector.<SegmentedControl> = new Vector.<SegmentedControl>(4, true);
 
   public function registerToolWindow(item:PaneItem, side:int, opened:Boolean = false):void {
@@ -53,7 +55,7 @@ public class ToolWindowManager {
       var cc:CC = new CC();
       cc.vertical.grow = 100;
       cc.cellX = side == MigConstants.RIGHT ? 4 : 0;
-      cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 1 : side == MigConstants.TOP ? 0 : 3;
+      cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 2 : side == MigConstants.TOP ? 0 : 4;
       tabBar.constraints = cc;
       toolWindows[side] = tabBar;
 
@@ -86,14 +88,14 @@ public class ToolWindowManager {
 
     var layout:MigLayout = new MigLayout();
     var i:int = 0;
-    for (; i < 5; i++) {
-      columnConstraints[i] = createDimConstraint(i == 2);
+    for (; i < SET_COUNT; i++) {
+      columnConstraints[i] = createDimConstraint(i);
     }
 
-    var rowConstraints:Vector.<DimConstraint> = new Vector.<DimConstraint>(3, true);
+    var rowConstraints:Vector.<CellConstraint> = new Vector.<CellConstraint>(SET_COUNT, true);
     i = 0;
-    for (; i < 3; i++) {
-      rowConstraints[i] = createDimConstraint(i == 1);
+    for (; i < SET_COUNT; i++) {
+      rowConstraints[i] = createDimConstraint(i);
     }
 
     var lc:LC = new LC();
@@ -113,13 +115,17 @@ public class ToolWindowManager {
     _container.layout = layout;
   }
 
-  private static function createDimConstraint(isContentCell:Boolean):DimConstraint {
-    var constraint:DimConstraint = new DimConstraint();
-    if (isContentCell) {
+  private static function createDimConstraint(index:int):CellConstraint {
+    var constraint:CellConstraint = new CellConstraint();
+    if (index == 2) {
       constraint.grow = 100; // ResizeConstraint.WEIGHT_100
     }
     else {
-      //constraint.size = BoundSize.ZERO_PIXEL;
+      // cell for panel has zero size by default
+      if (index == 1 || index == 3) {
+        constraint.size = BoundSize.ZERO_PIXEL;
+      }
+      constraint.fill = true;
     }
 
     return constraint;
@@ -148,6 +154,20 @@ public class ToolWindowManager {
       createPaneView(paneItem, side);
     }
     Panel(paneItem.view).visible = show;
+
+    if (show) {
+      var columnConstraint:CellConstraint = columnConstraints[sideToColumn(side)];
+      if (columnConstraint.size == BoundSize.ZERO_PIXEL) {
+        columnConstraint.size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));
+      }
+    }
+    else if (toolWindows[side].isSelectionEmpty) {
+      columnConstraints[sideToColumn(side)].size = BoundSize.ZERO_PIXEL;
+    }
+  }
+
+  private static function sideToColumn(side:int):int {
+    return side == MigConstants.RIGHT ? 3 : 1;
   }
 
   private function createPaneView(paneItem:PaneItem, side:int):void {
@@ -162,8 +182,8 @@ public class ToolWindowManager {
     pane.title = paneItem.localizedTitle;
     
     var cc:CC = new CC();
-    cc.cellX = side == MigConstants.RIGHT ? 3 : 1;
-    cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 1 : side == MigConstants.TOP ? 1 : 2;
+    cc.cellX = sideToColumn(side);
+    cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 2 : side == MigConstants.TOP ? 1 : 3;
     pane.constraints = cc;
 
     columnConstraints[cc.cellX].size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));
