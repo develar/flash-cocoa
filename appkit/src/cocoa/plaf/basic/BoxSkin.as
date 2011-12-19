@@ -6,7 +6,7 @@ import cocoa.plaf.Skin;
 public class BoxSkin extends Container implements Skin {
   private var _component:SkinnableView;
 
-  public final function get hostComponent():SkinnableView {
+  public final function get component():SkinnableView {
     return _component;
   }
 

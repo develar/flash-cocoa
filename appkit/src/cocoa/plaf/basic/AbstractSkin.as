@@ -21,9 +21,9 @@ import org.flyti.plexus.events.InjectorEvent;
 public class AbstractSkin extends ControlView implements Skin {
   protected var _laf:LookAndFeel;
 
-  private var _hostComponent:SkinnableView;
-  public final function get hostComponent():SkinnableView {
-    return _hostComponent;
+  private var _component:SkinnableView;
+  public final function get component():SkinnableView {
+    return _component;
   }
 
   public final function get laf():LookAndFeel {
@@ -31,23 +31,23 @@ public class AbstractSkin extends ControlView implements Skin {
   }
 
   protected final function getObject(key:String):Object {
-    return _laf.getObject(_hostComponent.lafKey + "." + key, false);
+    return _laf.getObject(_component.lafKey + "." + key, false);
   }
 
   protected final function getBorder(key:String = "b"):Border {
-    return _laf.getBorder(_hostComponent.lafKey + "." + key, false);
+    return _laf.getBorder(_component.lafKey + "." + key, false);
   }
 
   protected final function getNullableBorder(key:String = "b"):Border {
-    return _laf.getBorder(_hostComponent.lafKey + "." + key, true);
+    return _laf.getBorder(_component.lafKey + "." + key, true);
   }
 
   protected final function getIcon(key:String):Icon {
-    return _laf.getIcon(_hostComponent.lafKey + "." + key);
+    return _laf.getIcon(_component.lafKey + "." + key);
   }
 
   protected final function getFactory(key:String, nullable:Boolean = false):IFactory {
-    return _laf.getFactory(_hostComponent.lafKey + "." + key, nullable);
+    return _laf.getFactory(_component.lafKey + "." + key, nullable);
   }
 
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
@@ -56,12 +56,12 @@ public class AbstractSkin extends ControlView implements Skin {
   }
 
   public function attach(component:SkinnableView):void {
-    _hostComponent = component;
+    _component = component;
 
     // Скин, в отличии от других элементов, также может содержать local event map — а контейнер с инжекторами мы находим посредством баблинга,
     // поэтому отослать InjectorEvent мы должны от самого скина и только после того, как он будет добавлен в display list.
-    if (_hostComponent is Injectable) {
-      dispatchEvent(new InjectorEvent(_hostComponent, _hostComponent.linkId));
+    if (_component is Injectable) {
+      dispatchEvent(new InjectorEvent(_component, _component.linkId));
     }
 
     doInit();

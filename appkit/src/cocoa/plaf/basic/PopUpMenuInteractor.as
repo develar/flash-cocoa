@@ -70,7 +70,7 @@ public class PopUpMenuInteractor extends AbstractListInteractor {
       close();
     }
 
-    popUpButton = PopUpButton(Skin(event.currentTarget).hostComponent);
+    popUpButton = PopUpButton(Skin(event.currentTarget).component);
     menu = popUpButton.menu;
 
     var popUpButtonSkin:DisplayObject = DisplayObject(popUpButton.skin);

@@ -7,7 +7,7 @@ import flash.display.Sprite;
 
 public class BasicTableViewSkin extends AbstractCollectionViewSkin implements TableViewSkin {
   override protected function createDocumentView():Viewport {
-    return new TableBody(TableView(hostComponent), laf);
+    return new TableBody(TableView(component), laf);
   }
 
   public function get bodyHitArea():Sprite {

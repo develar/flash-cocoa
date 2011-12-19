@@ -42,11 +42,11 @@ public class MenuSkin extends AbstractSkin implements IItemRendererOwner {
     itemGroup.y = _border.contentInsets.top;
     addChild(itemGroup);
 
-    hostComponent.uiPartAdded("itemGroup", itemGroup);
+    component.uiPartAdded("itemGroup", itemGroup);
   }
 
   public function itemToLabel(item:Object):String {
-    return Menu(hostComponent).labelFunction == null ? String(item) : Menu(hostComponent).labelFunction(item);
+    return Menu(component).labelFunction == null ? String(item) : Menu(component).labelFunction(item);
   }
 
   public function updateRenderer(renderer:IVisualElement, itemIndex:int, data:Object):void {

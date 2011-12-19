@@ -28,10 +28,6 @@ internal class ObjectBackedView implements View {
     _constraints = ConstraintParser.parseComponentConstraint(value);
   }
 
-  public function get component():Object {
-    throw new IllegalOperationError("Abstract");
-  }
-
   public function get actualWidth():int {
     throw new IllegalOperationError("Abstract");
   }

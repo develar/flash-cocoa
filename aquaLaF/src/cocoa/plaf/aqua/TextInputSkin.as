@@ -34,7 +34,7 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
     configureAndAddTextDisplay();
     //documentView.x = border.contentInsets.left;
     //documentView.y = border.contentInsets.top;
-    hostComponent.uiPartAdded("textDisplay", textDisplay);
+    component.uiPartAdded("textDisplay", textDisplay);
   }
 
   protected function configureAndAddTextDisplay():void {

@@ -42,10 +42,6 @@ public class SpriteBackedView extends Sprite implements View {
     _constraints = ConstraintParser.parseComponentConstraint(value);
   }
 
-  public function get component():Object {
-    return this;
-  }
-
   protected var _actualWidth:int = -1;
   public function get actualWidth():int {
     return _actualWidth;

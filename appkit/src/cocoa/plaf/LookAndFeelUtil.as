@@ -23,8 +23,8 @@ public final class LookAndFeelUtil {
           return laf;
         }
       }
-      else if (p is Skin && Skin(p).hostComponent is LookAndFeelProvider) {
-        return LookAndFeelProvider(Skin(p).hostComponent).laf;
+      else if (p is Skin && Skin(p).component is LookAndFeelProvider) {
+        return LookAndFeelProvider(Skin(p).component).laf;
       }
 
       p = p.parent;

@@ -37,7 +37,7 @@ public class WindowSkin extends AbstractWindowSkin implements DialogSkin {
       //bottomBarGroupLayout.gap = _bottomBarStyle == BottomBarStyle.application ? 8 : 12;
       //controlBar.layout = bottomBarGroupLayout;
 
-      hostComponent.uiPartAdded("controlBar", controlBar);
+      component.uiPartAdded("controlBar", controlBar);
       addChildAt(controlBar, 0);
     }
   }

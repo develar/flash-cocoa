@@ -5,10 +5,10 @@ import cocoa.plaf.basic.BoxSkin;
 
 public class ToolbarSkin extends BoxSkin {
   override public function attach(component:SkinnableView):void {
-    super.attach(component);
+    border = laf.getBorder(component.lafKey + ".b", true);
+    this.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(component).small);
 
-    border = laf.getBorder(hostComponent.lafKey + ".b", true);
-    this.laf = AquaLookAndFeel(laf).createWindowFrameLookAndFeel(Toolbar(hostComponent).small);
+    super.attach(component);
   }
 }
 }

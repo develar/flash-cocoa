@@ -129,15 +129,15 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
     }
     addChild(DisplayObject(_contentView));
 
-    if (Window(hostComponent).resizable && resizeGripper == null) {
+    if (Window(component).resizable && resizeGripper == null) {
       resizeGripper = new resizeGripperClass();
       addDisplayObject(resizeGripper);
     }
 
-    if (Window(hostComponent).closable) {
+    if (Window(component).closable) {
       closeButton = new PushButton();
       closeButton.lafSubkey = "TitleBar";
-      closeButton.action = Window(hostComponent).close;
+      closeButton.action = Window(component).close;
       var closeButtonSkin:DisplayObject = DisplayObject(closeButton.createView(laf));
       if (Capabilities.os.indexOf("Mac OS") != -1) {
         closeButtonSkin.x = 4;
@@ -162,7 +162,7 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
         return;
       }
 
-      if (Window(hostComponent).resizable && mouseX >= resizeGripper.x && mouseY >= resizeGripper.y) {
+      if (Window(component).resizable && mouseX >= resizeGripper.x && mouseY >= resizeGripper.y) {
         if (resizer == null) {
           resizer = new WindowResizer();
         }
@@ -225,12 +225,12 @@ public class AbstractWindowSkin extends AbstractSkin implements cocoa.plaf.Windo
     _contentView.move(contentFrameInsets.left + contentLayoutInsets.left, contentFrameInsets.top + contentLayoutInsets.top);
     _contentView.setActualSize(w - insetsWidth, h - insetsHeight);
 
-    if (Window(hostComponent).resizable) {
+    if (Window(component).resizable) {
       resizeGripper.x = w - 11 - 4;
       resizeGripper.y = h - 11 - 4;
     }
 
-    if (Window(hostComponent).closable) {
+    if (Window(component).closable) {
       var closeButtonSkin:IUIComponent = closeButton.skin;
       closeButtonSkin.setActualSize(closeButtonSkin.getExplicitOrMeasuredWidth(), closeButtonSkin.getExplicitOrMeasuredHeight());
       if (Capabilities.os.indexOf("Mac OS") == -1) {

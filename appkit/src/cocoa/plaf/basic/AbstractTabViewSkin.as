@@ -35,7 +35,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
     if (contentView != null) {
       pw = contentView.getPreferredHeight(wHint);
     }
-    var toolbar:Toolbar = TabView(hostComponent).toolbar;
+    var toolbar:Toolbar = TabView(component).toolbar;
     if (toolbar != null) {
       pw += toolbar.getPreferredHeight(wHint);
     }
@@ -55,15 +55,15 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
 
     if (tabBar == null) {
       tabBar = new SegmentedControl();
-      const tabBarLafKey:String = hostComponent.lafKey + ".tabBar";
+      const tabBarLafKey:String = component.lafKey + ".tabBar";
       tabBar.lafKey = tabBarLafKey;
 
       tabBarPlacement = laf.getInt(tabBarLafKey + ".placement");
       tabBar.addToSuperview(this, laf, this);
-      hostComponent.uiPartAdded("segmentedControl", tabBar);
+      component.uiPartAdded("segmentedControl", tabBar);
     }
 
-    var toolbar:Toolbar = TabView(hostComponent).toolbar;
+    var toolbar:Toolbar = TabView(component).toolbar;
     if (toolbar != null) {
       toolbar.addToSuperview(this, laf, this);
     }
@@ -104,7 +104,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
     }
     tabBar.validate();
 
-    var toolbar:Toolbar = TabView(hostComponent).toolbar;
+    var toolbar:Toolbar = TabView(component).toolbar;
     var toolbarHeight:int = 0;
     if (toolbar != null) {
       toolbarHeight = toolbar.getPreferredHeight();
