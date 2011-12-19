@@ -7,5 +7,9 @@ public final class Vectors {
   public static function sortAscending(x:int, y:int):Number {
     return x - y;
   }
+
+  public static function isEmpty(v:Vector.<int>):Boolean {
+    return v == null || v.length == 0;
+  }
 }
 }

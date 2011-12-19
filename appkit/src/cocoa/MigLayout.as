@@ -57,7 +57,7 @@ public class MigLayout extends AbstractMigLayout {
   public function preferredLayoutHeight(sizeType:int):Number {
     checkCache();
 
-    return LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType) + _container.insets.height;
+    return LayoutUtil.getSizeSafe(grid != null ? grid.height : null, sizeType) + _container.insets.height;
   }
 
   /** Check if something has changed and if so recreate it to the cached objects.

@@ -1,7 +1,7 @@
 package cocoa.util {
 import flash.utils.ByteArray;
 
-public class Strings {
+public final class Strings {
   private static const MAX_PATHNAME_LENGTH:uint = 20;
   private static const SUMMARY_LENGTH:uint = 150;
 

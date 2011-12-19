@@ -4,6 +4,7 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
+import cocoa.util.Vectors;
 
 import flash.display.DisplayObjectContainer;
 
@@ -13,10 +14,6 @@ import org.osflash.signals.Signal;
 
 public class SegmentedControl extends CollectionBody implements Injectable, ListSelectionModel {
   private var border:Border;
-
-  private static function isEmpty(v:Vector.<int>):Boolean {
-    return v == null || v.length == 0;
-  }
 
   override public function getMaximumWidth(hHint:int = -1):int {
     return layout.getMaximumWidth(hHint);
@@ -95,7 +92,7 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
   }
 
   public function get isSelectionEmpty():Boolean {
-    return mode == SelectionMode.ONE ? _selectedIndex == -1 : isEmpty(selectedIndices);
+    return mode == SelectionMode.ONE ? _selectedIndex == -1 : Vectors.isEmpty(selectedIndices);
   }
 
   private var _selectedIndices:Vector.<int>;
@@ -113,8 +110,8 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
     var i:int;
     var n:int;
 
-    if (!isEmpty(selectedIndices)) {
-      if (isEmpty(value)) {
+    if (!Vectors.isEmpty(selectedIndices)) {
+      if (Vectors.isEmpty(value)) {
         // Going to a null selection, remove all
         removedItems = _selectedIndices;
       }
@@ -135,7 +132,7 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
         }
       }
     }
-    else if (!isEmpty(value)) {
+    else if (!Vectors.isEmpty(value)) {
       // Going from a null selection, add all
       addedItems = value;
     }
@@ -186,7 +183,7 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
   }
 
   public function isItemSelected(index:int):Boolean {
-    return mode == SelectionMode.ONE ? selectedIndex == index : (!isEmpty(selectedIndices) && selectedIndices.indexOf(index) != -1);
+    return mode == SelectionMode.ONE ? selectedIndex == index : (!Vectors.isEmpty(selectedIndices) && selectedIndices.indexOf(index) != -1);
   }
 
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
@@ -230,7 +227,7 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
       border.draw(graphics, w, h);
     }
 
-    layout.layout(w, h);
+    layout.draw(w, h);
   }
 
   public function setSelected(index:int, value:Boolean):void {

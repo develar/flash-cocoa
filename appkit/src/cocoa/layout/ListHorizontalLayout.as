@@ -1,14 +1,16 @@
 package cocoa.layout {
 import cocoa.LayoutState;
-import cocoa.LayoutState;
 
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
   override public function getPreferredWidth(hHint:int):int {
     if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
-      _preferredWidth = initialDrawItems(10000, _dimension == -1 ? hHint == -1 ? 10000 : hHint : _dimension);
+      preferredWidth = initialDrawItems(10000, _dimension == -1 ? hHint == -1 ? 10000 : hHint : _dimension);
+    }
+    else {
+      processPending();
     }
 
-    return _preferredWidth;
+    return preferredWidth;
   }
 
   override public function getPreferredHeight(wHint:int):int {

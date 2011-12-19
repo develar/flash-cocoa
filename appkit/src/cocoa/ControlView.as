@@ -18,6 +18,7 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
     }
 
     flags &= ~LayoutState.DISPLAY_INVALID;
+    flags &= ~LayoutState.SIZE_INVALID;
     draw(_actualWidth, _actualHeight);
   }
 

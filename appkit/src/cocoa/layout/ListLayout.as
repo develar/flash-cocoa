@@ -6,6 +6,7 @@ import cocoa.ListViewModifiableDataSource;
 import cocoa.SegmentedControl;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
+import cocoa.util.Vectors;
 
 [Abstract]
 internal class ListLayout implements CollectionLayout {
@@ -13,8 +14,11 @@ internal class ListLayout implements CollectionLayout {
   
   protected var flags:uint;
 
-  protected var _preferredWidth:int;
-  protected var _preferredHeight:int;
+  private var pendingAddedIndices:Vector.<int>;
+  private var pendingRemovedIndices:Vector.<int>;
+
+  protected var preferredWidth:int;
+  protected var preferredHeight:int;
 
   private function get isVertical():Boolean {
     return (flags & VERTICAL) != 0;
@@ -93,7 +97,15 @@ internal class ListLayout implements CollectionLayout {
         modifiableDataSource.itemRemoved.add(itemRemoved);
       }
 
-      flags |= LayoutState.DISPLAY_INVALID;
+      invalidateDisplay();
+    }
+  }
+
+  private function invalidateDisplay():void {
+    flags |= LayoutState.DISPLAY_INVALID;
+
+    if (!Vectors.isEmpty(pendingAddedIndices)) {
+      pendingAddedIndices.length = 0;
     }
   }
 
@@ -103,7 +115,7 @@ internal class ListLayout implements CollectionLayout {
     }
 
     _rendererManager.removeRenderer(index, index == 0 ? _insets.left : NaN, _insets.top, isVertical ? _dimension : -1, isVertical ? -1 : _dimension);
-    _preferredWidth -= _rendererManager.lastCreatedRendererDimension;
+    preferredWidth -= _rendererManager.lastCreatedRendererDimension;
 
     _container.invalidateSize();
   }
@@ -113,8 +125,10 @@ internal class ListLayout implements CollectionLayout {
       return;
     }
 
-    _rendererManager.createAndLayoutRendererAt(index, NaN, _insets.top, isVertical ? _dimension : -1, isVertical ? -1 : _dimension, _insets.left, _gap);
-    _preferredWidth += _rendererManager.lastCreatedRendererDimension;
+    if (pendingAddedIndices == null) {
+      pendingAddedIndices = new Vector.<int>();
+    }
+    pendingAddedIndices[pendingAddedIndices.length] = index;
 
     _container.invalidateSize();
   }
@@ -135,7 +149,7 @@ internal class ListLayout implements CollectionLayout {
   }
 
   private function dataSourceReset():void {
-    flags |= LayoutState.DISPLAY_INVALID;
+    invalidateDisplay();
 
     _container.invalidateSize();
   }
@@ -159,16 +173,37 @@ internal class ListLayout implements CollectionLayout {
     throw new Error();
   }
 
-  public function layout(w:int, h:int):void {
-    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
+  protected final function processPending():Boolean {
+    var has:Boolean;
+    if (!Vectors.isEmpty(pendingAddedIndices)) {
+      for each (var itemIndex:int in pendingAddedIndices.sort(Vectors.sortAscending)) {
+        if (isVertical) {
+          _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, _dimension, -1, _insets.top, _gap);
+          preferredHeight += _rendererManager.lastCreatedRendererDimension;
+        }
+        else {
+          _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, -1, _dimension, _insets.left, _gap);
+          preferredWidth += _rendererManager.lastCreatedRendererDimension;
+        }
+      }
+
+      pendingAddedIndices.length = 0;
+      has = true;
+    }
+
+    return has;
+  }
+
+  public function draw(w:int, h:int):void {
+    if (processPending() || (flags & LayoutState.DISPLAY_INVALID) == 0) {
       return;
     }
 
     if (isVertical) {
-      initialDrawItems(h, w);
+      preferredHeight = initialDrawItems(h, w);
     }
     else {
-      initialDrawItems(w, h);
+      preferredWidth = initialDrawItems(w, h);
     }
   }
 

@@ -5,7 +5,7 @@ import cocoa.SegmentedControl;
 import cocoa.renderer.RendererManager;
 
 public interface CollectionLayout {
-  function layout(w:int, h:int):void;
+  function draw(w:int, h:int):void;
 
   function set rendererManager(rendererManager:RendererManager):void;
 
