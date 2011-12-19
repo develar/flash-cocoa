@@ -30,8 +30,12 @@ public class Box extends AbstractSkinnableView {
   }
 
   ui function contentViewAdded():void {
-    contentView.layout = _layout == null ? new MigLayout() : _layout;
+    contentView.layout = _layout == null ? createDefaultLayout() : _layout;
     contentView.subviews = _subviews;
+  }
+
+  protected function createDefaultLayout():MigLayout {
+    return new MigLayout();
   }
 }
 }

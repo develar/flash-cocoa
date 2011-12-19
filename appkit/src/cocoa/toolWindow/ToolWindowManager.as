@@ -100,7 +100,7 @@ public class ToolWindowManager {
 
     var lc:LC = new LC();
     lc.hideMode = 3;
-    var insets:Vector.<UnitValue> = new Vector.<UnitValue>(4);
+    var insets:Vector.<UnitValue> = new Vector.<UnitValue>(4, true);
     for (i = 0; i < 4; i++) {
       insets[i] = UnitValue.ZERO;
     }
