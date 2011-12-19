@@ -126,20 +126,23 @@ public class TextRendererManager implements RendererManager {
     line.y = y + (h - textInsets.bottom);
   }
 
-  public function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:int, h:int):void {
+  public final function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:int, h:int):void {
     var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
-    newEntry.dimension = _lastCreatedRendererDimension;
-    if (previousEntry == null) {
-      cells.addFirst(newEntry);
-    }
-    else {
-      cells.addAfter(previousEntry, newEntry);
-    }
-
+    finalizeEntryAddition(newEntry, previousEntry);
     previousEntry = newEntry;
   }
 
-  public function createAndLayoutRendererAt(itemIndex:int, x:Number, y:Number, w:Number, h:Number, startInset:Number, gap:Number):void {
+  private function finalizeEntryAddition(newEntry:TextLineEntry, prevEntry:TextLineEntry):void {
+    newEntry.dimension = _lastCreatedRendererDimension;
+    if (prevEntry == null) {
+      cells.addFirst(newEntry);
+    }
+    else {
+      cells.addAfter(prevEntry, newEntry);
+    }
+  }
+
+  public final function createAndLayoutRendererAt(itemIndex:int, x:Number, y:Number, w:int, h:int, startInset:int, gap:int):void {
     var prevEntry:TextLineEntry;
     const isChangeWidth:Boolean = w == -1;
     var e:TextLineEntry;
@@ -163,12 +166,7 @@ public class TextRendererManager implements RendererManager {
     }
     
     var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
-    if (prevEntry == null) {
-      cells.addFirst(newEntry);
-    }
-    else {
-      cells.addAfter(prevEntry, newEntry);
-    }
+    finalizeEntryAddition(newEntry, prevEntry);
 
     e = newEntry;
     while ((e = e.next) != null) {

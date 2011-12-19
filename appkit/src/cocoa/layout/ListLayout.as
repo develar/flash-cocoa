@@ -1,23 +1,23 @@
 package cocoa.layout {
 import cocoa.Insets;
+import cocoa.LayoutState;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewModifiableDataSource;
 import cocoa.SegmentedControl;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
 
-import flash.errors.IllegalOperationError;
-
 [Abstract]
 internal class ListLayout implements CollectionLayout {
-  protected var pendingAddedIndices:Vector.<int>;
-  protected var pendingRemovedIndices:Vector.<int>;
+  protected static const VERTICAL:uint = 1 << 0;
+  
+  protected var flags:uint;
 
   protected var _preferredWidth:int;
   protected var _preferredHeight:int;
 
-  protected function get isVertical():Boolean {
-    return false;
+  private function get isVertical():Boolean {
+    return (flags & VERTICAL) != 0;
   }
 
   public final function getMinimumWidth(hHint:int):int {
@@ -90,38 +90,37 @@ internal class ListLayout implements CollectionLayout {
       modifiableDataSource = _dataSource as ListViewModifiableDataSource;
       if (modifiableDataSource != null) {
         modifiableDataSource.itemAdded.add(itemAdded);
-        // currently, just reset
         modifiableDataSource.itemRemoved.add(itemRemoved);
       }
+
+      flags |= LayoutState.DISPLAY_INVALID;
     }
   }
 
-  protected function itemRemoved(item:Object, index:int):void {
-    if (_rendererManager.renderedItemCount > 0) {
-      if (pendingRemovedIndices == null) {
-        pendingRemovedIndices = new Vector.<int>();
-      }
-
-      pendingRemovedIndices.push(index);
+  private function itemRemoved(item:Object, index:int):void {
+    if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
+      return;
     }
+
+    _rendererManager.removeRenderer(index, index == 0 ? _insets.left : NaN, _insets.top, isVertical ? _dimension : -1, isVertical ? -1 : _dimension);
+    _preferredWidth -= _rendererManager.lastCreatedRendererDimension;
 
     _container.invalidateSize();
   }
 
-  protected function itemAdded(item:Object, index:int):void {
-    if (_rendererManager.renderedItemCount > 0) {
-      if (pendingAddedIndices == null) {
-        pendingAddedIndices = new Vector.<int>();
-      }
-
-      pendingAddedIndices.push(index);
+  private function itemAdded(item:Object, index:int):void {
+    if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
+      return;
     }
+
+    _rendererManager.createAndLayoutRendererAt(index, NaN, _insets.top, isVertical ? _dimension : -1, isVertical ? -1 : _dimension, _insets.left, _gap);
+    _preferredWidth += _rendererManager.lastCreatedRendererDimension;
 
     _container.invalidateSize();
   }
 
-  protected var _gap:Number = 0;
-  public function set gap(value:Number):void {
+  protected var _gap:int;
+  public function set gap(value:int):void {
     _gap = value;
   }
 
@@ -136,18 +135,14 @@ internal class ListLayout implements CollectionLayout {
   }
 
   private function dataSourceReset():void {
-    if (pendingAddedIndices != null) {
-      pendingAddedIndices.length = 0;
-    }
+    flags |= LayoutState.DISPLAY_INVALID;
 
     _container.invalidateSize();
   }
 
-  protected function doLayout(endPosition:int, effectiveDimension:int):void {
-    initialDrawItems(endPosition, effectiveDimension);
-  }
-
   protected function initialDrawItems(endPosition:int, effectiveDimension:int):int {
+    flags &= ~LayoutState.DISPLAY_INVALID;
+
     const startItemIndex:int = 0;
     const endItemIndex:int = _dataSource.itemCount;
     const newVisibleItemCount:int = endItemIndex - startItemIndex;
@@ -165,7 +160,16 @@ internal class ListLayout implements CollectionLayout {
   }
 
   public function layout(w:int, h:int):void {
-    throw new IllegalOperationError("Burn in hell, Adobe");
+    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
+      return;
+    }
+
+    if (isVertical) {
+      initialDrawItems(h, w);
+    }
+    else {
+      initialDrawItems(w, h);
+    }
   }
 
   public function getPreferredHeight(wHint:int):int {

@@ -1,34 +1,11 @@
 package cocoa.layout {
-import cocoa.util.Vectors;
+import cocoa.LayoutState;
+import cocoa.LayoutState;
 
 public class ListHorizontalLayout extends ListLayout implements CollectionLayout {
   override public function getPreferredWidth(hHint:int):int {
-    var itemIndex:int;
-    var isInitialDrawItems:Boolean = true;
-    const dimension:int = _dimension;
-
-    if (pendingRemovedIndices != null && pendingRemovedIndices.length > 0) {
-      for each (itemIndex in pendingRemovedIndices.sort(Vectors.sortDecreasing)) {
-        _rendererManager.removeRenderer(itemIndex, itemIndex == 0 ? _insets.left : NaN, _insets.top, NaN, dimension);
-        _preferredWidth -= _rendererManager.lastCreatedRendererDimension;
-      }
-
-      pendingRemovedIndices.length = 0;
-      isInitialDrawItems = false;
-    }
-
-    if (pendingAddedIndices != null && pendingAddedIndices.length > 0) {
-      for each (itemIndex in pendingAddedIndices.sort(Vectors.sortAscending)) {
-        _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, NaN, dimension, 0, 0);
-        _preferredWidth += _rendererManager.lastCreatedRendererDimension;
-      }
-
-      pendingAddedIndices.length = 0;
-      isInitialDrawItems = false;
-    }
-
-    if (isInitialDrawItems) {
-      _preferredWidth = initialDrawItems(10000, dimension);
+    if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
+      _preferredWidth = initialDrawItems(10000, _dimension == -1 ? hHint == -1 ? 10000 : hHint : _dimension);
     }
 
     return _preferredWidth;
@@ -36,10 +13,6 @@ public class ListHorizontalLayout extends ListLayout implements CollectionLayout
 
   override public function getPreferredHeight(wHint:int):int {
     return _dimension;
-  }
-
-  override public function layout(w:int, h:int):void {
-    doLayout(w, h);
   }
 
   override protected function drawItems(startPosition:int, endPosition:int, startItemIndex:int, endItemIndex:int, effectiveDimension:int, head:Boolean):int {

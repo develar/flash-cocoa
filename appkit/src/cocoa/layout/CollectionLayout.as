@@ -13,7 +13,7 @@ public interface CollectionLayout {
 
   function set container(value:SegmentedControl):void;
 
-  function set gap(gap:Number):void;
+  function set gap(gap:int):void;
 
   function setSelected(itemIndex:int, relatedIndex:int, value:Boolean):void;
 
