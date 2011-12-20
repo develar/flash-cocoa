@@ -1,7 +1,5 @@
 package org.flyti.assetBuilder;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import javax.media.jai.JAI;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,14 +25,14 @@ public class ImageRetriever {
   private AppleAssetNameComparator appleAssetNameComparator;
   private AssetNameComparatorImpl assetNameComparator;
 
-  public BufferedImage[] getImages(String key) throws MojoExecutionException, IOException {
+  public BufferedImage[] getImages(String key) throws IOException {
     if (assetNameComparator == null) {
       assetNameComparator = new AssetNameComparatorImpl();
     }
     return getImages(key, assetNameComparator);
   }
 
-  public BufferedImage getImage(String key) throws MojoExecutionException, IOException {
+  public BufferedImage getImage(String key) throws IOException {
     for (File sourceDirectory : sources) {
       String[] files = directoryContentCache.get(sourceDirectory);
       if (files == null) {
@@ -49,18 +47,18 @@ public class ImageRetriever {
       }
     }
 
-    throw new MojoExecutionException("Can't find image for " + key);
+    throw new IOException("Can't find image for " + key);
   }
 
   // Ищет изображения как они в Apple app resources
-  public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws MojoExecutionException, IOException {
+  public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws IOException {
     if (appleAssetNameComparator == null) {
       appleAssetNameComparator = new AppleAssetNameComparator();
     }
     return getImages(appleResource, appleAssetNameComparator);
   }
 
-  private BufferedImage[] getImages(final String name, AssetNameComparator assetNameComparator) throws MojoExecutionException, IOException {
+  private BufferedImage[] getImages(final String name, AssetNameComparator assetNameComparator) throws IOException {
     for (File sourceDirectory : sources) {
       if (sourceDirectory.isFile()) {
         continue;
@@ -125,7 +123,7 @@ public class ImageRetriever {
       }
     }
 
-    throw new MojoExecutionException("Can't find image for " + name);
+    throw new IOException("Can't find image for " + name);
   }
 
   private static int binarySearch(String[] list, String prefix) {

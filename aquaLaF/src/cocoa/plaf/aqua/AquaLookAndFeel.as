@@ -72,7 +72,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["SwatchGrid.b"] = data["ListView.b"] = data["TextArea.b"] = data["TableView.b"] = data["small.TableView.b"] = new BezelBorder();
 
-    data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, this, "SegmentItem");
+    data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, this, "Segment");
 
     data["TabView"] = TabViewSkin;
     //data["TabView.borderless"] = BorderlessTabViewSkin;
