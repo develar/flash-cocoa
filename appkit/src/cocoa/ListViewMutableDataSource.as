@@ -1,7 +1,7 @@
 package cocoa {
 import org.osflash.signals.ISignal;
 
-public interface ListViewModifiableDataSource extends ListViewDataSource {
+public interface ListViewMutableDataSource extends ListViewDataSource {
   function get itemAdded():ISignal;
   function get itemRemoved():ISignal;
 

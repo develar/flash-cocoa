@@ -1,6 +1,6 @@
 package cocoa.toolWindow {
 import cocoa.ListViewDataSource;
-import cocoa.ListViewModifiableDataSource;
+import cocoa.ListViewMutableDataSource;
 import cocoa.MigLayout;
 import cocoa.Panel;
 import cocoa.RootContentView;
@@ -41,7 +41,7 @@ public class ToolWindowManager {
     }
     
     tabBar = toolWindows[side];
-    var dataSource:ListViewModifiableDataSource;
+    var dataSource:ListViewMutableDataSource;
     if (tabBar == null) {
       tabBar = new SegmentedControl();
       tabBar.mode = SelectionMode.ANY;
@@ -66,7 +66,7 @@ public class ToolWindowManager {
       //columnConstraints[cc.cellX].size = null;
     }
     else {
-      dataSource = ListViewModifiableDataSource(tabBar.dataSource);
+      dataSource = ListViewMutableDataSource(tabBar.dataSource);
     }
 
     dataSource.addItem(item);

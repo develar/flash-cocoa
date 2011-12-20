@@ -2,7 +2,7 @@ package cocoa.layout {
 import cocoa.Insets;
 import cocoa.LayoutState;
 import cocoa.ListViewDataSource;
-import cocoa.ListViewModifiableDataSource;
+import cocoa.ListViewMutableDataSource;
 import cocoa.SegmentedControl;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
@@ -73,11 +73,11 @@ internal class ListLayout implements CollectionLayout {
       return;
     }
 
-    var modifiableDataSource:ListViewModifiableDataSource;
+    var modifiableDataSource:ListViewMutableDataSource;
     if (_dataSource != null) {
       _dataSource.reset.remove(dataSourceReset);
 
-      modifiableDataSource = _dataSource as ListViewModifiableDataSource;
+      modifiableDataSource = _dataSource as ListViewMutableDataSource;
       if (modifiableDataSource != null) {
         modifiableDataSource.itemAdded.remove(itemAdded);
         modifiableDataSource.itemRemoved.remove(itemRemoved);
@@ -91,7 +91,7 @@ internal class ListLayout implements CollectionLayout {
 
     if (_dataSource != null) {
       _dataSource.reset.add(dataSourceReset);
-      modifiableDataSource = _dataSource as ListViewModifiableDataSource;
+      modifiableDataSource = _dataSource as ListViewMutableDataSource;
       if (modifiableDataSource != null) {
         modifiableDataSource.itemAdded.add(itemAdded);
         modifiableDataSource.itemRemoved.add(itemRemoved);

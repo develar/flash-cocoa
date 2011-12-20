@@ -56,14 +56,14 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
       return;
     }
 
-    var modifiableDataSource:ListViewModifiableDataSource = _dataSource as ListViewModifiableDataSource;
+    var modifiableDataSource:ListViewMutableDataSource = _dataSource as ListViewMutableDataSource;
     if (modifiableDataSource != null) {
       modifiableDataSource.itemRemoved.remove(itemRemoved);
     }
 
     _dataSource = value;
 
-    if ((modifiableDataSource = _dataSource as ListViewModifiableDataSource) != null) {
+    if ((modifiableDataSource = _dataSource as ListViewMutableDataSource) != null) {
       modifiableDataSource.itemRemoved.add(itemRemoved);
     }
 

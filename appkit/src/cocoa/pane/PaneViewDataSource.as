@@ -1,10 +1,10 @@
 package cocoa.pane {
 import cocoa.AbstractCollectionViewDataSource;
-import cocoa.ListViewModifiableDataSource;
+import cocoa.ListViewMutableDataSource;
 import cocoa.resources.ResourceManager;
 import cocoa.resources.ResourceMetadata;
 
-public class PaneViewDataSource extends AbstractCollectionViewDataSource implements ListViewModifiableDataSource {
+public class PaneViewDataSource extends AbstractCollectionViewDataSource implements ListViewMutableDataSource {
   private var source:Vector.<PaneItem>;
 
   public function PaneViewDataSource(source:Vector.<PaneItem>) {
