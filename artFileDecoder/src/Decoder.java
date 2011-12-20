@@ -2,7 +2,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -15,10 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Decoder {
-  private final Set<String> duplicateGuard = new HashSet<String>();
-
   private final ByteBuffer data;
-  public int numOfImages = 0;
 
   private final short fileCount;
   private final int tagCount;
@@ -28,9 +27,8 @@ public class Decoder {
   private final int fileDataSectionOffset;
 
   private File outputDir;
-  public final CharSequence[] names;
-  public int[] tags = new int[8];
-  private final int numOfTags = 0;
+  private final CharSequence[] names;
+  private final Map<String,Integer> pathCounter = new HashMap<String, Integer>();
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public Decoder(String filepath, String output) throws IOException {
@@ -73,15 +71,32 @@ public class Decoder {
   public void decode() throws IOException {
     readTagDescriptors();
 
+    final MessageDigest md;
+    try {
+      md = MessageDigest.getInstance("SHA-512");
+    }
+    catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+      return;
+    }
+
     final ComponentColorModel colorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
     final int[] bandOffsets = {2, 1, 0, 3};
+    final Set<String> duplicateGuard = new HashSet<String>();
+    final byte[] bytes = data.array();
 
-    for (int i = 0; i < fileCount; i++) {
-      data.position(fileDescriptorsOffset + ((4 + 8) * i));
+    for (int fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+      data.position(fileDescriptorsOffset + ((4 + 8) * fileIndex));
       final int fileDataOffset = data.getInt();
       final int[] tags = new int[8];
-      for (int j = 0; j < 8; j++) {
-        tags[j] = data.get() & 0xff;
+      int numOfTags = 0;
+      for (int i = 0; i < 8; i++) {
+        int tag = data.get() & 0xff;
+        if (tag == 0) {
+          numOfTags = (i - 1);
+          break;
+        }
+        tags[i] = tag;
       }
 
       data.position(fileDataSectionOffset + fileDataOffset);
@@ -94,16 +109,9 @@ public class Decoder {
       final int[] subimageWidths = readNumericArray(9, true);
       final int[] subimageHeights = readNumericArray(9, true);
 
-      StringBuilder filename = new StringBuilder();
-      for (int y : tags) {
-        if (y == 0) {
-          continue;
-        }
+      final File dir = new File(outputDir, names[tags[0]] + "/" + names[tags[1]]);
+      boolean dirCreated = false;
 
-        filename.append('/').append(names[y]);
-      }
-
-      final byte[] bytes = data.array();
       final int imageCount = artRows * artColumns;
       for (int subImageIndex = 0; subImageIndex < imageCount; subImageIndex++) {
         final int w = subimageWidths[subImageIndex];
@@ -112,15 +120,68 @@ public class Decoder {
           continue;
         }
 
-        final byte[] bgra = new byte[w * h * 4];
-        System.arraycopy(bytes, fileDataSectionOffset + fileDataOffset + subimageOffsets[subImageIndex], bgra, 0, bgra.length);
-        BufferedImage image = new BufferedImage(colorModel, (WritableRaster)Raster.createRaster(new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, w, h, 4, w * 4, bandOffsets), new DataBufferByte(bgra, w * h), null), false, null);
-        File file = new File(outputDir, filename.substring(1) + '_' + subImageIndex + ".png");
-        //noinspection ResultOfMethodCallIgnored
-        file.getParentFile().mkdirs();
-        ImageIO.write(image, "png", file);
+        final int srcPos = fileDataSectionOffset + fileDataOffset + subimageOffsets[subImageIndex];
+        final int srcLength = w * h * 4;
+
+        md.update(bytes, srcPos, srcLength);
+        final String digest = convertToHex(md.digest());
+        md.reset();
+        if (!duplicateGuard.add(digest)) {
+          //duplicateCount++;
+          continue;
+        }
+
+        if (!dirCreated) {
+          //noinspection ResultOfMethodCallIgnored
+          dir.mkdirs();
+          dirCreated = true;
+        }
+
+        final byte[] bgra = new byte[srcLength];
+        // cannot pass bytes directly, offset in DataBufferByte is not working
+
+        System.arraycopy(bytes, srcPos, bgra, 0, bgra.length);
+        BufferedImage image = new BufferedImage(colorModel,
+          (WritableRaster)Raster.createRaster(new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, w, h, 4, w * 4, bandOffsets),
+            new DataBufferByte(bgra, bgra.length), null), false, null);
+        ImageIO.write(image, "png", createOutpuFile(dir, numOfTags, tags));
       }
     }
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  private File createOutpuFile(File dir, int numOfTags, int[] tags) throws IOException {
+    StringBuilder filenameBuilder = new StringBuilder();
+    for (int i = 2; i <= numOfTags; i++) {
+      filenameBuilder.append(names[tags[i]]).append('.');
+    }
+    final String subLocalPath = filenameBuilder.toString();
+    final String key = dir.getPath() + "/" + subLocalPath;
+    filenameBuilder.append("png");
+    final String localPath = filenameBuilder.toString();
+
+    Integer counter = pathCounter.get(key);
+    File file;
+    if (counter == null) {
+      file = new File(dir, localPath);
+      if (file.exists()) {
+        counter = 0;
+
+        file.renameTo(new File(dir, subLocalPath + counter++ + ".png"));
+        file = new File(dir, subLocalPath + counter++ + ".png");
+        pathCounter.put(key, counter);
+      }
+    }
+    else {
+      file = new File(dir, subLocalPath + counter++ + ".png");
+      if (file.exists()) {
+        throw new IOException();
+      }
+
+      pathCounter.put(key, counter);
+    }
+
+    return file;
   }
 
   private int[] readNumericArray(final int length, final boolean isShort) {
@@ -158,9 +219,6 @@ public class Decoder {
     }
   }
 
-
-  private final Map<String,Integer> pathCounter = new HashMap<String, Integer>();
-
   private static String convertToHex(byte[] data) {
     StringBuilder buf = new StringBuilder();
     for (byte aData : data) {
@@ -173,7 +231,7 @@ public class Decoder {
         else {
           buf.append((char)('a' + (halfbyte - 10)));
         }
-        halfbyte = aData & 0x0F;
+        halfbyte = aData & 0x0f;
       }
       while (two_halfs++ < 1);
     }
