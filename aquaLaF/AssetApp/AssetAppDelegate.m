@@ -189,7 +189,7 @@
 //	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
 	[contentView addSubview:box];
 	
-	return;
+//	return;
 	
 	// SegmentedControl
 	frame.origin.x = 100;
@@ -200,15 +200,15 @@
 	[sWindow setHasShadow:NO];
 	[sWindow makeKeyAndOrderFront:NSApp];
 	[sWindow setBackgroundColor:[NSColor clearColor]];
-	
+
 	controlFrame.origin.x = 0;
 	controlFrame.origin.y = frame.size.height - CONTROL_FRAME_HEIGHT;
 	controlFrame.size.width = 200;
-	
+
 	controlFrame.size.height = 3;
-	
+
 	contentView = [sWindow contentView];
-	
+
 	[[self createSegmentedControl] setSelectedSegment:0];
 	[[self createSegmentedControl] setSelectedSegment:1];
 	[[self createSegmentedControl] setSelectedSegment:2];
@@ -327,7 +327,8 @@
 	NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] initWithFrame:controlFrame];
 	[contentView addSubview:segmentedControl];
 	
-	[segmentedControl setSegmentStyle:NSSegmentStyleTexturedRounded];
+//	[segmentedControl setSegmentStyle:NSSegmentStyleTexturedRounded];
+//	[segmentedControl setSegmentStyle:NSSStyl];
 	
 	[segmentedControl setSegmentCount:3];
 	

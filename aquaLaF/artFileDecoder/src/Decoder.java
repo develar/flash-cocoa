@@ -139,8 +139,28 @@ public class Decoder {
 
         final byte[] bgra = new byte[srcLength];
         // cannot pass bytes directly, offset in DataBufferByte is not working
-
         System.arraycopy(bytes, srcPos, bgra, 0, bgra.length);
+
+        if (subImageIndex == 1) {
+          for (int k = 3; k < bgra.length;) {
+            if ((bgra[k] & 0xff) == 89 && names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
+              StringBuilder builder = new StringBuilder();
+              for (int tag : tags) {
+                if (tag == 0) {
+                  break;
+                }
+
+                builder.append('.').append(names[tag]);
+              }
+
+              System.out.println(builder.append('-').append(subImageIndex).toString());
+              break;
+            }
+
+            k += 4;
+          }
+        }
+
         BufferedImage image = new BufferedImage(colorModel,
           (WritableRaster)Raster.createRaster(new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, w, h, 4, w * 4, bandOffsets),
             new DataBufferByte(bgra, bgra.length), null), false, null);
@@ -220,7 +240,7 @@ public class Decoder {
   }
 
   private static String convertToHex(byte[] data) {
-    StringBuilder buf = new StringBuilder();
+    StringBuilder buf = new StringBuilder(128);
     for (byte aData : data) {
       int halfbyte = (aData >>> 4) & 0x0F;
       int two_halfs = 0;
