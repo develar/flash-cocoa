@@ -29,9 +29,17 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     draw(itemIndex, g, _lastCreatedRendererDimension, h, false, _selectionModel.isItemSelected(itemIndex));
   }
 
+  /**
+   * Мы должны быть осторожны при отрисовке и учитывать, чтобы было корректное перекрытие разделителей.
+   * Поэтому: всегда (за исключением последнего элемента) отрисовываем разделитель справа, а слева только если мы selected (нет разницы — highlighted или нет).
+   * Так как мы добавляем элементы слева направо — самый левый имеет самый маленький индекс в display list,
+   * то при отрисовке левого разделителя при selected Flash Player корректно отрисует его над старым разделителем (который отрисован предыдущим элементом).
+   *
+   * Но у нас есть полупрозрачные пиксели — при наложении получается плохо — поэтому background и separator по высоте меньше на 3 пикселя по высоте (снизу), мы отрисовываем их сами программно
+   */
   private function draw(itemIndex:int, g:Graphics, w:int, h:int, selecting:Boolean, selected:Boolean):void {
     const offset:int = selecting ? (selected ? BorderStateIndex.ON_SELECTING : BorderStateIndex.OFF_SELECTING) : (selected ? BorderStateIndex.ON : BorderStateIndex.OFF);
-    const computedSepatatorIndex:int = separatorIndex + (offset % 2);
+    const computedSeparatorIndex:int = separatorIndex + (offset % 2);
 
     var frameInsets:FrameInsets = border.frameInsets;
     var last:Boolean = false;
@@ -60,7 +68,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     else {
       if (selected) {
         frameInsets.left = -1;
-        border.bitmapIndex = computedSepatatorIndex;
+        border.bitmapIndex = computedSeparatorIndex;
         border.draw(g, 1 + frameInsets.left + frameInsets.right, h - 3);
         frameInsets.left = 0;
       }
@@ -89,7 +97,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     }
     else {
       frameInsets.left = w;
-      border.bitmapIndex = computedSepatatorIndex;
+      border.bitmapIndex = computedSeparatorIndex;
       border.draw(g, 1 + frameInsets.left + frameInsets.right, h - 3);
     }
   }

@@ -16,3 +16,20 @@ borders:
   contentInsets: {left: 18, bottom: 2}
 
 - key: Segment
+  frameInsets: {bottom: -2}
+  trim: false
+  sources:
+    - segment/clear/inactive.small.0.png
+    - segment/clear/on.small.0.png
+    - segment/blue/small.0.png
+    - segment/blue/pressed.small.0.png
+
+    - segment/clear/inactive.small.1.png
+    - segment/clear/on.small.1.png
+    - segment/blue/small.1.png
+    - segment/blue/pressed.small.1.png
+
+    - segment/clear/inactive.small.2.png
+    - segment/clear/on.small.2.png
+    - segment/blue/small.2.png
+    - segment/blue/pressed.small.2.png
