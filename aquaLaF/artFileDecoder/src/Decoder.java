@@ -84,16 +84,16 @@ public class Decoder {
     final int[] bandOffsets = {2, 1, 0, 3};
     final Set<String> duplicateGuard = new HashSet<String>();
     final byte[] bytes = data.array();
+    final int[] tags = new int[8];
 
     for (int fileIndex = 0; fileIndex < fileCount; fileIndex++) {
       data.position(fileDescriptorsOffset + ((4 + 8) * fileIndex));
       final int fileDataOffset = data.getInt();
-      final int[] tags = new int[8];
-      int numOfTags = 0;
+      int numOfTags = 8;
       for (int i = 0; i < 8; i++) {
         int tag = data.get() & 0xff;
         if (tag == 0) {
-          numOfTags = (i - 1);
+          numOfTags = i;
           break;
         }
         tags[i] = tag;
@@ -109,7 +109,18 @@ public class Decoder {
       final int[] subimageWidths = readNumericArray(9, true);
       final int[] subimageHeights = readNumericArray(9, true);
 
-      final File dir = new File(outputDir, names[tags[0]] + "/" + names[tags[1]]);
+      assert numOfTags >= 2;
+      final File dir;
+      final int tagStartIndexForFilename;
+      if (numOfTags == 2) {
+        tagStartIndexForFilename = 1;
+        dir = new File(outputDir, names[tags[0]].toString());
+      }
+      else {
+        tagStartIndexForFilename = 2;
+        dir = new File(outputDir, names[tags[0]] + "/" + names[tags[1]]);
+      }
+
       boolean dirCreated = false;
 
       final int imageCount = artRows * artColumns;
@@ -165,36 +176,41 @@ public class Decoder {
         BufferedImage image = new BufferedImage(colorModel,
           (WritableRaster)Raster.createRaster(new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, w, h, 4, w * 4, bandOffsets),
             new DataBufferByte(bgra, bgra.length), null), false, null);
-        ImageIO.write(image, "png", createOutpuFile(dir, numOfTags, tags));
+        ImageIO.write(image, "png", createOutpuFile(dir, numOfTags, tags, tagStartIndexForFilename));
       }
     }
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  private File createOutpuFile(File dir, int numOfTags, int[] tags) throws IOException {
-    StringBuilder filenameBuilder = new StringBuilder();
-    for (int i = 2; i <= numOfTags; i++) {
-      filenameBuilder.append(names[tags[i]]).append('.');
+  private File createOutpuFile(File dir, int numOfTags, int[] tags, int tagStartIndexForFilename) throws IOException {
+    final StringBuilder filenameBuilder = new StringBuilder();
+    int i = tagStartIndexForFilename;
+    while (true) {
+      filenameBuilder.append(names[tags[i]]);
+      if (++i == numOfTags) {
+        break;
+      }
+      else {
+        filenameBuilder.append('.');
+      }
     }
-    final String subLocalPath = filenameBuilder.toString();
-    final String key = dir.getPath() + "/" + subLocalPath;
-    filenameBuilder.append("png");
-    final String localPath = filenameBuilder.toString();
 
+    final String key = dir.getPath() + "/" + filenameBuilder;
     Integer counter = pathCounter.get(key);
     File file;
     if (counter == null) {
-      file = new File(dir, localPath);
+      file = new File(dir, filenameBuilder.toString() + ".png");
       if (file.exists()) {
         counter = 0;
 
+        final String subLocalPath = filenameBuilder.append('-').toString();
         file.renameTo(new File(dir, subLocalPath + counter++ + ".png"));
         file = new File(dir, subLocalPath + counter++ + ".png");
         pathCounter.put(key, counter);
       }
     }
     else {
-      file = new File(dir, subLocalPath + counter++ + ".png");
+      file = new File(dir, filenameBuilder.append('-').append(counter++).append(".png").toString());
       if (file.exists()) {
         throw new IOException();
       }
