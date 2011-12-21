@@ -152,17 +152,15 @@ public class Decoder {
         // cannot pass bytes directly, offset in DataBufferByte is not working
         System.arraycopy(bytes, srcPos, bgra, 0, bgra.length);
 
-        if (subImageIndex == 0 && names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
+        //if (subImageIndex == 0 && names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
+        if (names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
           for (int k = 3; k < bgra.length;) {
             //if ((bgra[k] & 0xff) == 89 && names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
-            if ((bgra[k] & 0xff) == 217 && (bgra[k - 1] & 0xff) == 65) {
+            //if ((bgra[k] & 0xff) == 217 && (bgra[k - 1] & 0xff) == 65) {
+            if ((bgra[k] & 0xff) == 255 && (bgra[k - 1] & 0xff) == 205) {
               StringBuilder builder = new StringBuilder();
-              for (int tag : tags) {
-                if (tag == 0) {
-                  break;
-                }
-
-                builder.append('.').append(names[tag]);
+              for (int i = 0; i < numOfTags; i++) {
+                builder.append('.').append(names[tags[i]]);
               }
 
               System.out.println(builder.append('-').append(subImageIndex).toString());

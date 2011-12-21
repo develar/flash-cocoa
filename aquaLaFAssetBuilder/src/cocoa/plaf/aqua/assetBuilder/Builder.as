@@ -45,15 +45,6 @@ public class Builder {
   [Embed(source="/Window.titleBarAndToolbarAndContent.png")]
   private static var titleBarAndToolbarAndContent:Class;
 
-  [Embed(source="/segmentedControl.png")]
-  private static var segmentedControlClass:Class;
-  [Embed(source="/segmentedControl2.png")]
-  private static var segmentedControl2Class:Class;
-  [Embed(source="/segmentedControl3.png")]
-  private static var segmentedControl3Class:Class;
-  [Embed(source="/segmentedControl4.png")]
-  private static var segmentedControl4Class:Class;
-
   [Embed(source="/segmentedControl.texturedRounded.png")]
   private static var segmentedControlTRClass:Class;
   [Embed(source="/segmentedControl2.texturedRounded.png")]
@@ -105,7 +96,7 @@ public class Builder {
     compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(windowBottomBarFrameInsets), BorderPosition.windowApplicationBottomBar);
     compoundImageReader.readScale3(bottomBarChooseDialogClass, Scale3EdgeHBitmapBorder.create(windowBottomBarFrameInsets), BorderPosition.windowChooseDialogBottomBar);
 
-    borders[BorderPosition.segmentItem] = new SegmentedControlBorderReader().read(segmentedControlClass, segmentedControl2Class, segmentedControl3Class, segmentedControl4Class);
+    //borders[BorderPosition.segmentItem] = new SegmentedControlBorderReader().read();
     Scale1BitmapBorder(borders[BorderPosition.segmentItem]).frameInsets = new FrameInsets(0, 0, 0, -3);
     borders[BorderPosition.segmentItem + 1] = new SegmentedControlBorderReader().read(segmentedControlTRClass, segmentedControl2TRClass, segmentedControl3TRClass, segmentedControl4TRClass);
 

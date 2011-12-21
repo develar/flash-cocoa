@@ -189,14 +189,14 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     super.addToSuperview(displayObjectContainer, laf, superview);
 
-    if (layout == null) {
-      layout = laf.getFactory(_lafKey + ".layout").newInstance();
-    }
-
     var rendererManager:RendererManager = this.rendererManager;
     if (rendererManager == null) {
       rendererManager = laf.getFactory(_lafKey + ".rendererManager").newInstance();
       this.rendererManager = rendererManager;
+    }
+
+    if (layout == null) {
+      layout = laf.getFactory(_lafKey + ".layout").newInstance();
     }
 
     rendererManager.container = this;

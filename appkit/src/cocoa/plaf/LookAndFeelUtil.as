@@ -34,8 +34,10 @@ public final class LookAndFeelUtil {
   }
 
   public static function initAssets(data:Dictionary, assetsDataClass:Class):void {
-    var assetsData:ByteArray = new assetsDataClass();
+    initAssets2(data, new assetsDataClass());
+  }
 
+  public static function initAssets2(data:Dictionary, assetsData:ByteArray):void {
     const n:int = assetsData.readUnsignedByte();
     var border:AbstractBitmapBorder;
     for (var i:int = 0; i < n; i++) {

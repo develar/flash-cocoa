@@ -1,7 +1,5 @@
 package org.flyti.assetBuilder;
 
-import java.io.File;
-
 public class Border {
   public String key;
   public String subkey;

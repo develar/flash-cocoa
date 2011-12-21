@@ -19,6 +19,7 @@ public class CappedSmartBorder extends AbstractMultipleBitmapBorder {
   }
 
   override public function get layoutHeight():Number {
+    //noinspection JSSuspiciousNameCombination
     return bitmaps[0].width;
   }
 

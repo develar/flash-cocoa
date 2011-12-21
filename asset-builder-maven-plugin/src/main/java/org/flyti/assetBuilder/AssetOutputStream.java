@@ -29,17 +29,21 @@ public class AssetOutputStream extends DataOutputStream {
   public void trimAndWrite(BufferedImage[] images) throws IOException {
     writeByte(images.length);
     for (BufferedImage image : images) {
-      Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(image);
-      if (frameRectangle == null) {
-        write(image);
-        continue;
-      }
+      trimAndWrite(image);
+    }
+  }
 
-      writeByte(frameRectangle.width);
-      writeByte(frameRectangle.height);
-      for (int pixel : image.getRGB(frameRectangle.x, frameRectangle.y, frameRectangle.width, frameRectangle.height, null, 0, frameRectangle.width)) {
-        writeInt(pixel);
-      }
+  public void trimAndWrite(BufferedImage image) throws IOException {
+    Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(image);
+    if (frameRectangle == null) {
+      write(image);
+      return;
+    }
+
+    writeByte(frameRectangle.width);
+    writeByte(frameRectangle.height);
+    for (int pixel : image.getRGB(frameRectangle.x, frameRectangle.y, frameRectangle.width, frameRectangle.height, null, 0, frameRectangle.width)) {
+      writeInt(pixel);
     }
   }
 }

@@ -5,7 +5,6 @@ import cocoa.border.BorderStateIndex;
 import cocoa.border.Scale1BitmapBorder;
 
 import flash.display.BitmapData;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import mx.core.BitmapAsset;
@@ -14,13 +13,10 @@ import mx.core.BitmapAsset;
  * Информация по этому классу также есть в SegmentItemRenderer#updateDisplayList()
  */
 public class SegmentedControlBorderReader {
-  private static const sharedPoint:Point = new Point(0, 0);
-
   private static const leftIndex:int = 0;
   private static const middleIndex:int = leftIndex + 4;
   private static const rightIndex:int = middleIndex + 4;
   private static const separatorIndex:int = rightIndex + 4;
-  private static const shadowIndex:int = separatorIndex + 2;
 
   private var compoundBitmapData:BitmapData;
 
@@ -30,12 +26,18 @@ public class SegmentedControlBorderReader {
 
   private static const firstMiddleAbsoluteX:Number = 18;
 
-  private const segmentBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(shadowIndex + 1, true);
+  private const segmentBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(separatorIndex + 1, true);
 
   private const sliceCalculator:SliceCalculator = new SliceCalculator();
 
+  public function build():void {
+    for (var controlSize:String in new <String>["regular", "small"]) {
+      //var file:Loader = new
+    }
+  }
+
   /**
-   * 4 (off, on, highlight off, highlight on) left, 4 middle, 4 right and 2 separator (off == highlight off, on == highlight on)
+   * 4 (off, on, highlight off, highlight on) left, 4 middle, 4 right and 4 separator (off == highlight off, on == highlight on)
    * В отличие от прочих border, этот нам проще отрисовать самим по логике, — скин будет умным.
    */
   public function read(bitmapDataClass:Class, bitmapData2Class:Class, bitmapData3Class:Class, bitmapData4Class:Class):Border {
@@ -51,7 +53,7 @@ public class SegmentedControlBorderReader {
 
     segmentRectangle = new Rectangle(firstMiddleAbsoluteX, frameRectangle.bottom - 3, 1, 3);
 
-    segmentBitmaps[shadowIndex] = createBitmapData(segmentRectangle);
+    //segmentBitmaps[shadowIndex] = createBitmapData(segmentRectangle);
 
     segmentRectangle.y = frameRectangle.top;
     segmentRectangle.height = frameRectangle.height - 3;
@@ -85,6 +87,7 @@ public class SegmentedControlBorderReader {
     readHighlightedSegments(canvasBitmapData, BitmapAsset(new bitmapData2Class()).bitmapData, 3, 5, BorderStateIndex.OFF_SELECTING);
     readHighlightedSegments(BitmapAsset(new bitmapData3Class()).bitmapData, BitmapAsset(new bitmapData4Class()).bitmapData, 6, 7, BorderStateIndex.ON_SELECTING);
 
+    // content insets are equal for regular/small
     return Scale1BitmapBorder.create(segmentBitmaps, new Insets(10, NaN, 10, 4));
   }
 
@@ -121,7 +124,7 @@ public class SegmentedControlBorderReader {
 
   private function createBitmapData(sourceRectangle:Rectangle):BitmapData {
     var bitmapData:BitmapData = new BitmapData(sourceRectangle.width, sourceRectangle.height, true, 0);
-    bitmapData.copyPixels(compoundBitmapData, sourceRectangle, sharedPoint, null, null, true);
+    //bitmapData.copyPixels(compoundBitmapData, sourceRectangle, sharedPoint, null, null, true);
     return bitmapData;
   }
 }

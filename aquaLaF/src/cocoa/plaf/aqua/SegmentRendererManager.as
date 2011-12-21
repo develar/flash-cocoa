@@ -21,8 +21,8 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
   protected var border:Scale1BitmapBorder;
 
   public function SegmentRendererManager(laf:LookAndFeel, lafKey:String) {
-    border = Scale1BitmapBorder(laf.getBorder(lafKey + ".b"));
-    super(laf.getTextFormat(TextFormatId.SYSTEM), border.contentInsets);
+    border = Scale1BitmapBorder(laf.getBorder(lafKey + "." + laf.controlSize));
+    super(laf.getTextFormat(laf.controlSize == "small" ? TextFormatId.SMALL_SYSTEM : TextFormatId.SYSTEM), border.contentInsets);
   }
 
   override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:int, h:int, x:Number, y:Number):void {
@@ -36,6 +36,8 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
    * то при отрисовке левого разделителя при selected Flash Player корректно отрисует его над старым разделителем (который отрисован предыдущим элементом).
    *
    * Но у нас есть полупрозрачные пиксели — при наложении получается плохо — поэтому background и separator по высоте меньше на 3 пикселя по высоте (снизу), мы отрисовываем их сами программно
+   *
+   * update: в Mac OS X Lion — сепараторы тоже имеют прозрачность
    */
   private function draw(itemIndex:int, g:Graphics, w:int, h:int, selecting:Boolean, selected:Boolean):void {
     const offset:int = selecting ? (selected ? BorderStateIndex.ON_SELECTING : BorderStateIndex.OFF_SELECTING) : (selected ? BorderStateIndex.ON : BorderStateIndex.OFF);
@@ -45,13 +47,13 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     var last:Boolean = false;
     const first:Boolean = isFirst(itemIndex);
     if (first) {
-      frameInsets.left = -2;
-      frameInsets.right = 0;
+      //frameInsets.left = -2;
+      //frameInsets.right = 0;
     }
     else {
-      frameInsets.left = 0;
+      //frameInsets.left = 0;
       last = isLast(itemIndex);
-      frameInsets.right = last ? -2 : 0;
+      //frameInsets.right = last ? -2 : 0;
     }
 
     var bitmaps:Vector.<BitmapData> = border.getBitmaps();
@@ -60,7 +62,7 @@ public class SegmentRendererManager extends InteractiveGraphicsRendererManager {
     if (first) {
       border.bitmapIndex = leftIndex + offset;
       var leftFrameWidth:Number = bitmaps[leftIndex + offset].width;
-      border.draw(g, leftFrameWidth + frameInsets.left + frameInsets.right, h);
+      border.draw(g, leftFrameWidth + frameInsets.left + frameInsets.right, NaN);
 
       backgroundWidth = w - leftFrameWidth - frameInsets.left;
       frameInsets.left += leftFrameWidth;
