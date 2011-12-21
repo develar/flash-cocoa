@@ -29,7 +29,7 @@ public final class SliceCalculator {
   public static Insets calculate(BufferedImage image, Rectangle frameRectangle, boolean strict, boolean allSide, int minTop) {
     int equalLength = image.getWidth() > (DEFAULT_EQUAL_LENGTH * 3) ? DEFAULT_EQUAL_LENGTH : 0;
 
-    Raster raster = frameRectangle == null ? image.getRaster() : image.getRaster().createChild(frameRectangle.x, frameRectangle.y, frameRectangle.width, frameRectangle.height, 0, 0, null);
+    Raster raster = getRaster(image, frameRectangle);
     byte[] bands1 = new byte[raster.getNumBands()];
     byte[] bands2 = new byte[raster.getNumBands()];
 
@@ -40,6 +40,52 @@ public final class SliceCalculator {
     }
 
     return sliceSize;
+  }
+
+  private static Raster getRaster(BufferedImage image, Rectangle frameRectangle) {
+    return frameRectangle == null ? image.getRaster() : image.getRaster().createChild(frameRectangle.x, frameRectangle.y, frameRectangle.width, frameRectangle.height, 0, 0, null);
+  }
+
+  public static Rectangle trimRight(BufferedImage image) {
+    Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(image);
+    if ((frameRectangle != null && frameRectangle.width == 1) || image.getWidth() == 1) {
+      return frameRectangle;
+    }
+    
+    Raster raster = getRaster(image, frameRectangle);
+    byte[] bands1 = new byte[raster.getNumBands()];
+    byte[] bands2 = new byte[raster.getNumBands()];
+    int unrepeatableFromLeft = getUnrepeatableFromLeft(raster, bands1, bands2, true, 0, 0);
+    if (unrepeatableFromLeft != raster.getWidth()) {
+      if (frameRectangle == null) {
+        frameRectangle = raster.getBounds();
+      }
+      frameRectangle.width = unrepeatableFromLeft;
+    }
+
+    return frameRectangle;
+  }
+
+  public static Rectangle trimLeft(BufferedImage image) {
+    Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(image);
+    if ((frameRectangle != null && frameRectangle.width == 1) || image.getWidth() == 1) {
+      return frameRectangle;
+    }
+
+    Raster raster = getRaster(image, frameRectangle);
+    byte[] bands1 = new byte[raster.getNumBands()];
+    byte[] bands2 = new byte[raster.getNumBands()];
+    int unrepeatable = getUnrepeatableFromRight(raster, bands1, bands2, true, 0, 0);
+    if (unrepeatable != raster.getWidth()) {
+      if (frameRectangle == null) {
+        frameRectangle = raster.getBounds();
+      }
+
+      frameRectangle.x += frameRectangle.width - unrepeatable;
+      frameRectangle.width = unrepeatable;
+    }
+
+    return frameRectangle;
   }
 
   private static int getUnrepeatableFromLeft(Raster raster, byte[] bands1, byte[] bands2, boolean strict, int equalLength, int minLeft) {

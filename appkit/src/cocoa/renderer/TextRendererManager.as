@@ -51,7 +51,7 @@ public class TextRendererManager implements RendererManager {
 
     if (textFormat == null) {
       var laf:LookAndFeel = LookAndFeelUtil.find(_container);
-      textFormat = laf.getTextFormat(laf.controlSize == "small" ? TextFormatId.SMALL_SYSTEM : TextFormatId.SYSTEM);
+      textFormat = laf.getTextFormat(laf.controlSize == null ? TextFormatId.SYSTEM : TextFormatId.SMALL_SYSTEM);
     }
   }
 

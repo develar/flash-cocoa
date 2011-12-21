@@ -22,7 +22,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
       textRotation = textLineInsets.rotation;
     }
 
-    super(laf.getTextFormat(laf.controlSize == "small" ? TextFormatId.SMALL_SYSTEM : TextFormatId.SYSTEM))
+    super(laf.getTextFormat(laf.controlSize == null ? TextFormatId.SYSTEM : TextFormatId.SMALL_SYSTEM))
   }
 
   override protected function layoutTextLine(line:TextLine, x:Number, y:Number, h:int):void {

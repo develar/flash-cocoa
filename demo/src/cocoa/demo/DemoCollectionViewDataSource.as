@@ -1,4 +1,4 @@
-package cocoa.plaf.aqua.demo {
+package cocoa.demo {
 import cocoa.ListViewDataSource;
 import cocoa.AbstractCollectionViewDataSource;
 

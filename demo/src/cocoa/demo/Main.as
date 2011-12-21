@@ -2,6 +2,8 @@ package cocoa.demo {
 import cocoa.Container;
 import cocoa.Label;
 import cocoa.MigLayout;
+import cocoa.SegmentedControl;
+import cocoa.Toolbar;
 import cocoa.plaf.aqua.AquaLookAndFeel;
 
 import flash.display.StageAlign;
@@ -9,13 +11,13 @@ import flash.display.StageScaleMode;
 
 import net.miginfocom.layout.ComponentWrapper;
 
-[ResourceBundle("Dialog")]
 public class Main extends Container {
   public function Main() {
-    var layout:MigLayout = new MigLayout("", "[][grow][][grow]", "[][]");
+    var layout:MigLayout = new MigLayout("flowy", "", "");
+    laf = new AquaLookAndFeel();
     subviews = createComponents();
     this.layout = layout;
-    initRoot(new AquaLookAndFeel());
+
     validate();
   }
 
@@ -28,7 +30,20 @@ public class Main extends Container {
     l1.title = "First Name";
     components[0] = l1;
 
+    components[1] = createSC();
+
+    var toolbar:Toolbar = new Toolbar();
+    toolbar.small = true;
+    toolbar.subviews = new <ComponentWrapper>[createSC()];
+    components[2] = toolbar;
+
     return components;
+  }
+
+  private static function createSC():SegmentedControl {
+    var segmentedControl:SegmentedControl = new SegmentedControl();
+    segmentedControl.dataSource = new DemoCollectionViewDataSource();
+    return segmentedControl;
   }
 }
 }

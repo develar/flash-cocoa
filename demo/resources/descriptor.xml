@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <application xmlns="http://ns.adobe.com/air/application/2.6">
   <id>org.flyti.aqua.demo</id>
   <filename>testToolApp</filename>
   <name>Aqua LaF Demo</name>
-  <versionNumber>1.1.4</versionNumber>
+  <versionNumber>2.0</versionNumber>
   <initialWindow>
     <!--<systemChrome>none</systemChrome>-->
     <!--<transparent>true</transparent>-->

@@ -34,7 +34,10 @@ public class AssetOutputStream extends DataOutputStream {
   }
 
   public void trimAndWrite(BufferedImage image) throws IOException {
-    Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(image);
+    write(image, ImageCropper.findNonTransparentBounds(image));
+  }
+
+  public void write(BufferedImage image, Rectangle frameRectangle) throws IOException {
     if (frameRectangle == null) {
       write(image);
       return;

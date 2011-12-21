@@ -161,11 +161,6 @@ public class Container extends SpriteBackedView implements RootContentView {
     _laf = value;
   }
 
-  protected function initRoot(laf:LookAndFeel):void {
-    _laf = laf;
-    addSubviews();
-  }
-
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
     super.addToSuperview(displayObjectContainer, laf, superview);
 

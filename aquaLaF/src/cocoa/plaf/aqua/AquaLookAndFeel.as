@@ -19,6 +19,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
 
+  [Embed(source="/segmentBorders", mimeType="application/octet-stream")]
+  private static var segmentBordersClass:Class;
+
   private var windowFrameLookAndFeel:WindowFrameLookAndFeel;
   private var windowFrameSmalLookAndFeel:WindowFrameSmallLookAndFeel;
   private var panelLookAndFeel:PanelLookAndFeel;
@@ -37,7 +40,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
   protected function initialize():void {
     LookAndFeelUtil.initAssets(data, assetsDataClass);
+    LookAndFeelUtil.initAssets(data, segmentBordersClass);
     assetsDataClass = null;
+    segmentBordersClass = null;
 
     data[TextFormatId.SYSTEM] = AquaFonts.SYSTEM_FONT;
     data[TextFormatId.SYSTEM_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
@@ -65,19 +70,22 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["TableView.bg"] = data["small.TableView.bg"] = new <uint>[0xffffff, 0xedf3fe];
 
     data["Toolbar"] = ToolbarSkin;
-    data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));
+    //data["Toolbar.b"] = LinearGradientBorder.createV([0xd0d0d0, 0xa7a7a7], NaN, null, new FrameInsets(0, -17));
 
     //data["Dialog"] = WindowSkin;
     //data["HUDWindow"] = HUDWindowSkin;
 
     data["SwatchGrid.b"] = data["ListView.b"] = data["TextArea.b"] = data["TableView.b"] = data["small.TableView.b"] = new BezelBorder();
 
-    data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, this, "Segment");
+    data["SegmentedControl.rendererManager"] = data["TabView.tabBar.rendererManager"] = new RendererManagerFactory(SegmentRendererManager, "Segment");
 
     data["TabView"] = TabViewSkin;
     //data["TabView.borderless"] = BorderlessTabViewSkin;
     data["ToolWindowManager.tabBar.interactor"] = data["SegmentedControl.interactor"] = data["TabView.tabBar.interactor"] = data["SegmentedControl.segmentedControlController"] = new SingletonClassFactory(SegmentedControlInteractor);
+
     data["TabView.tabBar.layout"] = data["SegmentedControl.layout"] = new ListLayoutFactory(20, 1);
+    data["small.SegmentedControl.layout"] = new ListLayoutFactory(17, 1);
+
     data["TabView.tabBar.placement"] = Placement.PAGE_START_LINE_CENTER;
 
     data["PushButton"] = PushButtonSkin;
@@ -167,6 +175,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 }
 }
 
+import cocoa.layout.ListLayoutFactory;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatId;

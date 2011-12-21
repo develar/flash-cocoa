@@ -2,8 +2,10 @@ package cocoa.plaf.aqua.assetBuilder;
 
 import org.flyti.assetBuilder.AssetOutputStream;
 import org.flyti.assetBuilder.BorderType;
+import org.flyti.assetBuilder.SliceCalculator;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,14 +14,14 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 /**
- * 4 (off, on, highlight off, highlight on) left, 4 middle, 4 right and 2 separator (off == highlight off, on == highlight on)
+ * 4 (off, on, highlight off, highlight on) first, 4 middle, 4 last and 2 separator (off == highlight off, on == highlight on)
  * В отличие от прочих border, этот нам проще отрисовать самим по логике, — скин будет умным.
  */
 class SegmentBorderBuilder {
   private final File artFiles;
   private final File usedArtFiles;
 
-  private static final String[] indexToPath = {"clear/inactive.", "clear/on.", "blue/", "blue/pressed."};
+  private static final String[] indexToPath = {"clear/inactive.", "blue/", "clear/on.", "blue/pressed."};
   
   public SegmentBorderBuilder(File artFiles) {
     this.artFiles = new File(artFiles, "segment");
@@ -35,11 +37,33 @@ class SegmentBorderBuilder {
       // image count
       out.writeByte(3 * 4 + 2);
 
+      Pair[] middle = new Pair[4];
       // backgrounds
-      for (int part = 0; part < 3; part++) {
+      for (int part = 0; part < 3; part += 2) {
         for (int i = 0; i < 4; i++) {
           BufferedImage image = readImage(indexToPath[i] + controlSize + "-" + part + ".png");
-          out.trimAndWrite(image);
+          if (part == 0) {
+            Rectangle frameRectangle = SliceCalculator.trimRight(image);
+            out.write(image, frameRectangle);
+
+            frameRectangle.x += frameRectangle.width;
+            frameRectangle.width = 1;
+            assert middle != null;
+            middle[i] = new Pair(image, frameRectangle);
+          }
+          else {
+            Rectangle frameRectangle = SliceCalculator.trimLeft(image);
+            out.write(image, frameRectangle);
+          }
+        }
+
+        if (part == 0) {
+          assert middle != null;
+          for (Pair pair : middle) {
+            out.write(pair.image, pair.frameRectangle);
+          }
+
+          middle = null;
         }
       }
 
@@ -59,6 +83,16 @@ class SegmentBorderBuilder {
 
       // no frameInsets
       out.writeByte(0);
+    }
+  }
+
+  private static class Pair {
+    final BufferedImage image;
+    final Rectangle frameRectangle;
+
+    private Pair(BufferedImage image, Rectangle frameRectangle) {
+      this.image = image;
+      this.frameRectangle = frameRectangle;
     }
   }
   

@@ -1,6 +1,7 @@
 package cocoa {
 import cocoa.layout.CollectionLayout;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.RendererManagerFactory;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
@@ -191,12 +192,12 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
 
     var rendererManager:RendererManager = this.rendererManager;
     if (rendererManager == null) {
-      rendererManager = laf.getFactory(_lafKey + ".rendererManager").newInstance();
+      rendererManager = RendererManagerFactory(laf.getFactory(_lafKey + ".rendererManager")).create(laf);
       this.rendererManager = rendererManager;
     }
 
     if (layout == null) {
-      layout = laf.getFactory(_lafKey + ".layout").newInstance();
+      layout = laf.getFactory((laf.controlSize == null ? "" : laf.controlSize + ".") + _lafKey + ".layout").newInstance();
     }
 
     rendererManager.container = this;
