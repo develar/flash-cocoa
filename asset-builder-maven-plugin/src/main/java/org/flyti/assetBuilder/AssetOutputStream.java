@@ -11,10 +11,14 @@ public class AssetOutputStream extends DataOutputStream {
     super(out);
   }
 
+  public static int[] imageToRGB(BufferedImage image) {
+    return image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+  }
+
   public void write(BufferedImage image) throws IOException {
     writeByte(image.getWidth());
     writeByte(image.getHeight());
-    for (int pixel : image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth())) {
+    for (int pixel : imageToRGB(image)) {
       writeInt(pixel);
     }
   }

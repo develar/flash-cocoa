@@ -220,9 +220,11 @@
 	NSEvent *event = [NSEvent mouseEventWithType:NSLeftMouseDown
 							location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 2)
 							modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
-	
-	[segmentedControl mouseDown:event];
-	
+
+//    CGFloat aFloat = [segmentedControl alphaValue];
+//	return;
+//	[segmentedControl mouseDown:event];
+	return;
 	segmentedControl = [self createSegmentedControl];
 	
 	event = [NSEvent mouseEventWithType:NSLeftMouseDown
@@ -255,6 +257,8 @@
 						  modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 	
 	[segmentedControl mouseDown:event];
+
+
 }
 
 - (void)openMenu {
@@ -327,7 +331,7 @@
 	NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] initWithFrame:controlFrame];
 	[contentView addSubview:segmentedControl];
 	
-//	[segmentedControl setSegmentStyle:NSSegmentStyleTexturedRounded];
+	[segmentedControl setSegmentStyle:NSSegmentStyleTexturedRounded];
 //	[segmentedControl setSegmentStyle:NSSStyl];
 	
 	[segmentedControl setSegmentCount:3];

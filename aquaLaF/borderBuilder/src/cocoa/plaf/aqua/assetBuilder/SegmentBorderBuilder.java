@@ -18,19 +18,38 @@ import java.nio.channels.FileChannel;
  * В отличие от прочих border, этот нам проще отрисовать самим по логике, — скин будет умным.
  */
 class SegmentBorderBuilder {
-  private final File artFiles;
+  private final File artFilesRoot;
+  private File artFiles;
   private final File usedArtFiles;
 
-  private static final String[] indexToPath = {"clear/inactive.", "blue/", "clear/on.", "blue/pressed."};
-  
-  public SegmentBorderBuilder(File artFiles) {
-    this.artFiles = new File(artFiles, "segment");
-    usedArtFiles = new File("/Users/develar/Documents/cocoa/aquaLaF/borderBuilder/usedAssets");
+  public SegmentBorderBuilder(File artFilesRoot) {
+    usedArtFiles = new File("/Users/develar/test/usedAssets");
     //noinspection ResultOfMethodCallIgnored
     usedArtFiles.mkdirs();
+
+    this.artFilesRoot = artFilesRoot;
   }
 
   public void build(AssetOutputStream out) throws IOException {
+    artFiles = new File(artFilesRoot, "segment");
+    doBuild(out, new String[]{"clear/", "blue/", "clear/on.", "blue/pressed."}, new String[]{"clear/", "blue/"});
+
+    artFiles = new File(artFilesRoot, "tbsegments");
+    // selecting state for unselected equals selecting state for selected,
+    // currently, we don't reduce final border size (later, we can introduce sym links)
+    doBuild(out, new String[]{"active/", "on/pressed.", "on/", "on/pressed."}, new String[]{"active/", "on/"});
+  }
+
+  private int getAppropriateBufferedImageType(BufferedImage original) {
+    if (original.getType() == BufferedImage.TYPE_CUSTOM) {
+      return original.getTransparency() == Transparency.TRANSLUCENT ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+    }
+    else {
+      return original.getType();
+    }
+  }
+
+  public void doBuild(AssetOutputStream out, String[] indexToPath, String[] separatorIndexToPath) throws IOException {
     for (String controlSize : new String[]{"regular", "small"}) {
       out.writeUTF("Segment." + controlSize);
       out.writeByte(BorderType.Scale1.ordinal());
@@ -43,17 +62,26 @@ class SegmentBorderBuilder {
         for (int i = 0; i < 4; i++) {
           BufferedImage image = readImage(indexToPath[i] + controlSize + "-" + part + ".png");
           if (part == 0) {
-            Rectangle frameRectangle = SliceCalculator.trimRight(image);
-            out.write(image, frameRectangle);
+            // textured rounded left doesn't have repetable area, we need appent middle to it
+            BufferedImage fill = readImage(indexToPath[i] + controlSize + "-" + (part + 1) + ".png");
+            if (image.getHeight() != fill.getHeight()) {
+              throw new IllegalStateException();
+            }
+
+            BufferedImage leftAndFill = new BufferedImage(image.getWidth() + fill.getWidth(), image.getHeight(), getAppropriateBufferedImageType(image));
+            leftAndFill.setRGB(0, 0, image.getWidth(), image.getHeight(), AssetOutputStream.imageToRGB(image), 0, image.getWidth());
+            leftAndFill.setRGB(image.getWidth(), 0, fill.getWidth(), image.getHeight(), AssetOutputStream.imageToRGB(fill), 0, fill.getWidth());
+
+            Rectangle frameRectangle = SliceCalculator.trimRight(leftAndFill);
+            out.write(leftAndFill, frameRectangle);
 
             frameRectangle.x += frameRectangle.width;
             frameRectangle.width = 1;
             assert middle != null;
-            middle[i] = new Pair(image, frameRectangle);
+            middle[i] = new Pair(leftAndFill, frameRectangle);
           }
           else {
-            Rectangle frameRectangle = SliceCalculator.trimLeft(image);
-            out.write(image, frameRectangle);
+            out.write(image, SliceCalculator.trimLeft(image));
           }
         }
 
@@ -69,7 +97,7 @@ class SegmentBorderBuilder {
 
       // separators
       for (int i = 0; i < 2; i++) {
-        BufferedImage image = readImage((i == 0 ? "clear/inactive." : "blue/") + (controlSize.equals("small") ? "separator." + controlSize : controlSize + ".separator") + "-1.png");
+        BufferedImage image = readImage(separatorIndexToPath[i] + (controlSize.equals("small") ? "separator." + controlSize : controlSize + ".separator") + "-1.png");
         out.trimAndWrite(image);
       }
 

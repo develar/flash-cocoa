@@ -165,18 +165,14 @@ public class AssetBuilder {
 
       BufferedImage leftAndFill = new BufferedImage(leftWidth + 1, height, getAppropriateBufferedImageType(left));
       // с setRect были проблемы с colorSpace
-      leftAndFill.setRGB(0, 0, leftWidth, height, imageToRGB(left), 0, leftWidth);
-      leftAndFill.setRGB(leftWidth, 0, 1, height, imageToRGB(center), 0, 1);
+      leftAndFill.setRGB(0, 0, leftWidth, height, AssetOutputStream.imageToRGB(left), 0, leftWidth);
+      leftAndFill.setRGB(leftWidth, 0, 1, height, AssetOutputStream.imageToRGB(center), 0, 1);
 
       images[bitmapIndex++] = leftAndFill;
       images[bitmapIndex++] = sourceImages[i + 2];
     }
 
     return images;
-  }
-
-  private int[] imageToRGB(BufferedImage image) {
-    return image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
   }
 
   private int getAppropriateBufferedImageType(BufferedImage original) {

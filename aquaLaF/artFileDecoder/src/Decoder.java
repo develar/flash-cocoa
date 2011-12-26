@@ -11,10 +11,8 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 
 public class Decoder {
   private final ByteBuffer data;
@@ -28,7 +26,6 @@ public class Decoder {
 
   private File outputDir;
   private final CharSequence[] names;
-  private final Map<String,Integer> pathCounter = new HashMap<String, Integer>();
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public Decoder(String filepath, String output) throws IOException {
@@ -82,9 +79,15 @@ public class Decoder {
 
     final ComponentColorModel colorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
     final int[] bandOffsets = {2, 1, 0, 3};
-    final Set<String> duplicateGuard = new HashSet<String>();
+    final Map<String, String> duplicateGuard = new HashMap<String, String>();
     final byte[] bytes = data.array();
     final int[] tags = new int[8];
+    
+    final List<String> symLinkCommand = new ArrayList<String>(4);
+    symLinkCommand.add("ln");
+    symLinkCommand.add("-s");
+    symLinkCommand.add(null);
+    symLinkCommand.add(null);
 
     for (int fileIndex = 0; fileIndex < fileCount; fileIndex++) {
       data.position(fileDescriptorsOffset + ((4 + 8) * fileIndex));
@@ -137,10 +140,6 @@ public class Decoder {
         md.update(bytes, srcPos, srcLength);
         final String digest = convertToHex(md.digest());
         md.reset();
-        if (!duplicateGuard.add(digest)) {
-          //duplicateCount++;
-          continue;
-        }
 
         if (!dirCreated) {
           //noinspection ResultOfMethodCallIgnored
@@ -151,36 +150,35 @@ public class Decoder {
         final byte[] bgra = new byte[srcLength];
         // cannot pass bytes directly, offset in DataBufferByte is not working
         System.arraycopy(bytes, srcPos, bgra, 0, bgra.length);
-
-        //if (subImageIndex == 0 && names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
-        if (names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
-          for (int k = 3; k < bgra.length;) {
-            //if ((bgra[k] & 0xff) == 89 && names[tags[0]].charAt(0) == 's' && names[tags[0]].charAt(1) == 'e') {
-            //if ((bgra[k] & 0xff) == 217 && (bgra[k - 1] & 0xff) == 65) {
-            if ((bgra[k] & 0xff) == 255 && (bgra[k - 1] & 0xff) == 205) {
-              StringBuilder builder = new StringBuilder();
-              for (int i = 0; i < numOfTags; i++) {
-                builder.append('.').append(names[tags[i]]);
-              }
-
-              System.out.println(builder.append('-').append(subImageIndex).toString());
-              break;
-            }
-
-            k += 4;
-          }
-        }
-
         BufferedImage image = new BufferedImage(colorModel,
           (WritableRaster)Raster.createRaster(new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, w, h, 4, w * 4, bandOffsets),
             new DataBufferByte(bgra, bgra.length), null), false, null);
-        ImageIO.write(image, "png", createOutpuFile(dir, numOfTags, tags, tagStartIndexForFilename));
+
+        final StringBuilder outFilename = createOutpuFile(numOfTags, tags, tagStartIndexForFilename, imageCount > 0, subImageIndex);
+        final String oldOutFilename = duplicateGuard.get(digest);
+        if (oldOutFilename == null) {
+          File file = new File(dir, outFilename.toString());
+          duplicateGuard.put(digest, file.getPath());
+          ImageIO.write(image, "png", file);
+        }
+        else {
+          symLinkCommand.set(2, oldOutFilename);
+          symLinkCommand.set(3, dir + "/" + outFilename);
+          Process process = new ProcessBuilder(symLinkCommand).start();
+          try {
+            if (process.waitFor() != 0) {
+              throw new IOException("Can't create symlink " + symLinkCommand.get(2) + " " + symLinkCommand.get(3));
+            }
+          }
+          catch (InterruptedException e) {
+            throw new IOException(e);
+          }
+        }
       }
     }
   }
 
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  private File createOutpuFile(File dir, int numOfTags, int[] tags, int tagStartIndexForFilename) throws IOException {
+  private StringBuilder createOutpuFile(int numOfTags, int[] tags, int tagStartIndexForFilename, boolean multiple, int subImageIndex) {
     final StringBuilder filenameBuilder = new StringBuilder();
     int i = tagStartIndexForFilename;
     while (true) {
@@ -192,31 +190,12 @@ public class Decoder {
         filenameBuilder.append('.');
       }
     }
-
-    final String key = dir.getPath() + "/" + filenameBuilder;
-    Integer counter = pathCounter.get(key);
-    File file;
-    if (counter == null) {
-      file = new File(dir, filenameBuilder.toString() + ".png");
-      if (file.exists()) {
-        counter = 0;
-
-        final String subLocalPath = filenameBuilder.append('-').toString();
-        file.renameTo(new File(dir, subLocalPath + counter++ + ".png"));
-        file = new File(dir, subLocalPath + counter++ + ".png");
-        pathCounter.put(key, counter);
-      }
-    }
-    else {
-      file = new File(dir, filenameBuilder.append('-').append(counter++).append(".png").toString());
-      if (file.exists()) {
-        throw new IOException();
-      }
-
-      pathCounter.put(key, counter);
+    
+    if (multiple) {
+      filenameBuilder.append('-').append(subImageIndex);
     }
 
-    return file;
+    return filenameBuilder.append(".png");
   }
 
   private int[] readNumericArray(final int length, final boolean isShort) {
