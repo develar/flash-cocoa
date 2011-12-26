@@ -93,6 +93,8 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
     }
   }
 
+
+
   override protected function draw(w:int, h:int):void {
     const tabBarPreferredHeight:int = tabBar.getPreferredHeight();
     if (tabBarPlacement == Placement.PAGE_START_LINE_CENTER) {
@@ -107,7 +109,7 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
     var toolbar:Toolbar = TabView(component).toolbar;
     var toolbarHeight:int = 0;
     if (toolbar != null) {
-      toolbarHeight = toolbar.getPreferredHeight();
+      toolbarHeight = getToolbarHeight(toolbar);
       toolbar.setBounds(contentInsets.left, contentInsets.top, w - contentInsets.width, toolbarHeight);
       toolbar.validate();
     }
@@ -116,6 +118,10 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
       contentView.setBounds(contentInsets.left, contentInsets.top + toolbarHeight, w - contentInsets.width, h - contentInsets.height - toolbarHeight);
       contentView.validate();
     }
+  }
+
+  protected function getToolbarHeight(toolbar:Toolbar):int {
+    return toolbar.getPreferredHeight();
   }
 
   public function toolbarChanged(oldToolbar:Toolbar, newToolbar:Toolbar):void {

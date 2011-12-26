@@ -216,8 +216,10 @@
 	// highlight and off
 	
 	NSSegmentedControl *segmentedControl = [self createSegmentedControl];
-	
-	NSEvent *event = [NSEvent mouseEventWithType:NSLeftMouseDown
+
+    [segmentedControl setLabel:@"ZWWWHHH0945DT" forSegment:1];
+
+    NSEvent *event = [NSEvent mouseEventWithType:NSLeftMouseDown
 							location:NSMakePoint([segmentedControl frame].origin.x, [segmentedControl frame].origin.y + 2)
 							modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:0 pressure:0];
 

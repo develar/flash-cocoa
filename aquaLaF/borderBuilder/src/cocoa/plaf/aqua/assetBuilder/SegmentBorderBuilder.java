@@ -37,7 +37,7 @@ class SegmentBorderBuilder {
     artFiles = new File(artFilesRoot, "tbsegments");
     // selecting state for unselected equals selecting state for selected,
     // currently, we don't reduce final border size (later, we can introduce sym links)
-    doBuild(out, new String[]{"active/", "on/pressed.", "on/", "on/pressed."}, new String[]{"active/", "on/"});
+    //doBuild(out, new String[]{"active/", "on/pressed.", "on/", "on/pressed."}, new String[]{"active/", "on/"});
   }
 
   private int getAppropriateBufferedImageType(BufferedImage original) {

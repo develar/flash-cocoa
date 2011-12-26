@@ -23,7 +23,7 @@ public class Toolbar extends Box {
 
     var insets:Vector.<UnitValue> = new Vector.<UnitValue>(4, true);
     for (var i:int = 0; i < 4; i++) {
-      insets[i] = UnitValue.ZERO;
+      insets[i] = i == 0 || i == 3 ? UnitValue.ZERO : new UnitValue(1);
     }
     lc.insets = insets;
 
