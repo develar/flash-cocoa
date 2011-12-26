@@ -1,7 +1,5 @@
 package cocoa.plaf.aqua {
-import cocoa.FrameInsets;
 import cocoa.SingletonClassFactory;
-import cocoa.border.LinearGradientBorder;
 import cocoa.layout.ListLayoutFactory;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
@@ -175,7 +173,6 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 }
 }
 
-import cocoa.layout.ListLayoutFactory;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.LookAndFeelUtil;
 import cocoa.plaf.TextFormatId;

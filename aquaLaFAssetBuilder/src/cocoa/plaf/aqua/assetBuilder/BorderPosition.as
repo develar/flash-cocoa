@@ -10,8 +10,7 @@ public final class BorderPosition {
   public static const menu:int = imageView + 1;
   public static const menuItem:int = menu + 1;
 
-  public static const segmentItem:int = menuItem + 1;
-  public static const scrollbar:int = segmentItem + 1;
+  public static const scrollbar:int = menuItem + 1;
 
   public static const window:int = scrollbar + 14;
   public static const windowWithToolbar:int = window + 1;

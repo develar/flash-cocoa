@@ -9,6 +9,8 @@ import cocoa.util.Vectors;
 
 import flash.display.DisplayObjectContainer;
 
+import mx.core.IFactory;
+
 import org.flyti.plexus.Injectable;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
@@ -192,7 +194,8 @@ public class SegmentedControl extends CollectionBody implements Injectable, List
 
     var rendererManager:RendererManager = this.rendererManager;
     if (rendererManager == null) {
-      rendererManager = RendererManagerFactory(laf.getFactory(_lafKey + ".rendererManager")).create(laf);
+      var factory:IFactory = laf.getFactory(_lafKey + ".rendererManager");
+      rendererManager = factory is RendererManagerFactory ? RendererManagerFactory(factory).create(laf) : factory.newInstance();
       this.rendererManager = rendererManager;
     }
 

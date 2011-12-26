@@ -51,17 +51,6 @@ public class Builder {
   [Embed(source="/Tree.sideBar.icons.png")]
   private static var treeSideBarIcons:Class;
 
-  private static var buttonRowsInfo:Vector.<RowInfo> = new <RowInfo>[
-    // rounded push button
-    new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new Insets(9, NaN, 9, 5))),
-    // textured rounded push button
-    new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, 0, 0, -1), new Insets(8, NaN, 8, 6))),
-    // rounded pop up button
-    new RowInfo(BorderPosition.popUpButton, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5))),
-    // textured rounded pop up button
-    new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1), new Insets(4, NaN, 16, 7)))
-  ];
-
   private static function finalizeRowsInfo(rowsInfo:Vector.<RowInfo>, top:Number = 0):void {
     for each (var rowInfo:RowInfo in rowsInfo) {
       rowInfo.top = top;
@@ -69,10 +58,20 @@ public class Builder {
     }
   }
 
-  public function build(testContainer:DisplayObjectContainer):void {
+  public static function build():void {
     var borders:Vector.<Border> = new Vector.<Border>(BorderPosition.totalLength, true);
     var compoundImageReader:CompoundImageReader = new CompoundImageReader(borders);
 
+    var buttonRowsInfo:Vector.<RowInfo> = new <RowInfo>[
+      // rounded push button
+      new RowInfo(BorderPosition.pushButtonRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new Insets(9, NaN, 9, 5))),
+      // textured rounded push button
+      new RowInfo(BorderPosition.pushButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(0, 0, 0, -1), new Insets(8, NaN, 8, 6))),
+      // rounded pop up button
+      new RowInfo(BorderPosition.popUpButton, Scale3EdgeHBitmapBorder.create(new FrameInsets(-2, 0, -2, -3), new TextInsets(21, 9, NaN, 9 + 21/* width of double-arrow area */, 5))),
+      // textured rounded pop up button
+      new RowInfo(BorderPosition.popUpButtonTexturedRounded, Scale3EdgeHBitmapBorder.create(new FrameInsets(-1, 0, -1), new Insets(4, NaN, 16, 7)))
+    ];
     finalizeRowsInfo(buttonRowsInfo, 22);
     compoundImageReader.read(assetsClass, buttonRowsInfo);
     // image view bezel border (imagewell border)
@@ -107,7 +106,7 @@ public class Builder {
     data.writeByte(oldBordersCount + (borders.length - 2));
     data.position = data.length;
 
-    var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted", "SegmentItem",
+    var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted",
       "ScrollBar.track.v", "ScrollBar.track.h", "ScrollBar.decrementButton.h", "ScrollBar.decrementButton.h.highlighted", "ScrollBar.incrementButton.h", "ScrollBar.incrementButton.h.highlighted",
       "ScrollBar.decrementButton.v", "ScrollBar.decrementButton.v.highlighted", "ScrollBar.incrementButton.v", "ScrollBar.incrementButton.v.highlighted",
       "ScrollBar.thumb.v", "ScrollBar.thumb.h", "ScrollBar.track.v.off", "ScrollBar.track.h.off",
@@ -198,8 +197,8 @@ public class Builder {
 
     data.writeBytes(icons);
 
-    Files.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/borders", data);
-    Files.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/src/main/resources/frameAssets", fdata);
+    Files.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/resources/borders", data);
+    Files.writeBytes(File.applicationDirectory.nativePath + "/../../aquaLaF/resources/frameAssets", fdata);
   }
 
   protected static function writeInsets(output:ByteArray, insets:Insets):void {
