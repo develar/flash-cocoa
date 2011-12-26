@@ -62,8 +62,6 @@ public class ToolWindowManager {
       if (_container != null) {
         _container.addSubview(tabBar);
       }
-
-      //columnConstraints[cc.cellX].size = null;
     }
     else {
       dataSource = ListViewMutableDataSource(tabBar.dataSource);
@@ -153,7 +151,7 @@ public class ToolWindowManager {
     if (paneItem.view == null) {
       createPaneView(paneItem, side);
     }
-    Panel(paneItem.view).visible = show;
+    paneItem.view.visible = show;
 
     if (show) {
       var columnConstraint:CellConstraint = columnConstraints[sideToColumn(side)];
@@ -163,6 +161,7 @@ public class ToolWindowManager {
     }
     else if (toolWindows[side].isSelectionEmpty) {
       columnConstraints[sideToColumn(side)].size = BoundSize.ZERO_PIXEL;
+      _container.invalidateSubview()
     }
   }
 
@@ -184,6 +183,7 @@ public class ToolWindowManager {
     var cc:CC = new CC();
     cc.cellX = sideToColumn(side);
     cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 2 : side == MigConstants.TOP ? 1 : 3;
+    cc.vertical.grow = 100;
     pane.constraints = cc;
 
     columnConstraints[cc.cellX].size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));

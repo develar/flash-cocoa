@@ -64,7 +64,7 @@ public class PaneRendererManager extends TextRendererManager {
     }
 
     var viewHeight:int = view.getPreferredHeight();
-    view.setBounds(x, y, view.getPreferredWidth(), viewHeight);
+    view.setBounds(x, y, w, viewHeight);
     view.validate();
 
     _lastCreatedRendererDimension = border.layoutHeight + viewHeight;

@@ -124,7 +124,7 @@ public class AbstractSkinnableView extends ObjectBackedView implements Skinnable
       _skinClass = laf.getClass(_lafKey);
     }
     _skin = new _skinClass();
-    _skin.setVisibleAndBurnInHellAdobe(visible);
+    _skin.visible = visible;
     _skinClass = null;
     _skin.addToSuperview(displayObjectContainer, laf, superview);
     _skin.attach(this);
@@ -163,7 +163,7 @@ public class AbstractSkinnableView extends ObjectBackedView implements Skinnable
   override public function set visible(value:Boolean):void {
     super.visible = value;
     if (_skin != null) {
-      _skin.setVisibleAndBurnInHellAdobe(value);
+      _skin.visible = value;
     }
   }
 

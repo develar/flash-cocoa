@@ -3,6 +3,7 @@ import cocoa.Border;
 import cocoa.ContentView;
 import cocoa.ControlView;
 import cocoa.Icon;
+import cocoa.RootContentView;
 import cocoa.SkinnableView;
 import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
@@ -74,15 +75,12 @@ public class AbstractSkin extends ControlView implements Skin {
     invalidate(true);
   }
 
-  public function setVisibleAndBurnInHellAdobe(value:Boolean):void {
-    visible = value;
-  }
-
   override public function set visible(value:Boolean):void {
     if (visible != value) {
       super.visible = value;
-      if (superview != null) {
-        superview.invalidateSubview(true);
+      var rootContentView:RootContentView = superview as RootContentView;
+      if (rootContentView != null) {
+        rootContentView.subviewVisibleChanged();
       }
     }
   }

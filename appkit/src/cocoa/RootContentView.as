@@ -9,5 +9,7 @@ public interface RootContentView extends ContentView, ContainerWrapper {
   function addSubview(view:View):void;
 
   function set layout(value:MigLayout):void;
+
+  function subviewVisibleChanged():void;
 }
 }

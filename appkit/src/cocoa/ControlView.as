@@ -12,6 +12,11 @@ import org.flyti.plexus.events.InjectorEvent;
 public class ControlView extends SpriteBackedView implements IMXMLObject {
   protected var superview:ContentView;
 
+  public function ControlView() {
+    super();
+    flags |= LayoutState.SIZE_INVALID;
+  }
+
   override public function validate():void {
     if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
       return;
@@ -28,25 +33,6 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
 
     if (this is Injectable) {
       dispatchEvent(new InjectorEvent(this, linkId));
-    }
-  }
-
-  override public function setSize(w:int, h:int):void {
-    var resized:Boolean = false;
-    if (w != _actualWidth) {
-      _actualWidth = w;
-      resized = true;
-    }
-    if (h != _actualHeight) {
-      _actualHeight = h;
-      resized = true;
-    }
-    
-    super.setSize(w, h);
-
-    if (resized) {
-      // after setBounds/setLocation/setSize superview call subview validate in any case — subview doesn't need to invalidate container
-      flags |= LayoutState.DISPLAY_INVALID;
     }
   }
 

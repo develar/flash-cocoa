@@ -18,9 +18,5 @@ public class BoxSkin extends Container implements Skin {
   public function hostComponentPropertyChanged():void {
     //invalidate(true);
   }
-
-  public function setVisibleAndBurnInHellAdobe(value:Boolean):void {
-    visible = value;
-  }
 }
 }

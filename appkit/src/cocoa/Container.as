@@ -85,23 +85,8 @@ public class Container extends SpriteBackedView implements RootContentView {
     return _layout.preferredLayoutHeight(LayoutUtil.PREF);
   }
 
-  override public function setSize(w:int, h:int):void {
-    var resized:Boolean = false;
-    if (w != _actualWidth) {
-      _actualWidth = w;
-      resized = true;
-    }
-    if (h != _actualHeight) {
-      _actualHeight = h;
-      resized = true;
-    }
-
-    super.setSize(w, h);
-
-    if (resized) {
-      flags |= LayoutState.DISPLAY_INVALID;
-      _layout.invalidateContainerSize();
-    }
+  override protected function sizeInvalidated():void {
+    _layout.invalidateContainerSize();
   }
 
   public function paintDebugCell(x:Number, y:Number, width:Number, height:Number, first:Boolean):void {
@@ -192,6 +177,10 @@ public class Container extends SpriteBackedView implements RootContentView {
     _subviews[_subviews.length] = view;
     view.addToSuperview(this, laf, this);
     _layout.invalidateSubview(true);
+  }
+
+  public function subviewVisibleChanged():void {
+    _layout.subviewVisibleChanged();
   }
 }
 }

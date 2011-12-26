@@ -7,6 +7,7 @@ import cocoa.plaf.Placement;
 import cocoa.plaf.RendererManagerFactory;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
+import cocoa.plaf.basic.BasicTableViewSkin;
 import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 
@@ -61,7 +62,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     //data["CollectionView"] = data["small.CollectionView"] = CollectionViewSkin;
     
-    //data["TableView"] = data["small.TableView"] = BasicTableViewSkin;
+    data["TableView"] = data["small.TableView"] = BasicTableViewSkin;
     data["TableView.rowHeight"] = 17;
     data["small.TableView.rowHeight"] = 14;
     data["TableView.intercellSpacing"] = data["small.TableView.intercellSpacing"] = new Point(3, 2); // height (y) must be even

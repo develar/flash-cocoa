@@ -8,7 +8,6 @@ import cocoa.ScrollView;
 import cocoa.View;
 import cocoa.Viewport;
 
-import flash.display.DisplayObject;
 import flash.display.InteractiveObject;
 import flash.errors.IllegalOperationError;
 
@@ -44,7 +43,8 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
     if (border != null) {
       contentView.setLocation(border.contentInsets.left, border.contentInsets.top);
     }
-    addChild(DisplayObject(contentView));
+
+    contentView.addToSuperview(this, laf);
   }
 
   override protected function draw(w:int, h:int):void {

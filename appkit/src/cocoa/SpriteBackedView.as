@@ -86,9 +86,26 @@ public class SpriteBackedView extends Sprite implements View {
     this.y = y;
   }
 
-  public function setSize(w:int, h:int):void {
-    _actualWidth = w;
-    _actualHeight = h;
+  public final function setSize(w:int, h:int):void {
+    var resized:Boolean = false;
+    if (w != _actualWidth) {
+      _actualWidth = w;
+      resized = true;
+    }
+    if (h != _actualHeight) {
+      _actualHeight = h;
+      resized = true;
+    }
+
+    if (resized) {
+      // after setBounds/setLocation/setSize superview call subview validate in any case — subview doesn't need to invalidate container
+      flags |= LayoutState.DISPLAY_INVALID;
+      sizeInvalidated();
+    }
+  }
+
+  protected function sizeInvalidated():void {
+
   }
 
   public function getBaseline(width:int, height:int):int {

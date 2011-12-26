@@ -127,5 +127,11 @@ public class MigLayout extends AbstractMigLayout {
   private function enterFrameHandler(event:Event):void {
     validate();
   }
+
+  public function subviewVisibleChanged():void {
+    if (lc != null && lc.hideMode != 0) {
+      invalidateContainerSize();
+    }
+  }
 }
 }
