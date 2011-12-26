@@ -11,7 +11,7 @@ public class Builder {
 
   public Builder(String outputFilename, String artFiles) throws IOException {
     final AssetOutputStream out = new AssetOutputStream(new BufferedOutputStream(new FileOutputStream(new File(outputFilename))));
-    out.writeByte(4);
+    out.writeByte(2);
     SegmentBorderBuilder segmentBorderBuilder = new SegmentBorderBuilder(new File(artFiles));
     segmentBorderBuilder.build(out);
     out.close();
