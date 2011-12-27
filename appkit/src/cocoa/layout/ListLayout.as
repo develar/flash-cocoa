@@ -11,33 +11,40 @@ import cocoa.util.Vectors;
 [Abstract]
 internal class ListLayout implements CollectionLayout {
   protected static const VERTICAL:uint = 1 << 0;
-  
+  protected static const EXPLICIT_DIMENSION:uint = 1 << 1;
+
   protected var flags:uint;
 
   private var pendingAddedIndices:Vector.<int>;
   private var pendingRemovedIndices:Vector.<int>;
 
-  protected var preferredWidth:int;
-  protected var preferredHeight:int;
+  protected var contentWidth:int = -1;
+  protected var contentHeight:int = -1;
+  
+  protected var actualDimension:int;
 
   private function get isVertical():Boolean {
     return (flags & VERTICAL) != 0;
   }
 
-  public final function getMinimumWidth(hHint:int):int {
-    return isVertical && _dimension != -1 ? _dimension + _insets.width : _insets.width;
+  public final function getMinimumWidth(hHint:int = -1):int {
+    return isVertical && (flags & EXPLICIT_DIMENSION) != 0 ? contentWidth + _insets.width : _insets.width;
   }
 
-  public final function getMinimumHeight(wHint:int):int {
-    return !isVertical && _dimension != -1 ? _dimension + _insets.height : _insets.height;
+  public final function getMinimumHeight(wHint:int = -1):int {
+    return !isVertical && (flags & EXPLICIT_DIMENSION) != 0 ? contentHeight + _insets.height : _insets.height;
   }
 
-  public final function getMaximumWidth(hHint:int):int {
-    return isVertical && _dimension != -1 ? _dimension + _insets.width : 32767;
+  public function getPreferredHeight(wHint:int = -1):int {
+    return contentHeight;
   }
 
-  public final function getMaximumHeight(wHint:int):int {
-    return !isVertical && _dimension != -1 ? _dimension + _insets.height : 32767;
+  public final function getMaximumWidth(hHint:int = -1):int {
+    return isVertical && (flags & EXPLICIT_DIMENSION) != 0 ? contentWidth + _insets.width : 32767;
+  }
+
+  public final function getMaximumHeight(wHint:int = -1):int {
+    return !isVertical && (flags & EXPLICIT_DIMENSION) != 0 ? contentHeight + _insets.height : 32767;
   }
 
   protected var _container:SegmentedControl;
@@ -50,16 +57,22 @@ internal class ListLayout implements CollectionLayout {
     _insets = value;
   }
 
-  protected var _dimension:int = -1;
   public function set dimension(value:int):void {
-    _dimension = value;
+    if (isVertical) {
+      contentWidth = value;
+    }
+    else {
+      contentHeight = value;
+    }
+
+    flags |= EXPLICIT_DIMENSION;
   }
 
   protected var _rendererManager:RendererManager;
   public function set rendererManager(value:RendererManager):void {
     _rendererManager = value;
-    if (_rendererManager is InteractiveRendererManager) {
-      InteractiveRendererManager(_rendererManager).fixedRendererDimension = _dimension;
+    if (_rendererManager is InteractiveRendererManager && (flags & EXPLICIT_DIMENSION) != 0) {
+      InteractiveRendererManager(_rendererManager).fixedRendererDimension = isVertical ? contentWidth : contentHeight;
     }
 
     if (_dataSource != null) {
@@ -114,8 +127,8 @@ internal class ListLayout implements CollectionLayout {
       return;
     }
 
-    _rendererManager.removeRenderer(index, index == 0 ? _insets.left : NaN, _insets.top, isVertical ? _dimension : -1, isVertical ? -1 : _dimension);
-    preferredWidth -= _rendererManager.lastCreatedRendererDimension;
+    _rendererManager.removeRenderer(index, index == 0 ? _insets.left : NaN, _insets.top, isVertical ? contentWidth : -1, isVertical ? -1 : contentHeight);
+    contentWidth -= _rendererManager.lastCreatedRendererDimension;
 
     _container.invalidateSize();
   }
@@ -138,7 +151,7 @@ internal class ListLayout implements CollectionLayout {
     _gap = value;
   }
 
-  public function getPreferredWidth(hHint:int):int {
+  public function getPreferredWidth(hHint:int = -1):int {
     return 0;
   }
 
@@ -154,7 +167,7 @@ internal class ListLayout implements CollectionLayout {
     _container.invalidateSize();
   }
 
-  protected function initialDrawItems(endPosition:int, effectiveDimension:int):int {
+  protected function initialDrawItems(endPosition:int, effectiveDimension:int):void {
     flags &= ~LayoutState.DISPLAY_INVALID;
 
     const startItemIndex:int = 0;
@@ -163,7 +176,29 @@ internal class ListLayout implements CollectionLayout {
     if (_rendererManager.renderedItemCount > 0) {
       _rendererManager.reuse(-_rendererManager.renderedItemCount, newVisibleItemCount == 0);
     }
-    return newVisibleItemCount == 0 ? 0 : drawItems(0, endPosition, startItemIndex, endItemIndex, effectiveDimension, true);
+    if (newVisibleItemCount == 0) {
+      if (isVertical) {
+        if ((flags & EXPLICIT_DIMENSION) == 0) {
+          contentWidth = 0;
+        }
+        contentHeight = 0;
+      }
+      else {
+        contentWidth = 0;
+        if ((flags & EXPLICIT_DIMENSION) == 0) {
+          contentHeight = 0;
+        }
+      }
+    }
+    else {
+      const contentDimension:int = drawItems(0, endPosition, startItemIndex, endItemIndex, effectiveDimension, true);
+      if (isVertical) {
+        contentHeight = contentDimension;
+      }
+      else {
+        contentWidth = contentDimension;
+      }
+    }
   }
 
   // startPosition and endPosition include insets, i.e. drawItems must respect insets —
@@ -178,12 +213,12 @@ internal class ListLayout implements CollectionLayout {
     if (!Vectors.isEmpty(pendingAddedIndices)) {
       for each (var itemIndex:int in pendingAddedIndices.sort(Vectors.sortAscending)) {
         if (isVertical) {
-          _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, _dimension, -1, _insets.top, _gap);
-          preferredHeight += _rendererManager.lastCreatedRendererDimension;
+          _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, contentWidth, -1, _insets.top, _gap);
+          contentHeight += _rendererManager.lastCreatedRendererDimension;
         }
         else {
-          _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, -1, _dimension, _insets.left, _gap);
-          preferredWidth += _rendererManager.lastCreatedRendererDimension;
+          _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, -1, contentHeight, _insets.left, _gap);
+          contentWidth += _rendererManager.lastCreatedRendererDimension;
         }
       }
 
@@ -196,19 +231,26 @@ internal class ListLayout implements CollectionLayout {
 
   public function draw(w:int, h:int):void {
     if (processPending() || (flags & LayoutState.DISPLAY_INVALID) == 0) {
-      return;
+      if ((flags & EXPLICIT_DIMENSION) == 0) {
+        const newActualDimension:int = isVertical ? w : h;
+        if (actualDimension == newActualDimension) {
+          return;
+        }
+        else {
+          actualDimension = newActualDimension;
+        }
+      }
+      else {
+        return;
+      }
     }
 
     if (isVertical) {
-      preferredHeight = initialDrawItems(h, w);
+      initialDrawItems(h, actualDimension);
     }
     else {
-      preferredWidth = initialDrawItems(w, h);
+      initialDrawItems(w, actualDimension);
     }
-  }
-
-  public function getPreferredHeight(wHint:int):int {
-    return 0;
   }
 }
 }

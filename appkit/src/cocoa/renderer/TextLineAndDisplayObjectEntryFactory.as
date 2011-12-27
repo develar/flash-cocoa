@@ -1,4 +1,5 @@
 package cocoa.renderer {
+import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Shape;
 import flash.display.Sprite;
@@ -49,7 +50,8 @@ public class TextLineAndDisplayObjectEntryFactory implements EntryFactory {
 
   public function finalizeReused(container:DisplayObjectContainer):void {
     for (var i:int = oldPoolSize, n:int = poolSize; i < n; i++) {
-      container.removeChild(pool[i].displayObject);
+      var child:DisplayObject = pool[i].displayObject;
+      child.parent.removeChild(child);
     }
     oldPoolSize = poolSize;
   }

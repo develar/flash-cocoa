@@ -8,19 +8,19 @@ public class ListVerticalLayout extends ListLayout implements CollectionLayout {
     flags |= VERTICAL;
   }
 
-  override public function getPreferredWidth(hHint:int):int {
-    return _dimension == -1 ? 0 : _dimension;
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return (flags & EXPLICIT_DIMENSION) == 0 ? getMaximumWidth() : contentWidth;
   }
 
-  override public function getPreferredHeight(wHint:int):int {
+  override public function getPreferredHeight(wHint:int = -1):int {
     if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
-      preferredHeight = initialDrawItems(10000, _dimension == -1 ? wHint == -1 ? 10000 : wHint : _dimension);
+      initialDrawItems(10000, (flags & EXPLICIT_DIMENSION) == 0 ? wHint == -1 ? 10000 : wHint : contentWidth);
     }
     else {
       processPending();
     }
 
-    return preferredHeight;
+    return contentHeight;
   }
 
   override protected function drawItems(startPosition:int, endPosition:int, startItemIndex:int, endItemIndex:int, effectiveDimension:int, head:Boolean):int {

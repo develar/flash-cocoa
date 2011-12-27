@@ -68,10 +68,15 @@ public class AssetBuilderMojo extends AbstractMojo {
       setUpImageDirectories();
     }
     catch (Exception e) {
-      throw new MojoExecutionException("Can't set up images source directories", e);
+      throw new MojoExecutionException("Can't setup images source directories", e);
     }
 
-    new AssetBuilder(descriptor, output, sources);
+    try {
+      new AssetBuilder(descriptor, output, sources).build();
+    }
+    catch (IOException e) {
+      throw new MojoFailureException("", e);
+    }
   }
 
   private void setUpImageDirectories() throws IOException, ClassNotFoundException {

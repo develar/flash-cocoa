@@ -19,16 +19,16 @@ public interface CollectionLayout {
 
   function set insets(value:Insets):void;
 
-  function getPreferredWidth(hHint:int):int;
+  function getPreferredWidth(hHint:int = -1):int;
 
-  function getPreferredHeight(wHint:int):int;
+  function getPreferredHeight(wHint:int = -1):int;
 
-  function getMinimumHeight(wHint:int):int;
+  function getMinimumHeight(wHint:int = -1):int;
 
-  function getMinimumWidth(hHint:int):int;
+  function getMinimumWidth(hHint:int = -1):int;
 
-  function getMaximumWidth(hHint:int):int;
+  function getMaximumWidth(hHint:int = -1):int;
 
-  function getMaximumHeight(wHint:int):int;
+  function getMaximumHeight(wHint:int = -1):int;
 }
 }
