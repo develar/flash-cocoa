@@ -17,7 +17,7 @@ public class Scale3HBitmapBorder extends AbstractScale3BitmapBorder {
     return border;
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     sharedMatrix.tx = _frameInsets.left;
     sharedMatrix.ty = _frameInsets.top;
 

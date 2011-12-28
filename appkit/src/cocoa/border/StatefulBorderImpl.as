@@ -25,7 +25,7 @@ public class StatefulBorderImpl extends AbstractBorder implements StatefulBorder
     return stateIndex < borders.length;
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     borders[_borderIndex].draw(g, w, h, x, y, view);
   }
 }

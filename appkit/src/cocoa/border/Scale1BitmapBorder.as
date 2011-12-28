@@ -34,17 +34,8 @@ public final class Scale1BitmapBorder extends AbstractControlBitmapBorder implem
     return border;
   }
 
-  /**
-   * w и h can be NaN, в этом случае x/y = frameInsets.left/top и w/h = bitmap.width/height
-   */
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
-    sharedMatrix.tx = x + _frameInsets.left;
-    sharedMatrix.ty = y + _frameInsets.top;
-
-    var bitmap:BitmapData = bitmaps[_bitmapIndex];
-    g.beginBitmapFill(bitmap, sharedMatrix, false);
-    g.drawRect(sharedMatrix.tx, sharedMatrix.ty, w != w ? bitmap.width : (w - _frameInsets.left - _frameInsets.right), h != h ? bitmap.height : (h - _frameInsets.top - _frameInsets.bottom));
-    g.endFill();
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
+    OneBitmapBorder.doDraw(_frameInsets, bitmaps[_bitmapIndex], g, w, h, x, y);
   }
 
   override public function readExternal(input:ByteArray):void {

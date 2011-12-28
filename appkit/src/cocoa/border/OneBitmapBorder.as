@@ -45,12 +45,16 @@ public class OneBitmapBorder extends AbstractBitmapBorder {
     return create(Bitmap(new bitmapClass()).bitmapData, contentInsets, frameInsets);
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
-    sharedMatrix.tx = _frameInsets.left;
-    sharedMatrix.ty = _frameInsets.top;
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
+    doDraw(_frameInsets, bitmap, g, w, h, x, y);
+  }
+
+  internal static function doDraw(frameInsets:FrameInsets, bitmap:BitmapData, g:Graphics, w:Number, h:Number, x:Number, y:Number):void {
+    sharedMatrix.tx = x + frameInsets.left;
+    sharedMatrix.ty = y + frameInsets.top;
 
     g.beginBitmapFill(bitmap, sharedMatrix, false);
-    g.drawRect(_frameInsets.left, _frameInsets.top, w - _frameInsets.left - _frameInsets.right, h - _frameInsets.bottom - _frameInsets.top);
+    g.drawRect(sharedMatrix.tx, sharedMatrix.ty, w != w ? bitmap.width : (w - frameInsets.left - frameInsets.right), h != h ? bitmap.height : (h - frameInsets.top - frameInsets.bottom));
     g.endFill();
   }
 

@@ -25,7 +25,7 @@ public class HUDTextInputBorder extends AbstractBorder
 		g.endFill();
 	}
 
-	override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void
+	override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void
 	{
 		drawOuterBorder(g, w, h);
 

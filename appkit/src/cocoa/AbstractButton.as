@@ -20,13 +20,15 @@ public class AbstractButton extends AbstractControl {
     return title;
   }
 
+  override public function set objectValue(value:Object):void {
+    title = value as String;
+  }
+
   public function setStateAndCallUserInitiatedActionHandler(value:int):void {
     _state = value;
     updateToolTip();
 
-    if (_action != null) {
-      actionParameters == null ? _action() : _action.apply(null, actionParameters);
-    }
+    callUserInitiatedActionHandler();
   }
 
   override protected function skinAttached():void {

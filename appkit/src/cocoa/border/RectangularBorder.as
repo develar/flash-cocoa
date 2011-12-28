@@ -39,7 +39,7 @@ public class RectangularBorder extends AbstractBorder {
     return _layoutHeight;
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     const alpha:Number = view == null || view.enabled ? 1 : 0.5;
 
     if (_frameInsets != EMPTY_FRAME_INSETS) {

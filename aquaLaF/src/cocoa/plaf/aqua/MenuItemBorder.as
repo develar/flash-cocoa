@@ -17,7 +17,7 @@ public final class MenuItemBorder extends AbstractBorder {
     return _layoutHeight;
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     g.beginFill(0xffffff, 242 / 255);
     g.drawRect(0, 0, w, h);
     g.endFill();

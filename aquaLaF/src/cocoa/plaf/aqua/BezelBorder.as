@@ -18,7 +18,7 @@ internal final class BezelBorder extends AbstractBorder {
     _contentInsets = CONTENT_INSETS;
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     const right:Number = w - HALF_LINE_THICKNESS;
     const bottom:Number = h - HALF_LINE_THICKNESS;
 

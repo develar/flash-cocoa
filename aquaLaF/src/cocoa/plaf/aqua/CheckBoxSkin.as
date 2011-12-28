@@ -14,7 +14,7 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
   }
 
   override protected function draw(w:int, h:int):void {
-    StatefulBorder(border).stateIndex = (myComponent.state * 3) + (enabled ? 0 : 2);
+    StatefulBorder(border).stateIndex = (button.state * 3) + (enabled ? 0 : 2);
 
     if (labelHelper != null && labelHelper.hasText) {
       if (border != null) {
@@ -32,26 +32,26 @@ public class CheckBoxSkin extends cocoa.plaf.basic.PushButtonSkin {
   }
 
   override public function mouseOverHandler(event:MouseEvent):void {
-    StatefulBorder(border).stateIndex = myComponent.state == CellState.ON ? 4 : 1;
+    StatefulBorder(border).stateIndex = button.state == CellState.ON ? 4 : 1;
     super.mouseOverHandler(event);
   }
 
   override public function mouseOutHandler(event:MouseEvent):void {
-    StatefulBorder(border).stateIndex = myComponent.state == CellState.ON ? 3 : 0;
+    StatefulBorder(border).stateIndex = button.state == CellState.ON ? 3 : 0;
     super.mouseOverHandler(event);
   }
 
   override protected function mouseUp():void {
     super.mouseUp();
 
-    StatefulBorder(border).stateIndex = myComponent.state == CellState.ON ? 3 : 0;
+    StatefulBorder(border).stateIndex = button.state == CellState.ON ? 3 : 0;
   }
 
   override protected function drawBorder2(w:Number, h:Number):void {
     var g:Graphics = graphics;
     g.clear();
     // checkmark вылезает за пределы обычной картинки, а на border у нас только один frameInsers, — дорабатывать концепцию дорого
-    border.draw(g, NaN, NaN, 0, myComponent.state == CellState.ON ? -2 : 0, this);
+    border.draw(g, NaN, NaN, 0, button.state == CellState.ON ? -2 : 0, this);
   }
 }
 }

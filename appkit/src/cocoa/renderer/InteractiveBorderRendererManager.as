@@ -1,5 +1,6 @@
 package cocoa.renderer {
 import cocoa.Border;
+import cocoa.CellState;
 import cocoa.TextLineInsets;
 import cocoa.border.BorderStateIndex;
 import cocoa.border.StatefulBorder;
@@ -62,7 +63,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
 
   override protected function drawEntry(entry:TextLineAndDisplayObjectEntry, itemIndex:int, g:Graphics, w:int, h:int, x:Number, y:Number):void {
     if (border is StatefulBorder) {
-      StatefulBorder(border).stateIndex = _selectionModel.isItemSelected(itemIndex) ? BorderStateIndex.ON : BorderStateIndex.OFF;
+      StatefulBorder(border).stateIndex = _selectionModel.isItemSelected(itemIndex) ? CellState.ON : CellState.OFF;
     }
 
     border.draw(g, w == -1 ? _lastCreatedRendererDimension : w, h == -1 ? _lastCreatedRendererDimension : h);
@@ -90,7 +91,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
       return;
     }
 
-    StatefulBorder(border).stateIndex = value ? BorderStateIndex.ON : BorderStateIndex.OFF;
+    StatefulBorder(border).stateIndex = value ? CellState.ON : CellState.OFF;
     drawOnInteract(itemIndex);
   }
 
@@ -106,7 +107,7 @@ public class InteractiveBorderRendererManager extends InteractiveGraphicsRendere
     }
 
     selectingItemIndex = -1;
-    StatefulBorder(border).stateIndex = value ? BorderStateIndex.ON : BorderStateIndex.OFF;
+    StatefulBorder(border).stateIndex = value ? CellState.ON : CellState.OFF;
     drawOnInteract(itemIndex);
   }
 }

@@ -28,8 +28,9 @@ public interface Border {
   function get layoutWidth():Number;
 
   /**
-   * View для получения состояния view — enabled к примеру
+   * View — ability to get some information like enabled
+   * w и h can be NaN, in this case x/y = frameInsets.left/top и w/h = bitmap.width/height
    */
-  function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void;
+  function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void;
 }
 }

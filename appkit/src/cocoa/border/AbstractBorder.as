@@ -28,7 +28,7 @@ public class AbstractBorder implements Border {
     return _contentInsets;
   }
 
-  public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     throw new Error("abstract");
   }
 }

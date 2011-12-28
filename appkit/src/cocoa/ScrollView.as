@@ -3,10 +3,6 @@ import cocoa.plaf.LookAndFeel;
 
 import flash.display.DisplayObjectContainer;
 
-import mx.core.IUIComponent;
-
-import spark.components.supportClasses.GroupBase;
-
 /**
  * http://developer.apple.com/mac/library/documentation/cocoa/reference/ApplicationKit/Classes/NSScrollView_Class/Reference/Reference.html
  * http://developer.apple.com/mac/library/documentation/cocoa/Conceptual/NSScrollViewGuide/Articles/Basics.html
@@ -23,11 +19,15 @@ public class ScrollView extends ObjectBackedView {
   private var _horizontalScrollBar:ScrollBar;
   private var _verticalScrollBar:ScrollBar;
 
-  /**
-   * SDT - ScrollBar Display Threshold.  If the content size exceeds the viewport's size by SDT, then we show a scrollbar.
-   * For example, if the contentWidth >= viewport width + SDT, show the horizontal scrollbar.
-   */
-  private static const SDT:Number = 1.0;
+  protected var _actualWidth:int = -1;
+  override public function get actualWidth():int {
+    return _actualWidth;
+  }
+
+  protected var _actualHeight:int = -1;
+  override public function get actualHeight():int {
+    return _actualHeight;
+  }
 
   private var _documentView:Viewport;
   public function set documentView(value:Viewport):void {
@@ -55,6 +55,33 @@ public class ScrollView extends ObjectBackedView {
     if (_horizontalScrollBar != null) {
       _horizontalScrollBar.visible = _horizontalScrollPolicy != ScrollPolicy.OFF;
     }
+  }
+
+  override public final function setSize(w:int, h:int):void {
+    var resized:Boolean = false;
+    if (w != _actualWidth) {
+      _actualWidth = w;
+      resized = true;
+    }
+    if (h != _actualHeight) {
+      _actualHeight = h;
+      resized = true;
+    }
+
+    if (resized) {
+      // after setBounds/setLocation/setSize superview call subview validate in any case — subview doesn't need to invalidate container
+      flags |= LayoutState.DISPLAY_INVALID;
+    }
+  }
+
+  override public function validate():void {
+    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
+      return;
+    }
+
+    flags &= ~LayoutState.DISPLAY_INVALID;
+    flags &= ~LayoutState.SIZE_INVALID;
+    draw(_actualWidth, _actualHeight);
   }
 
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
@@ -89,91 +116,38 @@ public class ScrollView extends ObjectBackedView {
     return _verticalScrollBar != null && _verticalScrollBar.visible;
   }
 
-  private function measure():void {
-    var hsb:ScrollBar = _horizontalScrollBar;
-    var showHSB:Boolean = false;
-    var hAuto:Boolean = false;
-    switch (_horizontalScrollPolicy) {
-      case ScrollPolicy.ON:
-        showHSB = true;
-        break;
-
-      case ScrollPolicy.AUTO:
-        if (hsb != null) {
-          showHSB = hsb.visible;
-        }
-        hAuto = true;
-        break;
+  private function getWidth(pref:Boolean):int {
+    var w:int = pref ? _documentView.getPreferredWidth() : _documentView.getMinimumWidth();
+    if (_verticalScrollPolicy == ScrollPolicy.AUTO ? _documentView.contentHeight > _documentView.getPreferredHeight() : _verticalScrollPolicy == ScrollPolicy.ON) {
+      w += _verticalScrollBar.getPreferredHeight();
     }
 
-    var vsb:ScrollBar = _verticalScrollBar;
-    var showVSB:Boolean = false;
-    var vAuto:Boolean = false;
-    switch (_verticalScrollPolicy) {
-      case ScrollPolicy.ON:
-        showVSB = true;
-        break;
+    return w;
+  }
 
-      case ScrollPolicy.AUTO:
-        if (vsb != null) {
-          showVSB = vsb.visible;
-        }
-        vAuto = true;
-        break;
+  private function getHeight(pref:Boolean):int {
+    var h:int = pref ? _documentView.getPreferredHeight() : _documentView.getMinimumHeight();
+    if (_horizontalScrollPolicy == ScrollPolicy.AUTO ? _documentView.contentWidth > _documentView.getPreferredWidth() : _horizontalScrollPolicy == ScrollPolicy.ON) {
+      h += _horizontalScrollBar.getPreferredHeight();
     }
 
-    var measuredW:Number = showHSB ? _horizontalScrollBar.getPreferredHeight() : 0;
-    var measuredH:Number = showVSB ? _verticalScrollBar.getPreferredWidth() : 0;
-    // The measured size of the viewport is just its preferredBounds, except:
-    // don't give up space if doing so would make an auto scrollbar visible.
-    // In other words, if an auto scrollbar isn't already showing, and using
-    // the preferred size would force it to show, and the current size would not,
-    // then use its current size as the measured size. Note that a scrollbar
-    // is only shown if the content size is greater than the viewport size by at least SDT.
-    var viewportContentW:int = _documentView.contentWidth;
-    var viewportW:int = _documentView.getPreferredWidth();
-    var currentSizeNoHSB:Boolean = viewportW + SDT > viewportContentW;
-    if (hAuto && !showHSB && ((viewportW + SDT) <= viewportContentW) && currentSizeNoHSB) {
-      measuredW += viewportW;
-    }
-    else {
-      measuredW += Math.max(viewportW, showHSB ? hsb.getMinimumWidth() : 0);
-    }
+    return h;
+  }
 
-    var viewportContentH:int = _documentView.contentHeight;
-    var viewportH:Number = _documentView.getPreferredHeight();
-    var currentSizeNoVSB:Boolean = !isNaN(viewportH) && ((viewportH + SDT) > viewportContentH);
-    if (vAuto && !showVSB && ((viewportH + SDT) <= viewportContentH) && currentSizeNoVSB) {
-      measuredH += viewportH;
-    }
-    else {
-      measuredH += Math.max(viewportH, showVSB ? vsb.getMinimumHeight() : 0);
-    }
+  override public function getMinimumWidth(hHint:int = -1):int {
+    return getWidth(false);
+  }
 
-    var minW:Number = 0;
-    var minH:Number = 0;
-    // If the viewport's explicit size is set, then include that in the scroller's minimum size
-    if (_documentView is IUIComponent) {
-      var viewportUIC:IUIComponent = IUIComponent(_documentView);
-      if (!isNaN(viewportUIC.explicitWidth)) {
-        minW += viewportUIC.explicitWidth;
-      }
-      else {
-        minW += viewportUIC.minWidth;
-      }
+  override public function getMinimumHeight(wHint:int = -1):int {
+    return getHeight(false);
+  }
 
-      if (!isNaN(viewportUIC.explicitHeight)) {
-        minH += viewportUIC.explicitHeight;
-      }
-      else {
-        minH += viewportUIC.minHeight;
-      }
-    }
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return getWidth(true);
+  }
 
-    //measuredWidth = Math.ceil(measuredW);
-    //measuredHeight = Math.ceil(measuredH);
-    //measuredMinWidth = Math.ceil(minW);
-    //measuredMinHeight = Math.ceil(minH);
+  override public function getPreferredHeight(wHint:int = -1):int {
+    return getHeight(true);
   }
 
   private function set hsbVisible(value:Boolean):void {
@@ -202,53 +176,48 @@ public class ScrollView extends ObjectBackedView {
 
     const hAuto:Boolean = _horizontalScrollPolicy == ScrollPolicy.AUTO;
     if (hAuto) {
-      _horizontalScrollBar.visible = contentW >= (w + SDT);
+      _horizontalScrollBar.visible = contentW > w;
     }
 
     const vAuto:Boolean = _verticalScrollPolicy == ScrollPolicy.AUTO;
     if (vAuto) {
-      _verticalScrollBar.visible = contentH >= (h + SDT);
+      _verticalScrollBar.visible = contentH > h;
     }
 
     // Reset the viewport's width,height to account for the visible scrollbars, unless
     // the viewport's size was explicitly set, then we just use that.
-    var viewportW:int = w - (vsbVisible ? _verticalScrollBar.actualWidth : 0);
-    var viewportH:int = h - (hsbVisible ? _horizontalScrollBar.actualHeight : 0);
+    var viewportW:int = w - (vsbVisible ? _verticalScrollBar.getPreferredWidth() : 0);
+    var viewportH:int = h - (hsbVisible ? _horizontalScrollBar.getPreferredHeight() : 0);
 
     // If the scrollBarPolicy is auto, and we're only showing one scrollbar,
     // the viewport may have shrunk enough to require showing the other one.
-    if (vsbVisible && !hsbVisible && hAuto && (contentW >= (viewportW + SDT))) {
+    if (vsbVisible && !hsbVisible && hAuto && (contentW > viewportW)) {
       hsbVisible = true;
     }
-    else if (!vsbVisible && hsbVisible && vAuto && (contentH >= (viewportH + SDT))) {
+    else if (!vsbVisible && hsbVisible && vAuto && contentH > viewportH) {
       vsbVisible = true;
     }
 
     viewportW = w - (vsbVisible ? _verticalScrollBar.getPreferredWidth() : 0);
     viewportH = h - (hsbVisible ? _horizontalScrollBar.getPreferredHeight() : 0);
 
-    // Layout the viewport and scrollbars.
     _documentView.setSize(viewportW, viewportH);
     _documentView.validate();
 
     if (hsbVisible) {
-      var hsbH:int = hsb.actualHeight;
+      var hsbH:int = hsb.getPreferredHeight();
       hsb.setBounds(hsb.x, h - hsbH, vsbVisible ? w - vsb.getPreferredWidth() : w, hsbH);
+      hsb.validate();
     }
 
     if (vsbVisible) {
-      var vsbW:Number = vsb.actualWidth;
+      var vsbW:Number = vsb.getPreferredWidth();
       vsb.setBounds(w - vsbW, vsb.y, vsbW, hsbVisible ? h - hsb.getPreferredHeight() : h);
+      vsb.validate();
     }
 
     if ((vAuto && vsbVisible != oldShowVSB) || (hAuto && hsbVisible != oldShowHSB)) {
       //invalidateSize();
-      // If the viewport's layout is virtual, it's possible that its measured size changed as a consequence of laying it out,
-      // so we invalidate its size as well.
-      var viewportGroup:GroupBase = _documentView as GroupBase;
-      if (viewportGroup != null && viewportGroup.layout.useVirtualLayout) {
-        viewportGroup.invalidateSize();
-      }
     }
   }
 }

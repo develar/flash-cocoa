@@ -12,7 +12,7 @@ internal class SeparatorMenuItemBorder extends AbstractBorder implements Border 
     return 12;
   }
 
-  override public function draw(g:Graphics, w:Number, h:Number, x:Number = 0, y:Number = 0, view:View = null):void {
+  override public function draw(g:Graphics, w:Number = NaN, h:Number = NaN, x:Number = 0, y:Number = 0, view:View = null):void {
     g.beginFill(0xffffff, 242 / 255);
     g.drawRect(0, 0, w, 5);
     g.endFill();

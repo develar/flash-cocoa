@@ -15,7 +15,7 @@ import flash.events.MouseEvent;
 
 public class PushButtonSkin extends TitledComponentSkin implements Focusable, ButtonSkinInteraction {
   protected var border:Border;
-  protected var myComponent:Cell;
+  protected var button:Cell;
 
   public function PushButtonSkin() {
     mouseChildren = false;
@@ -40,7 +40,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
   override public function attach(component:SkinnableView):void {
     super.attach(component);
 
-    myComponent = Cell(component);
+    button = Cell(component);
   }
 
   override public function getBaseline(width:int, height:int):int {
@@ -101,7 +101,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
 
   override protected function draw(w:int, h:int):void {
     if (labelHelper != null && labelHelper.hasText) {
-      if (myComponent.state == CellState.MIXED) {
+      if (button.state == CellState.MIXED) {
         if (labelHelper.textLine != null && labelHelper.textLine.parent != null) {
           removeChild(labelHelper.textLine);
         }
@@ -172,7 +172,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
   public function mouseUpHandler(event:MouseEvent):void {
     var state:int = CellState.OFF;
     if (toggled) {
-      state = myComponent.state == CellState.OFF ? CellState.ON : CellState.OFF;
+      state = button.state == CellState.OFF ? CellState.ON : CellState.OFF;
     }
 
     AbstractButton(component).setStateAndCallUserInitiatedActionHandler(state);

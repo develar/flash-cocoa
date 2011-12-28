@@ -1,5 +1,6 @@
 package cocoa.util {
 import flash.display.DisplayObject;
+import flash.events.MouseEvent;
 import flash.geom.Point;
 
 public final class SharedPoint {
@@ -16,6 +17,13 @@ public final class SharedPoint {
     var p:Point = point;
     p.x = o.x;
     p.y = o.y;
+    return p;
+  }
+
+  public static function mouseGlobal(e:MouseEvent):Point {
+    var p:Point = point;
+    p.x = e.stageX;
+    p.y = e.stageY;
     return p;
   }
 }

@@ -1,6 +1,4 @@
 package cocoa {
-import mx.managers.IToolTipManagerClient;
-
 public class AbstractControl extends AbstractSkinnableView implements Control, Cell {
   protected var actionParameters:Array;
 
@@ -19,7 +17,7 @@ public class AbstractControl extends AbstractSkinnableView implements Control, C
     if (value != _toolTip) {
       _toolTip = value;
       if (skin != null) {
-        IToolTipManagerClient(skin).toolTip = _toolTip;
+        //IToolTipManagerClient(skin).toolTip = _toolTip;
       }
     }
   }
@@ -40,7 +38,7 @@ public class AbstractControl extends AbstractSkinnableView implements Control, C
 
   protected function updateToolTip():void {
     if (_alternateToolTip != null) {
-      IToolTipManagerClient(skin).toolTip = _state == CellState.ON ? _alternateToolTip : _toolTip;
+      //IToolTipManagerClient(skin).toolTip = _state == CellState.ON ? _alternateToolTip : _toolTip;
     }
   }
 
@@ -56,7 +54,7 @@ public class AbstractControl extends AbstractSkinnableView implements Control, C
     super.skinAttached();
 
     if (_toolTip != null) {
-      IToolTipManagerClient(skin).toolTip = _toolTip;
+      //IToolTipManagerClient(skin).toolTip = _toolTip;
     }
   }
 
@@ -65,8 +63,14 @@ public class AbstractControl extends AbstractSkinnableView implements Control, C
     if (value != _alternateToolTip) {
       _alternateToolTip = value;
       if (skin != null && _state == CellState.ON) {
-        IToolTipManagerClient(skin).toolTip = _alternateToolTip;
+        //IToolTipManagerClient(skin).toolTip = _alternateToolTip;
       }
+    }
+  }
+
+  protected function callUserInitiatedActionHandler():void {
+    if (_action != null) {
+      actionParameters == null ? _action() : _action.apply(null, actionParameters);
     }
   }
 }
