@@ -138,6 +138,8 @@ public class Decoder {
         final int srcLength = w * h * 4;
 
         md.update(bytes, srcPos, srcLength);
+        md.update((byte)w);
+        md.update((byte)h);
         final String digest = convertToHex(md.digest());
         md.reset();
 
@@ -233,22 +235,21 @@ public class Decoder {
     }
   }
 
-  private static String convertToHex(byte[] data) {
-    StringBuilder buf = new StringBuilder(128);
+  private final char[] chars = new char[128];
+
+  private String convertToHex(byte[] data) {
+    int i = 0;
+    char[] chars = this.chars;
     for (byte aData : data) {
       int halfbyte = (aData >>> 4) & 0x0F;
       int two_halfs = 0;
       do {
-        if ((0 <= halfbyte) && (halfbyte <= 9)) {
-          buf.append((char)('0' + halfbyte));
-        }
-        else {
-          buf.append((char)('a' + (halfbyte - 10)));
-        }
+        chars[i++] = (0 <= halfbyte) && (halfbyte <= 9) ? (char)('0' + halfbyte) : (char)('a' + (halfbyte - 10));
         halfbyte = aData & 0x0f;
       }
       while (two_halfs++ < 1);
     }
-    return buf.toString();
+
+    return new String(chars);
   }
 }
