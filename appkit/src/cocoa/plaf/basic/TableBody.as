@@ -1,6 +1,7 @@
 package cocoa.plaf.basic {
 import cocoa.CollectionBody;
 import cocoa.ContentView;
+import cocoa.LayoutState;
 import cocoa.plaf.LookAndFeel;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableView;
@@ -53,8 +54,9 @@ public class TableBody extends CollectionBody {
     _verticalScrollPosition = 0;
     _horizontalScrollPosition = 0;
     background.y = 0;
-    //dispatchPropertyChangeEvent("verticalScrollPosition", -1, 0);
-    //dispatchPropertyChangeEvent("horizontalScrollPosition", -1, 0);
+    if (_scrollPositionReset != null) {
+      _scrollPositionReset.dispatch();
+    }
     if (visibleRowCount != -1) {
       visibleRowCount = -visibleRowCount - 1;
     }
@@ -75,30 +77,8 @@ public class TableBody extends CollectionBody {
     return minWidth + (tableView.columns.length - 1) * intercellSpacing.x;
   }
 
-  //override public function getPreferredWidth(hHint:int = -1):int {
-  //  if (hHint == -1) {
-  //    return 0;
-  //  }
-  //  else {
-  //
-  //  }
-  //}
-
   override public function getPreferredHeight(wHint:int = -1):int {
     return Math.max(dataSource.itemCount, tableView.minRowCount) * rowHeightWithSpacing;
-  }
-
-   protected function measure():void {
-    _contentHeight = Math.max(dataSource.itemCount, tableView.minRowCount) * rowHeightWithSpacing;
-    //dispatchPropertyChangeEvent("contentHeight", -1, _contentHeight);
-    //measuredHeight = _contentHeight;
-
-    var minWidth:Number = 0;
-    for each (var column:TableColumn in tableView.columns) {
-      minWidth += column.minWidth;
-    }
-
-    //measuredWidth = 0;
   }
 
   private function computeInvisibleLastRowPartBottom(invisibleFirstRowPartTop:Number, h:Number):int {
@@ -111,10 +91,10 @@ public class TableBody extends CollectionBody {
     const invisibleFirstRowPartTop:Number = _verticalScrollPosition % rowHeightWithSpacing;
     background.y = _verticalScrollPosition - invisibleFirstRowPartTop - (int(_verticalScrollPosition / rowHeightWithSpacing) % 2 == 0 ? 0 : rowHeightWithSpacing);
 
-    //if (displayListInvalid) {
-      // updateDisplayList responsible for
-      //return;
-    //}
+    if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
+      //updateDisplayList responsible for
+      return;
+    }
 
     const availableSpace:Number = invisibleFirstRowPartTop == 0 ? height : (height - (rowHeightWithSpacing - invisibleFirstRowPartTop));
     var newVisibleRowCount:int = (invisibleFirstRowPartTop > 0 ? 1 : 0) + int(availableSpace / rowHeightWithSpacing);

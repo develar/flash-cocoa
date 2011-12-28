@@ -1,6 +1,7 @@
 package cocoa {
 import flash.display.InteractiveObject;
 import flash.errors.IllegalOperationError;
+import flash.geom.Rectangle;
 
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
@@ -29,20 +30,19 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
   }
 
   public function get contentWidth():int {
-    return 0;
+    return getPreferredWidth();
   }
 
-  protected var _contentHeight:Number = 0;
   public function get contentHeight():int {
-    return _contentHeight;
+    return getPreferredHeight();
   }
 
-  protected var _horizontalScrollPosition:Number = 0;
-  public function get horizontalScrollPosition():Number {
+  protected var _horizontalScrollPosition:int = 0;
+  public function get horizontalScrollPosition():int {
     return _horizontalScrollPosition;
   }
 
-  public function set horizontalScrollPosition(value:Number):void {
+  public function set horizontalScrollPosition(value:int):void {
     if (value == _horizontalScrollPosition) {
       return;
     }
@@ -50,12 +50,12 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
     _horizontalScrollPosition = value;
   }
 
-  protected var _verticalScrollPosition:Number = 0;
-  public function get verticalScrollPosition():Number {
+  protected var _verticalScrollPosition:int = 0;
+  public function get verticalScrollPosition():int {
     return _verticalScrollPosition;
   }
 
-  public function set verticalScrollPosition(value:Number):void {
+  public function set verticalScrollPosition(value:int):void {
     if (_verticalScrollPosition == value) {
       return;
     }
@@ -64,9 +64,9 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
     var delta:Number = value - oldVerticalScrollPosition;
     _verticalScrollPosition = value;
 
-    // _20_ if (!displayListInvalid) {
-    //  scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
-    //}
+    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
+      scrollRect = new Rectangle(_horizontalScrollPosition, _verticalScrollPosition, width, height);
+    }
     verticalScrollPositionChanged(delta, oldVerticalScrollPosition);
   }
 
@@ -79,7 +79,7 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
   }
 
   public function getVerticalScrollPositionDelta(navigationUnit:uint):Number {
-    if (_verticalScrollPosition == 0 && _contentHeight <= height) {
+    if (_verticalScrollPosition == 0 && contentHeight <= height) {
       return 0;
     }
 
@@ -101,12 +101,20 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
     return this;
   }
 
-  private var _contentSizeChanged:Signal;
-  public function contentSizeChanged():ISignal {
+  protected var _contentSizeChanged:Signal;
+  public function get contentSizeChanged():ISignal {
     if (_contentSizeChanged == null) {
       _contentSizeChanged = new Signal();
     }
     return _contentSizeChanged;
+  }
+
+  protected var _scrollPositionReset:Signal;
+  public function get scrollPositionReset():ISignal {
+    if (_scrollPositionReset == null) {
+      _scrollPositionReset = new Signal();
+    }
+    return _scrollPositionReset;
   }
 }
 }

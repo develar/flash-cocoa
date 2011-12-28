@@ -3,6 +3,14 @@ public class Slider extends AbstractControl {
   public static const VERTICAL:uint = 1 << 4;
   public static const CONTINUOUS:uint = 1 << 5;
 
+  public function Slider(vertical:Boolean) {
+    super();
+
+    if (vertical) {
+      flags |= VERTICAL;
+    }
+  }
+
   override protected function get primaryLaFKey():String {
     return "Slider";
   }

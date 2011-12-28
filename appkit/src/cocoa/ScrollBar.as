@@ -2,11 +2,11 @@ package cocoa {
 [Abstract]
 internal class ScrollBar extends Slider {
   public function ScrollBar(vertical:Boolean) {
-    super();
+    super(vertical);
+  }
 
-    if (vertical) {
-      flags |= VERTICAL;
-    }
+  override protected function get primaryLaFKey():String {
+    return "ScrollBar";
   }
 }
 }

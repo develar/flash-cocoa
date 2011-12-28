@@ -29,6 +29,9 @@ public class SliderSkin extends AbstractSkin {
   override protected function draw(w:int, h:int):void {
     super.draw(w, h);
 
+    graphics.clear();
+    getBorder("track." + (slider.vertical ? "v" : "h"))
+
     positionKnob(drawKnob(CellState.OFF));
   }
 

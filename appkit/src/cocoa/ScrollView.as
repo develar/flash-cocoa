@@ -90,19 +90,41 @@ public class ScrollView extends ObjectBackedView {
     if (_verticalScrollPolicy != ScrollPolicy.OFF) {
       _verticalScrollBar = new ScrollBar(true);
       _verticalScrollBar.addToSuperview(displayObjectContainer, laf, superview);
+      _verticalScrollBar.setAction(scrollHandler, _verticalScrollBar);
     }
 
     if (_horizontalScrollPolicy != ScrollPolicy.OFF) {
       _horizontalScrollBar = new ScrollBar(false);
       _horizontalScrollBar.addToSuperview(displayObjectContainer, laf, superview);
+      _horizontalScrollBar.setAction(scrollHandler, _verticalScrollBar);
     }
 
     _documentView.clipAndEnableScrolling = true;
     _documentView.addToSuperview(displayObjectContainer, laf, superview);
-    _documentView.contentSizeChanged().add(documentViewPropertyChangeHandler);
+
+    _documentView.contentSizeChanged.add(contentSizeChanged);
+    _documentView.scrollPositionReset.add(scrollPositionReset);
   }
 
-  private function documentViewPropertyChangeHandler():void {
+  private function scrollHandler(scrollbar:ScrollBar):void {
+    if (scrollbar == _verticalScrollBar) {
+      _documentView.verticalScrollPosition = scrollbar.value;
+    }
+    else {
+      _documentView.horizontalScrollPosition = scrollbar.value;
+    }
+  }
+
+  private function scrollPositionReset():void {
+    if (_horizontalScrollBar != null) {
+      _horizontalScrollBar.value = 0;
+    }
+    if (_verticalScrollBar != null) {
+      _verticalScrollBar.value = 0;
+    }
+  }
+
+  private function contentSizeChanged():void {
     if (superview != null) {
       superview.invalidateSubview(false);
     }
@@ -162,7 +184,7 @@ public class ScrollView extends ObjectBackedView {
     }
   }
 
-   protected function draw(w:Number, h:Number):void {
+  protected function draw(w:Number, h:Number):void {
     var hsb:ScrollBar = _horizontalScrollBar;
     var vsb:ScrollBar = _verticalScrollBar;
     var contentW:int = _documentView.contentWidth;
@@ -186,8 +208,8 @@ public class ScrollView extends ObjectBackedView {
 
     // Reset the viewport's width,height to account for the visible scrollbars, unless
     // the viewport's size was explicitly set, then we just use that.
-    var viewportW:int = w - (vsbVisible ? _verticalScrollBar.getPreferredWidth() : 0);
-    var viewportH:int = h - (hsbVisible ? _horizontalScrollBar.getPreferredHeight() : 0);
+    var viewportW:int = w - (vsbVisible ? hsb.getPreferredWidth() : 0);
+    var viewportH:int = h - (hsbVisible ? vsb.getPreferredHeight() : 0);
 
     // If the scrollBarPolicy is auto, and we're only showing one scrollbar,
     // the viewport may have shrunk enough to require showing the other one.

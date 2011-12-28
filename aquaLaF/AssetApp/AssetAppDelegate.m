@@ -189,7 +189,7 @@
 //	[[textInput cell] setLineBreakMode:NSLineBreakByClipping];
 	[contentView addSubview:box];
 	
-//	return;
+	return;
 	
 	// SegmentedControl
 	frame.origin.x = 100;
