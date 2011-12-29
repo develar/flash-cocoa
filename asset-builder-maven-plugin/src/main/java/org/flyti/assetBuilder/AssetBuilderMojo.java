@@ -39,7 +39,7 @@ public class AssetBuilderMojo extends AbstractMojo {
   private File output;
 
   /**
-   * @parameter default-value="src/main/resources/assets.yml"
+   * @parameter default-value="resources/assets.yml"
    */
   @SuppressWarnings({"UnusedDeclaration"})
   private File descriptor;

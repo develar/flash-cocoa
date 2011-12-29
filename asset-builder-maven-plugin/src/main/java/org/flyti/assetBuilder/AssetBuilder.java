@@ -85,7 +85,13 @@ public class AssetBuilder {
         out.writeByte(border.type.ordinal());
         final BufferedImage sourceImage;
         if (border.source == null) {
-          sourceImage = imageRetriever.getImage(key);
+          if (border.appleResource == null) {
+            sourceImage = imageRetriever.getImage(key);
+          }
+          else {
+            sourceImage = imageRetriever.getImageFromAppleResource(border.appleResource);
+            out.write(sourceImage, ImageCropper.cropSimilar(sourceImage));
+          }
         }
         else {
           if (compoundImageReader == null) {
@@ -104,7 +110,9 @@ public class AssetBuilder {
 
         switch (border.type) {
           case One:
-            out.write(sourceImage);
+            if (border.appleResource == null) {
+              out.write(sourceImage);
+            }
             break;
 
           case Scale9Edge:
@@ -114,7 +122,7 @@ public class AssetBuilder {
       }
       else {
         final BufferedImage[] sourceImages = border.appleResource == null ? imageRetriever.getImages(key) : imageRetriever.getImagesFromAppleResources(border.appleResource);
-        if (border.type == BorderType.Scale3EdgeH) {
+        if (border.type == BorderType.Scale3EdgeH || border.type == BorderType.Scale3EdgeV) {
           if (border.appleResource == null) {
             if (sourceImages.length == 1 || sourceImages[0].getWidth() == sourceImages[1].getWidth()) {
               out.writeByte(border.type.ordinal());
@@ -130,7 +138,7 @@ public class AssetBuilder {
           }
           else {
             out.writeByte(border.type.ordinal());
-            out.write(joinButtonAppleResources(sourceImages));
+            out.write(Images.getScale3Edge(sourceImages, border.type == BorderType.Scale3EdgeH));
           }
         }
         else {
@@ -149,42 +157,7 @@ public class AssetBuilder {
     }
   }
 
-  private BufferedImage[] joinButtonAppleResources(BufferedImage[] sourceImages) throws IOException {
-    final int n = sourceImages.length;
-    BufferedImage[] images = new BufferedImage[n - (n / 3)];
-    for (int i = 0, bitmapIndex = 0; i < n; i += 3) {
-      BufferedImage left = sourceImages[i];
-      BufferedImage center = sourceImages[i + 1];
-
-      if (center.getWidth() != 1) {
-        throw new IOException("The width of the center must be 1px");
-      }
-
-      final int leftWidth = left.getWidth();
-      final int height = left.getHeight();
-
-      BufferedImage leftAndFill = new BufferedImage(leftWidth + 1, height, getAppropriateBufferedImageType(left));
-      // с setRect были проблемы с colorSpace
-      leftAndFill.setRGB(0, 0, leftWidth, height, AssetOutputStream.imageToRGB(left), 0, leftWidth);
-      leftAndFill.setRGB(leftWidth, 0, 1, height, AssetOutputStream.imageToRGB(center), 0, 1);
-
-      images[bitmapIndex++] = leftAndFill;
-      images[bitmapIndex++] = sourceImages[i + 2];
-    }
-
-    return images;
-  }
-
-  private int getAppropriateBufferedImageType(BufferedImage original) {
-    if (original.getType() == BufferedImage.TYPE_CUSTOM) {
-      return original.getTransparency() == Transparency.TRANSLUCENT ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-    }
-    else {
-      return original.getType();
-    }
-  }
-
-  private BufferedImage[] slice3H(BufferedImage[] sourceImages, Insets sliceSize) {
+  private static BufferedImage[] slice3H(BufferedImage[] sourceImages, Insets sliceSize) {
     BufferedImage[] images = new BufferedImage[sourceImages.length * 2];
     final int frameHeight = sourceImages[0].getHeight();
     final int rightImageX = sourceImages[0].getWidth() - sliceSize.right;
@@ -197,7 +170,7 @@ public class AssetBuilder {
     return images;
   }
 
-  private BufferedImage[] slice3H(BufferedImage[] sourceImages) {
+  private static BufferedImage[] slice3H(BufferedImage[] sourceImages) {
     BufferedImage[] images = new BufferedImage[sourceImages.length * 2];
     int imageIndex = 0;
     for (BufferedImage sourceImage : sourceImages) {
@@ -209,7 +182,7 @@ public class AssetBuilder {
     return images;
   }
 
-  private BufferedImage[] slice9(BufferedImage sourceImage, int minTop) {
+  private static BufferedImage[] slice9(BufferedImage sourceImage, int minTop) {
     BufferedImage[] images = new BufferedImage[4];
     Rectangle frameRectangle = ImageCropper.findNonTransparentBounds(sourceImage);
     Insets sliceSize = SliceCalculator.calculate(sourceImage, frameRectangle, true, true, minTop);

@@ -29,5 +29,7 @@ mogrify -format png  *.tiff
 
 HUD-SliderKnob_round-P — N это off (Normal), P это on (Pressed).
 
-Для получения ассетов мы используем ArtFile (java программа для него пока не в source).
 checkbox — предпочтение отдаем clear, а не просто в корне regular.png
+
+
+Generate aquaLaF borders2.bin — run "AssetBuilder for assets.yml".

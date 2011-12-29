@@ -50,18 +50,15 @@ public class ImageRetriever {
 
     throw new IOException("Can't find image for " + key);
   }
+  
+  public BufferedImage getImageFromAppleResource(final String appleResource) throws IOException {
+    return ImageIO.read(new File(getArtFiles(), appleResource));
+  }
 
   // Ищет изображения как они в Apple app resources
   public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws IOException {
     if (appleResource.indexOf('{') != -1) {
-      File artFiles = null;
-      for (File source : sources) {
-        if (source.getName().equals("artFiles")) {
-          artFiles = source;
-        }
-      }
-
-      assert artFiles != null;
+      final File artFiles = getArtFiles();
       final BufferedImage[] images = new BufferedImage[3];
       for (int i = 0; i < images.length; i++) {
         images[i] = ImageIO.read(new File(artFiles, appleResource.replace("{index}", Integer.toString(i))));
@@ -73,6 +70,18 @@ public class ImageRetriever {
       appleAssetNameComparator = new AppleAssetNameComparator();
     }
     return getImages(appleResource, appleAssetNameComparator);
+  }
+
+  private File getArtFiles() {
+    File artFiles = null;
+    for (File source : sources) {
+      if (source.getName().equals("artFiles")) {
+        artFiles = source;
+      }
+    }
+    
+    assert artFiles != null;
+    return artFiles;
   }
 
   private BufferedImage[] getImages(final String name, AssetNameComparator assetNameComparator) throws IOException {

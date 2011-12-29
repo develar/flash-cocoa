@@ -6,9 +6,7 @@ import flash.display.BitmapData;
 import flash.utils.ByteArray;
 
 internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder {
-  /**
-   * Фиксированное значение ширины/высоты каждого кусочка (в зависимости от ориентации — h: height, v: width)
-   */
+  // Fixed dimension of each slice (depends from orientation, height if horizontal, width if vertical)
   protected var size:Number;
   protected var lastSize:Number;
 

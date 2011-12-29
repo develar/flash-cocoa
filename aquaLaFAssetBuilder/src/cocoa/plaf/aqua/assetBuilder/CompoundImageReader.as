@@ -118,7 +118,8 @@ internal final class CompoundImageReader {
 
     const scrollViewAbsoluteY:Number = 192;
 
-    var position:int = BorderPosition.scrollbar;
+    //var position:int = BorderPosition.scrollbar;
+    var position:int = 0;
 
     // v track
     var itemRectangle:Rectangle = new Rectangle(vArrowLocalPosition, scrollViewAbsoluteY, thickness, 25);

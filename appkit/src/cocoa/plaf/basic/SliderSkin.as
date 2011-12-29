@@ -30,7 +30,7 @@ public class SliderSkin extends AbstractSkin {
     super.draw(w, h);
 
     graphics.clear();
-    getBorder("track." + (slider.vertical ? "v" : "h"))
+    getBorder("track." + (slider.vertical ? "v" : "h"));
 
     positionKnob(drawKnob(CellState.OFF));
   }

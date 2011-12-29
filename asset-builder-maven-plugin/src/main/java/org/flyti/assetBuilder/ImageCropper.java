@@ -6,6 +6,95 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 
 public final class ImageCropper {
+  public static Rectangle cropSimilar(BufferedImage image) {
+    final Raster raster = image.getRaster();
+    final byte[] bands1 = new byte[raster.getNumBands()];
+    final byte[] bands2 = new byte[raster.getNumBands()];
+
+    Rectangle bounds = findNonTransparentBounds(image);
+    if (bounds == null) {
+      bounds = raster.getBounds();
+    }
+
+    int maxX = bounds.x + bounds.width - 1;
+    int maxY = bounds.y + bounds.height - 1;
+
+    int x = bounds.x;
+    int y = maxY;
+
+    // bottom
+    raster.getDataElements(x, y--, bands1);
+    while (true) {
+      raster.getDataElements(x, y, bands2);
+      if (!equalColor(bands1, bands2)) {
+        int diff = maxY - (y + 1);
+        if (diff > 0) {
+          bounds.height -= diff;
+          maxY -= diff;
+        }
+        break;
+      }
+
+      if (x < maxX) {
+        raster.getDataElements(++x, y + 1, bands1);
+      }
+      else {
+        if (y > bounds.y) {
+          raster.getDataElements((x = 0), y--, bands1);
+        }
+        else {
+          bounds.height = 1;
+          maxY = bounds.y;
+          break;
+        }
+      }
+    }
+
+    // right
+    x = maxX;
+    y = bounds.y;
+
+    raster.getDataElements(x--, y, bands1);
+    while (true) {
+      raster.getDataElements(x, y, bands2);
+      if (!equalColor(bands1, bands2)) {
+        int diff = maxX - (x + 1);
+        if (diff > 0) {
+          bounds.width -= diff;
+          maxX -= diff;
+        }
+        break;
+      }
+
+      if (y < maxY) {
+        raster.getDataElements(x + 1, ++y, bands1);
+      }
+      else {
+        if (x > bounds.x) {
+          raster.getDataElements(x--, (y = 0), bands1);
+        }
+        else {
+          bounds.width = 1;
+          //noinspection UnusedAssignment
+          maxX = bounds.x;
+          break;
+        }
+      }
+    }
+
+    return bounds;
+  }
+
+  private static boolean equalColor(byte[] bands1, byte[] bands2) {
+    for (int i = 0; i < bands1.length; i++) {
+      if (bands1[i] != bands2[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   public static Rectangle findNonTransparentBounds(BufferedImage image) {
     Raster raster = image.getRaster();
     byte[] bands = new byte[raster.getNumBands()];

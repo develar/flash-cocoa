@@ -33,7 +33,7 @@ public final class SliceCalculator {
     byte[] bands1 = new byte[raster.getNumBands()];
     byte[] bands2 = new byte[raster.getNumBands()];
 
-    Insets sliceSize = new Insets(getUnrepeatableFromLeft(raster, bands1, bands2, strict, 0, 0), allSide ? getUnrepeatableFromTop(raster, bands1, bands2, strict, equalLength, minTop) : 0,
+    Insets sliceSize = new Insets(getUnrepeatableFromLeft(raster, bands1, bands2, strict, 0, 0, false), allSide ? getUnrepeatableFromTop(raster, bands1, bands2, strict, equalLength, minTop, false) : 0,
             getUnrepeatableFromRight(raster, bands1, bands2, strict, 0, 0, false), allSide ? getUnrepeatableFromBottom(raster, bands1, bands2, strict, 0, 0) : 0);
     if (sliceSize.getWidth() == raster.getWidth() || (allSide && sliceSize.getHeight() == raster.getHeight())) {
       throw new Error("can't find center area");
@@ -55,7 +55,7 @@ public final class SliceCalculator {
     Raster raster = getRaster(image, frameRectangle);
     byte[] bands1 = new byte[raster.getNumBands()];
     byte[] bands2 = new byte[raster.getNumBands()];
-    int unrepeatableFromLeft = getUnrepeatableFromLeft(raster, bands1, bands2, true, 0, 0);
+    int unrepeatableFromLeft = getUnrepeatableFromLeft(raster, bands1, bands2, true, 0, 0, true);
     if (unrepeatableFromLeft != raster.getWidth()) {
       if (frameRectangle == null) {
         frameRectangle = raster.getBounds();
@@ -88,7 +88,7 @@ public final class SliceCalculator {
     return frameRectangle;
   }
 
-  private static int getUnrepeatableFromLeft(Raster raster, byte[] bands1, byte[] bands2, boolean strict, int equalLength, int minLeft) {
+  private static int getUnrepeatableFromLeft(Raster raster, byte[] bands1, byte[] bands2, boolean strict, int equalLength, int minLeft, boolean allowNotFound) {
     int equalCount = 0;
     int x = minLeft;
     int y = 0;
@@ -119,6 +119,10 @@ public final class SliceCalculator {
       }
 
       if (x == maxX) {
+        if (allowNotFound) {
+          return raster.getWidth();
+        }
+
         throw new IllegalArgumentException("can't find center area");
       }
       else {
@@ -175,7 +179,7 @@ public final class SliceCalculator {
     }
   }
 
-  private static int getUnrepeatableFromTop(Raster raster, byte[] bands1, byte[] bands2, boolean strict, int equalLength, int minTop) {
+  private static int getUnrepeatableFromTop(Raster raster, byte[] bands1, byte[] bands2, boolean strict, int equalLength, int minTop, boolean allowNotFound) {
     int equalCount = 0;
     int x = 0;
     int y = minTop;
@@ -206,6 +210,10 @@ public final class SliceCalculator {
       }
 
       if (y == maxY) {
+        if (allowNotFound) {
+          return raster.getHeight();
+        }
+
         throw new IllegalArgumentException("can't find center area");
       }
       else {

@@ -6,7 +6,7 @@ import cocoa.View;
 import flash.display.Graphics;
 
 /**
- * Фиксированная высота, произвольная ширина — масштабируется только по горизонтали.
+ * Fixed height, arbitrary width — scaled horizontally only.
  * Состоит из left, center и right кусочков bitmap — left и right как есть, а повторяется только center.
  * Реализовано как две bitmap, где 1 это склееный left и center — ширина center равна 1px — мы используем "the bitmap image does not repeat, and the edges of the bitmap are used for any fill area that extends beyond the bitmap"
  * (это позволяет нам сократить количество bitmapData, количество вызовов на отрисовку и в целом немного упростить код (в частности, для тех случаев, когда left width == 0)).
@@ -22,7 +22,7 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder {
     sharedMatrix.tx = x + _frameInsets.left;
     sharedMatrix.ty = y + _frameInsets.top;
 
-    const actualHeight:Number = h - _frameInsets.top - _frameInsets.bottom;
+    const actualHeight:Number = h == h ? h - _frameInsets.top - _frameInsets.bottom : bitmaps[_bitmapIndex].height;
     const rightSliceRelativeX:Number = w - lastSize - _frameInsets.right;
     g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
     g.drawRect(sharedMatrix.tx, sharedMatrix.ty, rightSliceRelativeX - _frameInsets.left, actualHeight);

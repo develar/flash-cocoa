@@ -15,19 +15,37 @@ borders:
   frameInsets: {left: -1, right: -1, bottom: -2}  
   contentInsets: {left: 18, bottom: 2}
 
+  # ScrollBar knob
 - key: ScrollBar.knob.v
-  type: Scale3EdgeH
+  type: Scale3EdgeV
   appleResource: scrollbars/compatibility/regular.thumb.vertical-{index}.png
 - key: ScrollBar.knob.h
   type: Scale3EdgeH
-  appleResource: scrollbars/compatibility/horizontal.regular.thumb.-{index}.png
+  appleResource: scrollbars/compatibility/horizontal.regular.thumb-{index}.png
 
 - key: ScrollBar.knob.v
-  subKey: small
-  type: Scale3EdgeH
+  subkey: small
+  type: Scale3EdgeV
   appleResource: scrollbars/compatibility/small.thumb.vertical-{index}.png
 - key: ScrollBar.knob.h
-  subKey: small
+  subkey: small
   type: Scale3EdgeH
-  appleResource: scrollbars/compatibility/horizontal.small.thumb.-{index}.png
+  appleResource: scrollbars/compatibility/horizontal.small.thumb-{index}.png
+
+  # ScrollBar track
+- key: ScrollBar.track.v
+  type: One
+  appleResource: scrollbars/compatibility/regular.track.vertical-0.png
+- key: ScrollBar.track.h
+  type: One
+  appleResource: scrollbars/compatibility/horizontal.regular.track-0.png
+
+- key: ScrollBar.track.v
+  subkey: small
+  type: One
+  appleResource: scrollbars/compatibility/small.track.vertical-0.png
+- key: ScrollBar.track.h
+  subkey: small
+  type: One
+  appleResource: scrollbars/compatibility/horizontal.small.track-0.png
 

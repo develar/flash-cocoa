@@ -2,6 +2,7 @@ package cocoa.plaf.aqua.assetBuilder;
 
 import org.flyti.assetBuilder.AssetOutputStream;
 import org.flyti.assetBuilder.BorderType;
+import org.flyti.assetBuilder.Images;
 import org.flyti.assetBuilder.SliceCalculator;
 
 import javax.imageio.ImageIO;
@@ -40,15 +41,6 @@ class SegmentBorderBuilder {
     //doBuild(out, new String[]{"active/", "on/pressed.", "on/", "on/pressed."}, new String[]{"active/", "on/"});
   }
 
-  private int getAppropriateBufferedImageType(BufferedImage original) {
-    if (original.getType() == BufferedImage.TYPE_CUSTOM) {
-      return original.getTransparency() == Transparency.TRANSLUCENT ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-    }
-    else {
-      return original.getType();
-    }
-  }
-
   public void doBuild(AssetOutputStream out, String[] indexToPath, String[] separatorIndexToPath) throws IOException {
     for (String controlSize : new String[]{"regular", "small"}) {
       out.writeUTF("Segment." + controlSize);
@@ -68,9 +60,9 @@ class SegmentBorderBuilder {
               throw new IllegalStateException();
             }
 
-            BufferedImage leftAndFill = new BufferedImage(image.getWidth() + fill.getWidth(), image.getHeight(), getAppropriateBufferedImageType(image));
-            leftAndFill.setRGB(0, 0, image.getWidth(), image.getHeight(), AssetOutputStream.imageToRGB(image), 0, image.getWidth());
-            leftAndFill.setRGB(image.getWidth(), 0, fill.getWidth(), image.getHeight(), AssetOutputStream.imageToRGB(fill), 0, fill.getWidth());
+            BufferedImage leftAndFill = new BufferedImage(image.getWidth() + fill.getWidth(), image.getHeight(), Images.getAppropriateBufferedImageType(image));
+            leftAndFill.setRGB(0, 0, image.getWidth(), image.getHeight(), Images.imageToRGB(image), 0, image.getWidth());
+            leftAndFill.setRGB(image.getWidth(), 0, fill.getWidth(), image.getHeight(), Images.imageToRGB(fill), 0, fill.getWidth());
 
             Rectangle frameRectangle = SliceCalculator.trimRight(leftAndFill);
             out.write(leftAndFill, frameRectangle);

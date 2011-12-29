@@ -18,6 +18,9 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
   private static var assetsDataClass:Class;
 
+  [Embed(source="/borders2", mimeType="application/octet-stream")]
+  private static var borders2DataClass:Class;
+
   [Embed(source="/segmentBorders", mimeType="application/octet-stream")]
   private static var segmentBordersClass:Class;
 
@@ -39,8 +42,10 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
   protected function initialize():void {
     LookAndFeelUtil.initAssets(data, assetsDataClass);
+    LookAndFeelUtil.initAssets(data, borders2DataClass);
     LookAndFeelUtil.initAssets(data, segmentBordersClass);
     assetsDataClass = null;
+    borders2DataClass = null;
     segmentBordersClass = null;
 
     data[TextFormatId.SYSTEM] = AquaFonts.SYSTEM_FONT;

@@ -29,9 +29,6 @@ public class Builder {
   [Embed(source="../../../../../../aquaLaF/resources/assets.png")]
   private static const assetsClass:Class;
 
-  [Embed(source="../../../../../../aquaLaF/target/assets", mimeType="application/octet-stream")]
-  private static const bordersClass:Class;
-
   [Embed(source="/popUpMenu.png")]
   private static var popUpMenuClass:Class;
 
@@ -100,16 +97,10 @@ public class Builder {
   }
 
   private static function writeBorders(borders:Vector.<Border>, icons:ByteArray):void {
-    var data:ByteArray = new bordersClass();
-    var oldBordersCount:int = data.readUnsignedByte();
-    data.position = 0;
-    data.writeByte(oldBordersCount + (borders.length - 2));
-    data.position = data.length;
+    var data:ByteArray = new ByteArray();
+    data.writeByte(borders.length - 2);
 
     var bordersNames:Vector.<String> = new <String>["PushButton", "PushButton", "PopUpButton", "PopUpButton", "ImageView", "Menu", "MenuItem.b.highlighted",
-      "ScrollBar.track.v", "ScrollBar.track.h", "ScrollBar.decrementButton.h", "ScrollBar.decrementButton.h.highlighted", "ScrollBar.incrementButton.h", "ScrollBar.incrementButton.h.highlighted",
-      "ScrollBar.decrementButton.v", "ScrollBar.decrementButton.v.highlighted", "ScrollBar.incrementButton.v", "ScrollBar.incrementButton.v.highlighted",
-      "ScrollBar.thumb.v", "ScrollBar.thumb.h", "ScrollBar.track.v.off", "ScrollBar.track.h.off",
       "Window", "Window.b.toolbar", "Window.bottomBar.application", "Window.bottomBar.chooseDialog",
       "Tree", "Tree.disclosureIcon.open", "Tree.disclosureIcon.close", "TextInput"
     ];

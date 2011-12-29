@@ -2,6 +2,7 @@ package cocoa.demo {
 import cocoa.Container;
 import cocoa.Label;
 import cocoa.MigLayout;
+import cocoa.ScrollView;
 import cocoa.SegmentedControl;
 import cocoa.Toolbar;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -18,6 +19,7 @@ public class Main extends Container {
     subviews = createComponents();
     this.layout = layout;
 
+    //setSize(stage.stageWidth, stage.stageHeight);
     validate();
   }
 
@@ -36,6 +38,10 @@ public class Main extends Container {
     toolbar.small = true;
     toolbar.subviews = new <ComponentWrapper>[createSC()];
     components[2] = toolbar;
+
+    var scrollView:ScrollView = new ScrollView();
+    scrollView.documentView = createSC();
+    components[components.length] = scrollView;
 
     return components;
   }

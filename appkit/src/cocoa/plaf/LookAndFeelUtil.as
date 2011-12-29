@@ -5,6 +5,7 @@ import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorderWithSmartFrameInsets;
+import cocoa.border.Scale3EdgeVBitmapBorder;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9EdgeBitmapBorder;
@@ -51,6 +52,7 @@ public final class LookAndFeelUtil {
         case 5: border = new Scale3VBitmapBorder(); break;
         case 6: border = new Scale3EdgeHBitmapBorderWithSmartFrameInsets(); break;
         case 7: border = new CappedSmartBorder(); break;
+        case 8: border = new Scale3EdgeVBitmapBorder(); break;
 
         default: throw new Error("unknown border type marker");
       }
