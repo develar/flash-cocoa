@@ -1,5 +1,6 @@
 package org.flyti.assetBuilder;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,6 +53,22 @@ public class ImageRetriever {
 
   // Ищет изображения как они в Apple app resources
   public BufferedImage[] getImagesFromAppleResources(final String appleResource) throws IOException {
+    if (appleResource.indexOf('{') != -1) {
+      File artFiles = null;
+      for (File source : sources) {
+        if (source.getName().equals("artFiles")) {
+          artFiles = source;
+        }
+      }
+
+      assert artFiles != null;
+      final BufferedImage[] images = new BufferedImage[3];
+      for (int i = 0; i < images.length; i++) {
+        images[i] = ImageIO.read(new File(artFiles, appleResource.replace("{index}", Integer.toString(i))));
+      }
+      return images;
+    }
+
     if (appleAssetNameComparator == null) {
       appleAssetNameComparator = new AppleAssetNameComparator();
     }

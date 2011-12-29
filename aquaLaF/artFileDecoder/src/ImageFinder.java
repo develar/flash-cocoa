@@ -36,7 +36,7 @@ public class ImageFinder {
 
       int alpha = image.getRGB(image.getWidth() / 2, image.getHeight() / 2) >>> 24;
       if (alpha == 58) {
-        System.out.println(root + "/" + name);
+        System.out.println(root + "/" + name + " ");
       }
 
       //for (int pixel : image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth())) {

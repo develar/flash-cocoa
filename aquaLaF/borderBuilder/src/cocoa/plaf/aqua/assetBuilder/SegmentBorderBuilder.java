@@ -62,7 +62,7 @@ class SegmentBorderBuilder {
         for (int i = 0; i < 4; i++) {
           BufferedImage image = readImage(indexToPath[i] + controlSize + "-" + part + ".png");
           if (part == 0) {
-            // textured rounded left doesn't have repetable area, we need appent middle to it
+            // textured rounded left doesn't have repetable area, we need append middle to it
             BufferedImage fill = readImage(indexToPath[i] + controlSize + "-" + (part + 1) + ".png");
             if (image.getHeight() != fill.getHeight()) {
               throw new IllegalStateException();
