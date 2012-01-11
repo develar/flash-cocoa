@@ -18,18 +18,16 @@ public class SeparatorSkin extends AbstractSkin {
 
     border = laf.getBorder(component.lafKey + ".b", false);
     if (border.layoutWidth < 0) {
-      percentWidth = -border.layoutWidth;
+      //percentWidth = -border.layoutWidth;
     }
   }
 
-  override protected function measure():void {
-    measuredWidth = isNaN(border.layoutWidth) ? 0 : border.layoutWidth;
-    measuredHeight = isNaN(border.layoutHeight) ? 0 : border.layoutHeight;
-  }
+  //override protected function measure():void {
+  //  measuredWidth = isNaN(border.layoutWidth) ? 0 : border.layoutWidth;
+  //  measuredHeight = isNaN(border.layoutHeight) ? 0 : border.layoutHeight;
+  //}
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
-    super.updateDisplayList(w, h);
-
+  override protected function draw(w:int, h:int):void {
     var g:Graphics = graphics;
     g.clear();
     border.draw(g, w, h);

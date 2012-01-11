@@ -71,30 +71,30 @@ public class Dialog extends Window {
     }
   }
 
-  override public function commitProperties():void {
-    if (!controlBarInitialized) {
-      controlBarInitialized = true;
-
-      skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-
-      if (_cancelVisible) {
-        cancelButton = createControlButton(resourceManager.getString(RESOURCE_BUNDLE, "cancel"), cancel);
-        controlBar.addSubview(cancelButton);
-      }
-
-      okButton = createControlButton(getOkLocalizedLabel(), ok);
-      okButton.enabled = _valid;
-      controlBar.addSubview(okButton);
-
-      if (controlButtons != null) {
-        for each (var controlButton:PushButton in controlButtons) {
-          controlBar.addSubview(controlButton);
-        }
-      }
-    }
-
-    super.commitProperties();
-  }
+  //override public function commitProperties():void {
+  //  if (!controlBarInitialized) {
+  //    controlBarInitialized = true;
+  //
+  //    skin.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+  //
+  //    if (_cancelVisible) {
+  //      cancelButton = createControlButton(resourceManager.getString(RESOURCE_BUNDLE, "cancel"), cancel);
+  //      controlBar.addSubview(cancelButton);
+  //    }
+  //
+  //    okButton = createControlButton(getOkLocalizedLabel(), ok);
+  //    okButton.enabled = _valid;
+  //    controlBar.addSubview(okButton);
+  //
+  //    if (controlButtons != null) {
+  //      for each (var controlButton:PushButton in controlButtons) {
+  //        controlBar.addSubview(controlButton);
+  //      }
+  //    }
+  //  }
+  //
+  //  super.commitProperties();
+  //}
 
   protected function cancel():void {
     dispatchEvent(new DialogEvent(DialogEvent.CANCEL));

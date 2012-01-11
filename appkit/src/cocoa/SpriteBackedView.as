@@ -10,7 +10,7 @@ import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
 
 /**
- * getPreferredWidth/getPreferredHeight are not declared as abstract because some user component can be intended for works only with "fill" constraints
+ * getPreferredWidth/getPreferredHeight are not declared as abstract because some user component can be intended for works with only "fill" constraints
  */
 
 [Abstract]
@@ -98,7 +98,7 @@ public class SpriteBackedView extends Sprite implements View {
     }
 
     if (resized) {
-      // after setBounds/setLocation/setSize superview call subview validate in any case — subview doesn't need to invalidate container
+      // after setBounds/setLocation/setSize superview validate subview (i.e. call subview.validate) in any case — subview doesn't need to invalidate container
       flags |= LayoutState.DISPLAY_INVALID;
       sizeInvalidated();
     }
@@ -108,7 +108,7 @@ public class SpriteBackedView extends Sprite implements View {
 
   }
 
-  public function getBaseline(width:int, height:int):int {
+  public function getBaseline(w:int, h:int):int {
     return -1;
   }
 
@@ -116,7 +116,7 @@ public class SpriteBackedView extends Sprite implements View {
     return (flags & HAS_BASELINE) != 0;
   }
 
-  public function get visualPadding():Vector.<Number> {
+  public function get visualPadding():Vector.<int> {
     return null;
   }
 
@@ -135,16 +135,8 @@ public class SpriteBackedView extends Sprite implements View {
     return ComponentType.TYPE_UNKNOWN;
   }
 
-  public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
-    displayObjectContainer.addChild(this);
-  }
-
-  public function removeFromSuperview():void {
-    parent.removeChild(this);
-  }
-
   public function validate():void {
-    throw new IllegalOperationError("Abstract");
+    throw new IllegalOperationError("abstract");
   }
 
   public function get enabled():Boolean {
@@ -153,6 +145,14 @@ public class SpriteBackedView extends Sprite implements View {
 
   public function set enabled(value:Boolean):void {
     value ? flags &= ~DISABLED : flags |= DISABLED;
+  }
+
+  public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    displayObjectContainer.addChild(this);
+  }
+
+  public function removeFromSuperview():void {
+    parent.removeChild(this);
   }
 }
 }

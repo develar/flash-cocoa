@@ -3,19 +3,11 @@ import cocoa.text.EditableTextView;
 import cocoa.text.TextInputUIModel;
 import cocoa.text.TextUIModel;
 
-import flash.utils.Dictionary;
-
 import spark.events.TextOperationEvent;
 
 use namespace ui;
 
 public class TextInput extends AbstractSkinnableView implements Control {
-  protected static const _skinParts:Dictionary = new Dictionary();
-  _skinParts.textDisplay = 0;
-  override protected function get skinParts():Dictionary {
-    return _skinParts;
-  }
-
   ui var textDisplay:EditableTextView;
 
   private var _action:Function;

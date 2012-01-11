@@ -82,6 +82,7 @@
                 <include>**.border.*</include>
                 <include>**.ToolWindowManager</include>
                 <include>cocoa.plaf.basic.AbstractSkin</include>
+                <include>cocoa.plaf.basic.ScrollBarSkin</include>
                 <include>cocoa.plaf.basic.AbstractTabViewSkin</include>
                 <include>cocoa.plaf.basic.BoxSkin</include>
                 <include>cocoa.plaf.basic.BitmapIcon</include>

@@ -70,7 +70,11 @@ public class AbstractControl extends AbstractSkinnableView implements Control, C
 
   protected function callUserInitiatedActionHandler():void {
     if (_action != null) {
-      actionParameters == null ? _action() : _action.apply(null, actionParameters);
+      if (actionParameters == null) {
+        _action.length == 0 ? _action() : _action(this);
+      } else {
+        _action.apply(null, actionParameters);
+      }
     }
   }
 }

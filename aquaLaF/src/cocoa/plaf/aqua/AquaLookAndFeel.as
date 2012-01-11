@@ -9,6 +9,7 @@ import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BasicTableViewSkin;
 import cocoa.plaf.basic.IconButtonSkin;
+import cocoa.plaf.basic.ScrollBarSkin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 
 import flash.geom.Point;
@@ -111,8 +112,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     //data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
-    //data["ScrollBar.h"] = HScrollBarSkin;
-    //data["ScrollBar.v"] = VScrollBarSkin;
+    data["ScrollBar"] = ScrollBarSkin;
 
     //data["VSeparator"] = data["HSeparator"] = SeparatorSkin;
 

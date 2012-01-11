@@ -1,26 +1,18 @@
 package cocoa {
 import flash.events.Event;
-import flash.utils.Dictionary;
 
 import mx.events.CollectionEvent;
 
 import org.flyti.util.List;
 
-use namespace ui;
-
 public class Menu extends AbstractSkinnableView {
-  protected static const _skinParts:Dictionary = new Dictionary();
-  _skinParts.itemGroup = 0;
-  override protected function get skinParts():Dictionary {
-    return _skinParts;
-  }
-
   private var pendingIndex:int = -1;
 
-  ui var itemGroup:SingleSelectionDataGroup;
+  private var itemGroup:SegmentedControl;
 
-  ui function itemGroupAdded():void {
-    itemGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE; // delegate to MenuController (see PopUpMenuController)
+  override public function uiPartAdded(id:String, instance:Object):void {
+    itemGroup = SegmentedControl(instance);
+//    itemGroup.mouseSelectionMode = ItemMouseSelectionMode.NONE; // delegate to MenuController (see PopUpMenuController)
     if (pendingIndex != -1) {
       itemGroup.selectedIndex = pendingIndex;
       pendingIndex = -1;
@@ -87,15 +79,15 @@ public class Menu extends AbstractSkinnableView {
     return "Menu";
   }
 
-  override public function commitProperties():void {
-    super.commitProperties();
-
-    if (itemsChanged) {
-      itemsChanged = false;
-      itemGroup.dataProvider = _items;
-
-      _items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler, false, -1 /* after itemGroup handler */);
-    }
-  }
+  //override public function commitProperties():void {
+  //  super.commitProperties();
+  //
+  //  if (itemsChanged) {
+  //    itemsChanged = false;
+  //    itemGroup.dataProvider = _items;
+  //
+  //    _items.addEventListener(CollectionEvent.COLLECTION_CHANGE, itemsChangeHandler, false, -1 /* after itemGroup handler */);
+  //  }
+  //}
 }
 }

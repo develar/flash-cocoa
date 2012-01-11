@@ -37,7 +37,6 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
   }
 
   protected function draw(w:int, h:int):void {
-
   }
 
   protected final function invalidate(sizeInvalid:Boolean = true):void {
@@ -52,7 +51,6 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
   }
 
   private var _linkId:String;
-
   override public function get linkId():String {
     return _linkId;
   }

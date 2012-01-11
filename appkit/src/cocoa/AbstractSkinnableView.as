@@ -3,6 +3,7 @@ import cocoa.plaf.LookAndFeel;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
+import flash.errors.IllegalOperationError;
 import flash.utils.Dictionary;
 
 import mx.core.IMXMLObject;
@@ -30,19 +31,15 @@ public class AbstractSkinnableView extends ObjectBackedView implements Skinnable
   }
 
   public function uiPartAdded(id:String, instance:Object):void {
-    partAdded(id, instance);
+    this[id] = instance;
+    if ((int(skinParts[id]) & HANDLER_NOT_EXISTS) == 0) {
+      this[id + "Added"]();
+    }
   }
 
   protected final function invalidateProperties():void {
     if (_skin != null) {
       _skin.hostComponentPropertyChanged();
-    }
-  }
-
-  protected function partAdded(id:String, instance:Object):void {
-    this[id] = instance;
-    if ((int(skinParts[id]) & HANDLER_NOT_EXISTS) == 0) {
-      this[id + "Added"]();
     }
   }
 
@@ -146,7 +143,7 @@ public class AbstractSkinnableView extends ObjectBackedView implements Skinnable
   }
 
   protected function get primaryLaFKey():String {
-    throw new Error("abstract");
+    throw new IllegalOperationError("abstract");
   }
 
   protected function preSkinCreate(laf:LookAndFeel):void {
@@ -155,9 +152,6 @@ public class AbstractSkinnableView extends ObjectBackedView implements Skinnable
 
   protected function skinAttached():void {
 
-  }
-
-  public function commitProperties():void {
   }
 
   override public function set visible(value:Boolean):void {

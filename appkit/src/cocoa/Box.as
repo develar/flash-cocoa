@@ -1,20 +1,8 @@
 package cocoa {
-import flash.utils.Dictionary;
-
 import net.miginfocom.layout.ComponentWrapper;
-
-use namespace ui;
 
 [DefaultProperty("subviews")]
 public class Box extends AbstractSkinnableView {
-  ui var contentView:Container;
-
-  protected static const _skinParts:Dictionary = new Dictionary();
-  _skinParts.contentGroup = 0;
-  override protected function get skinParts():Dictionary {
-    return _skinParts;
-  }
-
   override protected function get primaryLaFKey():String {
     return "Box";
   }
@@ -29,7 +17,8 @@ public class Box extends AbstractSkinnableView {
     _subviews = value;
   }
 
-  ui function contentViewAdded():void {
+  override public function uiPartAdded(id:String, instance:Object):void {
+    var contentView:Container = Container(instance);
     contentView.layout = _layout == null ? createDefaultLayout() : _layout;
     contentView.subviews = _subviews;
   }

@@ -7,13 +7,6 @@ import org.osflash.signals.Signal;
 use namespace ui;
 
 public class Panel extends Window {
-  protected static const _skinParts:Dictionary = new Dictionary();
-  _skinParts.minimizeButton = 0;
-  _skinParts.closeSideButton = 0;
-  override protected function get skinParts():Dictionary {
-    return _skinParts;
-  }
-
   ui var minimizeButton:PushButton;
   ui var closeSideButton:PushButton;
 

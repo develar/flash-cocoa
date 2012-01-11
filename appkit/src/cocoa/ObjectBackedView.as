@@ -9,7 +9,7 @@ import net.miginfocom.layout.ComponentType;
 import net.miginfocom.layout.ConstraintParser;
 
 [Abstract]
-internal class ObjectBackedView implements View {
+public class ObjectBackedView implements View {
   protected static const INVISIBLE:uint = 1 << 0;
   protected static const DISABLED:uint = 1 << 1;
 
@@ -26,6 +26,14 @@ internal class ObjectBackedView implements View {
 
   public function set c(value:String):void {
     _constraints = ConstraintParser.parseComponentConstraint(value);
+  }
+
+  public function get x():Number {
+    throw new IllegalOperationError("abstract");
+  }
+
+  public function get y():Number {
+    throw new IllegalOperationError("abstract");
   }
 
   public function get actualWidth():int {
@@ -66,14 +74,14 @@ internal class ObjectBackedView implements View {
   }
 
   public function setSize(w:int, h:int):void {
-    throw new IllegalOperationError("Abstract");
+    throw new IllegalOperationError("abstract");
   }
 
   public function setLocation(x:Number, y:Number):void {
-    throw new IllegalOperationError("Abstract");
+    throw new IllegalOperationError("abstract");
   }
 
-  public function getBaseline(width:int, height:int):int {
+  public function getBaseline(w:int, h:int):int {
     return -1;
   }
 
@@ -81,7 +89,7 @@ internal class ObjectBackedView implements View {
     return false;
   }
 
-  public function get visualPadding():Vector.<Number> {
+  public function get visualPadding():Vector.<int> {
     return null;
   }
 
@@ -93,19 +101,11 @@ internal class ObjectBackedView implements View {
   }
 
   public function get layoutHashCode():int {
-    throw new IllegalOperationError("Abstract");
+    throw new IllegalOperationError("abstract");
   }
 
   public function getComponentType(disregardScrollPane:Boolean):int {
     return ComponentType.TYPE_UNKNOWN;
-  }
-
-  public function get x():Number {
-    throw new IllegalOperationError("Abstract");
-  }
-
-  public function get y():Number {
-    throw new IllegalOperationError("Abstract");
   }
 
   public function get visible():Boolean {
@@ -116,14 +116,6 @@ internal class ObjectBackedView implements View {
     value ? flags &= ~INVISIBLE : flags |= INVISIBLE;
   }
 
-  public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
-    throw new IllegalOperationError("Abstract");
-  }
-
-  public function validate():void {
-    throw new IllegalOperationError("Abstract");
-  }
-
   public function get enabled():Boolean {
     return (flags & DISABLED) == 0;
   }
@@ -132,8 +124,16 @@ internal class ObjectBackedView implements View {
     value ? flags &= ~DISABLED : flags |= DISABLED;
   }
 
+  public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {
+    throw new IllegalOperationError("abstract");
+  }
+
   public function removeFromSuperview():void {
-    throw new IllegalOperationError("Abstract");
+    throw new IllegalOperationError("abstract");
+  }
+
+  public function validate():void {
+    throw new IllegalOperationError("abstract");
   }
 }
 }

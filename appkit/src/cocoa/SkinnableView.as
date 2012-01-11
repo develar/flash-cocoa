@@ -2,9 +2,8 @@ package cocoa {
 import cocoa.plaf.Skin;
 
 public interface SkinnableView extends View, UIPartController {
-  /**
-   * Префикс, используемый компонентом при составлении абсолютного ключа для получения некого стиля.
-   * В самом компоненте указывается путем переопределения геттера defaultLaFPrefix.
+  /** Prefix, component use it for compute absolute LaF Key to retrieve some style.
+   * Component specify it via override defaultLaFPrefix getter @see AbstractSkinnableView#primaryLaFKey
    */
   function get lafKey():String;
 

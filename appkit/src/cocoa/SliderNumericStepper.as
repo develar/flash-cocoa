@@ -8,14 +8,6 @@ use namespace ui;
 [Event(name="change", type="flash.events.Event")]
 public class SliderNumericStepper extends TitledComponent
 {
-	protected static const _skinParts:Dictionary = new Dictionary();
-	_skinParts.slider = 0;
-	_skinParts.stepper = 0;
-	override protected function get skinParts():Dictionary
-	{
-		return _skinParts;
-	}
-
 	ui var slider:HSlider;
 	ui var stepper:NumericStepper;
 
@@ -100,7 +92,7 @@ public class SliderNumericStepper extends TitledComponent
 		}
 	}
 
-	ui function stepperAdded():void
+  ui function stepperAdded():void
 	{
 		stepper.minimum = _minimum * _stepperMultiplier;
 		stepper.maximum = _maximum * _stepperMultiplier;

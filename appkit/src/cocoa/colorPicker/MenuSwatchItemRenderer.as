@@ -31,7 +31,7 @@ public class MenuSwatchItemRenderer extends ControlView {
   public function set colorList(value:Vector.<uint>):void {
     _colorList = value;
     colorListChanged = true;
-    invalidateProperties();
+    //invalidateProperties();
   }
 
   private var _changeColorHandler:Function;
@@ -39,30 +39,30 @@ public class MenuSwatchItemRenderer extends ControlView {
     _changeColorHandler = value;
   }
 
-  override protected function createChildren():void {
-    swatchGrid = new SwatchGridWithHighlightIndicator();
-    swatchGrid.x = 8;
-    swatchGrid.y = 8;
-    addChild(swatchGrid);
-  }
+  //override protected function createChildren():void {
+  //  swatchGrid = new SwatchGridWithHighlightIndicator();
+  //  swatchGrid.x = 8;
+  //  swatchGrid.y = 8;
+  //  addChild(swatchGrid);
+  //}
 
-  override protected function commitProperties():void {
-    if (colorChanged) {
-      colorChanged = false;
-    }
+  //override protected function commitProperties():void {
+  //  if (colorChanged) {
+  //    colorChanged = false;
+  //  }
+  //
+  //  if (colorListChanged) {
+  //    colorListChanged = false;
+  //
+  //    swatchGrid.drawGrid(_colorList, _laf.getBorder("SwatchGrid.b", false));
+  //    width = swatchGrid.width + 16;
+  //    height = swatchGrid.height + 16;
+  //  }
+  //
+  //  super.commitProperties();
+  //}
 
-    if (colorListChanged) {
-      colorListChanged = false;
-
-      swatchGrid.drawGrid(_colorList, _laf.getBorder("SwatchGrid.b", false));
-      width = swatchGrid.width + 16;
-      height = swatchGrid.height + 16;
-    }
-
-    super.commitProperties();
-  }
-
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
     var g:Graphics = graphics;
     g.clear();
     _laf.getBorder("MenuItem.b", false).draw(g, w, h);
