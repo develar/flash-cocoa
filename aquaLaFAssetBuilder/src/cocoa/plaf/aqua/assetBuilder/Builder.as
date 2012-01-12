@@ -14,13 +14,10 @@ import cocoa.border.Scale3EdgeHBitmapBorderWithSmartFrameInsets;
 import cocoa.border.Scale3HBitmapBorder;
 import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9EdgeBitmapBorder;
-import cocoa.plaf.basic.BitmapIcon;
 import cocoa.util.Files;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.display.DisplayObjectContainer;
-import flash.display.Shape;
 import flash.filesystem.File;
 import flash.geom.Rectangle;
 import flash.utils.ByteArray;
@@ -83,8 +80,6 @@ public class Builder {
     compoundImageReader.readScale3(bottomBarApplicationClass, Scale3EdgeHBitmapBorder.create(windowBottomBarFrameInsets), BorderPosition.windowApplicationBottomBar);
     compoundImageReader.readScale3(bottomBarChooseDialogClass, Scale3EdgeHBitmapBorder.create(windowBottomBarFrameInsets), BorderPosition.windowChooseDialogBottomBar);
 
-    compoundImageReader.readScrollbar();
-
     compoundImageReader.readTitleBarAndContent(titleBarAndContentClass, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.window);
     compoundImageReader.readTitleBarAndContent(titleBarAndToolbarAndContent, Scale3EdgeHBitmapBorder.create(new FrameInsets(-33, -18, -33)), BorderPosition.windowWithToolbar);
 
@@ -93,7 +88,6 @@ public class Builder {
     compoundImageReader.readTreeIcons(treeSideBarIcons, new FrameInsets(10, 5), new FrameInsets(8, 6));
 
     writeBorders(borders, icons);
-//		show(testContainer, data);
   }
 
   private static function writeBorders(borders:Vector.<Border>, icons:ByteArray):void {
@@ -211,81 +205,6 @@ public class Builder {
         output.writeByte(bitmap.height);
         output.writeBytes(bitmap.getPixels(bitmap.rect));
       }
-    }
-  }
-
-  private static function show(displayObject:DisplayObjectContainer, data:ByteArray):void {
-    var x:int = 100;
-    var y:int = 100;
-
-    var pendingBitmaps:Vector.<BitmapData> = new Vector.<BitmapData>();
-
-    var n:int = data.readUnsignedByte();
-    while (--n > -1 || (n == -1 && pendingBitmaps.length > 0)) {
-      var bitmaps:Vector.<BitmapData>;
-      if (n != -1) {
-        var border:AbstractBitmapBorder;
-        switch (data.readUnsignedByte()) {
-          case 0: border = new Scale3EdgeHBitmapBorder(); break;
-          case 1: border = new Scale1BitmapBorder(); break;
-          case 2: border = new Scale9EdgeBitmapBorder(); break;
-          case 3: border = new OneBitmapBorder(); break;
-          case 4: border = new Scale3HBitmapBorder(); break;
-          case 5: border = new Scale3VBitmapBorder(); break;
-        }
-        border.readExternal(data);
-
-        if (border is AbstractMultipleBitmapBorder) {
-          bitmaps = AbstractMultipleBitmapBorder(border).getBitmaps();
-          if (pendingBitmaps.length > 0) {
-            bitmaps = pendingBitmaps.concat(bitmaps);
-            pendingBitmaps.length = 0;
-          }
-        }
-        else {
-          pendingBitmaps.push(OneBitmapBorder(border).getBitmap());
-          continue;
-        }
-      }
-      else {
-        bitmaps = pendingBitmaps;
-      }
-
-      var lastHeight:Number;
-      for each (var bitmapData:BitmapData in bitmaps) {
-        if (bitmapData == null) {
-          continue;
-        }
-
-        var bitmap:Bitmap = new Bitmap(bitmapData);
-        bitmap.x = x;
-        bitmap.y = y;
-        displayObject.addChild(bitmap);
-        x += bitmapData.width + 4;
-
-        lastHeight = bitmapData.height;
-      }
-
-      x = 100;
-      y += lastHeight < 30 ? 30 : 100;
-    }
-
-    y += 40;
-
-    n = data.readUnsignedByte();
-    var icon:BitmapIcon;
-    for (var i:int = 0; i < n; i++) {
-      var shape:Shape = new Shape();
-      shape.x = x;
-      shape.y = y;
-
-      x += 20;
-
-      icon = new BitmapIcon();
-      icon.readExternal(data);
-      icon.draw(null, shape.graphics, 5, 3);
-
-      displayObject.addChild(shape);
     }
   }
 }

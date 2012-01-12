@@ -22,6 +22,10 @@ public class Scale3EdgeHBitmapBorder extends AbstractScale3BitmapBorder {
     sharedMatrix.tx = x + _frameInsets.left;
     sharedMatrix.ty = y + _frameInsets.top;
 
+    if (w != w) {
+      throw new ArgumentError("w must be determinated for Scale3EdgeHBitmapBorder");
+    }
+
     const actualHeight:Number = h == h ? h - _frameInsets.top - _frameInsets.bottom : bitmaps[_bitmapIndex].height;
     const rightSliceRelativeX:Number = w - lastSize - _frameInsets.right;
     g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);

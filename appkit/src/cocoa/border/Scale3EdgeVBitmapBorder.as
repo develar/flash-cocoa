@@ -8,6 +8,10 @@ public class Scale3EdgeVBitmapBorder extends Scale3EdgeHBitmapBorder {
     sharedMatrix.tx = x + _frameInsets.left;
     sharedMatrix.ty = y + _frameInsets.top;
 
+    if (h != h) {
+      throw new ArgumentError("h must be determinated for Scale3EdgeVBitmapBorder");
+    }
+
     const actualWidth:Number = w == w ? w - _frameInsets.left - _frameInsets.right : bitmaps[_bitmapIndex].width;
     const rightSliceRelativeY:Number = h - lastSize - _frameInsets.bottom;
     g.beginBitmapFill(bitmaps[_bitmapIndex], sharedMatrix, false);
@@ -18,6 +22,12 @@ public class Scale3EdgeVBitmapBorder extends Scale3EdgeHBitmapBorder {
     g.beginBitmapFill(bitmaps[_bitmapIndex + 1], sharedMatrix, false);
     g.drawRect(sharedMatrix.tx, sharedMatrix.ty, actualWidth, lastSize);
     g.endFill();
+  }
+
+  override protected function initTransient():void {
+    size = bitmaps[0].width;
+    lastSize = bitmaps[1].height;
+    _layoutHeight = size + _frameInsets.top + _frameInsets.bottom;
   }
 }
 }

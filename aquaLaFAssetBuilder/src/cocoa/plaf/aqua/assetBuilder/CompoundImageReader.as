@@ -6,12 +6,8 @@ import cocoa.border.BorderStateIndex;
 import cocoa.border.OneBitmapBorder;
 import cocoa.border.Scale1BitmapBorder;
 import cocoa.border.Scale3EdgeHBitmapBorder;
-import cocoa.border.Scale3HBitmapBorder;
-import cocoa.border.Scale3VBitmapBorder;
 import cocoa.border.Scale9EdgeBitmapBorder;
-import cocoa.util.SharedPoint;
 
-import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -51,27 +47,6 @@ internal final class CompoundImageReader {
     }
   }
 
-  public function readButtonAdditionalBitmaps(border:Scale3EdgeHBitmapBorder, additionalBitmaps:Vector.<Class>, borderPosition:int):void {
-    additionalBitmaps.fixed = true;
-    var n:int = additionalBitmaps.length;
-    var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(n - (n / 3), true);
-    for (var i:int = 0, bitmapIndex:int = 0; i < n; i += 3) {
-      var left:BitmapData = Bitmap(new additionalBitmaps[i]).bitmapData;
-      var bitmapData:BitmapData = new BitmapData(left.width + 1, left.height, true, 0);
-      bitmapData.copyPixels(left, left.rect, SharedPoint.point, null, null, true);
-
-      SharedPoint.point.x += left.width;
-      var right:BitmapData = Bitmap(new additionalBitmaps[i + 1]).bitmapData;
-      bitmapData.copyPixels(right, right.rect, SharedPoint.point, null, null, true);
-      SharedPoint.point.x = 0;
-
-      bitmaps[bitmapIndex++] = bitmapData;
-      bitmaps[bitmapIndex++] = Bitmap(new additionalBitmaps[i + 2]).bitmapData;
-    }
-
-    borders[borderPosition] = border.configure(bitmaps);
-  }
-
   public function readScale3(bitmapDataClass:Class, border:Scale3EdgeHBitmapBorder, borderPosition:int):void {
     compoundBitmapData = BitmapAsset(new bitmapDataClass()).bitmapData;
     var frameRectangle:Rectangle = compoundBitmapData.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -94,138 +69,6 @@ internal final class CompoundImageReader {
     border.configure(bitmaps);
 
     borders[borderPosition] = border;
-  }
-
-  /**
-   * 2 (v and h) track, 4 h/v decrement button (normal and highlighted), 4 h/v increment button (normal and highlighted),
-   * v/h thumb, v/h off track
-   */
-  public function readScrollbar():void {
-    compoundBitmapData = assetsBitmapData;
-
-    const scrollViewWidth:Number = 120;
-    const scrollViewRightPadding:Number = 10;
-    const scrollViewWidthWithPaddings:Number = scrollViewWidth + scrollViewRightPadding;
-
-    const thickness:Number = 15;
-
-    const incrementArrowLocalPosition:Number = 89;
-    const incrementHArrowWidth:Number = 16;
-
-    const vArrowLocalPosition:Number = scrollViewWidth - thickness;
-
-    const decrementArrowLocalPosition:Number = 61;
-
-    const scrollViewAbsoluteY:Number = 192;
-
-    //var position:int = BorderPosition.scrollbar;
-    var position:int = 0;
-
-    // v track
-    var itemRectangle:Rectangle = new Rectangle(vArrowLocalPosition, scrollViewAbsoluteY, thickness, 25);
-    itemRectangle.height = sliceCalculator.calculateFromTop(compoundBitmapData, itemRectangle) + 1;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(0, 7));
-
-    // h track
-    itemRectangle.x = 0;
-    itemRectangle.y += vArrowLocalPosition;
-    itemRectangle.width = 25;
-    itemRectangle.height = thickness;
-    itemRectangle.width = sliceCalculator.calculateFromLeft(compoundBitmapData, itemRectangle) + 1;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), new Insets(7));
-
-    // h d button, normal
-    itemRectangle.x = decrementArrowLocalPosition;
-    itemRectangle.width = 28;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
-    // h d button, highlighted
-    itemRectangle.x = 321;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
-
-    // h i button, normal
-    itemRectangle.x = incrementArrowLocalPosition;
-    itemRectangle.width = incrementHArrowWidth;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
-    // h i button, highlighted
-    itemRectangle.width += 1;
-    itemRectangle.x = (scrollViewWidthWithPaddings * 3) + incrementArrowLocalPosition - 1;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(-1));
-
-    // v d button, normal
-    itemRectangle.x = vArrowLocalPosition;
-    itemRectangle.y = scrollViewAbsoluteY + decrementArrowLocalPosition;
-    itemRectangle.width = thickness;
-    itemRectangle.height = 28;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -11));
-    // v d button, highlighted
-    itemRectangle.x = (scrollViewWidthWithPaddings * 2) + vArrowLocalPosition;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -11)); // todo serialize frameinsets as one, not twice
-
-    // v i button, normal
-    itemRectangle.x = vArrowLocalPosition;
-    itemRectangle.y = scrollViewAbsoluteY + incrementArrowLocalPosition;
-    itemRectangle.width = thickness;
-    itemRectangle.height = 16;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
-    // v i button, highlighted
-    itemRectangle.y -= 1;
-    itemRectangle.height += 1;
-    itemRectangle.x = (scrollViewWidthWithPaddings * 3) + vArrowLocalPosition;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle), null, new FrameInsets(0, -1));
-
-
-    const scrollViewForThumbWidth:Number = 127;
-    // v thumb
-    const thumbEdgeSegmentSize:Number = 12 + 3 /* альфа */;
-    const thumbMiddleSegmentSize:Number = 16;
-    itemRectangle.x = (scrollViewWidthWithPaddings * 4) + scrollViewForThumbWidth - thickness;
-    itemRectangle.y = 189;
-    itemRectangle.width = thickness;
-    itemRectangle.height = thumbEdgeSegmentSize;
-
-    var bitmaps:Vector.<BitmapData> = new Vector.<BitmapData>(3, true);
-    bitmaps[0] = createBitmapData(itemRectangle);
-
-    itemRectangle.y += thumbEdgeSegmentSize + (thumbMiddleSegmentSize * 2);
-    itemRectangle.height = thumbMiddleSegmentSize;
-    bitmaps[1] = createBitmapData(itemRectangle);
-
-    itemRectangle.y += thumbMiddleSegmentSize;
-    itemRectangle.height = thumbEdgeSegmentSize;
-    bitmaps[2] = createBitmapData(itemRectangle);
-    borders[position++] = Scale3VBitmapBorder.create(new FrameInsets(0, -3, 0, -3)).configure(bitmaps);
-
-    // h thumb
-    itemRectangle.x = (scrollViewWidthWithPaddings * 4) + 4;
-    itemRectangle.y = 297;
-    itemRectangle.width = thumbEdgeSegmentSize;
-    itemRectangle.height = thickness;
-
-    bitmaps = new Vector.<BitmapData>(3, true);
-    bitmaps[0] = createBitmapData(itemRectangle);
-
-    itemRectangle.x += thumbEdgeSegmentSize + (thumbMiddleSegmentSize * 2);
-    itemRectangle.width = thumbMiddleSegmentSize;
-    bitmaps[1] = createBitmapData(itemRectangle);
-
-    itemRectangle.x += thumbMiddleSegmentSize;
-    itemRectangle.width = thumbEdgeSegmentSize;
-    bitmaps[2] = createBitmapData(itemRectangle);
-    borders[position++] = Scale3HBitmapBorder.create(new FrameInsets(-3, 0, -3, 0)).configure(bitmaps);
-
-    // track v off
-    itemRectangle.x = scrollViewWidthWithPaddings + vArrowLocalPosition;
-    itemRectangle.y = scrollViewAbsoluteY;
-    itemRectangle.width = thickness;
-    itemRectangle.height = 1;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
-
-    // track h off
-    itemRectangle.x = scrollViewWidthWithPaddings;
-    itemRectangle.y = scrollViewAbsoluteY + vArrowLocalPosition;
-    itemRectangle.width = 1;
-    itemRectangle.height = thickness;
-    borders[position++] = OneBitmapBorder.create(createBitmapData(itemRectangle));
   }
 
   public function readMenu(icons:ByteArray, bitmapDataClass:Class, listBorder:Scale9EdgeBitmapBorder, itemHeight:Number):void {

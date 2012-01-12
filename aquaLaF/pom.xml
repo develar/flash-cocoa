@@ -45,7 +45,6 @@
                 <class>cocoa.plaf.aqua.IconPosition</class>
                 <!--<class>cocoa.plaf.aqua.MenuItemBorder</class>-->
                 <!--<class>cocoa.plaf.aqua.MenuItemRenderer</class>-->
-                <!--<class>cocoa.plaf.aqua.MiniScrollBarSkin</class>-->
                 <!--<class>cocoa.plaf.aqua.NumericStepperSkin</class>-->
                 <!--<class>cocoa.plaf.aqua.NumericStepperTextInputBorder</class>-->
                 <!--<class>cocoa.plaf.aqua.PopUpMenuInteractor</class>-->

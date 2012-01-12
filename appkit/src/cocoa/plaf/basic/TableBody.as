@@ -77,6 +77,10 @@ public class TableBody extends CollectionBody {
     return minWidth + (tableView.columns.length - 1) * intercellSpacing.x;
   }
 
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return getMinimumWidth();
+  }
+
   override public function getPreferredHeight(wHint:int = -1):int {
     return Math.max(dataSource.itemCount, tableView.minRowCount) * rowHeightWithSpacing;
   }

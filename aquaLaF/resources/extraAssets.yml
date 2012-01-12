@@ -1,4 +1,4 @@
 borders:
-- key: ScrollBar.thumb
+- key: Scroller.thumb
   type: CappedSmart
   appleResource: RSS-scroll

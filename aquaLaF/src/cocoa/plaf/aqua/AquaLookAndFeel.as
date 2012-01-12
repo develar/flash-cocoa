@@ -9,7 +9,8 @@ import cocoa.plaf.TextFormatId;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.plaf.basic.BasicTableViewSkin;
 import cocoa.plaf.basic.IconButtonSkin;
-import cocoa.plaf.basic.ScrollBarSkin;
+import cocoa.plaf.basic.ScrollViewSkin;
+import cocoa.plaf.basic.ScrollerSkin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
 
 import flash.geom.Point;
@@ -17,7 +18,7 @@ import flash.text.engine.FontDescription;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
-  private static var assetsDataClass:Class;
+  private static var bordersDataClass:Class;
 
   [Embed(source="/borders2", mimeType="application/octet-stream")]
   private static var borders2DataClass:Class;
@@ -42,10 +43,10 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
   }
 
   protected function initialize():void {
-    LookAndFeelUtil.initAssets(data, assetsDataClass);
+    LookAndFeelUtil.initAssets(data, bordersDataClass);
     LookAndFeelUtil.initAssets(data, borders2DataClass);
     LookAndFeelUtil.initAssets(data, segmentBordersClass);
-    assetsDataClass = null;
+    bordersDataClass = null;
     borders2DataClass = null;
     segmentBordersClass = null;
 
@@ -112,7 +113,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     //data["SliderNumericStepper"] = SliderNumericStepperSkin;
 
-    data["ScrollBar"] = ScrollBarSkin;
+    data["ScrollView"] = data["small.ScrollView"] = ScrollViewSkin;
+    data["Scroller"] = data["small.Scroller"] = ScrollerSkin;
 
     //data["VSeparator"] = data["HSeparator"] = SeparatorSkin;
 

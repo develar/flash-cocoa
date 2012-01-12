@@ -82,7 +82,7 @@
                 <include>**.border.*</include>
                 <include>**.ToolWindowManager</include>
                 <include>cocoa.plaf.basic.AbstractSkin</include>
-                <include>cocoa.plaf.basic.ScrollBarSkin</include>
+                <include>cocoa.plaf.basic.Scroll*</include>
                 <include>cocoa.plaf.basic.AbstractTabViewSkin</include>
                 <include>cocoa.plaf.basic.BoxSkin</include>
                 <include>cocoa.plaf.basic.BitmapIcon</include>
@@ -155,7 +155,6 @@
                 <!--<class>cocoa.FlexDataGroup</class>-->
               </includes>
               <excludes>
-                <class>cocoa.plaf.basic.scrollbar.*</class>
                 <class>cocoa.tableView.TableColumn</class>
               </excludes>
               <names>

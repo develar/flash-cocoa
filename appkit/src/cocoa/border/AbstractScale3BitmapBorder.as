@@ -26,7 +26,7 @@ internal class AbstractScale3BitmapBorder extends AbstractControlBitmapBorder {
   }
 
   protected function initTransient():void {
-    throw new Error("Abstract");
+    throw new Error("abstract");
   }
 
   override public function readExternal(input:ByteArray):void {
