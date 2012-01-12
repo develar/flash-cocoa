@@ -21,6 +21,7 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
     mouseChildren = false;
 
     flags |= HAS_BASELINE;
+    flags |= MIN_EQUALS_PREF;
   }
 
   //noinspection JSMethodCanBeStatic
@@ -49,14 +50,6 @@ public class PushButtonSkin extends TitledComponentSkin implements Focusable, Bu
 
   public function get labelLeftMargin():Number {
     return border.contentInsets.left;
-  }
-
-  override public function getMinimumWidth(hHint:int = -1):int {
-    return getPreferredWidth();
-  }
-
-  override public function getMinimumHeight(wHint:int = -1):int {
-    return getPreferredHeight();
   }
 
   override public function getPreferredWidth(hHint:int = -1):int {

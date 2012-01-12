@@ -25,7 +25,7 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
 
     border = getNullableBorder();
 
-    var component:AbstractCollectionView = AbstractCollectionView(this.component);
+    var component:AbstractCollectionView = AbstractCollectionView(component);
     documentView = createDocumentView();
     if (component.horizontalScrollPolicy == ScrollPolicy.OFF && component.verticalScrollPolicy == ScrollPolicy.OFF) {
       contentView = documentView;
@@ -40,11 +40,10 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
       contentView = scrollView;
     }
 
+    contentView.addToSuperview(this, laf);
     if (border != null) {
       contentView.setLocation(border.contentInsets.left, border.contentInsets.top);
     }
-
-    contentView.addToSuperview(this, laf);
   }
 
   override protected function draw(w:int, h:int):void {

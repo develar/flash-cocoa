@@ -19,6 +19,7 @@ public class SpriteBackedView extends Sprite implements View {
   internal static const DEFAULT_MAX_HEIGHT:int = 32767;
 
   protected static const HAS_BASELINE:uint = 1 << 0;
+  protected static const MIN_EQUALS_PREF:uint = 1 << 2;
   protected static const DISABLED:uint = 1 << 1;
 
   protected var flags:uint;
@@ -53,11 +54,11 @@ public class SpriteBackedView extends Sprite implements View {
   }
 
   public function getMinimumWidth(hHint:int = -1):int {
-    return 0;
+    return (flags & MIN_EQUALS_PREF) == 0 ? 0 : getPreferredWidth(hHint);
   }
 
   public function getMinimumHeight(wHint:int = -1):int {
-    return 0;
+    return (flags & MIN_EQUALS_PREF) == 0 ? 0 : getPreferredHeight(wHint);
   }
 
   public function getPreferredWidth(hHint:int = -1):int {
@@ -135,7 +136,7 @@ public class SpriteBackedView extends Sprite implements View {
     return ComponentType.TYPE_UNKNOWN;
   }
 
-  public function validate():void {
+  public function validate():Boolean {
     throw new IllegalOperationError("abstract");
   }
 

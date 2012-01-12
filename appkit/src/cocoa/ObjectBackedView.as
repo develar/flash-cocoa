@@ -132,7 +132,7 @@ public class ObjectBackedView implements View {
     throw new IllegalOperationError("abstract");
   }
 
-  public function validate():void {
+  public function validate():Boolean {
     throw new IllegalOperationError("abstract");
   }
 }

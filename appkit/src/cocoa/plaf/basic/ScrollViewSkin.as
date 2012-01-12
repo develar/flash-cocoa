@@ -20,6 +20,10 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
   private var _x:int;
   private var _y:int;
 
+  override public function get layoutHashCode():int {
+    return flags;
+  }
+
   private var scrollView:ScrollView;
   public final function get component():SkinnableView {
     return scrollView;
@@ -42,6 +46,9 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
   }
 
   override public function setLocation(x:Number, y:Number):void {
+    _x = x;
+    _y = y;
+
     scrollView.documentView.setLocation(x, y);
     var horizontalScroller:Scroller = scrollView.horizontalScroller;
     if (horizontalScroller != null) {
@@ -71,14 +78,16 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
     }
   }
 
-  override public function validate():void {
+  override public function validate():Boolean {
     if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
-      return;
+      return false;
     }
 
     flags &= ~LayoutState.DISPLAY_INVALID;
     flags &= ~LayoutState.SIZE_INVALID;
     draw(_actualWidth, _actualHeight);
+
+    return true;
   }
 
   private function getWidth(pref:Boolean):int {
@@ -147,9 +156,7 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
   }
 
   private function contentSizeChanged():void {
-    if (superview != null) {
-      superview.invalidateSubview(false);
-    }
+    invalidate(true);
   }
 
   private function scrollPositionReset():void {
@@ -226,14 +233,21 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
     scrollView.documentView.validate();
 
     if (hScrollerVisible) {
-      var hsbH:int = hScroller.getPreferredHeight();
-      hScroller.setBounds(hScroller.x, h - hsbH, vScrollerVisible ? w - vScroller.getPreferredWidth() : w, hsbH);
+      hScroller.contentSize = contentW;
+
+      var hScrollerH:int = hScroller.getPreferredHeight();
+      hScroller.setBounds(hScroller.x, h - hScrollerH, vScrollerVisible ? w - vScroller.getPreferredWidth() : w, hScrollerH);
       hScroller.validate();
     }
 
     if (vScrollerVisible) {
-      var vsbW:Number = vScroller.getPreferredWidth();
-      vScroller.setBounds(w - vsbW, vScroller.y, vsbW, hScrollerVisible ? h - hScroller.getPreferredHeight() : h);
+      const vScrollerW:Number = vScroller.getPreferredWidth();
+      const vScrollerH:Number = hScrollerVisible ? h - hScroller.getPreferredHeight() : h;
+
+      vScroller.contentSize = contentH;
+      vScroller.max = Math.max(0, contentH - vScrollerH);
+
+      vScroller.setBounds(_x + (w - vScrollerW), _y + (vScroller.y), vScrollerW, vScrollerH);
       vScroller.validate();
     }
 

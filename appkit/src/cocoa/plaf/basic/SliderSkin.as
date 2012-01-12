@@ -11,8 +11,13 @@ import flash.geom.Point;
 
 public class SliderSkin extends AbstractSkin {
   protected var knob:Shape;
+  protected var slider:Slider;
 
-  private var slider:Slider;
+  public function SliderSkin() {
+    super();
+
+    flags |= MIN_EQUALS_PREF;
+  }
 
   public function valueOrMinOrMaxChanged():void {
     positionKnob(getKnobBorder());
@@ -23,14 +28,34 @@ public class SliderSkin extends AbstractSkin {
 
     slider = Slider(component);
     knob = new Shape();
+    addChild(knob);
     addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+
+    var trackBorder:Border = getBorder("track." + (slider.vertical ? "v" : "h"));
+    var knobBorder:Border = getKnobBorder();
+    if (slider.vertical ? trackBorder.layoutWidth != knobBorder.layoutWidth : trackBorder.layoutHeight != knobBorder.layoutHeight) {
+      if (slider.vertical) {
+        knob.x = Math.ceil((trackBorder.layoutWidth - knobBorder.layoutWidth) / 2);
+      }
+      else {
+        knob.x = Math.ceil((trackBorder.layoutHeight - knobBorder.layoutHeight) / 2);
+      }
+    }
+  }
+
+  override public function getPreferredWidth(hHint:int = -1):int {
+    return slider.vertical ? getBorder("track.v").layoutWidth : 0;
+  }
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    return slider.vertical ? 0 : getBorder("track.h").layoutHeight;
   }
 
   override protected function draw(w:int, h:int):void {
     super.draw(w, h);
 
     graphics.clear();
-    getBorder("track." + (slider.vertical ? "v" : "h"));
+    getBorder("track." + (slider.vertical ? "v" : "h")).draw(graphics, w, h);
 
     positionKnob(drawKnob(CellState.OFF));
   }
@@ -39,8 +64,12 @@ public class SliderSkin extends AbstractSkin {
     var knobBorder:StatefulBorder = getKnobBorder();
     knobBorder.stateIndex = state;
     knob.graphics.clear();
-    knobBorder.draw(knob.graphics);
+    doDrawKnob(knobBorder);
     return knobBorder;
+  }
+
+  protected function doDrawKnob(knobBorder:StatefulBorder):void {
+    knobBorder.draw(knob.graphics);
   }
 
   protected function getKnobBorder():StatefulBorder {

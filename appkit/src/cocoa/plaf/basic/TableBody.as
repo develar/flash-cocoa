@@ -78,7 +78,12 @@ public class TableBody extends CollectionBody {
   }
 
   override public function getPreferredWidth(hHint:int = -1):int {
-    return getMinimumWidth();
+    var width:Number = 0;
+    for each (var column:TableColumn in tableView.columns) {
+      width += column.preferredWidth == -1 ? column.minWidth : column.preferredWidth;
+    }
+
+    return width + (tableView.columns.length - 1) * intercellSpacing.x;
   }
 
   override public function getPreferredHeight(wHint:int = -1):int {
@@ -288,9 +293,9 @@ public class TableBody extends CollectionBody {
     var columns:Vector.<TableColumn> = tableView.columns;
     for (var i:int = 0; i < columns.length; i++) {
       var column:TableColumn = columns[i];
-      var calculatedWidth:Number = column.width;
-      if (calculatedWidth != calculatedWidth) {
-        column.actualWidth = w - tableView.columns[0].width - intercellSpacing.x;
+      var calculatedWidth:int = column.preferredWidth;
+      if (calculatedWidth == -1) {
+        column.actualWidth = w - tableView.columns[0].preferredWidth - intercellSpacing.x;
       }
       else {
         column.actualWidth = calculatedWidth;

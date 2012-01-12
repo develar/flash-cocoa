@@ -1,6 +1,5 @@
 package cocoa.plaf.basic {
 import cocoa.ContentView;
-import cocoa.LayoutState;
 import cocoa.plaf.LookAndFeel;
 
 import flash.display.DisplayObjectContainer;
@@ -21,18 +20,19 @@ public class ContentViewableSkin extends AbstractSkin implements ContentView {
     }
   }
 
-  override public function validate():void {
+  override public function validate():Boolean {
     if ((flags & VALIDATE_LISTENERS_ATTACHED) != 0) {
       flags &= ~VALIDATE_LISTENERS_ATTACHED;
       removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
     }
 
-    // i.e. our draw will not be called
-    if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
-      subviewsValidate();
+    if (super.validate()) {
+      return true;
     }
 
-    super.validate();
+    // i.e. our draw will not be called
+    subviewsValidate();
+    return false;
   }
 
   protected function subviewsValidate():void {

@@ -10,17 +10,17 @@ public interface TableColumn {
 
   function set title(value:String):void;
 
-  function get width():Number;
+  function get preferredWidth():int;
 
-  function set width(value:Number):void;
+  function set preferredWidth(value:int):void;
 
   function get minWidth():int;
 
   function set minWidth(value:int):void;
 
-  function get actualWidth():Number;
+  function get actualWidth():int;
 
-  function set actualWidth(value:Number):void;
+  function set actualWidth(value:int):void;
 
   function get rendererManager():RendererManager;
 }

@@ -17,14 +17,15 @@ public class ControlView extends SpriteBackedView implements IMXMLObject {
     flags |= LayoutState.SIZE_INVALID;
   }
 
-  override public function validate():void {
+  override public function validate():Boolean {
     if ((flags & LayoutState.DISPLAY_INVALID) == 0) {
-      return;
+      return false;
     }
 
     flags &= ~LayoutState.DISPLAY_INVALID;
     flags &= ~LayoutState.SIZE_INVALID;
     draw(_actualWidth, _actualHeight);
+    return true;
   }
 
   override public function addToSuperview(displayObjectContainer:DisplayObjectContainer, laf:LookAndFeel, superview:ContentView = null):void {

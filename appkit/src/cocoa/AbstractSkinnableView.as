@@ -178,8 +178,8 @@ public class AbstractSkinnableView extends ObjectBackedView implements Skinnable
     _linkId = id;
   }
 
-  override public function validate():void {
-    _skin.validate();
+  override public function validate():Boolean {
+    return _skin.validate();
   }
 }
 }

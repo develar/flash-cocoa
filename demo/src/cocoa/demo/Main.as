@@ -1,11 +1,17 @@
 package cocoa.demo {
 import cocoa.Container;
+import cocoa.Insets;
 import cocoa.Label;
 import cocoa.MigLayout;
 import cocoa.ScrollView;
 import cocoa.SegmentedControl;
 import cocoa.Toolbar;
+import cocoa.plaf.TextFormatId;
 import cocoa.plaf.aqua.AquaLookAndFeel;
+import cocoa.renderer.TextRendererManager;
+import cocoa.tableView.TableColumn;
+import cocoa.tableView.TableColumnImpl;
+import cocoa.tableView.TableView;
 
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -19,7 +25,7 @@ public class Main extends Container {
     subviews = createComponents();
     this.layout = layout;
 
-    //setSize(stage.stageWidth, stage.stageHeight);
+    setSize(stage.stageWidth, stage.stageHeight);
     validate();
   }
 
@@ -39,9 +45,17 @@ public class Main extends Container {
     toolbar.subviews = new <ComponentWrapper>[createSC()];
     components[2] = toolbar;
 
-    var scrollView:ScrollView = new ScrollView();
-    scrollView.documentView = createSC();
-    components[components.length] = scrollView;
+    //var scrollView:ScrollView = new ScrollView();
+    var tableView:TableView = new TableView();
+    tableView.lafSubkey = "small";
+    tableView.dataSource = new DemoTableViewDataSource();
+    var insets:Insets = new Insets(2, NaN, NaN, 3);
+    var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
+    firstColumn.preferredWidth = 120;
+    tableView.columns = new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
+
+    //scrollView.documentView = tableView;
+    components[components.length] = tableView;
 
     return components;
   }

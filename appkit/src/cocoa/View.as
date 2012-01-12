@@ -15,7 +15,7 @@ public interface View extends ComponentWrapper {
 
   function removeFromSuperview():void;
 
-  function validate():void;
+  function validate():Boolean;
 
   function get enabled():Boolean;
   function set enabled(value:Boolean):void;

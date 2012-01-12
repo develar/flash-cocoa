@@ -53,20 +53,22 @@ public class Container extends SpriteBackedView implements RootContentView {
     return _layout;
   }
 
-  override public function validate():void {
+  override public function validate():Boolean {
     _layout.validate();
 
     if ((flags & LayoutState.DISPLAY_INVALID) != 0) {
       flags &= ~LayoutState.DISPLAY_INVALID;
 
       if (_border == null) {
-        return;
+        return true;
       }
       
       var g:Graphics = graphics;
       g.clear();
       _border.draw(g, actualWidth, actualHeight);
     }
+
+    return true;
   }
 
   override public function getMinimumWidth(hHint:int = -1):int {

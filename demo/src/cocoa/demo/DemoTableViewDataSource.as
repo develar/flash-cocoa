@@ -1,4 +1,4 @@
-package cocoa.plaf.aqua.demo {
+package cocoa.demo {
 import cocoa.AbstractCollectionViewDataSource;
 import cocoa.tableView.TableColumn;
 import cocoa.tableView.TableViewDataSource;

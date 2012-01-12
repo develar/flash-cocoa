@@ -126,8 +126,9 @@ public class Label extends ObjectBackedView {
     }
   }
 
-  override public function validate():void {
+  override public function validate():Boolean {
     labelHelper.validate();
+    return false;
   }
 
   override public function get layoutHashCode():int {

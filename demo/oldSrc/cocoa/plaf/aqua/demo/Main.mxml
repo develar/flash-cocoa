@@ -27,7 +27,7 @@
       var insets:Insets = new Insets(2, NaN, NaN, 3);
       var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a',
                                                             new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
-      firstColumn.width = 120;
+      firstColumn.preferredWidth = 120;
       tableView.columns =
       new <TableColumn>[firstColumn,
         new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
