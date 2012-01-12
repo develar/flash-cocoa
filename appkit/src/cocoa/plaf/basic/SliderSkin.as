@@ -77,11 +77,21 @@ public class SliderSkin extends AbstractSkin {
   }
 
   protected function mouseDownHandler(event:MouseEvent):void {
-    var thumbBorder:StatefulBorder = getKnobBorder();
-    if (event.localX >= knob.x && event.localX <= (knob.x + thumbBorder.layoutWidth) && event.localY >= knob.y && event.localY <= (knob.y + thumbBorder.layoutHeight)) {
-      stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-      stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMoveHandler);
+    if (slider.vertical) {
+      if (event.localY < knob.y || event.localY > (knob.y + knob.height)) {
+        return;
+      }
+    }
+    else {
+      if (event.localX < knob.x || event.localX > (knob.x + knob.width)) {
+        return;
+      }
+    }
 
+    stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
+    stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMoveHandler);
+
+    if (getKnobBorder().hasState(CellState.ON)) {
       drawKnob(CellState.ON);
       event.updateAfterEvent();
     }
@@ -91,7 +101,9 @@ public class SliderSkin extends AbstractSkin {
     stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
     stage.removeEventListener(MouseEvent.MOUSE_MOVE, stageMouseMoveHandler);
 
-    drawKnob(CellState.OFF);
+    if (getKnobBorder().hasState(CellState.ON)) {
+      drawKnob(CellState.OFF);
+    }
 
     // if continuous, user initiated action handler already called, otherwise we call it now
     if (!slider.continuous) {
@@ -131,7 +143,7 @@ public class SliderSkin extends AbstractSkin {
   }
 
   protected function computePixelRange(knobBorder:Border):Number {
-    return slider.vertical ? actualHeight - knobBorder.layoutHeight : actualWidth - knobBorder.layoutWidth;
+    return slider.vertical ? actualHeight - knob.height - knobBorder.frameInsets.top - knobBorder.frameInsets.bottom : actualWidth - knob.width - - knobBorder.frameInsets.left - knobBorder.frameInsets.right;
   }
 
   protected function positionKnob(knobBorder:Border):void {
