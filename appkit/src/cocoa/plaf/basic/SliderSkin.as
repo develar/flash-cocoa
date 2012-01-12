@@ -13,6 +13,8 @@ public class SliderSkin extends AbstractSkin {
   protected var knob:Shape;
   protected var slider:Slider;
 
+  private var knobMouseOffset:Number;
+
   public function SliderSkin() {
     super();
 
@@ -81,11 +83,13 @@ public class SliderSkin extends AbstractSkin {
       if (event.localY < knob.y || event.localY > (knob.y + knob.height)) {
         return;
       }
+      knobMouseOffset = event.localY - knob.y;
     }
     else {
       if (event.localX < knob.x || event.localX > (knob.x + knob.width)) {
         return;
       }
+      knobMouseOffset = event.localX - knob.x;
     }
 
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
@@ -119,7 +123,7 @@ public class SliderSkin extends AbstractSkin {
     const pixelRange:Number = computePixelRange(knobBorder);
     var mouseLocal:Point = globalToLocal(SharedPoint.mouseGlobal(event));
     if (slider.vertical) {
-      position = Math.min(mouseLocal.y, pixelRange);
+      position = Math.max(0, Math.min(mouseLocal.y - knobMouseOffset, pixelRange));
       if (knob.y == position) {
         return;
       }
@@ -128,7 +132,7 @@ public class SliderSkin extends AbstractSkin {
       }
     }
     else {
-      position = Math.min(mouseLocal.x, pixelRange);
+      position = Math.max(0, Math.min(mouseLocal.x - knobMouseOffset, pixelRange));
       if (knob.x == position) {
         return;
       }

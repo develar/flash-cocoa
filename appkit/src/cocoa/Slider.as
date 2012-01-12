@@ -6,6 +6,7 @@ public class Slider extends AbstractControl {
   public function Slider(vertical:Boolean) {
     super();
 
+    flags |= CONTINUOUS;
     if (vertical) {
       flags |= VERTICAL;
     }
@@ -50,7 +51,7 @@ public class Slider extends AbstractControl {
     _value = value;
   }
 
-  private var _min:Number;
+  private var _min:Number = 0;
   public function get min():Number {
     return _min;
   }
