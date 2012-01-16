@@ -71,7 +71,7 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
   }
 
   protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
-    throw new IllegalOperationError();
+    scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, actualWidth, actualHeight);
   }
 
   public function getHorizontalScrollPositionDelta(navigationUnit:uint):Number {

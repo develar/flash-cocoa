@@ -58,6 +58,7 @@ public class DocumentWindow extends NativeWindow {
   }
 
   private function resizeHandler(event:NativeWindowBoundsEvent):void {
+    trace("resizeHandler");
     _contentView.setSize(stage.stageWidth, stage.stageHeight);
     _contentView.validate();
   }

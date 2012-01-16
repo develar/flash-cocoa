@@ -78,10 +78,12 @@ public class MigLayout extends AbstractMigLayout {
       lastModCount = mc;
     }
 
-    for each (var componentWrapper:View in _container.components) {
-      if ((componentWrapper.layoutHashCode & LayoutState.SIZE_INVALID) != 0) {
-        grid = null;
-        break;
+    if (grid != null) {
+      for each (var componentWrapper:View in _container.components) {
+        if ((componentWrapper.layoutHashCode & LayoutState.SIZE_INVALID) != 0) {
+          grid = null;
+          break;
+        }
       }
     }
 

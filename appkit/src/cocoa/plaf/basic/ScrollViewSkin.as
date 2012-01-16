@@ -42,6 +42,7 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
   override public function setBounds(x:Number, y:Number, w:int, h:int):void {
     _x = x;
     _y = y;
+
     setSize(w, h);
   }
 
@@ -50,14 +51,14 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
     _y = y;
 
     scrollView.documentView.setLocation(x, y);
-    var horizontalScroller:Scroller = scrollView.horizontalScroller;
-    if (horizontalScroller != null) {
-      horizontalScroller.setLocation(x, y - horizontalScroller.actualHeight);
+    var hScroller:Scroller = scrollView.horizontalScroller;
+    if (hScroller != null) {
+      hScroller.setLocation(x, y + (actualHeight - hScroller.actualHeight));
     }
 
-    var verticalScroller:Scroller = scrollView.verticalScroller;
-    if (verticalScroller != null) {
-      verticalScroller.setLocation(actualWidth - verticalScroller.actualWidth, y);
+    var vScroller:Scroller = scrollView.verticalScroller;
+    if (vScroller != null) {
+      vScroller.setLocation(x + (actualWidth - vScroller.actualWidth), y);
     }
   }
 
@@ -247,7 +248,7 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
       vScroller.contentSize = contentH;
       vScroller.max = Math.max(0, contentH - vScrollerH);
 
-      vScroller.setBounds(_x + (w - vScrollerW), _y + (vScroller.y), vScrollerW, vScrollerH);
+      vScroller.setBounds(_x + (w - vScrollerW), _y, vScrollerW, vScrollerH);
       vScroller.validate();
     }
 
