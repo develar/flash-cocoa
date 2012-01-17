@@ -11,7 +11,7 @@ import cocoa.Viewport;
 import flash.display.InteractiveObject;
 import flash.errors.IllegalOperationError;
 
-internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusable {
+internal class AbstractCollectionViewSkin extends ContentViewableSkin implements Focusable {
   protected var contentView:View;
   protected var border:Border;
   protected var documentView:Viewport;
@@ -40,9 +40,15 @@ internal class AbstractCollectionViewSkin extends AbstractSkin implements Focusa
       contentView = scrollView;
     }
 
-    contentView.addToSuperview(this, laf);
+    contentView.addToSuperview(this, laf, this);
     if (border != null) {
       contentView.setLocation(border.contentInsets.left, border.contentInsets.top);
+    }
+  }
+
+  override protected function subviewsValidate():void {
+    if (contentView != null) {
+      contentView.validate();
     }
   }
 

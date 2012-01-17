@@ -1,49 +1,22 @@
 package cocoa.plaf.basic {
 import cocoa.ContentView;
 import cocoa.LayoutState;
-import cocoa.ObjectBackedView;
 import cocoa.ScrollPolicy;
 import cocoa.ScrollView;
 import cocoa.Scroller;
 import cocoa.SkinnableView;
 import cocoa.Viewport;
 import cocoa.plaf.LookAndFeel;
-import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
 
-public class ScrollViewSkin extends ObjectBackedView implements Skin {
-  private var superview:ContentView;
+public class ScrollViewSkin extends ObjectBackedSkin {
   private var displayObjectContainer:DisplayObjectContainer;
   private var laf:LookAndFeel;
-  
-  private var _x:int;
-  private var _y:int;
-
-  override public function get layoutHashCode():int {
-    return flags;
-  }
 
   private var scrollView:ScrollView;
-  public final function get component():SkinnableView {
+  override public final function get component():SkinnableView {
     return scrollView;
-  }
-  
-  protected var _actualWidth:int = -1;
-  override public function get actualWidth():int {
-    return _actualWidth;
-  }
-
-  protected var _actualHeight:int = -1;
-  override public function get actualHeight():int {
-    return _actualHeight;
-  }
-
-  override public function setBounds(x:Number, y:Number, w:int, h:int):void {
-    _x = x;
-    _y = y;
-
-    setSize(w, h);
   }
 
   override public function setLocation(x:Number, y:Number):void {
@@ -131,7 +104,7 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
     this.superview = superview;
   }
 
-  public function attach(component:SkinnableView):void {
+  override public function attach(component:SkinnableView):void {
     scrollView = ScrollView(component);
 
     var documentView:Viewport = scrollView.documentView;
@@ -166,21 +139,6 @@ public class ScrollViewSkin extends ObjectBackedView implements Skin {
     }
     if (scrollView.verticalScroller != null) {
       scrollView.verticalScroller.value = 0;
-    }
-  }
-
-  public function hostComponentPropertyChanged():void {
-    invalidate(true);
-  }
-
-  protected final function invalidate(sizeInvalid:Boolean = true):void {
-    flags |= LayoutState.DISPLAY_INVALID;
-
-    if (sizeInvalid && ((flags & LayoutState.SIZE_INVALID) == 0)) {
-      flags |= LayoutState.SIZE_INVALID;
-      if (superview != null) {
-        superview.invalidateSubview(sizeInvalid);
-      }
     }
   }
 

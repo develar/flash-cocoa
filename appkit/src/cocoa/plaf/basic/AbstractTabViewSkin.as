@@ -93,8 +93,6 @@ public class AbstractTabViewSkin extends ContentViewableSkin implements TabViewS
     }
   }
 
-
-
   override protected function draw(w:int, h:int):void {
     const tabBarPreferredHeight:int = tabBar.getPreferredHeight();
     if (tabBarPlacement == Placement.PAGE_START_LINE_CENTER) {

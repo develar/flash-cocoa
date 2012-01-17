@@ -1,8 +1,10 @@
 package cocoa {
+import flash.display.Stage;
 import flash.events.Event;
 
 import net.miginfocom.layout.AbstractMigLayout;
 import net.miginfocom.layout.CC;
+import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
@@ -27,7 +29,7 @@ public class MigLayout extends AbstractMigLayout {
   public function validate():void {
     if ((flags & VALIDATE_LISTENERS_ATTACHED) != 0) {
       flags &= ~VALIDATE_LISTENERS_ATTACHED;
-      _container.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+      _container.removeEventListener(Event.RENDER, rendererHandler);
     }
 
     if (checkCache()) {
@@ -79,7 +81,7 @@ public class MigLayout extends AbstractMigLayout {
     }
 
     if (grid != null) {
-      for each (var componentWrapper:View in _container.components) {
+      for each (var componentWrapper:ComponentWrapper in _container.components) {
         if ((componentWrapper.layoutHashCode & LayoutState.SIZE_INVALID) != 0) {
           grid = null;
           break;
@@ -101,13 +103,6 @@ public class MigLayout extends AbstractMigLayout {
     return layoutInvalid;
   }
 
-  //private function calculateSize(container:FlashContainerWrapper, sizeType:int) {
-  //  checkCache(container);
-  //  var w:Number = LayoutUtil.getSizeSafe(grid != null ? grid.width : null, sizeType);
-  //  var h:Number = LayoutUtil.getSizeSafe(grid != null ? grid.height : null, sizeType);
-  //  return new Dimension(w, h);
-  //}
-
   public function invalidateContainerSize():void {
     if (grid != null) {
       grid.invalidateContainerSize();
@@ -122,11 +117,15 @@ public class MigLayout extends AbstractMigLayout {
 
     if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
       flags |= VALIDATE_LISTENERS_ATTACHED;
-      _container.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+      _container.addEventListener(Event.RENDER, rendererHandler);
+      var stage:Stage = _container.stage;
+      if (stage != null) {
+        stage.invalidate();
+      }
     }
   }
 
-  private function enterFrameHandler(event:Event):void {
+  private function rendererHandler(event:Event):void {
     validate();
   }
 
