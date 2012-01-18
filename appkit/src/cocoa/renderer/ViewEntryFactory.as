@@ -4,8 +4,8 @@ import flash.display.Shape;
 import flash.text.engine.TextLine;
 
 public class ViewEntryFactory extends TextLineAndDisplayObjectEntryFactory {
-  public function ViewEntryFactory() {
-    super(Shape, true);
+  public function ViewEntryFactory(displayObjectClass:Class = null) {
+    super(displayObjectClass || Shape, true);
   }
 
   override public function create(line:TextLine):TextLineAndDisplayObjectEntry {

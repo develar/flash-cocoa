@@ -26,5 +26,12 @@ public final class SharedPoint {
     p.y = e.stageY;
     return p;
   }
+
+  public static function mouseLocal(e:MouseEvent):Point {
+    var p:Point = point;
+    p.x = e.localX;
+    p.y = e.localY;
+    return p;
+  }
 }
 }

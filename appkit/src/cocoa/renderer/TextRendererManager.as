@@ -104,9 +104,7 @@ public class TextRendererManager implements RendererManager {
     layoutTextLine(line, x, y, h);
     computeCreatingRendererSize(w, h, line);
 
-    var entry:TextLineEntry = TextLineEntry.create(line);
-    entry.itemIndex = itemIndex;
-    return entry;
+    return TextLineEntry.create(line);
   }
 
   protected function computeCreatingRendererSize(w:int, h:int, line:TextLine):void {
@@ -128,12 +126,14 @@ public class TextRendererManager implements RendererManager {
 
   public final function createAndLayoutRenderer(itemIndex:int, x:Number, y:Number, w:int, h:int):void {
     var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
-    finalizeEntryAddition(newEntry, previousEntry);
+    finalizeEntryAddition(newEntry, previousEntry, itemIndex);
     previousEntry = newEntry;
   }
 
-  private function finalizeEntryAddition(newEntry:TextLineEntry, prevEntry:TextLineEntry):void {
+  private function finalizeEntryAddition(newEntry:TextLineEntry, prevEntry:TextLineEntry, itemIndex:int):void {
     newEntry.dimension = _lastCreatedRendererDimension;
+    newEntry.itemIndex = itemIndex;
+
     if (prevEntry == null) {
       cells.addFirst(newEntry);
     }
@@ -166,7 +166,7 @@ public class TextRendererManager implements RendererManager {
     }
     
     var newEntry:TextLineEntry = createEntry(itemIndex, x, y, w, h);
-    finalizeEntryAddition(newEntry, prevEntry);
+    finalizeEntryAddition(newEntry, prevEntry, itemIndex);
 
     e = newEntry;
     while ((e = e.next) != null) {
