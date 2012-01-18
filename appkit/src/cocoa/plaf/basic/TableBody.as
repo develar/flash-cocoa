@@ -61,7 +61,7 @@ public class TableBody extends CollectionBody {
       visibleRowCount = -visibleRowCount - 1;
     }
 
-    invalidate();
+    invalidate(true);
   }
 
   override public function getMinimumHeight(wHint:int = -1):int {
@@ -71,7 +71,7 @@ public class TableBody extends CollectionBody {
   override public function getMinimumWidth(hHint:int = -1):int {
     var minWidth:Number = 0;
     for each (var column:TableColumn in tableView.columns) {
-      minWidth += column.minWidth;
+      minWidth += column.preferredWidth == -1 ? column.minWidth : column.preferredWidth;
     }
 
     return minWidth + (tableView.columns.length - 1) * intercellSpacing.x;
@@ -164,7 +164,7 @@ public class TableBody extends CollectionBody {
 
   override protected function draw(w:int, h:int):void {
     var s:Rectangle = scrollRect;
-    var oldVerticalScrollPosition:Number = s == null ? 0 : s.y;
+    const oldVerticalScrollPosition:Number = s == null ? 0 : s.y;
     if (clipAndEnableScrolling) {
       scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, w, h);
     }
@@ -296,6 +296,7 @@ public class TableBody extends CollectionBody {
       var calculatedWidth:int = column.preferredWidth;
       if (calculatedWidth == -1) {
         column.actualWidth = w - tableView.columns[0].preferredWidth - intercellSpacing.x;
+        assert(column.actualWidth > 0);
       }
       else {
         column.actualWidth = calculatedWidth;

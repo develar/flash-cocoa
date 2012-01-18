@@ -5,6 +5,7 @@ public class Scroller extends Slider {
   
   public function Scroller(vertical:Boolean) {
     super(vertical);
+    tick = 1;
   }
 
   override protected function get primaryLaFKey():String {

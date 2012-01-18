@@ -60,7 +60,7 @@ public class ScrollView extends AbstractSkinnableView {
     scroller.vertical ? _verticalScroller = scroller : _horizontalScroller = scroller;
   }
 
-  private function scrollHandler(scroller:Scroller):void {
+  private function scrollHandler(scroller:Scroller, userInitiated:Boolean):void {
     if (scroller == _verticalScroller) {
       _documentView.verticalScrollPosition = scroller.value;
     }

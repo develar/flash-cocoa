@@ -22,7 +22,7 @@ public class SliderSkin extends AbstractSkin {
   }
 
   public function valueOrMinOrMaxChanged():void {
-    positionKnob(getKnobBorder());
+    positionKnob();
   }
 
   override protected function doInit():void {
@@ -31,7 +31,7 @@ public class SliderSkin extends AbstractSkin {
     slider = Slider(component);
     knob = new Shape();
     addChild(knob);
-    addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+    addListeners();
 
     var trackBorder:Border = getBorder("track." + (slider.vertical ? "v" : "h"));
     var knobBorder:Border = getKnobBorder();
@@ -43,6 +43,10 @@ public class SliderSkin extends AbstractSkin {
         knob.x = Math.ceil((trackBorder.layoutHeight - knobBorder.layoutHeight) / 2);
       }
     }
+  }
+
+  protected function addListeners():void {
+    addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
   }
 
   override public function getPreferredWidth(hHint:int = -1):int {
@@ -147,11 +151,11 @@ public class SliderSkin extends AbstractSkin {
   }
 
   protected function computePixelRange(knobBorder:Border):Number {
-    return slider.vertical ? actualHeight - knob.height - knobBorder.frameInsets.top - knobBorder.frameInsets.bottom : actualWidth - knob.width - - knobBorder.frameInsets.left - knobBorder.frameInsets.right;
+    return slider.vertical ? actualHeight - knob.height - knobBorder.frameInsets.top - knobBorder.frameInsets.bottom : actualWidth - knob.width - knobBorder.frameInsets.left - knobBorder.frameInsets.right;
   }
 
-  protected function positionKnob(knobBorder:Border):void {
-    const position:Number = Math.round((slider.value - slider.min) / (slider.max - slider.min) * computePixelRange(knobBorder));
+  protected function positionKnob(knobBorder:Border = null):void {
+    const position:Number = Math.round((slider.value - slider.min) / (slider.max - slider.min) * computePixelRange(knobBorder == null ? getKnobBorder() : knobBorder));
     if (slider.vertical) {
       knob.y = position;
     }

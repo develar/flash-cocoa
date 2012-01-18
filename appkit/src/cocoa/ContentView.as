@@ -1,7 +1,5 @@
 package cocoa {
-import cocoa.plaf.LookAndFeelProvider;
-
-public interface ContentView extends View, LookAndFeelProvider {
+public interface ContentView extends View {
   function invalidateSubview(invalidateSuperview:Boolean = true):void;
 }
 }

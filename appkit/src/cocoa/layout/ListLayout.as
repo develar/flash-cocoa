@@ -4,6 +4,7 @@ import cocoa.LayoutState;
 import cocoa.ListViewDataSource;
 import cocoa.ListViewMutableDataSource;
 import cocoa.SegmentedControl;
+import cocoa.Viewport;
 import cocoa.renderer.InteractiveRendererManager;
 import cocoa.renderer.RendererManager;
 import cocoa.util.Vectors;
@@ -234,13 +235,15 @@ internal class ListLayout implements CollectionLayout {
       if ((flags & EXPLICIT_DIMENSION) == 0) {
         const newActualDimension:int = isVertical ? w : h;
         if (actualDimension == newActualDimension) {
-          return;
+          if (canSkipIfDimNotChanged) {
+            return;
+          }
         }
         else {
           actualDimension = newActualDimension;
         }
       }
-      else {
+      else if (canSkipIfDimNotChanged) {
         return;
       }
     }
@@ -251,6 +254,11 @@ internal class ListLayout implements CollectionLayout {
     else {
       initialDrawItems(w, actualDimension);
     }
+  }
+
+  private function get canSkipIfDimNotChanged():Boolean {
+    var viewport:Viewport = _container as Viewport;
+    return viewport == null || !viewport.clipAndEnableScrolling;
   }
 }
 }

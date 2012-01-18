@@ -1,6 +1,5 @@
 package cocoa {
 import flash.display.InteractiveObject;
-import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 
 import org.osflash.signals.ISignal;
@@ -71,7 +70,6 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
   }
 
   protected function verticalScrollPositionChanged(delta:Number, oldVerticalScrollPosition:Number):void {
-    scrollRect = new Rectangle(horizontalScrollPosition, verticalScrollPosition, actualWidth, actualHeight);
   }
 
   public function getHorizontalScrollPositionDelta(navigationUnit:uint):Number {
@@ -79,10 +77,6 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
   }
 
   public function getVerticalScrollPositionDelta(navigationUnit:uint):Number {
-    if (_verticalScrollPosition == 0 && contentHeight <= height) {
-      return 0;
-    }
-
     switch (navigationUnit) {
       case NavigationUnit.DOWN:
       case NavigationUnit.PAGE_DOWN:

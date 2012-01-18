@@ -10,7 +10,7 @@ import cocoa.plaf.LookAndFeel;
 
 import flash.display.DisplayObjectContainer;
 
-public class ScrollViewSkin extends ObjectBackedSkin {
+public class ScrollViewSkin extends ObjectBackedSkin implements ContentView {
   private var displayObjectContainer:DisplayObjectContainer;
   private var laf:LookAndFeel;
 
@@ -108,7 +108,7 @@ public class ScrollViewSkin extends ObjectBackedSkin {
     scrollView = ScrollView(component);
 
     var documentView:Viewport = scrollView.documentView;
-    documentView.addToSuperview(displayObjectContainer, laf);
+    documentView.addToSuperview(displayObjectContainer, laf, this);
     documentView.clipAndEnableScrolling = true;
 
     documentView.contentSizeChanged.add(contentSizeChanged);
@@ -189,30 +189,40 @@ public class ScrollViewSkin extends ObjectBackedSkin {
     viewportH = h - (hScrollerVisible ? hScroller.getPreferredHeight() : 0);
 
     scrollView.documentView.setBounds(_x, _y, viewportW, viewportH);
-    scrollView.documentView.validate();
 
     if (hScrollerVisible) {
-      hScroller.contentSize = contentW;
-
-      var hScrollerH:int = hScroller.getPreferredHeight();
-      hScroller.setBounds(hScroller.x, h - hScrollerH, vScrollerVisible ? w - vScroller.getPreferredWidth() : w, hScrollerH);
+      const hScrollerH:int = hScroller.getPreferredHeight();
+      const hScrollerW:int = vScrollerVisible ? w - vScroller.getPreferredWidth() : w;
+      adjustScroller(hScroller, contentW, hScrollerW);
+      hScroller.setBounds(hScroller.x, h - hScrollerH, hScrollerW, hScrollerH);
       hScroller.validate();
+    }
+    else if (contentW <= w) {
+      scrollView.documentView.horizontalScrollPosition = 0;
     }
 
     if (vScrollerVisible) {
       const vScrollerW:Number = vScroller.getPreferredWidth();
       const vScrollerH:Number = hScrollerVisible ? h - hScroller.getPreferredHeight() : h;
-
-      vScroller.contentSize = contentH;
-      vScroller.max = Math.max(0, contentH - vScrollerH);
-
+      adjustScroller(vScroller, contentH, vScrollerH);
       vScroller.setBounds(_x + (w - vScrollerW), _y, vScrollerW, vScrollerH);
       vScroller.validate();
+    }
+    else if (contentH <= h) {
+      scrollView.documentView.verticalScrollPosition = 0;
     }
 
     if ((vAuto && vScrollerVisible != oldShowVScroller) || (hAuto && hScrollerVisible != oldShowHScroller)) {
       invalidate(true);
     }
+
+    // must be after h/v scroll adjust
+    scrollView.documentView.validate();
+  }
+
+  private static function adjustScroller(scroller:Scroller, contentDimension:int, scrollerDimension:Number):void {
+    scroller.contentSize = contentDimension;
+    scroller.max = Math.max(0, contentDimension - scrollerDimension);
   }
 
   private function setScrollerVisible(visible:Boolean, scroller:Scroller, vertical:Boolean):Scroller {
@@ -229,6 +239,10 @@ public class ScrollViewSkin extends ObjectBackedSkin {
     }
 
     return scroller;
+  }
+
+  public function invalidateSubview(invalidateSuperview:Boolean = true):void {
+    invalidate(invalidateSuperview);
   }
 }
 }

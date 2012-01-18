@@ -6,9 +6,11 @@ import cocoa.Icon;
 import cocoa.RootContentView;
 import cocoa.SkinnableView;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
+import flash.errors.IllegalOperationError;
 
 import mx.core.IFactory;
 
@@ -19,7 +21,7 @@ import org.flyti.plexus.events.InjectorEvent;
  * Default base skin implementation for view
  */
 [Abstract]
-public class AbstractSkin extends ControlView implements Skin {
+public class AbstractSkin extends ControlView implements Skin, LookAndFeelProvider {
   protected var _laf:LookAndFeel;
 
   private var _component:SkinnableView;
@@ -84,5 +86,9 @@ public class AbstractSkin extends ControlView implements Skin {
       }
     }
   }
+
+  //public function set laf(value:LookAndFeel):void {
+  //  throw new IllegalOperationError()
+  //}
 }
 }

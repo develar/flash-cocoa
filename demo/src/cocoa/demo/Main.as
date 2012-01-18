@@ -15,18 +15,21 @@ import cocoa.tableView.TableView;
 
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
+import flash.events.Event;
 
 import net.miginfocom.layout.ComponentWrapper;
 
 public class Main extends Container {
   public function Main() {
-    var layout:MigLayout = new MigLayout("flowy", "", "");
+    var layout:MigLayout = new MigLayout("flowy", "grow", "grow");
     laf = new AquaLookAndFeel();
     subviews = createComponents();
     this.layout = layout;
 
     setSize(stage.stageWidth, stage.stageHeight);
     validate();
+    
+    stage.addEventListener(Event.RESIZE, stage_resizeHandler);
   }
 
   private function createComponents():Vector.<ComponentWrapper> {
@@ -47,6 +50,7 @@ public class Main extends Container {
 
     //var scrollView:ScrollView = new ScrollView();
     var tableView:TableView = new TableView();
+    tableView.c = "grow";
     tableView.lafSubkey = "small";
     tableView.dataSource = new DemoTableViewDataSource();
     var insets:Insets = new Insets(2, NaN, NaN, 3);
@@ -64,6 +68,13 @@ public class Main extends Container {
     var segmentedControl:SegmentedControl = new SegmentedControl();
     segmentedControl.dataSource = new DemoCollectionViewDataSource();
     return segmentedControl;
+  }
+
+  private function stage_resizeHandler(event:Event):void {
+    var minimumWidth:int = getMinimumWidth();
+    var w:int = Math.max(stage.stageWidth, minimumWidth);
+    setSize(w, stage.stageHeight);
+    validate();
   }
 }
 }

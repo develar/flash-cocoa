@@ -2,6 +2,7 @@ package cocoa {
 import org.osflash.signals.ISignal;
 
 public interface Viewport extends View {
+  function get clipAndEnableScrolling():Boolean;
   function set clipAndEnableScrolling(value:Boolean):void;
   function get contentSizeChanged():ISignal;
   function get scrollPositionReset():ISignal;
@@ -17,5 +18,7 @@ public interface Viewport extends View {
   function get horizontalScrollPosition():int;
 
   function set horizontalScrollPosition(value:int):void;
+
+  function getVerticalScrollPositionDelta(navigationUnit:uint):Number;
 }
 }

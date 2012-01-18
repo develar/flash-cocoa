@@ -65,14 +65,28 @@ internal class AbstractCollectionViewSkin extends ContentViewableSkin implements
     contentView.validate();
   }
 
+  private function getWidth(pref:Boolean):int {
+    return (pref ? contentView.getPreferredWidth() : contentView.getMinimumWidth()) + (border == null ? 0 : border.contentInsets.width);
+  }
+
+  private function getHeight(pref:Boolean):int {
+    return (pref ? contentView.getPreferredHeight() : contentView.getMinimumHeight()) + (border == null ? 0 : border.contentInsets.height);
+  }
+
+  override public function getMinimumWidth(hHint:int = -1):int {
+    return getWidth(false);
+  }
+
+  override public function getMinimumHeight(wHint:int = -1):int {
+    return getHeight(false);
+  }
+
   override public function getPreferredWidth(hHint:int = -1):int {
-    var insets:Insets = border != null ? border.contentInsets : Insets.EMPTY;
-    return contentView.getPreferredWidth() + insets.width;
+    return getWidth(true);
   }
 
   override public function getPreferredHeight(wHint:int = -1):int {
-    var insets:Insets = border != null ? border.contentInsets : Insets.EMPTY;
-    return contentView.getPreferredHeight() + insets.height;
+    return getHeight(true);
   }
 
   public function get focusObject():InteractiveObject {

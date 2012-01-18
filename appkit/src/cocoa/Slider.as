@@ -37,7 +37,7 @@ public class Slider extends AbstractControl {
     _tick = value;
   }
   
-  private var _value:Number;
+  private var _value:Number = 0;
   public function get value():Number {
     return _value;
   }
@@ -49,6 +49,10 @@ public class Slider extends AbstractControl {
     }
     
     _value = value;
+
+    if (_action != null && actionParameters == null && _action.length == 2) {
+      _action(this, false);
+    }
   }
 
   private var _min:Number = 0;
@@ -57,7 +61,18 @@ public class Slider extends AbstractControl {
   }
 
   public function set min(value:Number):void {
+    if (value > _max) {
+      throw new ArgumentError("min cannot be greater than max (" + _max + ")");
+    }
+
+    if (_min == value) {
+      return;
+    }
+
     _min = value;
+    if (_value < _min) {
+      this.value = _min;
+    }
   }
 
   private var _max:Number = 100;
@@ -66,7 +81,18 @@ public class Slider extends AbstractControl {
   }
 
   public function set max(value:Number):void {
+    if (value < _min) {
+      throw new ArgumentError("max cannot be less than min (" + _min + ")");
+    }
+
+    if (_max == value) {
+      return;
+    }
+
     _max = value;
+    if (_value > _max) {
+      this.value = _max;
+    }
   }
 
   override public function get objectValue():Object {
@@ -96,8 +122,8 @@ public class Slider extends AbstractControl {
     }
   }
 
-  private function correctValue(value:Number):Number {
-    return Math.max(Math.min(value, max), min);
+  public function correctValue(v:Number):Number {
+    return Math.max(Math.min(v, max), min);
   }
 
   private function snapValue(value:Number):Number {

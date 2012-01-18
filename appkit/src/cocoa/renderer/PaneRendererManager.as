@@ -1,5 +1,6 @@
 package cocoa.renderer {
 import cocoa.Border;
+import cocoa.ContentView;
 import cocoa.View;
 import cocoa.pane.PaneItem;
 import cocoa.plaf.LookAndFeel;
@@ -16,12 +17,14 @@ public class PaneRendererManager extends TextRendererManager {
   private var laf:LookAndFeel;
  
   private const paneTitleEntryFactory:TextLineAndDisplayObjectEntryFactory = new TextLineAndDisplayObjectEntryFactory(Shape, true);
+  private var superview:ContentView;
  
-  public function PaneRendererManager(textFormat:TextFormat, border:Border, laf:LookAndFeel) {
+  public function PaneRendererManager(textFormat:TextFormat, border:Border, laf:LookAndFeel, superview:ContentView) {
     super(textFormat, border.contentInsets);
  
     this.border = border;
     this.laf = laf;
+    this.superview = superview;
     registerEntryFactory(paneTitleEntryFactory);
   }
  
@@ -59,7 +62,7 @@ public class PaneRendererManager extends TextRendererManager {
     var view:View = item.view;
     if (view == null) {
       var viewFactory:ViewFactory = ViewFactory(item.viewFactory);
-      view = viewFactory.create(laf, _container);
+      view = viewFactory.create(laf, _container, superview);
       item.view = view;
     }
 
