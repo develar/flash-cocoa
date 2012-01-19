@@ -9,7 +9,6 @@ import cocoa.SelectionMode;
 import cocoa.pane.PaneItem;
 import cocoa.pane.PaneViewDataSource;
 import cocoa.resources.ResourceManager;
-import cocoa.ui;
 
 import flash.errors.IllegalOperationError;
 
@@ -19,8 +18,6 @@ import net.miginfocom.layout.CellConstraint;
 import net.miginfocom.layout.LC;
 import net.miginfocom.layout.MigConstants;
 import net.miginfocom.layout.UnitValue;
-
-use namespace ui;
 
 public class ToolWindowManager {
   private static const SET_COUNT:int = 5;

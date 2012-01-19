@@ -31,10 +31,7 @@ import flashx.textLayout.tlf_internal;
 import flashx.undo.IUndoManager;
 import flashx.undo.UndoManager;
 
-import mx.core.mx_internal;
-
 use namespace tlf_internal;
-use namespace mx_internal;
 
 internal final class EditableTextContainerManager extends TextContainerManager implements ScrollController {
   private var hasScrollRect:Boolean = false;
@@ -57,8 +54,8 @@ internal final class EditableTextContainerManager extends TextContainerManager i
     // If not auto-sizing these are the same as the compositionWidth/Height.
     // If auto-sizing, the compositionWidth/Height may be NaN.  If no
     // constraints this will reflect the actual size of the text.
-    var width:Number = textDisplay.width;
-    var height:Number = textDisplay.height;
+    var width:Number = textDisplay.actualWidth;
+    var height:Number = textDisplay.actualHeight;
 
     var contentBounds:Rectangle = getContentBounds();
 
@@ -162,7 +159,8 @@ internal final class EditableTextContainerManager extends TextContainerManager i
     // this is done in our focusIn handler by making sure there is a
     // selection.  Test this by clicking an arrow in the NumericStepper
     // and then entering a number without clicking on the input field first.
-    if (editingMode != EditingMode.READ_ONLY && textDisplay.getFocus() == textDisplay) {
+    //if (editingMode != EditingMode.READ_ONLY && textDisplay.getFocus() == textDisplay) {
+    if (editingMode != EditingMode.READ_ONLY) {
       // this will ensure a text flow with a comopser
       var im:ISelectionManager = beginInteraction();
       getTextFlow().flowComposer.getControllerAt(0).requiredFocusInHandler(null);
@@ -322,11 +320,11 @@ internal final class EditableTextContainerManager extends TextContainerManager i
     return textFlow;
   }
 
-  private function getAbsoluteStart(anchorPosition:int, activePosition:int):int {
+  private static function getAbsoluteStart(anchorPosition:int, activePosition:int):int {
     return (anchorPosition < activePosition) ? anchorPosition : activePosition;
   }
 
-  private function getAbsoluteEnd(anchorPosition:int, activePosition:int):int {
+  private static function getAbsoluteEnd(anchorPosition:int, activePosition:int):int {
     return (anchorPosition > activePosition) ? anchorPosition : activePosition;
   }
 
@@ -384,9 +382,9 @@ internal final class EditableTextContainerManager extends TextContainerManager i
    */
   override public function activateHandler(event:Event):void {
     // block ACTIVATE events
-    if (event.type == Event.ACTIVATE) {
-      return;
-    }
+    //if (event.type == Event.ACTIVATE) {
+    //  return;
+    //}
 
     super.activateHandler(event);
 
@@ -396,7 +394,8 @@ internal final class EditableTextContainerManager extends TextContainerManager i
     // state should be SelectionFormatState.FOCUSED not
     // SelectionFormatState.UNFOCUSED since there might not be a follow on
     // focusIn event.
-    if (editingMode != EditingMode.READ_ONLY && textDisplay.getFocus() == textDisplay) {
+    //if (editingMode != EditingMode.READ_ONLY && textDisplay.getFocus() == textDisplay) {
+    if (editingMode != EditingMode.READ_ONLY) {
       SelectionManager(beginInteraction()).setFocus();
       endInteraction();
     }
@@ -412,9 +411,9 @@ internal final class EditableTextContainerManager extends TextContainerManager i
    */
   override public function deactivateHandler(event:Event):void {
     // block DEACTIVATE events
-    if (event.type != Event.DEACTIVATE) {
+    //if (event.type != Event.DEACTIVATE) {
       super.deactivateHandler(event);
-    }
+    //}
   }
 
   override protected function getFocusedSelectionFormat():SelectionFormat {

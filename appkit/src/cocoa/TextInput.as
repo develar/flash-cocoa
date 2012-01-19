@@ -7,11 +7,10 @@ import spark.events.TextOperationEvent;
 
 use namespace ui;
 
-public class TextInput extends AbstractSkinnableView implements Control {
+public class TextInput extends AbstractControl {
   ui var textDisplay:EditableTextView;
 
-  private var _action:Function;
-  public function set action(value:Function):void {
+  override public function set action(value:Function):void {
     if (textDisplay != null) {
       if (value != null) {
         if (_action == null) {
@@ -23,15 +22,15 @@ public class TextInput extends AbstractSkinnableView implements Control {
       }
     }
 
-    _action = value;
+    super.action = value;
   }
 
-  public function get objectValue():Object {
+  override public function get objectValue():Object {
     return _text;
   }
 
-  public function set objectValue(value:Object):void {
-    text = String(value);
+  override public function set objectValue(value:Object):void {
+    text = value as String;
   }
 
   private var _text:String;
@@ -75,7 +74,7 @@ public class TextInput extends AbstractSkinnableView implements Control {
   }
 
   private function inputChangeHandler(event:TextOperationEvent):void {
-    _action();
+    callUserInitiatedActionHandler();
   }
 
   override protected function get primaryLaFKey():String {

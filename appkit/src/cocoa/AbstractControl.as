@@ -8,7 +8,7 @@ public class AbstractControl extends AbstractSkinnableView implements Control, C
   }
 
   public function setAction(value:Function, ...parameters):void {
-    _action = value;
+    action = value;
     actionParameters = parameters;
   }
 

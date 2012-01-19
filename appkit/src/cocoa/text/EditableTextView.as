@@ -1,20 +1,14 @@
 package cocoa.text {
-import cocoa.MeasurementAdjustResult;
-
 import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
-import flash.system.IME;
-import flash.system.IMEConversionMode;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.TextLine;
 import flash.ui.Keyboard;
 
-import flashx.textLayout.container.TextContainerManager;
 import flashx.textLayout.conversion.ConversionType;
 import flashx.textLayout.conversion.TextConverter;
 import flashx.textLayout.edit.EditManager;
@@ -43,18 +37,12 @@ import flashx.textLayout.operations.PasteOperation;
 import flashx.textLayout.tlf_internal;
 import flashx.undo.IUndoManager;
 
-import mx.core.IIMESupport;
-import mx.core.ISystemCursorClient;
-import mx.core.mx_internal;
 import mx.events.FlexEvent;
-import mx.managers.IFocusManager;
-import mx.managers.IFocusManagerComponent;
 import mx.utils.StringUtil;
 
 import spark.components.TextSelectionHighlighting;
 import spark.events.TextOperationEvent;
 
-use namespace mx_internal;
 use namespace tlf_internal;
 
 public class EditableTextView extends AbstractTextView {
@@ -107,7 +95,6 @@ public class EditableTextView extends AbstractTextView {
   private static const passwordChar:String = "*";
 
   internal var undoManager:IUndoManager;
-  private var clearUndoOnFocusOut:Boolean = true;
 
   private var embeddedFontContext:SwfContext;
 
@@ -125,7 +112,11 @@ public class EditableTextView extends AbstractTextView {
   public function EditableTextView() {
     super();
 
-    myFlags |= HAS_BASELINE;
+    flags |= HAS_BASELINE;
+
+    addEventListener(FocusEvent.FOCUS_IN, focusInHandler);
+    addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler);
+    addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 
     textContainerManager = new EditableTextContainerManager(this, configuration);
     textContainerManager.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, compositionCompleteHandler);
@@ -136,6 +127,9 @@ public class EditableTextView extends AbstractTextView {
     textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_END, flowOperationEndHandler);
     textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_COMPLETE, flowOperationCompleteHandler);
     textContainerManager.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, inlineGraphicStatusChangeHandler);
+
+    addEventListener(Event.ACTIVATE, textContainerManager.activateHandler);
+    addEventListener(Event.DEACTIVATE, textContainerManager.deactivateHandler);
   }
 
   override public function get text():String {
@@ -175,10 +169,7 @@ public class EditableTextView extends AbstractTextView {
 
     var cocoaTextFormat:SimpleTextLayoutFormat = _textFormat as SimpleTextLayoutFormat;
     embeddedFontContext = cocoaTextFormat != null ? cocoaTextFormat.textFormat.swfContext : null;
-
     textContainerManager.hostFormat = _textFormat;
-//    textContainerManager.swfContext = embeddedFontContext;
-
     _charMetrics = null;
   }
 
@@ -192,17 +183,16 @@ public class EditableTextView extends AbstractTextView {
     return effectiveTextFormat.paddingTop + charMetrics.ascent;
   }
 
-  //override public function set enabled(value:Boolean):void {
-  //  if (value == super.enabled) {
-  //    return;
-  //  }
-  //
-  //  super.enabled = value;
-  //  flags |= ENABLED_CHANGED;
-  //
-  //  invalidateProperties();
-  //  invalidateDisplayList();
-  //}
+  override public function set enabled(value:Boolean):void {
+    if (value == super.enabled) {
+      return;
+    }
+
+    super.enabled = value;
+    flags |= ENABLED_CHANGED;
+
+    invalidate();
+  }
 
   /**
    *  A flag indicating whether the user is allowed to edit the text in this control.
@@ -263,19 +253,6 @@ public class EditableTextView extends AbstractTextView {
     }
   }
 
-  public function get enableIME():Boolean {
-    return editable;
-  }
-
-  private var _imeMode:String;
-  public function get imeMode():String {
-    return _imeMode;
-  }
-
-  public function set imeMode(value:String):void {
-    _imeMode = value;
-  }
-
   public function set selectable(value:Boolean):void {
     if (value == _selectable) {
       return;
@@ -284,8 +261,7 @@ public class EditableTextView extends AbstractTextView {
     _selectable = value;
     myFlags |= SELECTABLE_CHANGED;
 
-    invalidateProperties();
-    invalidateDisplayList();
+    invalidate();
   }
 
   private var _selectionActivePosition:int = -1;
@@ -430,9 +406,7 @@ public class EditableTextView extends AbstractTextView {
     _text = null;
     sourceIsText = false;
 
-    invalidateProperties();
-    invalidateSize();
-    invalidateDisplayList();
+    invalidate(true);
 
     if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
       dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
@@ -447,31 +421,7 @@ public class EditableTextView extends AbstractTextView {
     return _charMetrics;
   }
 
-  override public function parentChanged(p:DisplayObjectContainer):void {
-    if (focusManager != null) {
-      focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, textContainerManager.activateHandler);
-      focusManager.removeEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, textContainerManager.deactivateHandler);
-    }
-
-    super.parentChanged(p);
-
-    if (focusManager != null) {
-      addActivateHandlers();
-    }
-    else {
-      // if no focusmanager yet, add capture phase to detect when it gets added
-      if (systemManager != null) {
-        systemManager.getSandboxRoot().addEventListener(FlexEvent.ADD_FOCUS_MANAGER, addFocusManagerHandler, true, 0, true);
-      }
-      else
-      // no systemManager yet?  Check again when added to stage
-        addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-    }
-  }
-
-  override protected function commitProperties():void {
-    super.commitProperties();
-
+  protected function commitProperties():void {
     // EditingMode needs to be current before attempting to set a selection below.
     commitForEditingMode();
 
@@ -498,31 +448,44 @@ public class EditableTextView extends AbstractTextView {
     }
   }
 
-  override protected function measure():void {
+  override public function getPreferredWidth(hHint:int = -1):int {
+    measure();
+    return measuredWidth;
+  }
+
+
+  override public function getPreferredHeight(wHint:int = -1):int {
+    measure();
+    return measuredHeight;
+  }
+
+  private var measuredWidth:Number;
+  private var measuredHeight:Number;
+
+  private function measure():void {
     // don't want to trigger a another remeasure when we modify the textContainerManager or compose the text.
     myFlags |= IGNORE_DAMAGE_EVENT;
 
     myFlags &= ~AUTO_HEIGHT;
     myFlags &= ~AUTO_WIDTH;
 
-    var composeWidth:Number = explicitWidth;
+    var composeWidth:Number = constraints == null ? NaN : constraints.horizontal.size.preferred.getValue();
     if (isNaN(composeWidth) && _uiModel.widthInChars != -1) {
-        if (measuredWidth == 0) {
-          measuredWidth = Math.ceil(calculateWidthInChars());
-          adjustMeasuredWidthToRange();
-        }
-        composeWidth = measuredWidth;
+      if (measuredWidth == 0) {
+        measuredWidth = Math.ceil(calculateWidthInChars());
+        //adjustMeasuredWidthToRange();
+      }
+      composeWidth = measuredWidth;
     }
 
-    var composeHeight:Number = explicitHeight;
+    var composeHeight:Number = constraints == null ? NaN : constraints.vertical.size.preferred.getValue();
     if (isNaN(composeHeight) && heightInLines != -1) {
       if (measuredHeight == 0) {
         measuredHeight = Math.ceil(calculateHeightInLines());
-        adjustMeasuredHeightToRange();
+        //adjustMeasuredHeightToRange();
       }
       composeHeight = measuredHeight;
     }
-
 
     if (!isNaN(composeWidth) && !isNaN(composeHeight)) {
       // skip
@@ -532,16 +495,16 @@ public class EditableTextView extends AbstractTextView {
       if (!isNaN(composeWidth)) {
         bounds = measureTextSize(composeWidth, NaN);
         measuredHeight = Math.ceil(bounds.bottom);
-        if (adjustMeasuredHeightToRange() != MeasurementAdjustResult.MAX) {
+        //if (adjustMeasuredHeightToRange() != MeasurementAdjustResult.MAX) {
           myFlags |= AUTO_HEIGHT;
-        }
+        //}
       }
       else if (!isNaN(composeHeight)) {
         bounds = measureTextSize(NaN, composeHeight);
         measuredWidth = Math.ceil(bounds.right);
-        if (adjustMeasuredWidthToRange() != MeasurementAdjustResult.MAX) {
+        //if (adjustMeasuredWidthToRange() != MeasurementAdjustResult.MAX) {
           myFlags |= AUTO_WIDTH;
-        }
+        //}
       }
       else {
         myFlags |= AUTO_HEIGHT;
@@ -558,28 +521,46 @@ public class EditableTextView extends AbstractTextView {
 //      textContainerManager.verticalScrollPosition = 0;
 //    }
 
-    invalidateDisplayList();
-
     myFlags &= ~IGNORE_DAMAGE_EVENT;
   }
 
-  override protected function updateDisplayList(w:Number, h:Number):void {
+  override protected function draw(w:int, h:int):void {
+    commitProperties();
+
     textContainerManager.compositionWidth = (myFlags & AUTO_WIDTH) ? (w < measuredWidth ? w : NaN) : w;
     textContainerManager.compositionHeight = (myFlags & AUTO_HEIGHT) ? (h < measuredHeight ? h : NaN) : h;
 
     textContainerManager.updateContainer();
   }
 
-  override public function setFocus():void {
-    // We are about to set focus on this component. If it is due to a programmatic focus change we have to programatically do what the
-    // mouseOverHandler and the mouseDownHandler do so that the user can type in this component without using the mouse first.
-    // We need to put a textFlow with a composer in place.
-    if (editingMode != EditingMode.READ_ONLY && textContainerManager.composeState != TextContainerManager.COMPOSE_COMPOSER) {
-      textContainerManager.beginInteraction();
-      textContainerManager.endInteraction();
-    }
 
-    super.setFocus();
+  override public function addChild(child:DisplayObject):DisplayObject {
+    if (child is TextLine) {
+      var s:int = 4;
+      s++;
+      trace("tl " + child.width);
+    }
+    return super.addChild(child);
+  }
+
+
+  override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
+    trace("add tl " + child.name);
+    return super.addChildAt(child, index);
+  }
+
+
+  override public function removeChildAt(index:int):DisplayObject {
+
+    var displayObject:DisplayObject = super.removeChildAt(index);
+    trace("remove tl " + displayObject.name);
+    return displayObject;
+  }
+
+
+  override public function removeChild(child:DisplayObject):DisplayObject {
+    trace("remove tl " + child.name);
+    return super.removeChild(child);
   }
 
   /**
@@ -614,7 +595,7 @@ public class EditableTextView extends AbstractTextView {
    */
   public function scrollToRange(anchorPosition:int, activePosition:int):void {
     // Make sure the properties are commited since the text could change.
-    validateProperties();
+    //validateProperties();
 
     // Scrolls so that the text position is visible in the container.
     textContainerManager.scrollToRange(anchorPosition, activePosition);
@@ -633,7 +614,7 @@ public class EditableTextView extends AbstractTextView {
    */
   public function selectRange(anchorPosition:int, activePosition:int):void {
     // Make sure the properties are commited since the text could change.
-    validateProperties();
+    //validateProperties();
 
     if (editingMode == EditingMode.READ_ONLY) {
       selectionChangeHandler(new SelectionEvent(SelectionEvent.SELECTION_CHANGE, false, false, new SelectionState(_textFlow, anchorPosition, activePosition)));
@@ -723,7 +704,7 @@ public class EditableTextView extends AbstractTextView {
   private function handleInsertText(newText:String, isAppend:Boolean = false):void {
     // Make sure all properties are committed.  The damage handler for the
     // insert will cause the remeasure and display update.
-    validateProperties();
+    //validateProperties();
 
     if (isAppend) {
       // Set insertion pt to the end of the current text.
@@ -749,7 +730,9 @@ public class EditableTextView extends AbstractTextView {
     }
 
     // If copied/cut from displayAsPassword field the pastedText is '*' characters but this is correct.
-    var pastedText:String = TextConverter.getExporter(TextConverter.PLAIN_TEXT_FORMAT).export(op.textScrap.textFlow, ConversionType.STRING_TYPE) as String;
+    //var pastedText:String = TextConverter.getExporter(TextConverter.PLAIN_TEXT_FORMAT).export(op.textScrap.textFlow, ConversionType.STRING_TYPE) as String;
+    // http://youtrack.jetbrains.net/issue/AS-406
+    var pastedText:String = TextConverter.getExporter(TextConverter.PLAIN_TEXT_FORMAT)["export"](op.textScrap.textFlow, ConversionType.STRING_TYPE) as String;
     // If there are no constraints and no newlines there is nothing more to do.
     if (!hasConstraints && pastedText.indexOf("\n") == -1) {
       return;
@@ -786,48 +769,16 @@ public class EditableTextView extends AbstractTextView {
     myFlags |= DISPATCH_CHANGE_AND_CHANGING_EVENTS;
   }
 
-  /**
-   *  find the right time to listen to the focusmanager
-   */
-  private function addedToStageHandler(event:Event):void {
-    if (event.target == this) {
-      removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-      //callLater(addActivateHandlers);
-    }
-  }
-
-  /**
-   *  add listeners to focusManager
-   */
-  private function addActivateHandlers():void {
-    if (focusManager != null) {
-      focusManager.addEventListener(FlexEvent.FLEX_WINDOW_ACTIVATE, textContainerManager.activateHandler, false, 0, true);
-      focusManager.addEventListener(FlexEvent.FLEX_WINDOW_DEACTIVATE, textContainerManager.deactivateHandler, false, 0, true);
-    }
-  }
-
-  /**
-   *  Called when a FocusManager is added to an IFocusManagerContainer.
-   *  We need to check that it belongs to us before listening to it.
-   *  Because we listen to sandboxroot, you cannot assume the type of the event.
-   */
-  private function addFocusManagerHandler(event:Event):void {
-    if (focusManager == event.target["focusManager"]) {
-      systemManager.getSandboxRoot().removeEventListener(FlexEvent.ADD_FOCUS_MANAGER, addFocusManagerHandler, true);
-      addActivateHandlers();
-    }
-  }
-
-  mx_internal function focusInHandler(event:FocusEvent):void {
+  internal function focusInHandler(event:FocusEvent):void {
     //trace("focusIn handler");
 
-    var fm:IFocusManager = focusManager;
-    if (fm != null && editingMode == EditingMode.READ_WRITE) {
-      fm.showFocusIndicator = true;
-    }
+    //var fm:IFocusManager = focusManager;
+    //if (fm != null && editingMode == EditingMode.READ_WRITE) {
+    //  fm.showFocusIndicator = true;
+    //}
 
     // showFocusIndicator must be set before this is called.
-    super.focusInHandler(event);
+    //super.focusInHandler(event);
 
     if (editingMode == EditingMode.READ_WRITE) {
       // If the focusIn was because of a mouseDown event, let TLF
@@ -849,52 +800,36 @@ public class EditableTextView extends AbstractTextView {
 
         textContainerManager.endInteraction();
       }
-
-      if (_imeMode != null) {
-        // When IME.conversionMode is unknown it cannot be set to anything other than unknown(English)
-        try {
-          if ((myFlags & ERROR_CAUGHT) == 0 && IME.conversionMode != IMEConversionMode.UNKNOWN) {
-            IME.conversionMode = _imeMode;
-          }
-          myFlags &= ~ERROR_CAUGHT;
-        }
-        catch(e:Error) {
-          // Once an error is thrown, focusIn is called
-          // again after the Alert is closed, throw error
-          // only the first time.
-          myFlags |= ERROR_CAUGHT;
-          throw new Error("unsupportedMode: " + _imeMode);
-        }
-      }
     }
 
-    if (focusManager != null && multiline) {
-      focusManager.defaultButtonEnabled = false;
-    }
+    //if (focusManager != null && multiline) {
+    //  focusManager.defaultButtonEnabled = false;
+    //}
   }
 
   /**
    *  RichEditableTextContainerManager overrides focusOutHandler and calls
    *  this before executing its own focusOutHandler.
    */
-  mx_internal function focusOutHandler(event:FocusEvent):void {
+  internal function focusOutHandler(event:FocusEvent):void {
     //trace("focusOut handler");
 
-    super.focusOutHandler(event);
+    //super.focusOutHandler(event);
 
     // By default, we clear the undo history when a RichEditableText loses focus.
+    var clearUndoOnFocusOut:Boolean = true;
     if (clearUndoOnFocusOut && undoManager) {
       undoManager.clearAll();
     }
 
-    if (focusManager != null) {
-      focusManager.defaultButtonEnabled = true;
-    }
+    //if (focusManager != null) {
+    //  focusManager.defaultButtonEnabled = true;
+    //}
 
     dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
   }
 
-  mx_internal function keyDownHandler(event:KeyboardEvent):void {
+  internal function keyDownHandler(event:KeyboardEvent):void {
     if (editingMode != EditingMode.READ_WRITE)
       return;
 
@@ -924,18 +859,18 @@ public class EditableTextView extends AbstractTextView {
     }
   }
 
-  mx_internal function mouseDownHandler(event:MouseEvent):void {
+  internal function mouseDownHandler(event:MouseEvent):void {
     myFlags |= MOUSE_DOWN;
 
     // Need to get called even if mouse events are dispatched outside of this component. For example, when the user does
     // a mouse down in RET, drags the mouse outside of the component, and then releases the mouse.
-    systemManager.getSandboxRoot().addEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
+    stage.addEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
   }
 
   private function systemManager_mouseUpHandler(event:MouseEvent):void {
     myFlags &= ~MOUSE_DOWN;
 
-    systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
+    stage.removeEventListener(MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /*useCapture*/);
   }
 
   /**
@@ -1012,13 +947,13 @@ public class EditableTextView extends AbstractTextView {
     if (newContentWidth != oldContentWidth) {
       _contentWidth = newContentWidth;
       // If there is a scroller, this triggers the scroller layout.
-      dispatchPropertyChangeEvent("contentWidth", oldContentWidth, newContentWidth);
+      //dispatchPropertyChangeEvent("contentWidth", oldContentWidth, newContentWidth);
     }
 
     if (newContentHeight != oldContentHeight) {
       _contentHeight = newContentHeight;
       // If there is a scroller, this triggers the scroller layout.
-      dispatchPropertyChangeEvent("contentHeight", oldContentHeight, newContentHeight);
+      //dispatchPropertyChangeEvent("contentHeight", oldContentHeight, newContentHeight);
     }
   }
 
@@ -1061,8 +996,7 @@ public class EditableTextView extends AbstractTextView {
     lastGeneration = _textFlow.generation;
     // If the textFlow content is modified directly or if there is a style
     // change by changing the textFlow directly the size could change.
-    invalidateSize();
-    invalidateDisplayList();
+    invalidate(true);
   }
 
   /**
@@ -1074,14 +1008,14 @@ public class EditableTextView extends AbstractTextView {
 
     if (newHorizontalScrollPosition != oldHorizontalScrollPosition) {
       _horizontalScrollPosition = newHorizontalScrollPosition;
-      dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, newHorizontalScrollPosition);
+      //dispatchPropertyChangeEvent("horizontalScrollPosition", oldHorizontalScrollPosition, newHorizontalScrollPosition);
     }
 
     var oldVerticalScrollPosition:Number = _verticalScrollPosition;
     var newVerticalScrollPosition:Number = textContainerManager.verticalScrollPosition;
     if (newVerticalScrollPosition != oldVerticalScrollPosition) {
       _verticalScrollPosition = newVerticalScrollPosition;
-      dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, newVerticalScrollPosition);
+      //dispatchPropertyChangeEvent("verticalScrollPosition", oldVerticalScrollPosition, newVerticalScrollPosition);
     }
   }
 
@@ -1224,14 +1158,12 @@ public class EditableTextView extends AbstractTextView {
     else if (event.status == InlineGraphicElementStatus.READY) {
       // Now that the actual size of the graphic is available need to optionally remeasure and updateContainer.
       if ((myFlags & AUTO_WIDTH) != 0 || (myFlags & AUTO_HEIGHT) != 0) {
-        invalidateSize();
+        invalidate(true);
       }
-
-      invalidateDisplayList();
+      else {
+        invalidate();
+      }
     }
-  }
-
-  public function drawFocus(isFocused:Boolean):void {
   }
 }
 }

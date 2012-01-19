@@ -10,7 +10,6 @@ import cocoa.plaf.LookAndFeelProvider;
 import cocoa.plaf.Skin;
 
 import flash.display.DisplayObjectContainer;
-import flash.errors.IllegalOperationError;
 
 import mx.core.IFactory;
 
@@ -34,11 +33,11 @@ public class AbstractSkin extends ControlView implements Skin, LookAndFeelProvid
   }
 
   protected final function getObject(key:String):Object {
-    return _laf.getObject(_component.lafKey + "." + key, false);
+    return _laf.getObject(_component.lafKey + "." + key);
   }
 
   protected final function getBorder(key:String = "b"):Border {
-    return _laf.getBorder(_component.lafKey + "." + key, false);
+    return _laf.getBorder(_component.lafKey + "." + key);
   }
 
   protected final function getNullableBorder(key:String = "b"):Border {

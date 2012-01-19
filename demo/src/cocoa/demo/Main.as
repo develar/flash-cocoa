@@ -1,10 +1,12 @@
 package cocoa.demo {
 import cocoa.Container;
+import cocoa.FocusManagerImpl;
 import cocoa.Insets;
 import cocoa.Label;
 import cocoa.MigLayout;
 import cocoa.ScrollView;
 import cocoa.SegmentedControl;
+import cocoa.TextInput;
 import cocoa.Toolbar;
 import cocoa.plaf.TextFormatId;
 import cocoa.plaf.aqua.AquaLookAndFeel;
@@ -30,6 +32,8 @@ public class Main extends Container {
     validate();
     
     stage.addEventListener(Event.RESIZE, stage_resizeHandler);
+
+    new FocusManagerImpl().init(stage);
   }
 
   private function createComponents():Vector.<ComponentWrapper> {
@@ -59,7 +63,8 @@ public class Main extends Container {
     tableView.columns = new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
 
     //scrollView.documentView = tableView;
-    components[components.length] = tableView;
+    //components[components.length] = tableView;
+    components[components.length] = new TextInput();
 
     return components;
   }

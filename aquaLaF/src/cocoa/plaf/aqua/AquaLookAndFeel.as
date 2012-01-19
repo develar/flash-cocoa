@@ -1,4 +1,5 @@
 package cocoa.plaf.aqua {
+import cocoa.Insets;
 import cocoa.SingletonClassFactory;
 import cocoa.layout.ListLayoutFactory;
 import cocoa.plaf.LookAndFeel;
@@ -12,9 +13,16 @@ import cocoa.plaf.basic.IconButtonSkin;
 import cocoa.plaf.basic.ScrollViewSkin;
 import cocoa.plaf.basic.ScrollerSkin;
 import cocoa.plaf.basic.SegmentedControlInteractor;
+import cocoa.text.SimpleTextLayoutFormat;
+
+import flash.display.BlendMode;
 
 import flash.geom.Point;
 import flash.text.engine.FontDescription;
+
+import flashx.textLayout.edit.SelectionFormat;
+
+import flashx.textLayout.formats.LineBreak;
 
 public class AquaLookAndFeel extends AbstractLookAndFeel {
   [Embed(source="/borders", mimeType="application/octet-stream")]
@@ -63,7 +71,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data[TextFormatId.MENU] = AquaFonts.SYSTEM_FONT;
     data[TextFormatId.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
-    //data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
+    data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
     //data["Box"] = BoxSkin;
 
@@ -122,8 +130,8 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data["CheckBox"] = data["small.CheckBox"] = CheckBoxSkin;
     //data["HSlider"] = HSliderSkin;
 
-    //data["TextInput"] = TextInputSkin;
-    //data["TextInput.SystemTextFormat"] = createDefaultTextFormat(false);
+    data["TextInput"] = TextInputSkin;
+    data["TextInput.SystemTextFormat"] = createDefaultTextFormat(false);
 
     data["small.TextInput"] = data["TextInput"];
     data["small.TextInput.b"] = data["TextInput.b"];
@@ -173,11 +181,11 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     return hudLookAndFeel;
   }
 
-  //private static function createDefaultTextFormat(small:Boolean):SimpleTextLayoutFormat {
-  //  var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(small ? AquaFonts.SMALL_SYSTEM_FONT : AquaFonts.SYSTEM_FONT, new Insets(0, 2));
-  //  textFormat.$lineBreak = LineBreak.EXPLICIT;
-  //  return textFormat;
-  //}
+  private static function createDefaultTextFormat(small:Boolean):SimpleTextLayoutFormat {
+    var textFormat:SimpleTextLayoutFormat = new SimpleTextLayoutFormat(small ? AquaFonts.SMALL_SYSTEM_FONT : AquaFonts.SYSTEM_FONT, new Insets(0, 2));
+    textFormat.$lineBreak = LineBreak.EXPLICIT;
+    return textFormat;
+  }
 }
 }
 
@@ -193,9 +201,13 @@ import cocoa.plaf.aqua.SeparatorBorder;
 import cocoa.plaf.basic.AbstractLookAndFeel;
 import cocoa.text.TextFormat;
 
+import flash.display.BlendMode;
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontWeight;
+
+import flashx.textLayout.edit.SelectionFormat;
 
 final class PanelLookAndFeel extends AbstractLookAndFeel {
   public function PanelLookAndFeel(parent:AquaLookAndFeel) {
@@ -260,7 +272,7 @@ final class HUDLookAndFeel extends AbstractLookAndFeel {
     LookAndFeelUtil.initAssets(data, assetsDataClass);
     assetsDataClass = null;
 
-    //data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
+    data["SelectionFormat"] = new SelectionFormat(0xb5b5b5, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
 
     data["TextInput.b"] = new HUDTextInputBorder();
     //data["TextInput.SystemTextFormat"] = createDefaultTextFormat();

@@ -1,15 +1,12 @@
 package cocoa {
 import flash.display.InteractiveObject;
 import flash.display.Stage;
-import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.MouseEvent;
 import flash.text.TextField;
 import flash.text.TextFieldType;
 
-import mx.managers.ISystemManager;
-
-public class AbstractFocusManager implements FocusManager {
+public class FocusManagerImpl implements FocusManager {
   protected var lastFocus:Focusable;
 
   public function setFocus(o:Focusable):void {
@@ -19,19 +16,17 @@ public class AbstractFocusManager implements FocusManager {
     }
   }
 
-  internal function init(stage:Stage):void {
+  public function init(stage:Stage):void {
     stage.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, mouseFocusChangeHandler);
     stage.addEventListener(FocusEvent.KEY_FOCUS_CHANGE, keyFocusChangeHandler);
 
     stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 
-    stage.nativeWindow.addEventListener(Event.ACTIVATE, windowActivateHandler);
-
     stage.stageFocusRect = false;
   }
 
   protected static function getTopLevelFocusTarget(o:InteractiveObject):Focusable {
-    while (!(o is ISystemManager)) {
+    while (true) {
       if (o is Focusable) {
         return Focusable(o);
       }
@@ -63,9 +58,12 @@ public class AbstractFocusManager implements FocusManager {
   }
 
   protected function mouseDownHandler(event:MouseEvent):void {
-  }
-
-  protected function windowActivateHandler(event:Event):void {
+    var target:InteractiveObject = InteractiveObject(event.target);
+    var newFocus:Focusable = getTopLevelFocusTarget(target);
+    if (newFocus != lastFocus && newFocus != null) {
+      lastFocus = newFocus;
+      target.stage.focus = newFocus.focusObject;
+    }
   }
 
   protected function keyFocusChangeHandler(event:FocusEvent):void {

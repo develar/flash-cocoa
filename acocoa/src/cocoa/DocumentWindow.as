@@ -41,8 +41,8 @@ public class DocumentWindow extends NativeWindow {
     }
 
     WindowInitUtil.initStage(stage);
-    if (focusManager is AbstractFocusManager) {
-      AbstractFocusManager(focusManager).init(stage);
+    if (focusManager is FocusManagerImpl) {
+      FocusManagerImpl(focusManager).init(stage);
     }
 
     _contentView.addToSuperview(stage, null, null);
