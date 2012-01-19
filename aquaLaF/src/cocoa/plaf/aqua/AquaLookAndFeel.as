@@ -135,7 +135,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
 
     data["small.TextInput"] = data["TextInput"];
     data["small.TextInput.b"] = data["TextInput.b"];
-    //data["small.TextInput.SystemTextFormat"] = createDefaultTextFormat(true);
+    data["small.TextInput.SystemTextFormat"] = createDefaultTextFormat(true);
 
     //data["TextArea"] = TextAreaSkin;
 

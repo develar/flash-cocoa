@@ -1,5 +1,4 @@
 package cocoa.text {
-import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
@@ -37,7 +36,6 @@ import flashx.textLayout.operations.PasteOperation;
 import flashx.textLayout.tlf_internal;
 import flashx.undo.IUndoManager;
 
-import mx.events.FlexEvent;
 import mx.utils.StringUtil;
 
 import spark.components.TextSelectionHighlighting;
@@ -127,9 +125,6 @@ public class EditableTextView extends AbstractTextView {
     textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_END, flowOperationEndHandler);
     textContainerManager.addEventListener(FlowOperationEvent.FLOW_OPERATION_COMPLETE, flowOperationCompleteHandler);
     textContainerManager.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, inlineGraphicStatusChangeHandler);
-
-    addEventListener(Event.ACTIVATE, textContainerManager.activateHandler);
-    addEventListener(Event.DEACTIVATE, textContainerManager.deactivateHandler);
   }
 
   override public function get text():String {
@@ -408,9 +403,9 @@ public class EditableTextView extends AbstractTextView {
 
     invalidate(true);
 
-    if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
-      dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
-    }
+    //if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
+    //  dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+    //}
   }
 
   private var _charMetrics:CharMetrics;
@@ -533,36 +528,6 @@ public class EditableTextView extends AbstractTextView {
     textContainerManager.updateContainer();
   }
 
-
-  override public function addChild(child:DisplayObject):DisplayObject {
-    if (child is TextLine) {
-      var s:int = 4;
-      s++;
-      trace("tl " + child.width);
-    }
-    return super.addChild(child);
-  }
-
-
-  override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
-    trace("add tl " + child.name);
-    return super.addChildAt(child, index);
-  }
-
-
-  override public function removeChildAt(index:int):DisplayObject {
-
-    var displayObject:DisplayObject = super.removeChildAt(index);
-    trace("remove tl " + displayObject.name);
-    return displayObject;
-  }
-
-
-  override public function removeChild(child:DisplayObject):DisplayObject {
-    trace("remove tl " + child.name);
-    return super.removeChild(child);
-  }
-
   /**
    * Inserts the specified text as if you had typed it.
    *
@@ -650,7 +615,7 @@ public class EditableTextView extends AbstractTextView {
     // Adjust width and height for text alignment.
     return textContainerManager.getContentBounds();
   }
-  
+
   private function calculateFontMetrics():void {
     var textFormat:TextFormat = SimpleTextLayoutFormat(_textFormat).textFormat;
     if (textFormat.charMetrics == null) {
@@ -718,7 +683,7 @@ public class EditableTextView extends AbstractTextView {
 
     // This will update the selection after the operation is done.
     if (textContainerManager.insertTextOperation(newText, _selectionAnchorPosition, _selectionActivePosition)) {
-      dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+      //dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
     }
   }
 
@@ -826,7 +791,7 @@ public class EditableTextView extends AbstractTextView {
     //  focusManager.defaultButtonEnabled = true;
     //}
 
-    dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+    //dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
   }
 
   internal function keyDownHandler(event:KeyboardEvent):void {
@@ -837,7 +802,7 @@ public class EditableTextView extends AbstractTextView {
     // the container manager to change the configuration if multiline changes.
     if (event.keyCode == Keyboard.ENTER) {
       if (!multiline) {
-        dispatchEvent(new FlexEvent(FlexEvent.ENTER));
+        //dispatchEvent(new FlexEvent(FlexEvent.ENTER));
         event.preventDefault();
         return;
       }
@@ -1041,7 +1006,7 @@ public class EditableTextView extends AbstractTextView {
 
     // Only dispatch the event if the selection has really changed.
     if (oldAnchor != _selectionAnchorPosition || oldActive != _selectionActivePosition) {
-      dispatchEvent(new FlexEvent(FlexEvent.SELECTION_CHANGE));
+      //dispatchEvent(new FlexEvent(FlexEvent.SELECTION_CHANGE));
     }
   }
 

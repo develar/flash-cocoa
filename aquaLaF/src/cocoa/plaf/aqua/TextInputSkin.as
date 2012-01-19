@@ -37,7 +37,6 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
   }
 
   protected function configureAndAddTextDisplay():void {
-    textDisplay.height = getPreferredHeight() - border.contentInsets.height;
     textDisplay.addToSuperview(this, laf, superview);
   }
 
@@ -72,9 +71,6 @@ public class TextInputSkin extends AbstractSkin implements Focusable {
     var g:Graphics = graphics;
     g.clear();
     border.draw(g, w, h, 0, 0, this);
-    
-    g.lineStyle(1);
-    g.drawRect(0, 0, w, h);
 
     documentView.setSize(w - border.contentInsets.width, h - border.contentInsets.height);
     documentView.validate();
