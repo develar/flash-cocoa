@@ -89,13 +89,13 @@ public class ToolWindowManager {
     var layout:MigLayout = new MigLayout();
     var i:int = 0;
     for (; i < SET_COUNT; i++) {
-      columnConstraints[i] = createDimConstraint(i);
+      columnConstraints[i] = createDimConstraint(i, true);
     }
 
     var rowConstraints:Vector.<CellConstraint> = new Vector.<CellConstraint>(SET_COUNT, true);
     i = 0;
     for (; i < SET_COUNT; i++) {
-      rowConstraints[i] = createDimConstraint(i);
+      rowConstraints[i] = createDimConstraint(i, false);
     }
 
     var lc:LC = new LC();
@@ -115,17 +115,17 @@ public class ToolWindowManager {
     _container.layout = layout;
   }
 
-  private static function createDimConstraint(index:int):CellConstraint {
+  private static function createDimConstraint(index:int, isColumn:Boolean):CellConstraint {
     var constraint:CellConstraint = new CellConstraint();
     if (index == 2) {
       constraint.grow = 100; // ResizeConstraint.WEIGHT_100
     }
-    else {
+    else if (isColumn) {
       // cell for panel has zero size by default
       if (index == 1 || index == 3) {
         constraint.size = BoundSize.ZERO_PIXEL;
       }
-      constraint.fill = true;
+      //constraint.fill = true;
     }
 
     return constraint;
@@ -188,12 +188,19 @@ public class ToolWindowManager {
     var cc:CC = new CC();
     cc.cellX = sideToColumn(side);
     cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 2 : side == MigConstants.TOP ? 1 : 3;
-    cc.horizontal.grow = 100;
-    cc.vertical.grow = 100;
+    cc.horizontal.size = new BoundSize(null, new UnitValue(100, UnitValue.PERCENT, null, true), null);
+    cc.vertical.size = new BoundSize(null, new UnitValue(100, UnitValue.PERCENT, null, false), null);
+    cc.vertical.gapAfter = BoundSize.ZERO_PIXEL;
+    cc.vertical.gapBefore = BoundSize.ZERO_PIXEL;
     cc.flowX = 0;
     pane.constraints = cc;
 
-    columnConstraints[cc.cellX].size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));
+    var cellConstraint:CellConstraint = columnConstraints[cc.cellX];
+    cellConstraint.gapAfter = BoundSize.ZERO_PIXEL;
+    cellConstraint.gapBefore = BoundSize.ZERO_PIXEL;
+    if (cellConstraint.size == BoundSize.ZERO_PIXEL || cellConstraint.size == BoundSize.NULL_SIZE) {
+      cellConstraint.size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));
+    }
 
     //pane.paneHid.add(hidePaneHandler);
     //pane.sideHid.add(hideSideHandler);

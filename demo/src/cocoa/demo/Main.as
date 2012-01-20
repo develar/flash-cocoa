@@ -23,7 +23,7 @@ import net.miginfocom.layout.ComponentWrapper;
 
 public class Main extends Container {
   public function Main() {
-    var layout:MigLayout = new MigLayout("flowy", "grow", "grow");
+    var layout:MigLayout = new MigLayout("", "grow", "grow");
     laf = new AquaLookAndFeel();
     subviews = createComponents();
     this.layout = layout;
@@ -44,34 +44,51 @@ public class Main extends Container {
     stage.align = StageAlign.TOP_LEFT;
 
     var components:Vector.<ComponentWrapper> = new Vector.<ComponentWrapper>();
-    var l1:Label = new Label();
-    l1.title = "First Name";
-    components[0] = l1;
+    components[components.length] = createTableView();
+    components[components.length] = createTableView();
 
-    components[1] = createSC();
+    //var l1:Label = new Label();
+    //l1.title = "First Name";
+    //components[0] = l1;
+    //
+    //components[1] = createSC();
+    //
+    //var toolbar:Toolbar = new Toolbar();
+    //toolbar.small = true;
+    //toolbar.subviews = new <ComponentWrapper>[createSC()];
+    //components[2] = toolbar;
+    //
+    ////var scrollView:ScrollView = new ScrollView();
+    //var tableView:TableView = new TableView();
+    //tableView.c = "grow";
+    //tableView.lafSubkey = "small";
+    //tableView.dataSource = new DemoTableViewDataSource();
+    //var insets:Insets = new Insets(2, NaN, NaN, 3);
+    //var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
+    //firstColumn.preferredWidth = 120;
+    //tableView.columns = new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
+    //
+    ////scrollView.documentView = tableView;
+    //components[components.length] = tableView;
+    ////var textInput:TextInput = new TextInput();
+    ////textInput.text = "f";
+    ////components[components.length] = textInput;
 
-    var toolbar:Toolbar = new Toolbar();
-    toolbar.small = true;
-    toolbar.subviews = new <ComponentWrapper>[createSC()];
-    components[2] = toolbar;
+    return components;
+  }
 
-    //var scrollView:ScrollView = new ScrollView();
+  private function createTableView():TableView {
     var tableView:TableView = new TableView();
-    tableView.c = "grow";
+    tableView.c = "flowY, grow, cell 0 0";
     tableView.lafSubkey = "small";
     tableView.dataSource = new DemoTableViewDataSource();
+
     var insets:Insets = new Insets(2, NaN, NaN, 3);
     var firstColumn:TableColumnImpl = new TableColumnImpl(tableView, 'a', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets));
     firstColumn.preferredWidth = 120;
     tableView.columns = new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
 
-    //scrollView.documentView = tableView;
-    components[components.length] = tableView;
-    //var textInput:TextInput = new TextInput();
-    //textInput.text = "f";
-    //components[components.length] = textInput;
-
-    return components;
+    return tableView;
   }
 
   private static function createSC():SegmentedControl {
