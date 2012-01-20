@@ -11,6 +11,7 @@ import cocoa.pane.PaneViewDataSource;
 import cocoa.resources.ResourceManager;
 
 import flash.errors.IllegalOperationError;
+import flash.events.Event;
 
 import net.miginfocom.layout.BoundSize;
 import net.miginfocom.layout.CC;
@@ -65,8 +66,12 @@ public class ToolWindowManager {
     }
 
     dataSource.addItem(item);
+    var index:int = dataSource.itemCount - 1;
     if (opened) {
-      tabBar.setSelected(dataSource.itemCount - 1, true);
+      _container.displayObject.addEventListener(Event.ENTER_FRAME, function(event:Event):void {
+        _container.displayObject.removeEventListener(event.type, arguments.callee);
+        tabBar.setSelected(index, true);
+      });
     }
   }
 
@@ -158,8 +163,11 @@ public class ToolWindowManager {
     }
     else if (toolWindows[side].isSelectionEmpty) {
       columnConstraints[sideToColumn(side)].size = BoundSize.ZERO_PIXEL;
-      _container.invalidateSubview()
+      _container.invalidateSubview(true);
     }
+
+    _container.invalidateSubview(true);
+    _container.validate();
   }
 
   private static function sideToColumn(side:int):int {
@@ -180,7 +188,9 @@ public class ToolWindowManager {
     var cc:CC = new CC();
     cc.cellX = sideToColumn(side);
     cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 2 : side == MigConstants.TOP ? 1 : 3;
+    cc.horizontal.grow = 100;
     cc.vertical.grow = 100;
+    cc.flowX = 0;
     pane.constraints = cc;
 
     columnConstraints[cc.cellX].size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));
@@ -189,6 +199,8 @@ public class ToolWindowManager {
     //pane.sideHid.add(hideSideHandler);
 
     _container.addSubview(pane);
+    _container.invalidateSubview(true);
+    _container.validate();
   }
 
   //private function hidePaneHandler(pane:Panel):void {

@@ -1,4 +1,5 @@
 package cocoa.text {
+import flash.display.Graphics;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
@@ -111,10 +112,6 @@ public class EditableTextView extends AbstractTextView {
     super();
 
     flags |= HAS_BASELINE;
-
-    addEventListener(FocusEvent.FOCUS_IN, focusInHandler);
-    addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler);
-    addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 
     textContainerManager = new EditableTextContainerManager(this, configuration);
     textContainerManager.addEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE, compositionCompleteHandler);

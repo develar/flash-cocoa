@@ -76,6 +76,11 @@ public class TableViewInteractor {
   }
 
   private function editorFocusOutHandler(event:FocusEvent):void {
+    if (event.relatedObject == null) {
+      openedEditorInfo.editor.stage.focus = openedEditorInfo.editor;
+      return;
+    }
+
     closeEditor(true);
   }
 }

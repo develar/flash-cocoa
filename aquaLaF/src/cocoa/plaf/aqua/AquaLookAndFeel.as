@@ -71,7 +71,7 @@ public class AquaLookAndFeel extends AbstractLookAndFeel {
     data[TextFormatId.MENU] = AquaFonts.SYSTEM_FONT;
     data[TextFormatId.MENU_HIGHLIGHTED] = AquaFonts.SYSTEM_FONT_HIGHLIGHTED;
 
-    data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT);
+    data["SelectionFormat"] = new SelectionFormat(0xb5d5fd, 1.0, BlendMode.NORMAL, 0x000000, 1, BlendMode.INVERT, 0);
 
     //data["Box"] = BoxSkin;
 

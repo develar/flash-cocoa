@@ -30,6 +30,9 @@ public class Main extends Container {
 
     setSize(stage.stageWidth, stage.stageHeight);
     validate();
+
+    graphics.beginFill(0);
+    graphics.drawRect(0, 0, 499, 499)
     
     stage.addEventListener(Event.RESIZE, stage_resizeHandler);
 
@@ -64,7 +67,9 @@ public class Main extends Container {
 
     //scrollView.documentView = tableView;
     //components[components.length] = tableView;
-    components[components.length] = new TextInput();
+    var textInput:TextInput = new TextInput();
+    textInput.text = "f";
+    components[components.length] = textInput;
 
     return components;
   }

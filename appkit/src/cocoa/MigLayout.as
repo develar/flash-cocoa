@@ -30,6 +30,7 @@ public class MigLayout extends AbstractMigLayout {
     if ((flags & VALIDATE_LISTENERS_ATTACHED) != 0) {
       flags &= ~VALIDATE_LISTENERS_ATTACHED;
       _container.removeEventListener(Event.RENDER, rendererHandler);
+      _container.removeEventListener(Event.ENTER_FRAME, rendererHandler);
     }
 
     if (checkCache()) {
@@ -118,6 +119,7 @@ public class MigLayout extends AbstractMigLayout {
     if ((flags & VALIDATE_LISTENERS_ATTACHED) == 0) {
       flags |= VALIDATE_LISTENERS_ATTACHED;
       _container.addEventListener(Event.RENDER, rendererHandler);
+      _container.addEventListener(Event.ENTER_FRAME, rendererHandler);
       var stage:Stage = _container.stage;
       if (stage != null) {
         stage.invalidate();

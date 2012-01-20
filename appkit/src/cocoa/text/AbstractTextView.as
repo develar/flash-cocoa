@@ -10,8 +10,6 @@ import flashx.textLayout.elements.TextFlow;
 import flashx.textLayout.formats.ITextLayoutFormat;
 import flashx.textLayout.tlf_internal;
 
-import mx.events.FlexEvent;
-
 import spark.core.NavigationUnit;
 
 use namespace tlf_internal;
@@ -126,9 +124,9 @@ internal class AbstractTextView extends ControlView {
     //invalidateSize();
     //invalidateDisplayList();
 
-    if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
-      dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
-    }
+    //if (hasEventListener(FlexEvent.VALUE_COMMIT)) {
+    //  dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+    //}
   }
 
   protected var _textFlow:TextFlow;

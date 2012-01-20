@@ -3,11 +3,13 @@ import cocoa.text.EditableTextView;
 import cocoa.text.TextInputUIModel;
 import cocoa.text.TextUIModel;
 
+import flash.display.InteractiveObject;
+
 import spark.events.TextOperationEvent;
 
 use namespace ui;
 
-public class TextInput extends AbstractControl {
+public class TextInput extends AbstractControl implements Focusable {
   ui var textDisplay:EditableTextView;
 
   override public function set action(value:Function):void {
@@ -79,6 +81,10 @@ public class TextInput extends AbstractControl {
 
   override protected function get primaryLaFKey():String {
     return "TextInput";
+  }
+
+  public function get focusObject():InteractiveObject {
+    return Focusable(skin).focusObject;
   }
 }
 }

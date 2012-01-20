@@ -372,48 +372,8 @@ internal final class EditableTextContainerManager extends TextContainerManager i
     super.mouseDownHandler(event);
   }
 
-  /**
-   *  @private
-   *  This handler gets called for ACTIVATE events from the player
-   *  and FLEX_WINDOW_ACTIVATE events from Flex.  Because of the
-   *  way AIR handles activation of AIR Windows, and because Flex
-   *  has its own concept of popups or pseudo-windows, we
-   *  ignore ACTIVATE and respond to FLEX_WINDOW_ACTIVATE instead
-   */
-  override public function activateHandler(event:Event):void {
-    // block ACTIVATE events
-    //if (event.type == Event.ACTIVATE) {
-    //  return;
-    //}
-
-    super.activateHandler(event);
-
-    // TLF ties activation and focus together.  If a Flex PopUp is created
-    // it is possible to get deactivate/activate events without any
-    // focus events.  If we have focus when we are activated, the selection
-    // state should be SelectionFormatState.FOCUSED not
-    // SelectionFormatState.UNFOCUSED since there might not be a follow on
-    // focusIn event.
-    //if (editingMode != EditingMode.READ_ONLY && textDisplay.getFocus() == textDisplay) {
-    if (editingMode != EditingMode.READ_ONLY) {
-      SelectionManager(beginInteraction()).setFocus();
-      endInteraction();
-    }
-  }
-
-  /**
-   *  @private
-   *  This handler gets called for DEACTIVATE events from the player
-   *  and FLEX_WINDOW_DEACTIVATE events from Flex.  Because of the
-   *  way AIR handles activation of AIR Windows, and because Flex
-   *  has its own concept of popups or pseudo-windows, we
-   *  ignore DEACTIVATE and respond to FLEX_WINDOW_DEACTIVATE instead
-   */
   override public function deactivateHandler(event:Event):void {
-    // block DEACTIVATE events
-    //if (event.type != Event.DEACTIVATE) {
-      super.deactivateHandler(event);
-    //}
+    super.deactivateHandler(event);
   }
 
   override protected function getFocusedSelectionFormat():SelectionFormat {

@@ -20,6 +20,13 @@ public final class SharedPoint {
     return p;
   }
 
+  public static function createPoint2(x:Number, y:Number):Point {
+    var p:Point = point;
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+
   public static function mouseGlobal(e:MouseEvent):Point {
     var p:Point = point;
     p.x = e.stageX;
