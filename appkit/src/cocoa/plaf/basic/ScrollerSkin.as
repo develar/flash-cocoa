@@ -24,27 +24,5 @@ public class ScrollerSkin extends SliderSkin {
       knobBorder.draw(knob.graphics, Math.round(actualWidth * (actualWidth / Scroller(slider).contentSize)), NaN);
     }
   }
-
-  override protected function addListeners():void {
-    super.addListeners();
-
-    addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
-  }
-
-  private function mouseWheelHandler(event:MouseEvent):void {
-    if (event.delta == 0) {
-      return;
-    }
-
-    //const newValue:Number = slider.correctValue(slider.value - (event.delta * dV));
-    //if (newValue == slider.value) {
-    //  return;
-    //}
-    //
-    //positionKnob();
-    //slider.setValue(newValue, true);
-    //
-    //event.updateAfterEvent();
-  }
 }
 }

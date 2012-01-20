@@ -154,7 +154,7 @@ public class SliderSkin extends AbstractSkin {
     return slider.vertical ? actualHeight - knob.height - knobBorder.frameInsets.top - knobBorder.frameInsets.bottom : actualWidth - knob.width - knobBorder.frameInsets.left - knobBorder.frameInsets.right;
   }
 
-  protected function positionKnob(knobBorder:Border = null):void {
+  internal function positionKnob(knobBorder:Border = null):void {
     const position:Number = Math.round((slider.value - slider.min) / (slider.max - slider.min) * computePixelRange(knobBorder == null ? getKnobBorder() : knobBorder));
     if (slider.vertical) {
       knob.y = position;

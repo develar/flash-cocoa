@@ -31,8 +31,8 @@ public class Main extends Container {
     setSize(stage.stageWidth, stage.stageHeight);
     validate();
 
-    graphics.beginFill(0);
-    graphics.drawRect(0, 0, 499, 499)
+    //graphics.beginFill(0);
+    //graphics.drawRect(0, 0, 499, 499)
     
     stage.addEventListener(Event.RESIZE, stage_resizeHandler);
 
@@ -66,10 +66,10 @@ public class Main extends Container {
     tableView.columns = new <TableColumn>[firstColumn, new TableColumnImpl(tableView, 'b', new TextRendererManager(laf.getTextFormat(TextFormatId.SMALL_SYSTEM), insets))];
 
     //scrollView.documentView = tableView;
-    //components[components.length] = tableView;
-    var textInput:TextInput = new TextInput();
-    textInput.text = "f";
-    components[components.length] = textInput;
+    components[components.length] = tableView;
+    //var textInput:TextInput = new TextInput();
+    //textInput.text = "f";
+    //components[components.length] = textInput;
 
     return components;
   }

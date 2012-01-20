@@ -80,7 +80,7 @@ public class CollectionBody extends ControlView implements Focusable, Viewport {
     switch (navigationUnit) {
       case NavigationUnit.DOWN:
       case NavigationUnit.PAGE_DOWN:
-        return rowHeightWithSpacing;
+        return rowHeightWithSpacing == 0 ? 3 : rowHeightWithSpacing;
 
       case NavigationUnit.UP:
       case NavigationUnit.PAGE_UP:

@@ -7,8 +7,16 @@ import cocoa.Scroller;
 import cocoa.SkinnableView;
 import cocoa.Viewport;
 import cocoa.plaf.LookAndFeel;
+import cocoa.plaf.Skin;
+import cocoa.plaf.basic.ScrollerSkin;
+
+import flash.display.DisplayObject;
 
 import flash.display.DisplayObjectContainer;
+import flash.events.IEventDispatcher;
+import flash.events.MouseEvent;
+
+import spark.core.NavigationUnit;
 
 public class ScrollViewSkin extends ObjectBackedSkin implements ContentView {
   private var displayObjectContainer:DisplayObjectContainer;
@@ -114,6 +122,13 @@ public class ScrollViewSkin extends ObjectBackedSkin implements ContentView {
     documentView.contentSizeChanged.add(contentSizeChanged);
     documentView.scrollPositionReset.add(scrollPositionReset);
 
+    if (documentView is DisplayObject) {
+      DisplayObject(documentView).addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
+    }
+    else {
+      DisplayObject(SkinnableView(documentView).skin).addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
+    }
+
     if (scrollView.verticalScrollPolicy == ScrollPolicy.ON) {
       createScroller(true);
     }
@@ -126,6 +141,9 @@ public class ScrollViewSkin extends ObjectBackedSkin implements ContentView {
     var scroller:Scroller = new Scroller(vertical);
     scroller.addToSuperview(displayObjectContainer, laf);
     scrollView.uiPartAdded(null, scroller);
+
+    var skin:IEventDispatcher = IEventDispatcher(scroller.skin);
+    skin.addEventListener(MouseEvent.MOUSE_WHEEL, mouseWheelHandler);
     return scroller;
   }
 
@@ -243,6 +261,23 @@ public class ScrollViewSkin extends ObjectBackedSkin implements ContentView {
 
   public function invalidateSubview(invalidateSuperview:Boolean = true):void {
     invalidate(invalidateSuperview);
+  }
+
+  private function mouseWheelHandler(event:MouseEvent):void {
+    if (event.delta == 0 || !vScrollerVisible) {
+      return;
+    }
+    
+    var vScroller:Scroller = scrollView.verticalScroller;
+    const newValue:Number = vScroller.correctValue(vScroller.value - (event.delta * scrollView.documentView.getVerticalScrollPositionDelta(NavigationUnit.DOWN)));
+    if (newValue == vScroller.value) {
+      return;
+    }
+
+    vScroller.setValue(newValue, true);
+    ScrollerSkin(vScroller.skin).positionKnob();
+
+    event.updateAfterEvent();
   }
 }
 }

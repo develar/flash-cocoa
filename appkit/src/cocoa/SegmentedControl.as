@@ -16,7 +16,7 @@ import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
 public class SegmentedControl extends CollectionBody implements Injectable, ListSelectionModel {
-  private var border:Border;
+  protected var border:Border;
 
   override public function getMaximumWidth(hHint:int = -1):int {
     return layout.getMaximumWidth(hHint);
