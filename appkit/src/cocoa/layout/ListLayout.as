@@ -128,8 +128,10 @@ internal class ListLayout implements CollectionLayout {
       return;
     }
 
-    _rendererManager.removeRenderer(index, index == 0 ? _insets.left : NaN, _insets.top, isVertical ? contentWidth : -1, isVertical ? -1 : contentHeight);
-    contentWidth -= _rendererManager.lastCreatedRendererDimension;
+    if (pendingRemovedIndices == null) {
+      pendingRemovedIndices = new Vector.<int>();
+    }
+    pendingRemovedIndices[pendingRemovedIndices.length] = index;
 
     _container.invalidateSize();
   }
@@ -211,8 +213,9 @@ internal class ListLayout implements CollectionLayout {
 
   protected final function processPending():Boolean {
     var has:Boolean;
+    var itemIndex:int;
     if (!Vectors.isEmpty(pendingAddedIndices)) {
-      for each (var itemIndex:int in pendingAddedIndices.sort(Vectors.sortAscending)) {
+      for each (itemIndex in pendingAddedIndices.sort(Vectors.sortAscending)) {
         if (isVertical) {
           _rendererManager.createAndLayoutRendererAt(itemIndex, NaN, _insets.top, contentWidth, -1, _insets.top, _gap);
           contentHeight += _rendererManager.lastCreatedRendererDimension;
@@ -224,6 +227,16 @@ internal class ListLayout implements CollectionLayout {
       }
 
       pendingAddedIndices.length = 0;
+      has = true;
+    }
+    
+    if (!Vectors.isEmpty(pendingRemovedIndices)) {
+      for each (itemIndex in pendingRemovedIndices.sort(Vectors.sortDecreasing)) {
+        _rendererManager.removeRenderer(itemIndex, itemIndex == 0 ? _insets.left : NaN, _insets.top, isVertical ? contentWidth : -1, isVertical ? -1 : contentHeight);
+        contentWidth -= _rendererManager.lastCreatedRendererDimension;
+      }
+      
+      pendingRemovedIndices.length = 0;
       has = true;
     }
 

@@ -14,10 +14,10 @@ public class ContentViewableSkin extends AbstractSkin implements ContentView {
   public function invalidateSubview(invalidateSuperview:Boolean = true):void {
     if ((flags & VALIDATE_LISTENER_ATTACHED) == 0) {
       flags |= VALIDATE_LISTENER_ATTACHED;
-      addEventListener(Event.RENDER, renderHandler);
-      if (stage != null) {
-        stage.invalidate();
-      }
+      addEventListener(Event.ENTER_FRAME, renderHandler);
+      //if (stage != null) {
+      //  stage.invalidate();
+      //}
 
       if (invalidateSuperview) {
         superview.invalidateSubview(true);
@@ -28,7 +28,7 @@ public class ContentViewableSkin extends AbstractSkin implements ContentView {
   override public function validate():Boolean {
     if ((flags & VALIDATE_LISTENER_ATTACHED) != 0) {
       flags &= ~VALIDATE_LISTENER_ATTACHED;
-      removeEventListener(Event.RENDER, renderHandler);
+      removeEventListener(Event.ENTER_FRAME, renderHandler);
     }
 
     if (super.validate()) {

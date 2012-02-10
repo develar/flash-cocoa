@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/asset-builder-maven-plugin/asset-builder-maven-plugin.iml" filepath="$PROJECT_DIR$/asset-builder-maven-plugin/asset-builder-maven-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/aquaLaF/borderBuilder/borderBuilder.iml" filepath="$PROJECT_DIR$/aquaLaF/borderBuilder/borderBuilder.iml" />
       <module fileurl="file://$PROJECT_DIR$/appkit/cocoa.iml" filepath="$PROJECT_DIR$/appkit/cocoa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cocoaAggregator.iml" filepath="$PROJECT_DIR$/cocoaAggregator.iml" />
       <module fileurl="file://$PROJECT_DIR$/collections/collections.iml" filepath="$PROJECT_DIR$/collections/collections.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/foundation/foundation.iml" filepath="$PROJECT_DIR$/foundation/foundation.iml" />

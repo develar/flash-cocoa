@@ -125,7 +125,6 @@ public class ToolWindowManager {
       if (index == 1 || index == 3) {
         constraint.size = BoundSize.ZERO_PIXEL;
       }
-      //constraint.fill = true;
     }
 
     return constraint;
@@ -165,9 +164,6 @@ public class ToolWindowManager {
       columnConstraints[sideToColumn(side)].size = BoundSize.ZERO_PIXEL;
       _container.invalidateSubview(true);
     }
-
-    _container.invalidateSubview(true);
-    _container.validate();
   }
 
   private static function sideToColumn(side:int):int {
@@ -206,8 +202,6 @@ public class ToolWindowManager {
     //pane.sideHid.add(hideSideHandler);
 
     _container.addSubview(pane);
-    _container.invalidateSubview(true);
-    _container.validate();
   }
 
   //private function hidePaneHandler(pane:Panel):void {

@@ -57,6 +57,7 @@
       <set>
         <option value="$PROJECT_DIR$/cocoa-mx/pom.xml" />
         <option value="$PROJECT_DIR$/migLayout/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </set>
     </option>
   </component>

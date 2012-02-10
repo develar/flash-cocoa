@@ -122,6 +122,10 @@ public class InteractiveGraphicsRendererManager extends InteractiveTextRendererM
   }
 
   override public function getItemIndexAt(x:Number, y:Number):int {
+    if (cells.head == null) {
+      return -1;
+    }
+
     var entry:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.head);
     var tail:TextLineAndDisplayObjectEntry = TextLineAndDisplayObjectEntry(cells.tail);
     const totalWidth:Number = tail.displayObject.x + tail.displayObject.width;
