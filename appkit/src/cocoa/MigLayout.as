@@ -1,5 +1,4 @@
 package cocoa {
-import flash.display.Stage;
 import flash.events.Event;
 
 import net.miginfocom.layout.AbstractMigLayout;
@@ -9,6 +8,9 @@ import net.miginfocom.layout.Grid;
 import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.layout.PlatformDefaults;
 
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
+
 public class MigLayout extends AbstractMigLayout {
   private static const VALIDATE_LISTENERS_ATTACHED:uint = 1 << 1;
   private static const SOME_SUBVIEW_SIZE_INVALID:uint = 1 << 2;
@@ -16,6 +18,14 @@ public class MigLayout extends AbstractMigLayout {
 
   public function MigLayout(layoutConstraints:String = null, colConstraints:String = null, rowConstraints:String = null) {
     super(layoutConstraints, colConstraints, rowConstraints);
+  }
+
+  private var _layouted:ISignal;
+  public function get layouted():ISignal {
+    if (_layouted == null) {
+      _layouted = new Signal();
+    }
+    return _layouted;
   }
   
   private var _container:Container;
@@ -37,7 +47,7 @@ public class MigLayout extends AbstractMigLayout {
       const w:int = _container.actualWidth - insets.width;
       const h:int = _container.actualHeight - insets.height;
       if (grid.layout(insets.left, insets.top, w, h, lc != null && lc.debugMillis > 0, true)) {
-        grid = new Grid(_container, lc, rowSpecs, colSpecs, null);
+        grid = new Grid(_container, lc, rowSpecs, colSpecs);
         grid.layout(insets.left, insets.top, w, h, lc != null && lc.debugMillis > 0, false);
       }
     }
@@ -47,6 +57,10 @@ public class MigLayout extends AbstractMigLayout {
       if (cc == null || !cc.external) {
         view.validate();
       }
+    }
+
+    if (_layouted != null) {
+      _layouted.dispatch();
     }
   }
 
