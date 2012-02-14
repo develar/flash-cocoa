@@ -1,4 +1,5 @@
 package cocoa {
+import net.miginfocom.layout.CellConstraint;
 import net.miginfocom.layout.LC;
 import net.miginfocom.layout.UnitValue;
 
@@ -27,7 +28,7 @@ public class Toolbar extends Box {
     }
     lc.insets = insets;
 
-    var layout:MigLayout = new MigLayout();
+    var layout:MigLayout = new MigLayout(null, "100%");
     layout.setLayoutConstraints(lc);
     return layout;
   }

@@ -67,18 +67,18 @@
     </content>
     <orderEntry type="jdk" jdkName="compiler-4.5.2.21576.pom" jdkType="__CompositeFlexSdk__" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.2" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:swc:4.5.2.21576" level="project" />
-    <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains.miglayout:miglayout-core:swc:4.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.osflash:as3-signals:swc:0.9-beta" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.2.21576" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.miglayout:miglayout-core:swc:4.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:playerglobal:swc:10.2" level="project" />
+    <orderEntry type="library" name="Maven: flashx:textLayout:swc:2.0.192-de1" level="project" />
+    <orderEntry type="library" name="Maven: org.flyti:plexus:swc:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:framework:rb.swc:4.5.2.21576" level="project" />
     <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:swc:4.5.2.21576" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.flex.framework:spark:rb.swc:4.5.2.21576" level="project" />
     <orderEntry type="module" module-name="foundation" />
-    <orderEntry type="module" module-name="collections" />
     <orderEntry type="module" module-name="cocoa" />
+    <orderEntry type="module" module-name="collections" />
   </component>
 </module>
 
