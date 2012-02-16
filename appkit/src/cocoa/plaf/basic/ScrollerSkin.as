@@ -3,8 +3,6 @@ import cocoa.CellState;
 import cocoa.Scroller;
 import cocoa.border.StatefulBorder;
 
-import flash.events.MouseEvent;
-
 public class ScrollerSkin extends SliderSkin {
   override public function validate():Boolean {
     if (super.validate()) {

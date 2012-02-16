@@ -1,5 +1,4 @@
 package cocoa.text {
-import flash.display.Graphics;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
@@ -461,7 +460,7 @@ public class EditableTextView extends AbstractTextView {
     myFlags &= ~AUTO_HEIGHT;
     myFlags &= ~AUTO_WIDTH;
 
-    var composeWidth:Number = constraints == null ? NaN : constraints.horizontal.size.preferred.getValue();
+    var composeWidth:Number = constraints == null ? NaN : constraints.horizontal.size.preferred.value;
     if (isNaN(composeWidth) && _uiModel.widthInChars != -1) {
       if (measuredWidth == 0) {
         measuredWidth = Math.ceil(calculateWidthInChars());
@@ -470,7 +469,7 @@ public class EditableTextView extends AbstractTextView {
       composeWidth = measuredWidth;
     }
 
-    var composeHeight:Number = constraints == null ? NaN : constraints.vertical.size.preferred.getValue();
+    var composeHeight:Number = constraints == null ? NaN : constraints.vertical.size.preferred.value;
     if (isNaN(composeHeight) && heightInLines != -1) {
       if (measuredHeight == 0) {
         measuredHeight = Math.ceil(calculateHeightInLines());

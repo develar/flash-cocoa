@@ -9,26 +9,19 @@ import cocoa.SelectionMode;
 import cocoa.pane.PaneItem;
 import cocoa.pane.PaneViewDataSource;
 import cocoa.resources.ResourceManager;
-import cocoa.util.SharedPoint;
 
-import flash.display.DisplayObjectContainer;
-import flash.display.Graphics;
-import flash.display.Sprite;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
-import flash.events.MouseEvent;
-import flash.geom.Point;
-import flash.ui.Mouse;
-import flash.ui.MouseCursor;
 
 import net.miginfocom.layout.BoundSize;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.CellConstraint;
-import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.LC;
 import net.miginfocom.layout.MigConstants;
 import net.miginfocom.layout.UnitValue;
 
+// /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/Resources/cursors/
+// Gimp dropshadow filter (y inverted — if plist y == -1, then gimp y 1)
 public class ToolWindowManager {
   private static const SET_COUNT:int = 5;
 
@@ -97,7 +90,7 @@ public class ToolWindowManager {
 
     var layout:MigLayout = new MigLayout();
 
-    layout.layouted.add(layouted);
+    new ToolWindowResizer(layout, _container, this);
 
     var i:int = 0;
     for (; i < SET_COUNT; i++) {
@@ -216,104 +209,8 @@ public class ToolWindowManager {
     _container.addSubview(pane);
   }
 
-  //private function hidePaneHandler(pane:Panel):void {
-  //  assert(!pane.hidden);
-  //  segmentedControl.setSelected(paneGroup.getSubviewIndex(pane), false);
-  //}
-  //
-  //private function hideSideHandler():void {
-  //  selectedIndices = null;
-  //}
-
-  private var handle:Sprite;
-
-  private function layouted():void {
-    var c:DisplayObjectContainer = _container.displayObject;
-    if (!resizeHandleDragged) {
-      if (handle == null) {
-        handle = new Sprite();
-        handle.addEventListener(MouseEvent.MOUSE_OVER, handle_mouseOverOrOutHandler);
-        handle.addEventListener(MouseEvent.MOUSE_OUT, handle_mouseOverOrOutHandler);
-        handle.addEventListener(MouseEvent.MOUSE_DOWN, handle_mouseDown);
-      }
-      if (handle.parent != c) {
-        c.addChild(handle);
-      }
-      else if (c.numChildren != 0 && c.getChildIndex(handle) != c.numChildren - 1) {
-        c.setChildIndex(handle, c.numChildren - 1);
-      }
-    }
-
-    var x:int = -1;
-    var y:int = int.MAX_VALUE;
-    var h:int = 0;
-    for each (var component:ComponentWrapper in _container.components) {
-      if (component is Panel && component.visible) {
-        x = component.x;
-        if (y > component.y) {
-          y = component.y;
-        }
-
-        h += component.actualHeight;
-        minSideWidth = Math.min(minSideWidth, component.getMinimumWidth());
-      }
-    }
-
-    // todo
-    minSideWidth = Math.max(minSideWidth, 180);
-
-    handle.x = x - 0.5;
-    handle.y = y;
-
-    if (resizeHandleDragged || !(handle.visible = x != -1)) {
-      return;
-    }
-
-    var g:Graphics = handle.graphics;
-    g.clear();
-    g.beginFill(0, 0);
-    g.drawRect(0, 0, 2, h);
-    g.endFill();
-  }
-
-  private var minSideWidth:int = int.MAX_VALUE;
-  private var resizeHandleDragged:Boolean;
-
-  private function handle_mouseDown(event:MouseEvent):void {
-    if (minSideWidth == int.MAX_VALUE) {
-      return;
-    }
-
-    resizeHandleDragged = true;
-    handle.stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-    handle.stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMoveHandler);
-  }
-
-  private function stageMouseMoveHandler(event:MouseEvent):void {
-    var mouseLocal:Point = _container.displayObject.globalToLocal(SharedPoint.mouseGlobal(event));
-    if (mouseLocal.x < 0) {
-      return;
-    }
-
-    var columnConstraint:CellConstraint = columnConstraints[sideToColumn(MigConstants.RIGHT)];
-    columnConstraint.size = BoundSize.createSame(new UnitValue(Math.max(_container.actualWidth - mouseLocal.x, minSideWidth)));
-
-    _container.subviewVisibleChanged();
-  }
-
-  private function stageMouseUpHandler(event:MouseEvent):void {
-    handle.stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUpHandler);
-    handle.stage.removeEventListener(MouseEvent.MOUSE_MOVE, stageMouseMoveHandler);
-    Mouse.cursor = MouseCursor.AUTO;
-    resizeHandleDragged = false;
-  }
-
-  private function handle_mouseOverOrOutHandler(event:MouseEvent):void {
-    if (resizeHandleDragged) {
-      return;
-    }
-
-    Mouse.cursor = event.type == MouseEvent.MOUSE_OVER ? MouseCursor.HAND : MouseCursor.AUTO;
+  internal function getColumnConstraint(side:int):CellConstraint {
+    return columnConstraints[sideToColumn(side)];
   }
 }
 }

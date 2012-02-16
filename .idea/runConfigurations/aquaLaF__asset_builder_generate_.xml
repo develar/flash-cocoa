@@ -29,6 +29,9 @@
       </option>
       <option name="myRunnerParameters">
         <MavenRunnerParameters>
+          <option name="profiles">
+            <set />
+          </option>
           <option name="goals">
             <list>
               <option value="install" />
@@ -37,8 +40,8 @@
               <option value="-Dmaven.test.skip" />
             </list>
           </option>
-          <option name="profiles">
-            <set />
+          <option name="profilesMap">
+            <map />
           </option>
           <option name="workingDirPath" value="$PROJECT_DIR$" />
         </MavenRunnerParameters>
