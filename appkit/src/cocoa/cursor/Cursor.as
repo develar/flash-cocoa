@@ -11,7 +11,7 @@ public final class Cursor {
   public static const rotate:int = 4;
   public static const rotateTarget:int = 5;
 
-  public static const resizeUpDown:int = 6;
+  public static const resizeUpDown:String = "resizeUpDown";
 
   public static const resizeLeftRight:String = "resizeLeftRight";
 

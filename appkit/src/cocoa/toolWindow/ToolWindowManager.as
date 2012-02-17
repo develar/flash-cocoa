@@ -190,17 +190,18 @@ public class ToolWindowManager {
     cc.cellX = sideToColumn(side);
     cc.cellY = side == MigConstants.LEFT || side == MigConstants.RIGHT ? 2 : side == MigConstants.TOP ? 1 : 3;
     cc.horizontal.size = new BoundSize(null, new UnitValue(100, UnitValue.PERCENT, null, true), null);
-    cc.vertical.size = new BoundSize(null, new UnitValue(100, UnitValue.PERCENT, null, false), null);
-    cc.vertical.gapAfter = BoundSize.ZERO_PIXEL;
-    cc.vertical.gapBefore = BoundSize.ZERO_PIXEL;
+    // force ignore component pref size
+    cc.vertical.size = new BoundSize(null, UnitValue.ZERO, null);
+    cc.vertical.grow = 1;
     cc.flowX = 0;
     pane.constraints = cc;
 
     var cellConstraint:CellConstraint = columnConstraints[cc.cellX];
-    cellConstraint.gapAfter = BoundSize.ZERO_PIXEL;
-    cellConstraint.gapBefore = BoundSize.ZERO_PIXEL;
+    //cellConstraint.gapAfter = BoundSize.ZERO_PIXEL;
+    //cellConstraint.gapBefore = BoundSize.ZERO_PIXEL;
     if (cellConstraint.size == BoundSize.ZERO_PIXEL || cellConstraint.size == BoundSize.NULL_SIZE) {
       cellConstraint.size = BoundSize.createSame(new UnitValue(0.33 * _container.screenWidth));
+      cellConstraint.componentGap = BoundSize.createSame(new UnitValue(7));
     }
 
     //pane.paneHid.add(hidePaneHandler);
