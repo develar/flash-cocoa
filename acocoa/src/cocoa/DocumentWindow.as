@@ -49,7 +49,6 @@ public class DocumentWindow extends NativeWindow {
 
     addEventListener(NativeWindowBoundsEvent.RESIZE, resizeHandler);
     this.bounds = bounds;
-    activate();
   }
   
   override public function close():void {
