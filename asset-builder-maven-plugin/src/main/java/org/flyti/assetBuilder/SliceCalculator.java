@@ -3,6 +3,7 @@ package org.flyti.assetBuilder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.util.Arrays;
 
 public final class SliceCalculator {
   /**
@@ -274,14 +275,10 @@ public final class SliceCalculator {
     }
 
     if (strict) {
-      for (int i = 0; i < 2; i++) {
-        if (bands1[i] != bands2[i]) {
-          return false;
-        }
-      }
+      return Arrays.equals(bands1, bands2);
     }
     else {
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < bands1.length; i++) {
         int diff = bands1[i] - bands2[i];
         if (diff > 1 || diff < -1) {
           return false;
